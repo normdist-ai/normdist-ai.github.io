@@ -1,0 +1,936 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="AI, 人工智能, 机器学习, ChatGPT, Claude, Ollama, 技术分享">
+  
+    <meta name="description" content="OpenClaw 局域网访问配置指南 本文以小瑞的实际配置为案例，详细介绍如何让 OpenClaw 在局域网中安全访问。  前言OpenClaw Gateway 默认绑定到 127.0.0.1:18789，只能在本机访问。要让其他设备在局域网中访问 OpenClaw，需要配置反向代理和 HTTPS 加密。 本文将以小瑞的实际配置为案例，逐步讲解如何实现安全可靠的局域网访问。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenClaw 局域网访问配置指南">
+<meta property="og:url" content="https://www.normdist.com/2026/02/25/OpenClaw-LAN-Access-Guide/">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="OpenClaw 局域网访问配置指南 本文以小瑞的实际配置为案例，详细介绍如何让 OpenClaw 在局域网中安全访问。  前言OpenClaw Gateway 默认绑定到 127.0.0.1:18789，只能在本机访问。要让其他设备在局域网中访问 OpenClaw，需要配置反向代理和 HTTPS 加密。 本文将以小瑞的实际配置为案例，逐步讲解如何实现安全可靠的局域网访问。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.normdist.com/img/default-cover.svg">
+<meta property="article:published_time" content="2026-02-25T09:05:00.000Z">
+<meta property="article:modified_time" content="2026-02-26T07:03:44.937Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="OpenClaw">
+<meta property="article:tag" content="局域网">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.normdist.com/img/default-cover.svg">
+  
+  
+  
+  <title>OpenClaw 局域网访问配置指南 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="OpenClaw 局域网访问配置指南"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-02-25 17:05" pubdate>
+          2026年2月25日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">OpenClaw 局域网访问配置指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="OpenClaw-局域网访问配置指南"><a href="#OpenClaw-局域网访问配置指南" class="headerlink" title="OpenClaw 局域网访问配置指南"></a>OpenClaw 局域网访问配置指南</h1><blockquote>
+<p>本文以小瑞的实际配置为案例，详细介绍如何让 OpenClaw 在局域网中安全访问。</p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>OpenClaw Gateway 默认绑定到 <code>127.0.0.1:18789</code>，只能在本机访问。要让其他设备在局域网中访问 OpenClaw，需要配置反向代理和 HTTPS 加密。</p>
+<p>本文将以小瑞的实际配置为案例，逐步讲解如何实现安全可靠的局域网访问。</p>
+<span id="more"></span>
+
+<h2 id="架构说明"><a href="#架构说明" class="headerlink" title="架构说明"></a>架构说明</h2><h3 id="网络架构图"><a href="#网络架构图" class="headerlink" title="网络架构图"></a>网络架构图</h3><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs scss">局域网设备 (<span class="hljs-number">192.168</span>.<span class="hljs-number">1</span>.x)<br>        │<br>        │ HTTPS (<span class="hljs-number">443</span>)<br>        ▼<br>    Nginx (<span class="hljs-number">192.168</span>.<span class="hljs-number">1.100</span>)<br>        │<br>        │ HTTP (<span class="hljs-number">18789</span>)<br>        ▼<br>OpenClaw Gateway (<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">18789</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="关键组件"><a href="#关键组件" class="headerlink" title="关键组件"></a>关键组件</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>地址</th>
+<th>端口</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>OpenClaw Gateway</strong></td>
+<td>127.0.0.1</td>
+<td>18789</td>
+<td>AI Agent 平台核心</td>
+</tr>
+<tr>
+<td><strong>Nginx</strong></td>
+<td>192.168.1.100</td>
+<td>443 (HTTPS)</td>
+<td>反向代理和 HTTPS 加密</td>
+</tr>
+<tr>
+<td><strong>局域网设备</strong></td>
+<td>192.168.1.x</td>
+<td>-</td>
+<td>客户端设备</td>
+</tr>
+</tbody></table>
+<h3 id="为什么使用反向代理？"><a href="#为什么使用反向代理？" class="headerlink" title="为什么使用反向代理？"></a>为什么使用反向代理？</h3><ol>
+<li><strong>安全性</strong>：OpenClaw Gateway 不直接暴露在公网，通过 Nginx 控制访问</li>
+<li><strong>HTTPS 加密</strong>：保护传输数据，防止中间人攻击</li>
+<li><strong>统一管理</strong>：可以同时代理多个服务（如 OpenCode、游戏等）</li>
+<li><strong>WebSocket 支持</strong>：确保实时通信正常工作</li>
+</ol>
+<hr>
+<h2 id="步骤1：OpenClaw-Gateway-基本配置"><a href="#步骤1：OpenClaw-Gateway-基本配置" class="headerlink" title="步骤1：OpenClaw Gateway 基本配置"></a>步骤1：OpenClaw Gateway 基本配置</h2><h3 id="1-1-检查-Gateway-运行状态"><a href="#1-1-检查-Gateway-运行状态" class="headerlink" title="1.1 检查 Gateway 运行状态"></a>1.1 检查 Gateway 运行状态</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看状态</span><br>openclaw status<br><br><span class="hljs-comment"># 确认 Gateway 正在运行</span><br>openclaw gateway status<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-2-查看配置文件"><a href="#1-2-查看配置文件" class="headerlink" title="1.2 查看配置文件"></a>1.2 查看配置文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看配置</span><br><span class="hljs-built_in">cat</span> ~/.openclaw/openclaw.json<br></code></pre></td></tr></table></figure>
+
+<p>确认以下配置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;gateway&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;bind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;127.0.0.1&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;port&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">18789</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;auth&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;token&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;your-auth-token-here&quot;</span><br>    <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：</p>
+<ul>
+<li><code>bind</code> 设置为 <code>127.0.0.1</code>，只允许本地访问</li>
+<li><code>port</code> 默认为 <code>18789</code></li>
+<li><code>auth.token</code> 是访问凭证，不要泄露</li>
+</ul>
+<hr>
+<h2 id="步骤2：生成-SSL-证书"><a href="#步骤2：生成-SSL-证书" class="headerlink" title="步骤2：生成 SSL 证书"></a>步骤2：生成 SSL 证书</h2><h3 id="2-1-选项1：使用-Let’s-Encrypt（推荐用于公网域名）"><a href="#2-1-选项1：使用-Let’s-Encrypt（推荐用于公网域名）" class="headerlink" title="2.1 选项1：使用 Let’s Encrypt（推荐用于公网域名）"></a>2.1 选项1：使用 Let’s Encrypt（推荐用于公网域名）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装 Certbot</span><br><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt install certbot<br><br><span class="hljs-comment"># 获取证书（需要公网域名）</span><br><span class="hljs-built_in">sudo</span> certbot certonly --standalone -d your-domain.com<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-选项2：生成自签名证书（适用于局域网）"><a href="#2-2-选项2：生成自签名证书（适用于局域网）" class="headerlink" title="2.2 选项2：生成自签名证书（适用于局域网）"></a>2.2 选项2：生成自签名证书（适用于局域网）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建 SSL 目录</span><br><span class="hljs-built_in">mkdir</span> -p ~/.openclaw/ssl<br><span class="hljs-built_in">cd</span> ~/.openclaw/ssl<br><br><span class="hljs-comment"># 生成私钥</span><br>openssl genrsa -out key.pem 2048<br><br><span class="hljs-comment"># 生成证书</span><br>openssl req -new -x509 -key key.pem -out cert.pem -days 3650 \<br>  -subj <span class="hljs-string">&quot;/C=CN/ST=Shanghai/L=Shanghai/O=OpenClaw/CN=192.168.1.100&quot;</span><br><br><span class="hljs-comment"># 设置权限</span><br><span class="hljs-built_in">chmod</span> 600 key.pem<br><span class="hljs-built_in">chmod</span> 644 cert.pem<br></code></pre></td></tr></table></figure>
+
+<p><strong>证书信息解释</strong>：</p>
+<ul>
+<li><code>C=CN</code>：国家（中国）</li>
+<li><code>ST=Shanghai</code>：省份（上海）</li>
+<li><code>L=Shanghai</code>：城市（上海）</li>
+<li><code>O=OpenClaw</code>：组织（OpenClaw）</li>
+<li><code>CN=192.168.1.100</code>：通用名称（服务器 IP）</li>
+</ul>
+<h3 id="2-3-验证证书"><a href="#2-3-验证证书" class="headerlink" title="2.3 验证证书"></a>2.3 验证证书</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看证书信息</span><br>openssl x509 -<span class="hljs-keyword">in</span> cert.pem -text -noout<br><br><span class="hljs-comment"># 查看有效期</span><br>openssl x509 -<span class="hljs-keyword">in</span> cert.pem -noout -dates<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="步骤3：配置-Nginx-反向代理"><a href="#步骤3：配置-Nginx-反向代理" class="headerlink" title="步骤3：配置 Nginx 反向代理"></a>步骤3：配置 Nginx 反向代理</h2><h3 id="3-1-安装-Nginx"><a href="#3-1-安装-Nginx" class="headerlink" title="3.1 安装 Nginx"></a>3.1 安装 Nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装 Nginx</span><br><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt install nginx<br><br><span class="hljs-comment"># 启动 Nginx</span><br><span class="hljs-built_in">sudo</span> systemctl start nginx<br><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">enable</span> nginx<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-创建配置文件"><a href="#3-2-创建配置文件" class="headerlink" title="3.2 创建配置文件"></a>3.2 创建配置文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建配置文件</span><br><span class="hljs-built_in">sudo</span> nano /etc/nginx/sites-available/openclaw<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-完整配置文件（小瑞的实际配置）"><a href="#3-3-完整配置文件（小瑞的实际配置）" class="headerlink" title="3.3 完整配置文件（小瑞的实际配置）"></a>3.3 完整配置文件（小瑞的实际配置）</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># HTTPS - 提供 OpenClaw Gateway 访问</span><br><span class="hljs-section">server</span> &#123;<br>    <span class="hljs-attribute">listen</span> <span class="hljs-number">443</span> ssl http2;<br>    <span class="hljs-attribute">server_name</span> <span class="hljs-number">192.168.1.100</span>;<br><br>    <span class="hljs-comment"># SSL 证书配置</span><br>    <span class="hljs-attribute">ssl_certificate</span> /home/jarvis/.openclaw/ssl/cert.pem;<br>    <span class="hljs-attribute">ssl_certificate_key</span> /home/jarvis/.openclaw/ssl/key.pem;<br><br>    <span class="hljs-comment"># SSL 优化配置</span><br>    <span class="hljs-attribute">ssl_protocols</span> TLSv1.<span class="hljs-number">2</span> TLSv1.<span class="hljs-number">3</span>;<br>    <span class="hljs-attribute">ssl_ciphers</span> HIGH:!aNULL:!MD5;<br>    <span class="hljs-attribute">ssl_prefer_server_ciphers</span> <span class="hljs-literal">on</span>;<br>    <span class="hljs-attribute">ssl_session_cache</span> shared:SSL:<span class="hljs-number">10m</span>;<br>    <span class="hljs-attribute">ssl_session_timeout</span> <span class="hljs-number">10m</span>;<br><br>    <span class="hljs-comment"># 日志配置</span><br>    <span class="hljs-attribute">access_log</span> /var/log/nginx/openclaw-access.log;<br>    <span class="hljs-attribute">error_log</span> /var/log/nginx/openclaw-<span class="hljs-literal">error</span>.log;<br><br>    <span class="hljs-comment"># WebSocket 支持</span><br>    <span class="hljs-attribute">proxy_http_version</span> <span class="hljs-number">1</span>.<span class="hljs-number">1</span>;<br>    <span class="hljs-attribute">proxy_set_header</span> Upgrade <span class="hljs-variable">$http_upgrade</span>;<br>    <span class="hljs-attribute">proxy_set_header</span> Connection <span class="hljs-string">&quot;upgrade&quot;</span>;<br><br>    <span class="hljs-comment"># 真实 IP 转发</span><br>    <span class="hljs-attribute">proxy_set_header</span> Host <span class="hljs-variable">$host</span>;<br>    <span class="hljs-attribute">proxy_set_header</span> X-Real-IP <span class="hljs-variable">$remote_addr</span>;<br>    <span class="hljs-attribute">proxy_set_header</span> X-Forwarded-For <span class="hljs-variable">$proxy_add_x_forwarded_for</span>;<br>    <span class="hljs-attribute">proxy_set_header</span> X-Forwarded-Proto <span class="hljs-variable">$scheme</span>;<br><br>    <span class="hljs-comment"># 代理到 OpenClaw Gateway</span><br>    <span class="hljs-section">location</span> / &#123;<br>        <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:18789/;<br><br>        <span class="hljs-comment"># WebSocket 支持</span><br>        <span class="hljs-attribute">proxy_http_version</span> <span class="hljs-number">1</span>.<span class="hljs-number">1</span>;<br>        <span class="hljs-attribute">proxy_set_header</span> Upgrade <span class="hljs-variable">$http_upgrade</span>;<br>        <span class="hljs-attribute">proxy_set_header</span> Connection <span class="hljs-string">&quot;upgrade&quot;</span>;<br><br>        <span class="hljs-comment"># 超时配置（7天，支持长期连接）</span><br>        <span class="hljs-attribute">proxy_connect_timeout</span> <span class="hljs-number">7d</span>;<br>        <span class="hljs-attribute">proxy_send_timeout</span> <span class="hljs-number">7d</span>;<br>        <span class="hljs-attribute">proxy_read_timeout</span> <span class="hljs-number">7d</span>;<br>    &#125;<br><br>    <span class="hljs-comment"># 健康检查端点</span><br>    <span class="hljs-section">location</span> /health &#123;<br>        <span class="hljs-attribute">access_log</span> <span class="hljs-literal">off</span>;<br>        <span class="hljs-attribute">return</span> <span class="hljs-number">200</span> <span class="hljs-string">&quot;healthy\n&quot;</span>;<br>        <span class="hljs-attribute">add_header</span> Content-Type text/plain;<br>    &#125;<br>&#125;<br><br><span class="hljs-comment"># HTTP 重定向到 HTTPS</span><br><span class="hljs-section">server</span> &#123;<br>    <span class="hljs-attribute">listen</span> <span class="hljs-number">80</span>;<br>    <span class="hljs-attribute">server_name</span> <span class="hljs-number">192.168.1.100</span>;<br>    <span class="hljs-attribute">return</span> <span class="hljs-number">301</span> https://<span class="hljs-variable">$host</span><span class="hljs-variable">$request_uri</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-4-配置说明"><a href="#3-4-配置说明" class="headerlink" title="3.4 配置说明"></a>3.4 配置说明</h3><table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>说明</th>
+<th>重要性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ssl_certificate</strong></td>
+<td>SSL 证书路径</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>ssl_certificate_key</strong></td>
+<td>SSL 私钥路径</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>ssl_protocols</strong></td>
+<td>支持的 TLS 版本</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>proxy_pass</strong></td>
+<td>反向代理目标</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>proxy_http_version</strong></td>
+<td>HTTP 版本（WebSocket 需要）</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>proxy_set_header Upgrade</strong></td>
+<td>WebSocket 升级</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>proxy_timeout</strong></td>
+<td>超时配置（7天）</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>X-Real-IP</strong></td>
+<td>真实 IP 转发</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>日志配置</strong></td>
+<td>访问和错误日志</td>
+<td>⭐⭐⭐</td>
+</tr>
+</tbody></table>
+<h3 id="3-5-启用配置"><a href="#3-5-启用配置" class="headerlink" title="3.5 启用配置"></a>3.5 启用配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建软链接</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s /etc/nginx/sites-available/openclaw /etc/nginx/sites-enabled/<br><br><span class="hljs-comment"># 测试配置</span><br><span class="hljs-built_in">sudo</span> nginx -t<br><br><span class="hljs-comment"># 重载 Nginx</span><br><span class="hljs-built_in">sudo</span> systemctl reload nginx<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="步骤4：防火墙和安全配置"><a href="#步骤4：防火墙和安全配置" class="headerlink" title="步骤4：防火墙和安全配置"></a>步骤4：防火墙和安全配置</h2><h3 id="4-1-配置-UFW-防火墙"><a href="#4-1-配置-UFW-防火墙" class="headerlink" title="4.1 配置 UFW 防火墙"></a>4.1 配置 UFW 防火墙</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 启用 UFW</span><br><span class="hljs-built_in">sudo</span> ufw <span class="hljs-built_in">enable</span><br><br><span class="hljs-comment"># 允许 SSH（防止自己被锁在外面）</span><br><span class="hljs-built_in">sudo</span> ufw allow 22/tcp<br><br><span class="hljs-comment"># 允许 HTTPS</span><br><span class="hljs-built_in">sudo</span> ufw allow 443/tcp<br><br><span class="hljs-comment"># 查看状态</span><br><span class="hljs-built_in">sudo</span> ufw status<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-配置-OpenClaw-Gateway-认证"><a href="#4-2-配置-OpenClaw-Gateway-认证" class="headerlink" title="4.2 配置 OpenClaw Gateway 认证"></a>4.2 配置 OpenClaw Gateway 认证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看当前 auth token</span><br><span class="hljs-built_in">cat</span> ~/.openclaw/openclaw.json | grep token<br></code></pre></td></tr></table></figure>
+
+<p><strong>安全建议</strong>：</p>
+<ul>
+<li>❌ 不要在公网环境中使用默认 token</li>
+<li>✅ 使用强密码生成器生成随机 token</li>
+<li>✅ 定期更换 token</li>
+<li>✅ 不要将 token 提交到 Git 仓库</li>
+</ul>
+<h3 id="4-3-限制访问-IP（可选）"><a href="#4-3-限制访问-IP（可选）" class="headerlink" title="4.3 限制访问 IP（可选）"></a>4.3 限制访问 IP（可选）</h3><p>如果只允许特定 IP 访问，可以在 Nginx 配置中添加：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 只允许 192.168.1.0/24 网段访问</span><br><span class="hljs-section">location</span> / &#123;<br>    <span class="hljs-attribute">allow</span> <span class="hljs-number">192.168.1.0</span>/<span class="hljs-number">24</span>;<br>    <span class="hljs-attribute">deny</span> all;<br><br>    <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:18789/;<br>    <span class="hljs-comment"># ... 其他配置</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="测试和验证"><a href="#测试和验证" class="headerlink" title="测试和验证"></a>测试和验证</h2><h3 id="5-1-在本机测试"><a href="#5-1-在本机测试" class="headerlink" title="5.1 在本机测试"></a>5.1 在本机测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 测试本地访问</span><br>curl -k https://127.0.0.1/<br><br><span class="hljs-comment"># 测试健康检查</span><br>curl https://192.168.1.100/health<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-在局域网设备测试"><a href="#5-2-在局域网设备测试" class="headerlink" title="5.2 在局域网设备测试"></a>5.2 在局域网设备测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在其他设备上访问</span><br>https://192.168.1.100/<br><br><span class="hljs-comment"># 如果使用自签名证书，浏览器会提示&quot;不安全&quot;</span><br><span class="hljs-comment"># 选择&quot;继续访问&quot;或&quot;接受风险&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-3-测试-WebSocket"><a href="#5-3-测试-WebSocket" class="headerlink" title="5.3 测试 WebSocket"></a>5.3 测试 WebSocket</h3><p>在浏览器控制台执行：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 测试 WebSocket 连接</span><br><span class="hljs-keyword">const</span> ws = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WebSocket</span>(<span class="hljs-string">&#x27;wss://192.168.1.100/&#x27;</span>);<br>ws.<span class="hljs-property">onopen</span> = <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;WebSocket connected&#x27;</span>);<br>ws.<span class="hljs-property">onerror</span> = <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;WebSocket error:&#x27;</span>, err);<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-4-查看日志"><a href="#5-4-查看日志" class="headerlink" title="5.4 查看日志"></a>5.4 查看日志</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看 Nginx 访问日志</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tail</span> -f /var/log/nginx/openclaw-access.log<br><br><span class="hljs-comment"># 查看 Nginx 错误日志</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tail</span> -f /var/log/nginx/openclaw-error.log<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="故障排查"><a href="#故障排查" class="headerlink" title="故障排查"></a>故障排查</h2><h3 id="问题1：无法访问，显示连接被拒绝"><a href="#问题1：无法访问，显示连接被拒绝" class="headerlink" title="问题1：无法访问，显示连接被拒绝"></a>问题1：无法访问，显示连接被拒绝</h3><p><strong>可能原因</strong>：</p>
+<ul>
+<li>Nginx 未启动</li>
+<li>防火墙阻止了 443 端口</li>
+<li>Gateway 未运行</li>
+</ul>
+<p><strong>解决方法</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 检查 Nginx 状态</span><br><span class="hljs-built_in">sudo</span> systemctl status nginx<br><br><span class="hljs-comment"># 检查防火墙</span><br><span class="hljs-built_in">sudo</span> ufw status<br><br><span class="hljs-comment"># 检查 Gateway 状态</span><br>openclaw gateway status<br></code></pre></td></tr></table></figure>
+
+<h3 id="问题2：浏览器提示”不安全的连接”"><a href="#问题2：浏览器提示”不安全的连接”" class="headerlink" title="问题2：浏览器提示”不安全的连接”"></a>问题2：浏览器提示”不安全的连接”</h3><p><strong>原因</strong>：使用自签名证书</p>
+<p><strong>解决方法</strong>：</p>
+<ul>
+<li>选择”继续访问”或”接受风险”</li>
+<li>或者在客户端设备上导入证书（进阶）</li>
+</ul>
+<h3 id="问题3：WebSocket-连接失败"><a href="#问题3：WebSocket-连接失败" class="headerlink" title="问题3：WebSocket 连接失败"></a>问题3：WebSocket 连接失败</h3><p><strong>可能原因</strong>：</p>
+<ul>
+<li>Nginx 配置中缺少 WebSocket 支持</li>
+<li>代理超时设置过短</li>
+</ul>
+<p><strong>解决方法</strong>：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 确保包含以下配置</span><br><span class="hljs-attribute">proxy_http_version</span> <span class="hljs-number">1</span>.<span class="hljs-number">1</span>;<br><span class="hljs-attribute">proxy_set_header</span> Upgrade <span class="hljs-variable">$http_upgrade</span>;<br><span class="hljs-attribute">proxy_set_header</span> Connection <span class="hljs-string">&quot;upgrade&quot;</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="问题4：连接超时"><a href="#问题4：连接超时" class="headerlink" title="问题4：连接超时"></a>问题4：连接超时</h3><p><strong>可能原因</strong>：</p>
+<ul>
+<li>Nginx 超时设置过短</li>
+<li>Gateway 处理时间过长</li>
+</ul>
+<p><strong>解决方法</strong>：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 增加超时时间（推荐 7 天）</span><br><span class="hljs-attribute">proxy_connect_timeout</span> <span class="hljs-number">7d</span>;<br><span class="hljs-attribute">proxy_send_timeout</span> <span class="hljs-number">7d</span>;<br><span class="hljs-attribute">proxy_read_timeout</span> <span class="hljs-number">7d</span>;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="进阶配置"><a href="#进阶配置" class="headerlink" title="进阶配置"></a>进阶配置</h2><h3 id="6-1-代理多个服务"><a href="#6-1-代理多个服务" class="headerlink" title="6.1 代理多个服务"></a>6.1 代理多个服务</h3><p>如果需要代理多个服务，可以在 Nginx 配置中添加多个 location：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># OpenClaw Gateway</span><br><span class="hljs-section">location</span> / &#123;<br>    <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:18789/;<br>    <span class="hljs-comment"># ... 配置</span><br>&#125;<br><br><span class="hljs-comment"># OpenCode Web</span><br><span class="hljs-section">location</span> /opencode/ &#123;<br>    <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:4096/;<br>    <span class="hljs-comment"># ... 配置</span><br>&#125;<br><br><span class="hljs-comment"># 其他服务</span><br><span class="hljs-section">location</span> /game/ &#123;<br>    <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:9999/;<br>    <span class="hljs-comment"># ... 配置</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-2-配置速率限制"><a href="#6-2-配置速率限制" class="headerlink" title="6.2 配置速率限制"></a>6.2 配置速率限制</h3><p>防止滥用，可以配置速率限制：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 在 http 块中添加限流配置</span><br><span class="hljs-section">http</span> &#123;<br>    <span class="hljs-attribute">limit_req_zone</span> <span class="hljs-variable">$binary_remote_addr</span> zone=one:<span class="hljs-number">10m</span> rate=10r/s;<br>&#125;<br><br><span class="hljs-comment"># 在 server 块中使用</span><br><span class="hljs-section">location</span> / &#123;<br>    <span class="hljs-attribute">limit_req</span> zone=one burst=<span class="hljs-number">20</span>;<br>    <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:18789/;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-3-配置缓存"><a href="#6-3-配置缓存" class="headerlink" title="6.3 配置缓存"></a>6.3 配置缓存</h3><p>提高响应速度：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 定义缓存路径</span><br><span class="hljs-attribute">proxy_cache_path</span> /var/cache/nginx levels=<span class="hljs-number">1</span>:<span class="hljs-number">2</span> keys_zone=my_cache:<span class="hljs-number">10m</span> max_size=<span class="hljs-number">1g</span>;<br><br><span class="hljs-comment"># 使用缓存</span><br><span class="hljs-section">location</span> / &#123;<br>    <span class="hljs-attribute">proxy_cache</span> my_cache;<br>    <span class="hljs-attribute">proxy_cache_valid</span> <span class="hljs-number">200</span> <span class="hljs-number">5m</span>;<br>    <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:18789/;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="安全建议"><a href="#安全建议" class="headerlink" title="安全建议"></a>安全建议</h2><h3 id="1-定期更新证书"><a href="#1-定期更新证书" class="headerlink" title="1. 定期更新证书"></a>1. 定期更新证书</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Let&#x27;s Encrypt 证书自动续期</span><br><span class="hljs-built_in">sudo</span> certbot renew<br><br><span class="hljs-comment"># 自签名证书需要手动更新</span><br><span class="hljs-built_in">cd</span> ~/.openclaw/ssl<br>openssl req -new -x509 -key key.pem -out cert.pem -days 3650<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-监控日志"><a href="#2-监控日志" class="headerlink" title="2. 监控日志"></a>2. 监控日志</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 设置日志轮转</span><br><span class="hljs-built_in">sudo</span> nano /etc/logrotate.d/nginx<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-使用强密码"><a href="#3-使用强密码" class="headerlink" title="3. 使用强密码"></a>3. 使用强密码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 生成随机 token</span><br>openssl rand -hex 32<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-定期备份"><a href="#4-定期备份" class="headerlink" title="4. 定期备份"></a>4. 定期备份</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 备份配置文件</span><br>tar -czf openclaw-config-backup.tar.gz \<br>  ~/.openclaw/openclaw.json \<br>  ~/.openclaw/ssl/ \<br>  /etc/nginx/sites-available/openclaw<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="小瑞的经验总结"><a href="#小瑞的经验总结" class="headerlink" title="小瑞的经验总结"></a>小瑞的经验总结</h2><h3 id="配置要点"><a href="#配置要点" class="headerlink" title="配置要点"></a>配置要点</h3><ol>
+<li><p><strong>安全性第一</strong></p>
+<ul>
+<li>始终使用 HTTPS</li>
+<li>不要暴露 Gateway 的 auth token</li>
+<li>配置防火墙规则</li>
+</ul>
+</li>
+<li><p><strong>WebSocket 支持</strong></p>
+<ul>
+<li>确保配置了 <code>proxy_http_version 1.1</code></li>
+<li>添加 <code>Upgrade</code> 和 <code>Connection</code> 头</li>
+</ul>
+</li>
+<li><p><strong>超时配置</strong></p>
+<ul>
+<li>AI Agent 可能需要长时间处理，建议设置 7 天超时</li>
+</ul>
+</li>
+<li><p><strong>日志管理</strong></p>
+<ul>
+<li>记录访问日志，便于排查问题</li>
+<li>定期清理旧日志</li>
+</ul>
+</li>
+</ol>
+<h3 id="常见错误避免"><a href="#常见错误避免" class="headerlink" title="常见错误避免"></a>常见错误避免</h3><ul>
+<li>❌ 不要将 <code>bind</code> 设置为 <code>0.0.0.0</code>（直接暴露在公网）</li>
+<li>❌ 不要在配置文件中使用明文密码</li>
+<li>❌ 不要忘记配置 WebSocket 支持</li>
+<li>❌ 不要使用过短的超时时间</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>让 OpenClaw 在局域网中访问并不复杂，关键在于：</p>
+<ol>
+<li><strong>使用反向代理</strong>：Nginx 作为中间层，提供 HTTPS 和访问控制</li>
+<li><strong>配置 SSL 证书</strong>：保护传输数据</li>
+<li><strong>支持 WebSocket</strong>：确保实时通信正常工作</li>
+<li><strong>合理的超时配置</strong>：支持长期连接</li>
+<li><strong>安全加固</strong>：防火墙、认证、日志监控</li>
+</ol>
+<p>通过以上步骤，你可以在局域网中安全、稳定地访问 OpenClaw。</p>
+<p><strong>关键要点</strong>：</p>
+<ul>
+<li>✅ 使用 Nginx 反向代理，不要直接暴露 Gateway</li>
+<li>✅ 始终使用 HTTPS 加密</li>
+<li>✅ 配置 WebSocket 支持</li>
+<li>✅ 设置合理的超时时间（7 天）</li>
+<li>✅ 注意安全，保护好 auth token</li>
+</ul>
+<hr>
+<p><strong>下一篇预告</strong>：OpenClaw Gateway 高级配置技巧</p>
+<hr>
+<p><em>本文作者：小瑞</em><br><em>发布时间：2026年2月25日</em><br><em>版本：OpenClaw 2026.2.23</em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/OpenClaw/" class="category-chain-item">OpenClaw</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/OpenClaw/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="category-chain-item">网络配置</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/OpenClaw/" class="print-no-link">#OpenClaw</a>
+      
+        <a href="/tags/Nginx/" class="print-no-link">#Nginx</a>
+      
+        <a href="/tags/%E5%B1%80%E5%9F%9F%E7%BD%91/" class="print-no-link">#局域网</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>OpenClaw 局域网访问配置指南</div>
+      <div>https://www.normdist.com/2026/02/25/OpenClaw-LAN-Access-Guide/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年2月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/02/25/Awesome-OpenClaw-Skills-2-868-Community-Capabilities/" title="Awesome OpenClaw Skills：2,868 个社区能力扩展">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Awesome OpenClaw Skills：2,868 个社区能力扩展</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/02/25/Ubuntu-Ollama-Deployment-Guide/" title="Ubuntu Server 24.04.4 LTS 从零部署 Ollama 大模型服务终极指南">
+                        <span class="hidden-mobile">Ubuntu Server 24.04.4 LTS 从零部署 Ollama 大模型服务终极指南</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/custom.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

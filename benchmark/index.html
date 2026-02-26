@@ -1,0 +1,981 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="AI, 人工智能, 机器学习, ChatGPT, Claude, Ollama, 技术分享">
+  
+    <meta name="description" content="人工智能天梯图 记录和分析各大 AI 模型在推理能力基准测试中的排名，以推理能力为主要评价标准。  简介本专栏以推理能力为核心指标，收集整理各大 AI 模型在不同基准测试中的表现，包括：  推理能力（Arena-Hard）- 主要排序依据 语言理解能力（英语综合 MMLU） 代码生成能力（HumanEval、LiveCodeBench） 数学能力（MATH-500、AIME）  模型按推理能力从高">
+<meta property="og:type" content="website">
+<meta property="og:title" content="人工智能天梯图">
+<meta property="og:url" content="https://www.normdist.com/benchmark/">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="人工智能天梯图 记录和分析各大 AI 模型在推理能力基准测试中的排名，以推理能力为主要评价标准。  简介本专栏以推理能力为核心指标，收集整理各大 AI 模型在不同基准测试中的表现，包括：  推理能力（Arena-Hard）- 主要排序依据 语言理解能力（英语综合 MMLU） 代码生成能力（HumanEval、LiveCodeBench） 数学能力（MATH-500、AIME）  模型按推理能力从高">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-02-25T11:06:14.000Z">
+<meta property="article:modified_time" content="2026-02-25T12:01:29.155Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AI, 人工智能, 机器学习, ChatGPT, Claude, Ollama, 技术分享">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>人工智能天梯图 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="人工智能天梯图"></span>
+          
+        </div>
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div id="board"
+          >
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+<article class="page-content">
+  <h1 id="人工智能天梯图"><a href="#人工智能天梯图" class="headerlink" title="人工智能天梯图"></a>人工智能天梯图</h1><blockquote>
+<p>记录和分析各大 AI 模型在推理能力基准测试中的排名，以推理能力为主要评价标准。</p>
+</blockquote>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>本专栏以<strong>推理能力</strong>为核心指标，收集整理各大 AI 模型在不同基准测试中的表现，包括：</p>
+<ul>
+<li><strong>推理能力</strong>（Arena-Hard）- 主要排序依据</li>
+<li><strong>语言理解能力</strong>（英语综合 MMLU）</li>
+<li><strong>代码生成能力</strong>（HumanEval、LiveCodeBench）</li>
+<li><strong>数学能力</strong>（MATH-500、AIME）</li>
+</ul>
+<p>模型按推理能力从高到低排列，形成天梯图。</p>
+<hr>
+<h2 id="天梯图（2026-02-25）"><a href="#天梯图（2026-02-25）" class="headerlink" title="天梯图（2026-02-25）"></a>天梯图（2026-02-25）</h2><blockquote>
+<p>排名依据：Arena-Hard 推理能力</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>排名</th>
+<th>模型</th>
+<th>公司</th>
+<th>Arena-Hard</th>
+<th>MMLU</th>
+<th>数学能力</th>
+<th>代码能力</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1</strong></td>
+<td><strong>DeepSeek-V3</strong></td>
+<td>DeepSeek</td>
+<td><strong>85.5</strong></td>
+<td>88.6</td>
+<td>90.7</td>
+<td>82.6</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td><strong>Claude-3.5-Sonnet</strong></td>
+<td>Anthropic</td>
+<td><strong>85.2</strong></td>
+<td>87.2</td>
+<td>-</td>
+<td>81.7</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>GPT-4o</td>
+<td>OpenAI</td>
+<td><strong>80.4</strong></td>
+<td>86.0</td>
+<td>74.6</td>
+<td>80.5</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td>Qwen2.5-72B</td>
+<td>Alibaba</td>
+<td><strong>81.2</strong></td>
+<td>79.8</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td>GPT-4o-mini</td>
+<td>OpenAI</td>
+<td>79.0</td>
+<td>77.8</td>
+<td>74.6</td>
+<td>72.5</td>
+</tr>
+<tr>
+<td><strong>6</strong></td>
+<td>LLaMA-3.1-405B</td>
+<td>Meta</td>
+<td>79.0</td>
+<td>84.4</td>
+<td>90.7</td>
+<td>77.2</td>
+</tr>
+<tr>
+<td><strong>7</strong></td>
+<td>Gemini-1.5-Pro</td>
+<td>Google</td>
+<td>78.0</td>
+<td>85.5</td>
+<td>80.2</td>
+<td>78.5</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="各模型详细性能"><a href="#各模型详细性能" class="headerlink" title="各模型详细性能"></a>各模型详细性能</h2><h3 id="DeepSeek-V3（2026-02-25）"><a href="#DeepSeek-V3（2026-02-25）" class="headerlink" title="DeepSeek-V3（2026-02-25）"></a>DeepSeek-V3（2026-02-25）</h3><blockquote>
+<p>参数：671B（激活 37B）｜上下文：128K｜架构：MoE</p>
+</blockquote>
+<p><strong>综合性能</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>能力类别</th>
+<th>Arena-Hard</th>
+<th>MMLU-Redux</th>
+<th>MMLU</th>
+<th>MMLU-Pro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td><strong>85.5</strong></td>
+<td><strong>89.1</strong></td>
+<td>88.6</td>
+<td>78.0</td>
+</tr>
+</tbody></table>
+<p><strong>数学能力</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>GSM8K</th>
+<th>MATH</th>
+<th>MATH-500</th>
+<th>AIME 2024</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td>89.3</td>
+<td>84.5</td>
+<td><strong>90.7</strong></td>
+<td><strong>43.2</strong></td>
+</tr>
+</tbody></table>
+<p><strong>代码能力</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>HumanEval</th>
+<th>MBPP</th>
+<th>LiveCodeBench</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td>65.2</td>
+<td>75.4</td>
+<td>82.6</td>
+</tr>
+</tbody></table>
+<p><strong>核心亮点</strong>：</p>
+<ul>
+<li>✅ 推理能力强：Arena-Hard: <strong>85.5</strong>（第 1 名）</li>
+<li>✅ 数学能力突出：MATH-500: <strong>90.7</strong>（第 1 名）</li>
+<li>✅ 架构先进：MoE 架构，671B 总参数，37B 激活参数</li>
+<li>✅ 训练效率高：仅 2.788M H800 GPU 小时（预训练）</li>
+<li>✅ 训练稳定：没有 loss spikes，无需回滚</li>
+</ul>
+<hr>
+<h3 id="Claude-3-5-Sonnet（2024-10-22）"><a href="#Claude-3-5-Sonnet（2024-10-22）" class="headerlink" title="Claude-3.5-Sonnet（2024-10-22）"></a>Claude-3.5-Sonnet（2024-10-22）</h3><blockquote>
+<p>参数：未知｜上下文：200K｜架构：Dense｜厂商：Anthropic</p>
+</blockquote>
+<p><strong>综合性能</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>能力类别</th>
+<th>Arena-Hard</th>
+<th>MMLU-Redux</th>
+<th>MMLU</th>
+<th>MMLU-Pro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td><strong>85.2</strong></td>
+<td>86.0</td>
+<td>87.2</td>
+<td>75.9</td>
+</tr>
+</tbody></table>
+<p><strong>代码能力</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>HumanEval</th>
+<th>MBPP</th>
+<th>LiveCodeBench</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td>80.5</td>
+<td><strong>86.0</strong></td>
+<td>36.3</td>
+</tr>
+</tbody></table>
+<p><strong>核心亮点</strong>：</p>
+<ul>
+<li>✅ 推理能力强：Arena-Hard: <strong>85.2</strong>（第 2 名）</li>
+<li>✅ 代码能力优秀：MBPP: <strong>86.0</strong>（第 1 名）</li>
+<li>✅ 超长上下文：200K tokens</li>
+<li>✅ 安全性强：业界领先的 AI 安全</li>
+</ul>
+<hr>
+<h3 id="GPT-4o（2024-05-13）"><a href="#GPT-4o（2024-05-13）" class="headerlink" title="GPT-4o（2024-05-13）"></a>GPT-4o（2024-05-13）</h3><blockquote>
+<p>参数：未知｜上下文：128K｜架构：Dense｜厂商：OpenAI</p>
+</blockquote>
+<p><strong>综合性能</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>能力类别</th>
+<th>Arena-Hard</th>
+<th>MMLU-Redux</th>
+<th>MMLU</th>
+<th>MMLU-Pro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td><strong>80.4</strong></td>
+<td>85.6</td>
+<td>86.0</td>
+<td>73.3</td>
+</tr>
+</tbody></table>
+<p><strong>数学能力</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>GSM8K</th>
+<th>MATH</th>
+<th>MATH-500</th>
+<th>AIME 2024</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td>87.1</td>
+<td>72.2</td>
+<td>74.6</td>
+<td>9.4</td>
+</tr>
+</tbody></table>
+<p><strong>代码能力</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>HumanEval</th>
+<th>MBPP</th>
+<th>LiveCodeBench</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td>87.7</td>
+<td>80.6</td>
+<td>72.5</td>
+</tr>
+</tbody></table>
+<p><strong>核心亮点</strong>：</p>
+<ul>
+<li>✅ 综合能力强：多模态能力强</li>
+<li>✅ 生态完善：广泛的应用集成</li>
+<li>✅ 实时访问稳定：API 服务稳定可靠</li>
+<li>✅ 上下文超长：128K tokens</li>
+</ul>
+<hr>
+<h3 id="Qwen2-5-72B（2024-08-14）"><a href="#Qwen2-5-72B（2024-08-14）" class="headerlink" title="Qwen2.5-72B（2024-08-14）"></a>Qwen2.5-72B（2024-08-14）</h3><blockquote>
+<p>参数：72B｜上下文：32K｜架构：Dense｜厂商：Alibaba</p>
+</blockquote>
+<p><strong>综合性能</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>能力类别</th>
+<th>Arena-Hard</th>
+<th>MMLU-Redux</th>
+<th>MMLU</th>
+<th>MMLU-Pro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td><strong>81.2</strong></td>
+<td>80.3</td>
+<td>79.8</td>
+<td>71.6</td>
+</tr>
+</tbody></table>
+<p><strong>代码能力</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>HumanEval</th>
+<th>MBPP</th>
+<th>LiveCodeBench</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td>53.0</td>
+<td>68.4</td>
+<td>28.4</td>
+</tr>
+</tbody></table>
+<p><strong>核心亮点</strong>：</p>
+<ul>
+<li>✅ 推理能力强：Arena-Hard: <strong>81.2</strong>（第 4 名）</li>
+<li>✅ 中文能力强：专为中文优化</li>
+<li>✅ 开源可用：可商用和本地部署</li>
+</ul>
+<hr>
+<h3 id="LLaMA-3-1-405B（2023-07-18）"><a href="#LLaMA-3-1-405B（2023-07-18）" class="headerlink" title="LLaMA-3.1-405B（2023-07-18）"></a>LLaMA-3.1-405B（2023-07-18）</h3><blockquote>
+<p>参数：405B｜上下文：128K｜架构：Dense｜厂商：Meta</p>
+</blockquote>
+<p><strong>综合性能</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>能力类别</th>
+<th>Arena-Hard</th>
+<th>MMLU-Redux</th>
+<th>MMLU</th>
+<th>MMLU-Pro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td><strong>79.0</strong></td>
+<td>80.3</td>
+<td>84.4</td>
+<td>73.3</td>
+</tr>
+</tbody></table>
+<p><strong>数学能力</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>GSM8K</th>
+<th>MATH</th>
+<th>MATH-500</th>
+<th>AIME 2024</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td>89.3</td>
+<td>90.7</td>
+<td>78.3</td>
+<td>23.3</td>
+</tr>
+</tbody></table>
+<p><strong>核心亮点</strong>：</p>
+<ul>
+<li>✅ 推理能力强：Arena-Hard: <strong>79.0</strong>（第 6 名）</li>
+<li>✅ 数学能力强：MATH: 90.7（与 DeepSeek-V3 并列第 1）</li>
+<li>✅ 参数量大：405B 参数</li>
+<li>✅ 开源可用</li>
+</ul>
+<hr>
+<h3 id="Gemini-1-5-Pro（2024-05-14）"><a href="#Gemini-1-5-Pro（2024-05-14）" class="headerlink" title="Gemini-1.5-Pro（2024-05-14）"></a>Gemini-1.5-Pro（2024-05-14）</h3><blockquote>
+<p>参数：未知｜上下文：100K｜架构：未知｜厂商：Google</p>
+</blockquote>
+<p><strong>综合性能</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>能力类别</th>
+<th>Arena-Hard</th>
+<th>MMLU-Redux</th>
+<th>MMLU</th>
+<th>MMLU-Pro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td><strong>78.0</strong></td>
+<td>82.9</td>
+<td>85.5</td>
+<td>72.5</td>
+</tr>
+</tbody></table>
+<p><strong>数学能力</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>GSM8K</th>
+<th>MATH</th>
+<th>MATH-500</th>
+<th>AIME 2024</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td>87.4</td>
+<td>86.0</td>
+<td>84.5</td>
+<td>23.5</td>
+</tr>
+</tbody></table>
+<p><strong>核心亮点</strong>：</p>
+<ul>
+<li>✅ 推理能力强：Arena-Hard: <strong>78.0</strong>（第 7 名）</li>
+<li>✅ 多模态能力强：图像、视频、音频理解能力强</li>
+<li>✅ 生态集成深：与 Google Workspace 深度集成</li>
+<li>✅ 实时性能好：响应速度快</li>
+</ul>
+<hr>
+<h3 id="GPT-4o-mini（2024-01-10）"><a href="#GPT-4o-mini（2024-01-10）" class="headerlink" title="GPT-4o-mini（2024-01-10）"></a>GPT-4o-mini（2024-01-10）</h3><blockquote>
+<p>参数：未知｜上下文：128K｜架构：Dense｜厂商：OpenAI</p>
+</blockquote>
+<p><strong>综合性能</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>能力类别</th>
+<th>Arena-Hard</th>
+<th>MMLU-Redux</th>
+<th>MMLU</th>
+<th>MMLU-Pro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td><strong>79.0</strong></td>
+<td>80.0</td>
+<td>77.8</td>
+<td>74.2</td>
+</tr>
+</tbody></table>
+<p><strong>数学能力</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>测试项目</th>
+<th>GSM8K</th>
+<th>MATH</th>
+<th>MATH-500</th>
+<th>AIME 2024</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得分</td>
+<td>87.9</td>
+<td>77.1</td>
+<td>74.6</td>
+<td>15.6</td>
+</tr>
+</tbody></table>
+<p><strong>核心亮点</strong>：</p>
+<ul>
+<li>✅ 推理能力强：Arena-Hard: <strong>79.0</strong>（第 5 名）</li>
+<li>✅ 综合性能好：多模态能力强</li>
+<li>✅ 成本效益高：性能&#x2F;成本比优秀</li>
+<li>✅ 上下文超长：128K tokens</li>
+</ul>
+<hr>
+<h2 id="性能分段分析"><a href="#性能分段分析" class="headerlink" title="性能分段分析"></a>性能分段分析</h2><h3 id="推理能力分段（Arena-Hard）"><a href="#推理能力分段（Arena-Hard）" class="headerlink" title="推理能力分段（Arena-Hard）"></a>推理能力分段（Arena-Hard）</h3><table>
+<thead>
+<tr>
+<th>分段</th>
+<th>得分范围</th>
+<th>模型数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>顶级（85+）</strong></td>
+<td>85.0-85.5</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>优秀（80-85）</strong></td>
+<td>80.0-85.0</td>
+<td>3</td>
+</tr>
+<tr>
+<td><strong>良好（75-80）</strong></td>
+<td>75.0-80.0</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<h3 id="公司对比"><a href="#公司对比" class="headerlink" title="公司对比"></a>公司对比</h3><table>
+<thead>
+<tr>
+<th>公司</th>
+<th>最佳模型</th>
+<th>Arena-Hard</th>
+<th>架构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DeepSeek</strong></td>
+<td>DeepSeek-V3</td>
+<td>85.5</td>
+<td>MoE</td>
+</tr>
+<tr>
+<td><strong>Anthropic</strong></td>
+<td>Claude-3.5-Sonnet</td>
+<td>85.2</td>
+<td>Dense</td>
+</tr>
+<tr>
+<td><strong>OpenAI</strong></td>
+<td>GPT-4o</td>
+<td>80.4</td>
+<td>Dense</td>
+</tr>
+<tr>
+<td><strong>Alibaba</strong></td>
+<td>Qwen2.5-72B</td>
+<td>81.2</td>
+<td>Dense</td>
+</tr>
+<tr>
+<td><strong>Meta</strong></td>
+<td>LLaMA-3.1-405B</td>
+<td>79.0</td>
+<td>Dense</td>
+</tr>
+<tr>
+<td><strong>Google</strong></td>
+<td>Gemini-1.5-Pro</td>
+<td>78.0</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="数据来源"><a href="#数据来源" class="headerlink" title="数据来源"></a>数据来源</h2><p>本专栏的数据来源如下：</p>
+<h3 id="主要参考来源"><a href="#主要参考来源" class="headerlink" title="主要参考来源"></a>主要参考来源</h3><ul>
+<li><p><strong>LLM Leaderboard</strong>: <a target="_blank" rel="noopener" href="https://lmarena.ai/">https://lmarena.ai/</a></p>
+<ul>
+<li>提供实时 Arena 排名和评估结果</li>
+<li>包含 Arena-Hard、Arena（原始）、Code Arena 等数据</li>
+<li>由社区驱动的模型评估平台</li>
+</ul>
+</li>
+<li><p><strong>Open LLM Leaderboard</strong>: <a target="_blank" rel="noopener" href="https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard">https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard</a></p>
+<ul>
+<li>由 Hugging Face 维护的模型排行榜</li>
+<li>提供标准化的基准测试结果</li>
+<li>包含 MMLU、MATH、HumanEval 等数据</li>
+</ul>
+</li>
+<li><p><strong>Code Arena</strong>: <a target="_blank" rel="noopener" href="https://lmarena.ai/?leaderboard">https://lmarena.ai/?leaderboard</a></p>
+<ul>
+<li>专门的代码生成能力评估</li>
+<li>包含 HumanEval、MBPP、LiveCodeBench 等数据</li>
+</ul>
+</li>
+</ul>
+<h3 id="模型官方来源"><a href="#模型官方来源" class="headerlink" title="模型官方来源"></a>模型官方来源</h3><ul>
+<li><p><strong>DeepSeek-V3</strong>: <a target="_blank" rel="noopener" href="https://github.com/deepseek-ai/DeepSeek-V3">https://github.com/deepseek-ai/DeepSeek-V3</a></p>
+<ul>
+<li>DeepSeek 官方 GitHub 仓库</li>
+<li>提供详细的性能数据和评测结果</li>
+</ul>
+</li>
+<li><p><strong>Claude-3.5-Sonnet</strong>: <a target="_blank" rel="noopener" href="https://www.anthropic.com/claude-3-5-sonnet">https://www.anthropic.com/claude-3-5-sonnet</a></p>
+<ul>
+<li>Anthropic 官方页面</li>
+<li>提供模型能力和特性说明</li>
+</ul>
+</li>
+<li><p><strong>GPT-4o</strong>: <a target="_blank" rel="noopener" href="https://openai.com/gpt-4o">https://openai.com/gpt-4o</a></p>
+<ul>
+<li>OpenAI 官方页面</li>
+<li>提供模型能力和更新日志</li>
+</ul>
+</li>
+<li><p><strong>LLaMA-3.1</strong>: <a target="_blank" rel="noopener" href="https://llama.meta.com/">https://llama.meta.com/</a></p>
+<ul>
+<li>Meta 官方 LLaMA 页面</li>
+<li>提供模型架构和训练数据</li>
+</ul>
+</li>
+<li><p><strong>Gemini-1.5-Pro</strong>: <a target="_blank" rel="noopener" href="https://deepmind.google/technologies/gemini">https://deepmind.google/technologies/gemini</a></p>
+<ul>
+<li>Google DeepMind 官方页面</li>
+<li>提供模型能力和多模态特性</li>
+</ul>
+</li>
+</ul>
+<h3 id="评估方法论"><a href="#评估方法论" class="headerlink" title="评估方法论"></a>评估方法论</h3><p><strong>Arena-Hard</strong>：</p>
+<ul>
+<li>基于人类偏好的成对比较</li>
+<li>覆盖复杂的推理任务</li>
+<li>由社区投票决定排名</li>
+</ul>
+<p><strong>MMLU 系列</strong>：</p>
+<ul>
+<li>Massive Multitask Language Understanding</li>
+<li>涵盖 57 个任务，涵盖 STEM、人文、社会等</li>
+<li>通过多项选择题和开放式问题评估</li>
+</ul>
+<p><strong>数学能力测试</strong>：</p>
+<ul>
+<li><strong>GSM8K</strong>: Grade School Math 8K</li>
+<li><strong>MATH</strong>: Math Aptitude Test</li>
+<li><strong>MATH-500</strong>: High school competition math</li>
+<li><strong>AIME 2024</strong>: American Invitational Mathematics Examination</li>
+</ul>
+<p><strong>代码能力测试</strong>：</p>
+<ul>
+<li><strong>HumanEval</strong>: Python 编程问题</li>
+<li><strong>MBPP</strong>: Mostly Basic Python Problems</li>
+<li><strong>LiveCodeBench</strong>: 实时代码生成评估</li>
+</ul>
+<hr>
+<h2 id="更新日志"><a href="#更新日志" class="headerlink" title="更新日志"></a>更新日志</h2><ul>
+<li><strong>2026-02-25 19:30</strong>: 以推理能力（Arena-Hard）为主要排序依据</li>
+<li><strong>2026-02-25 19:15</strong>: 改用单一指标（MMLU-Redux）排序</li>
+<li><strong>2026-02-25 19:06</strong>: 按公司分组展示天梯图</li>
+<li><strong>2026-02-25</strong>: 创建专栏，准备收录各模型的 benchmark 数据</li>
+</ul>
+<hr>
+<p><em>维护者：小瑞</em></p>
+
+
+  
+
+</article>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/custom.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

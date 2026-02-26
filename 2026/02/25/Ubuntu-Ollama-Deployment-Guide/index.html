@@ -1,0 +1,895 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="AI, 人工智能, 机器学习, ChatGPT, Claude, Ollama, 技术分享">
+  
+    <meta name="description" content="概述与目标本文档完整记录了在一台搭载 AMD Ryzen 7 5700G 集成显卡 和 NVIDIA GeForce RTX 3060 12GB 独立显卡 的服务器上，从零开始安装、配置，并最终成功部署支持 GPU 加速 和 远程访问 的 Ollama 大模型服务的全流程。 核心方法论：PDCA（计划-执行-检查-处理） 文档特点：  ✅ 生产环境验证通过 ✅ 包含实战问题与解决方案 ✅ 可完全复">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu Server 24.04.4 LTS 从零部署 Ollama 大模型服务终极指南">
+<meta property="og:url" content="https://www.normdist.com/2026/02/25/Ubuntu-Ollama-Deployment-Guide/">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="概述与目标本文档完整记录了在一台搭载 AMD Ryzen 7 5700G 集成显卡 和 NVIDIA GeForce RTX 3060 12GB 独立显卡 的服务器上，从零开始安装、配置，并最终成功部署支持 GPU 加速 和 远程访问 的 Ollama 大模型服务的全流程。 核心方法论：PDCA（计划-执行-检查-处理） 文档特点：  ✅ 生产环境验证通过 ✅ 包含实战问题与解决方案 ✅ 可完全复">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.normdist.com/img/ollama-deployment-guide-cover.png">
+<meta property="article:published_time" content="2026-02-24T23:20:00.000Z">
+<meta property="article:modified_time" content="2026-02-26T07:03:48.299Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="GPU 加速">
+<meta property="article:tag" content="Ollama">
+<meta property="article:tag" content="Ubuntu">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.normdist.com/img/ollama-deployment-guide-cover.png">
+  
+  
+  
+  <title>Ubuntu Server 24.04.4 LTS 从零部署 Ollama 大模型服务终极指南 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Ubuntu Server 24.04.4 LTS 从零部署 Ollama 大模型服务终极指南"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-02-25 07:20" pubdate>
+          2026年2月25日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Ubuntu Server 24.04.4 LTS 从零部署 Ollama 大模型服务终极指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="概述与目标"><a href="#概述与目标" class="headerlink" title="概述与目标"></a>概述与目标</h2><p>本文档完整记录了在一台搭载 <strong>AMD Ryzen 7 5700G 集成显卡</strong> 和 <strong>NVIDIA GeForce RTX 3060 12GB 独立显卡</strong> 的服务器上，从零开始安装、配置，并最终成功部署支持 <strong>GPU 加速</strong> 和 <strong>远程访问</strong> 的 Ollama 大模型服务的全流程。</p>
+<p><strong>核心方法论</strong>：PDCA（计划-执行-检查-处理）</p>
+<p><strong>文档特点</strong>：</p>
+<ul>
+<li>✅ 生产环境验证通过</li>
+<li>✅ 包含实战问题与解决方案</li>
+<li>✅ 可完全复现的部署手册</li>
+</ul>
+<span id="more"></span>
+
+<hr>
+<h2 id="硬件清单与准备"><a href="#硬件清单与准备" class="headerlink" title="硬件清单与准备"></a>硬件清单与准备</h2><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>型号&#x2F;规格</th>
+<th>用途说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CPU</strong></td>
+<td>AMD Ryzen 7 5700G (8核16线程)</td>
+<td>系统运算核心，内含 Radeon Graphics</td>
+</tr>
+<tr>
+<td><strong>集成显卡</strong></td>
+<td>AMD Radeon Graphics (内置于5700G)</td>
+<td><strong>主显示输出</strong>，负责操作系统图形界面渲染</td>
+</tr>
+<tr>
+<td><strong>独立显卡</strong></td>
+<td>NVIDIA GeForce RTX 3060 12GB</td>
+<td><strong>专用计算卡</strong>，100% 用于 Ollama 大模型推理加速</td>
+</tr>
+<tr>
+<td><strong>系统盘</strong></td>
+<td>128GB NVMe SSD</td>
+<td>安装 Ubuntu 系统、核心软件</td>
+</tr>
+<tr>
+<td><strong>数据盘</strong></td>
+<td>800GB SATA SSD&#x2F;HDD</td>
+<td><strong>专用于存储 Ollama 大模型文件</strong>（路径：<code>/data/.ollama/models</code>），实现系统与数据分离</td>
+</tr>
+<tr>
+<td><strong>内存</strong></td>
+<td>128GB DDR4</td>
+<td>为模型加载和系统运行提供充足缓冲</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="BIOS-关键设置"><a href="#BIOS-关键设置" class="headerlink" title="BIOS 关键设置"></a>BIOS 关键设置</h2><p>在安装操作系统前，需进入服务器主板 BIOS 进行以下设置，以确保硬件以最佳状态运行：</p>
+<ol>
+<li><strong>启动模式</strong>：设置为 <code>UEFI</code>（禁用 Legacy&#x2F;CSM），有利于系统稳定性和未来升级</li>
+<li><strong>安全启动 (Secure Boot)</strong>：建议<strong>暂时禁用</strong>，避免安装第三方驱动（如 NVIDIA 驱动）时遇到签名问题</li>
+<li><strong>显存分配</strong>：为集成显卡 (AMD) 分配 <strong>2GB</strong> 显存，确保其有足够资源流畅驱动高分辨率显示器</li>
+<li><strong>PCIe 资源分配</strong>：确保连接 NVIDIA 独立显卡的 PCIe 插槽运行在 <strong>Gen4</strong> 或 <strong>Auto</strong> 模式，以获取最佳总线带宽</li>
+</ol>
+<hr>
+<h2 id="操作系统安装-Ubuntu-Server-24-04-4-LTS"><a href="#操作系统安装-Ubuntu-Server-24-04-4-LTS" class="headerlink" title="操作系统安装 (Ubuntu Server 24.04.4 LTS)"></a>操作系统安装 (Ubuntu Server 24.04.4 LTS)</h2><h3 id="制作安装介质"><a href="#制作安装介质" class="headerlink" title="制作安装介质"></a>制作安装介质</h3><p>从官网下载 Ubuntu 24.04.4 LTS Server 镜像，使用 Rufus 等工具制作 U 盘启动盘。</p>
+<h3 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h3><p>从 U 盘启动，选择”安装 Ubuntu Server”。</p>
+<h3 id="关键分区步骤（手动分区）"><a href="#关键分区步骤（手动分区）" class="headerlink" title="关键分区步骤（手动分区）"></a>关键分区步骤（手动分区）</h3><table>
+<thead>
+<tr>
+<th>挂载点</th>
+<th>位置</th>
+<th>大小</th>
+<th>文件系统</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/</code></td>
+<td>128GB 系统盘</td>
+<td>50GB+</td>
+<td>LVM</td>
+<td>系统根目录</td>
+</tr>
+<tr>
+<td><code>swap</code></td>
+<td>128GB 系统盘</td>
+<td>32GB</td>
+<td>swap</td>
+<td>交换分区，物理内存的 25%-50%</td>
+</tr>
+<tr>
+<td><code>/data</code></td>
+<td>800GB 数据盘</td>
+<td>全部</td>
+<td>ext4</td>
+<td><strong>专门存放 Ollama 模型数据</strong></td>
+</tr>
+</tbody></table>
+<p>最后创建用户（例如 <code>jarvis</code>），并设置强密码。</p>
+<hr>
+<h2 id="基础系统与双显卡驱动配置"><a href="#基础系统与双显卡驱动配置" class="headerlink" title="基础系统与双显卡驱动配置"></a>基础系统与双显卡驱动配置</h2><h3 id="系统更新与基础工具"><a href="#系统更新与基础工具" class="headerlink" title="系统更新与基础工具"></a>系统更新与基础工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt update &amp;&amp; <span class="hljs-built_in">sudo</span> apt upgrade -y<br><span class="hljs-built_in">sudo</span> apt install -y net-tools curl wget vim htop lm-sensors<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置-AMD-集成显卡驱动（用于显示）"><a href="#配置-AMD-集成显卡驱动（用于显示）" class="headerlink" title="配置 AMD 集成显卡驱动（用于显示）"></a>配置 AMD 集成显卡驱动（用于显示）</h3><p>AMD 集成显卡驱动 (<code>amdgpu</code>) 通常已被内核包含。只需确保加载：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> modprobe amdgpu<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;amdgpu&quot;</span> | <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> -a /etc/modules<br></code></pre></td></tr></table></figure>
+
+<h3 id="安装-NVIDIA-驱动与-CUDA-工具包（用于计算）"><a href="#安装-NVIDIA-驱动与-CUDA-工具包（用于计算）" class="headerlink" title="安装 NVIDIA 驱动与 CUDA 工具包（用于计算）"></a>安装 NVIDIA 驱动与 CUDA 工具包（用于计算）</h3><p><strong>目标</strong>：为 RTX 3060 安装驱动，但<strong>不</strong>让其接管显示输出。</p>
+<h4 id="添加驱动仓库并安装"><a href="#添加驱动仓库并安装" class="headerlink" title="添加驱动仓库并安装"></a>添加驱动仓库并安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 添加 NVIDIA 官方 PPA</span><br><span class="hljs-built_in">sudo</span> add-apt-repository ppa:graphics-drivers/ppa -y<br><span class="hljs-built_in">sudo</span> apt update<br><br><span class="hljs-comment"># 安装驱动（选择与CUDA 12.x兼容的版本，如550或更高）</span><br><span class="hljs-built_in">sudo</span> apt install -y nvidia-driver-550<br></code></pre></td></tr></table></figure>
+
+<h4 id="验证驱动安装"><a href="#验证驱动安装" class="headerlink" title="验证驱动安装"></a>验证驱动安装</h4><p>重启后，运行 <code>nvidia-smi</code>，应能看到 RTX 3060 信息，但”Processes”列表应为空，表示没有显示任务。</p>
+<h4 id="安装-CUDA-Toolkit"><a href="#安装-CUDA-Toolkit" class="headerlink" title="安装 CUDA Toolkit"></a>安装 CUDA Toolkit</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb<br><span class="hljs-built_in">sudo</span> dpkg -i cuda-keyring_1.1-1_all.deb<br><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt install -y cuda-toolkit-12-5<br></code></pre></td></tr></table></figure>
+
+<h4 id="配置-NVIDIA-仅用于计算（核心步骤）"><a href="#配置-NVIDIA-仅用于计算（核心步骤）" class="headerlink" title="配置 NVIDIA 仅用于计算（核心步骤）"></a>配置 NVIDIA 仅用于计算（核心步骤）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建配置文件，禁止 NVIDIA 驱动参与显示合成</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/modprobe.d/nvidia-compute-only.conf &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span><br>options nvidia modeset=0<br>options nvidia NVreg_EnablePCIeGen3=1<br>EOF<br><br><span class="hljs-comment"># 更新 initramfs</span><br><span class="hljs-built_in">sudo</span> update-initramfs -u<br></code></pre></td></tr></table></figure>
+
+<h4 id="验证双显卡状态"><a href="#验证双显卡状态" class="headerlink" title="验证双显卡状态"></a>验证双显卡状态</h4><ul>
+<li>将显示器连接至<strong>主板</strong>的 HDMI&#x2F;DP 接口（来自 AMD 集成显卡）</li>
+<li>重启后，应能正常进入图形界面</li>
+<li>在终端运行：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">nvidia-smi                              <span class="hljs-comment"># 应显示 RTX 3060 空闲</span><br>glxinfo | grep <span class="hljs-string">&quot;OpenGL renderer&quot;</span>          <span class="hljs-comment"># 应显示 &quot;AMD&quot; 或 &quot;Radeon&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Ollama-服务安装与核心配置"><a href="#Ollama-服务安装与核心配置" class="headerlink" title="Ollama 服务安装与核心配置"></a>Ollama 服务安装与核心配置</h2><p><strong>核心原则</strong>：手动离线安装支持 GPU 的版本，通过 systemd 管理，并<strong>采用 <code>override</code> 方式进行配置</strong>（最佳实践）。</p>
+<h3 id="获取并安装-Ollama（手动-离线方式）"><a href="#获取并安装-Ollama（手动-离线方式）" class="headerlink" title="获取并安装 Ollama（手动&#x2F;离线方式）"></a>获取并安装 Ollama（手动&#x2F;离线方式）</h3><h4 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h4><p>访问 Ollama 官方 GitHub Releases 页面，下载支持 GPU 的 Linux 版本：</p>
+<ul>
+<li><strong>下载页面</strong>：<code>https://github.com/ollama/ollama/releases</code></li>
+<li><strong>操作说明</strong>：在页面中找到最新的稳定版本（如 <code>v0.16.3</code> 或更高），下载名为 <strong><code>ollama-linux-amd64.tar.zst</code></strong> 的文件</li>
+</ul>
+<h4 id="上传并安装到服务器"><a href="#上传并安装到服务器" class="headerlink" title="上传并安装到服务器"></a>上传并安装到服务器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 假设安装包已上传至用户家目录</span><br><span class="hljs-built_in">sudo</span> tar -xaf ~/ollama-linux-amd64.tar.zst -C /usr/local/bin/<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> 755 /usr/local/bin/ollama<br><br><span class="hljs-comment"># 创建专用的系统用户和组（如果安装脚本未创建）</span><br><span class="hljs-built_in">sudo</span> groupadd ollama<br><span class="hljs-built_in">sudo</span> useradd -r -g ollama -m -d /usr/share/ollama -s /bin/false ollama<br></code></pre></td></tr></table></figure>
+
+<h3 id="创建专业的-Systemd-服务配置（采用-override-最佳实践）"><a href="#创建专业的-Systemd-服务配置（采用-override-最佳实践）" class="headerlink" title="创建专业的 Systemd 服务配置（采用 override 最佳实践）"></a>创建专业的 Systemd 服务配置（采用 <code>override</code> 最佳实践）</h3><p>为避免直接修改易出错的主服务文件，并便于未来维护升级，我们采用 systemd 推荐的 <code>override.conf</code> 方式进行配置。这是从初期配置错误中总结出的关键经验。</p>
+<h4 id="创建主服务单元文件"><a href="#创建主服务单元文件" class="headerlink" title="创建主服务单元文件"></a>创建主服务单元文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/systemd/system/ollama.service &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span><br>[Unit]<br>Description=Ollama Service<br>After=network-online.target<br><br>[Service]<br>Type=<span class="hljs-built_in">exec</span><br>ExecStart=/usr/local/bin/ollama serve<br>User=ollama<br>Group=ollama<br>Restart=always<br>RestartSec=3<br><br>[Install]<br>WantedBy=multi-user.target<br>EOF<br></code></pre></td></tr></table></figure>
+
+<h4 id="创建配置覆盖目录和核心优化文件"><a href="#创建配置覆盖目录和核心优化文件" class="headerlink" title="创建配置覆盖目录和核心优化文件"></a>创建配置覆盖目录和核心优化文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /etc/systemd/system/ollama.service.d<br><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/systemd/system/ollama.service.d/override.conf &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span><br>[Service]<br><span class="hljs-comment"># ==== 网络与访问控制 ====</span><br><span class="hljs-comment"># 允许远程主机连接（Cherry Studio、Open WebUI等必需）</span><br>Environment=<span class="hljs-string">&quot;OLLAMA_HOST=0.0.0.0&quot;</span><br><br><span class="hljs-comment"># ==== 存储路径 ====</span><br><span class="hljs-comment"># 将模型存储在独立的800GB数据盘，路径为 /data/.ollama/models，实现系统与数据分离</span><br>Environment=<span class="hljs-string">&quot;OLLAMA_MODELS=/data/.ollama/models&quot;</span><br><br><span class="hljs-comment"># ==== GPU 加速核心优化 ====</span><br>Environment=<span class="hljs-string">&quot;OLLAMA_GPU_LAYERS=100&quot;</span>  <span class="hljs-comment"># 最大化利用GPU进行计算</span><br>Environment=<span class="hljs-string">&quot;OLLAMA_NUM_PARALLEL=4&quot;</span>    <span class="hljs-comment"># 并行请求数，根据CPU核心数调整</span><br><br><span class="hljs-comment"># ==== 资源与安全 ====</span><br>LimitNOFILE=65536<br>NoNewPrivileges=<span class="hljs-literal">true</span><br>PrivateTmp=<span class="hljs-literal">true</span><br><span class="hljs-comment"># 确保服务进程有权访问数据目录</span><br>ReadWritePaths=/data/.ollama<br>EOF<br></code></pre></td></tr></table></figure>
+
+<h4 id="创建数据目录并授权"><a href="#创建数据目录并授权" class="headerlink" title="创建数据目录并授权"></a>创建数据目录并授权</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /data/.ollama/models<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chown</span> -R ollama:ollama /data/.ollama<br></code></pre></td></tr></table></figure>
+
+<h4 id="启用并启动服务"><a href="#启用并启动服务" class="headerlink" title="启用并启动服务"></a>启用并启动服务</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl daemon-reload<br><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">enable</span> --now ollama<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置用户环境（镜像加速与参数）"><a href="#配置用户环境（镜像加速与参数）" class="headerlink" title="配置用户环境（镜像加速与参数）"></a>配置用户环境（镜像加速与参数）</h3><p>创建用户配置文件，设置国内镜像加速下载：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p ~/.ollama<br><br><span class="hljs-built_in">cat</span> &gt; ~/.ollama/config.json &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span><br>&#123;<br>  <span class="hljs-string">&quot;registry&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;mirrors&quot;</span>: &#123;<br>      <span class="hljs-string">&quot;registry.ollama.ai&quot;</span>: <span class="hljs-string">&quot;https://mirrors.aliyun.com/ollama&quot;</span><br>    &#125;<br>  &#125;<br>&#125;<br>EOF<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="模型下载、验证与远程访问配置"><a href="#模型下载、验证与远程访问配置" class="headerlink" title="模型下载、验证与远程访问配置"></a>模型下载、验证与远程访问配置</h2><h3 id="下载测试模型"><a href="#下载测试模型" class="headerlink" title="下载测试模型"></a>下载测试模型</h3><p>先使用国内镜像加速下载一个小模型进行测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ollama pull llama3.2:1b<br></code></pre></td></tr></table></figure>
+
+<h3 id="验证-GPU-加速是否生效"><a href="#验证-GPU-加速是否生效" class="headerlink" title="验证 GPU 加速是否生效"></a>验证 GPU 加速是否生效</h3><p>这是<strong>最关键</strong>的验收步骤。</p>
+<h4 id="打开终端-A，实时监控-GPU"><a href="#打开终端-A，实时监控-GPU" class="headerlink" title="打开终端 A，实时监控 GPU"></a>打开终端 A，实时监控 GPU</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">watch -n 0.5 nvidia-smi<br></code></pre></td></tr></table></figure>
+
+<h4 id="打开终端-B，运行模型推理"><a href="#打开终端-B，运行模型推理" class="headerlink" title="打开终端 B，运行模型推理"></a>打开终端 B，运行模型推理</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ollama run llama3.2:1b <span class="hljs-string">&quot;请用中文写一首关于夏日的五言绝句。&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="验证结果"><a href="#验证结果" class="headerlink" title="验证结果"></a>验证结果</h4><p>在终端 A 的监控中，在模型生成文本的几秒内，<strong><code>Volatile GPU-Util</code> 应从 0% 显著上升</strong>（例如升至 30%-70%），同时 <code>Memory-Usage</code> 会增加。这证明 GPU 加速成功。</p>
+<h3 id="配置远程访问（为-Cherry-Studio-等客户端）"><a href="#配置远程访问（为-Cherry-Studio-等客户端）" class="headerlink" title="配置远程访问（为 Cherry Studio 等客户端）"></a>配置远程访问（为 Cherry Studio 等客户端）</h3><h4 id="确认服务监听地址"><a href="#确认服务监听地址" class="headerlink" title="确认服务监听地址"></a>确认服务监听地址</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> ss -tlnp | grep 11434<br><span class="hljs-comment"># 必须显示：0.0.0.0:11434</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="配置防火墙（如果启用）"><a href="#配置防火墙（如果启用）" class="headerlink" title="配置防火墙（如果启用）"></a>配置防火墙（如果启用）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> ufw allow 11434/tcp<br><span class="hljs-built_in">sudo</span> ufw reload<br></code></pre></td></tr></table></figure>
+
+<h4 id="在客户端（如-Cherry-Studio）配置"><a href="#在客户端（如-Cherry-Studio）配置" class="headerlink" title="在客户端（如 Cherry Studio）配置"></a>在客户端（如 Cherry Studio）配置</h4><ul>
+<li>API 地址填写：<code>http://&lt;你的服务器IP&gt;:11434</code></li>
+<li>点击”管理”，应能自动获取服务器上的模型列表（如 <code>llama3.2:1b</code>）</li>
+</ul>
+<hr>
+<h2 id="最终状态检查清单"><a href="#最终状态检查清单" class="headerlink" title="最终状态检查清单"></a>最终状态检查清单</h2><p>部署完成后，运行以下命令进行最终验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== 1. 服务状态 ===&quot;</span><br><span class="hljs-built_in">sudo</span> systemctl status ollama --no-pager | <span class="hljs-built_in">head</span> -5<br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== 2. 端口监听 ===&quot;</span><br><span class="hljs-built_in">sudo</span> ss -tlnp | grep 11434<br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== 3. 生效的环境变量 ===&quot;</span><br><span class="hljs-built_in">sudo</span> systemctl show ollama --property=Environment --no-pager<br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== 4. 模型列表 ===&quot;</span><br>curl -s http://localhost:11434/api/tags| jq .<br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== 5. 显卡工作模式 ===&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;显示设备:&quot;</span><br>DISPLAY=:0 glxinfo 2&gt;/dev/null | grep <span class="hljs-string">&quot;OpenGL renderer&quot;</span> | <span class="hljs-built_in">head</span> -1<br><span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\n计算设备:&quot;</span><br>nvidia-smi --query-gpu=name,utilization.gpu,memory.used --format=csv<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="故障排除与经验总结"><a href="#故障排除与经验总结" class="headerlink" title="故障排除与经验总结"></a>故障排除与经验总结</h2><p>以下是我们实战中遇到的核心问题与解决方案：</p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>现象</th>
+<th>原因</th>
+<th>解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>GPU 始终 0% 利用率</strong></td>
+<td><code>nvidia-smi</code> 显示 Ollama 进程不占显存，推理慢</td>
+<td>systemd 服务配置错误，导致 <code>OLLAMA_GPU_LAYERS</code> 等关键环境变量未生效，服务未能调用 GPU</td>
+<td><strong>采用 systemd override 方式</strong>重新配置服务，并确保 <code>override.conf</code> 中的 <code>OLLAMA_GPU_LAYERS=100</code> 等变量正确。重启服务 (<code>sudo systemctl restart ollama</code>) 后，通过 <code>sudo systemctl show ollama --property=Environment</code> 验证变量已加载</td>
+</tr>
+<tr>
+<td><strong>Cherry Studio 无法连接</strong></td>
+<td>客户端连接超时或无法获取模型</td>
+<td>1. Ollama 服务监听在 <code>127.0.0.1</code><br>2. 防火墙阻止</td>
+<td>1. 在 systemd 的 <code>override.conf</code> 中设置 <code>Environment=&quot;OLLAMA_HOST=0.0.0.0&quot;</code> 并重启服务<br>2. 运行 <code>sudo ufw allow 11434/tcp</code></td>
+</tr>
+<tr>
+<td><strong>Service 启动失败</strong></td>
+<td><code>systemctl status</code> 报语法错误，如 <code>[Install]</code> 段包含 <code>Environment</code></td>
+<td>错误地直接编辑了 <code>/etc/systemd/system/ollama.service</code> 文件，并错误放置了指令</td>
+<td><strong>采用 systemd override 方式</strong>：创建 <code>/etc/systemd/system/ollama.service.d/override.conf</code> 文件来添加配置。这隔离了自定义配置，是官方推荐的最佳实践</td>
+</tr>
+<tr>
+<td><strong>大模型加载失败</strong></td>
+<td>显存不足 (OOM)</td>
+<td>模型超过 12GB 显存容量</td>
+<td>1. 使用量化版本模型（如 <code>q4_0</code>）<br>2. 减小 <code>OLLAMA_GPU_LAYERS</code> 值，让部分层在 CPU 运行</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="后续运维建议"><a href="#后续运维建议" class="headerlink" title="后续运维建议"></a>后续运维建议</h2><h3 id="模型管理"><a href="#模型管理" class="headerlink" title="模型管理"></a>模型管理</h3><p>使用 <code>ollama pull</code> 下载新模型，会自动存储在 <code>/data/.ollama/models</code>。</p>
+<h3 id="服务管理"><a href="#服务管理" class="headerlink" title="服务管理"></a>服务管理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl stop/start/restart ollama   <span class="hljs-comment"># 启停服务</span><br><span class="hljs-built_in">sudo</span> journalctl -u ollama -f               <span class="hljs-comment"># 查看实时日志</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="系统监控"><a href="#系统监控" class="headerlink" title="系统监控"></a>系统监控</h3><p>可安装 <code>nvtop</code> 直观监控 GPU 状态。</p>
+<h3 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h3><p>定期备份 <code>/data/.ollama/models</code> 目录。</p>
+<hr>
+<h2 id="附录：关键配置参数说明"><a href="#附录：关键配置参数说明" class="headerlink" title="附录：关键配置参数说明"></a>附录：关键配置参数说明</h2><table>
+<thead>
+<tr>
+<th>环境变量</th>
+<th>作用</th>
+<th>推荐值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>OLLAMA_HOST</code></td>
+<td>服务监听地址</td>
+<td><code>0.0.0.0</code>（允许远程访问）</td>
+</tr>
+<tr>
+<td><code>OLLAMA_MODELS</code></td>
+<td>模型存储路径</td>
+<td><code>/data/.ollama/models</code>（独立数据盘）</td>
+</tr>
+<tr>
+<td><code>OLLAMA_GPU_LAYERS</code></td>
+<td>GPU 层数</td>
+<td><code>100</code>（最大化 GPU 加速）</td>
+</tr>
+<tr>
+<td><code>OLLAMA_NUM_PARALLEL</code></td>
+<td>并行请求数</td>
+<td><code>4</code>（根据 CPU 核心数调整）</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>文档状态</strong>：✅ 生产环境验证通过<br><strong>版本</strong>：2.2 (根据实战反馈修订)<br><strong>最后更新</strong>：2026年2月22日<br><strong>适用系统</strong>：Ubuntu Server 24.04.4 LTS<br><strong>核心硬件配置</strong>：AMD CPU with iGPU + NVIDIA dGPU (Compute-Only)<br><strong>核心部署经验</strong>：手动离线安装 + Systemd Override 配置<br><strong>Ollama 下载页面</strong>：<code>https://github.com/ollama/ollama/releases</code></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Ollama/" class="print-no-link">#Ollama</a>
+      
+        <a href="/tags/Ubuntu/" class="print-no-link">#Ubuntu</a>
+      
+        <a href="/tags/GPU-%E5%8A%A0%E9%80%9F/" class="print-no-link">#GPU 加速</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Ubuntu Server 24.04.4 LTS 从零部署 Ollama 大模型服务终极指南</div>
+      <div>https://www.normdist.com/2026/02/25/Ubuntu-Ollama-Deployment-Guide/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年2月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/02/25/OpenClaw-LAN-Access-Guide/" title="OpenClaw 局域网访问配置指南">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">OpenClaw 局域网访问配置指南</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/02/24/OpenClaw-v2026-2-23-Release-Notes/" title="OpenClaw v2026.2.23 Release Notes">
+                        <span class="hidden-mobile">OpenClaw v2026.2.23 Release Notes</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/custom.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
