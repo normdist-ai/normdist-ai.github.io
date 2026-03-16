@@ -1,0 +1,77 @@
+/* 自定义样式 */
+
+/* 移动端菜单栏修复 - 解决文字重叠和重复菜单 */
+@media (max-width: 768px) {
+  /* 导航栏整体缩小 */
+  .navbar {
+    padding: 0.2rem 0.3rem !important;
+    font-size: 11px;
+    min-height: 40px;
+  }
+  
+  /* 博客标题区域 */
+  .navbar-brand {
+    font-size: 14px !important;
+    padding: 0.2rem 0.3rem !important;
+  }
+  
+  /* 导航菜单容器 */
+  .navbar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0;
+    padding: 0.2rem 0;
+  }
+  
+  /* 导航项 */
+  .navbar-nav .nav-item {
+    padding: 0.1rem 0.25rem !important;
+    margin: 0;
+  }
+  
+  /* 导航链接 */
+  .navbar .nav-item .nav-link {
+    padding: 0.2rem 0.3rem !important;
+    font-size: 11px !important;
+    line-height: 1.2;
+  }
+  
+  /* 图标缩小 */
+  .navbar .nav-link i {
+    font-size: 10px !important;
+    margin-right: 1px;
+    display: inline-block;
+  }
+  
+  /* 汉堡菜单按钮 */
+  .navbar-toggler {
+    padding: 0.2rem 0.4rem !important;
+  }
+  
+  /* ===== 隐藏搜索和关灯按钮 ===== */
+  #search-btn,
+  #color-toggle-btn,
+  #mobile-search-btn,
+  #mobile-color-toggle-btn {
+    display: none !important;
+  }
+  
+  /* 移动端菜单展开时 */
+  .navbar-menu.is-active {
+    padding: 0.3rem !important;
+  }
+  
+  /* 导航栏的下拉菜单 */
+  .dropdown-menu {
+    font-size: 11px !important;
+  }
+}
+
+/* 平板尺寸优化 */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .navbar .nav-item .nav-link {
+    padding: 0.4rem 0.6rem;
+    font-size: 13px;
+  }
+}

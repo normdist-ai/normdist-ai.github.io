@@ -1,0 +1,124 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景渐变 - 深蓝到深紫 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#312e81;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- 背景矩形 -->
+  <rect width="100%" height="100%" fill="url(#bgGradient)" />
+
+  <!-- 装饰网格 -->
+  <pattern id="techGrid" width="50" height="50" patternUnits="userSpaceOnUse">
+    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#6366f1" stroke-width="0.5" opacity="0.15"/>
+  </pattern>
+  <rect width="100%" height="100%" fill="url(#techGrid)" />
+
+  <!-- 科技感装饰线条 -->
+  <g opacity="0.4">
+    <line x1="0" y1="100" x2="300" y2="100" stroke="#6366f1" stroke-width="2" />
+    <circle cx="310" cy="100" r="4" fill="#6366f1" />
+    <line x1="320" y1="100" x2="1200" y2="100" stroke="#6366f1" stroke-width="1" opacity="0.5" />
+    <line x1="0" y1="530" x2="200" y2="530" stroke="#6366f1" stroke-width="1" opacity="0.5" />
+    <circle cx="210" cy="530" r="4" fill="#6366f1" />
+    <line x1="220" y1="530" x2="1200" y2="530" stroke="#6366f1" stroke-width="2" />
+    <line x1="100" y1="120" x2="100" y2="300" stroke="#6366f1" stroke-width="2" />
+    <circle cx="100" cy="310" r="4" fill="#6366f1" />
+    <line x1="100" y1="320" x2="100" y2="510" stroke="#6366f1" stroke-width="1" opacity="0.5" />
+    <line x1="1100" y1="120" x2="1100" y2="280" stroke="#6366f1" stroke-width="1" opacity="0.5" />
+    <circle cx="1100" cy="290" r="4" fill="#6366f1" />
+    <line x1="1100" y1="300" x2="1100" y2="510" stroke="#6366f1" stroke-width="2" />
+  </g>
+
+  <!-- 科技感光点装饰 -->
+  <g>
+    <circle cx="150" cy="180" r="8" fill="#818cf8" opacity="0.6" />
+    <circle cx="170" cy="200" r="5" fill="#818cf8" opacity="0.4" />
+    <circle cx="190" cy="160" r="3" fill="#818cf8" opacity="0.3" />
+    <circle cx="1050" cy="180" r="6" fill="#a78bfa" opacity="0.6" />
+    <circle cx="1030" cy="200" r="4" fill="#a78bfa" opacity="0.4" />
+    <circle cx="1070" cy="160" r="3" fill="#a78bfa" opacity="0.3" />
+    <circle cx="150" cy="480" r="7" fill="#34d399" opacity="0.5" />
+    <circle cx="180" cy="500" r="4" fill="#34d399" opacity="0.3" />
+    <circle cx="130" cy="500" r="3" fill="#34d399" opacity="0.3" />
+  </g>
+
+  <!-- 科技感图标装饰 - GPU 图标 -->
+  <g transform="translate(100, 150)" opacity="0.12">
+    <!-- 显卡主体 -->
+    <rect x="-60" y="-50" width="120" height="100" rx="5" fill="white" />
+    <!-- 风扇1 -->
+    <circle cx="-30" cy="-10" r="25" fill="#6366f1" opacity="0.6" />
+    <circle cx="-30" cy="-10" r="15" fill="#6366f1" opacity="0.8" />
+    <!-- 风扇2 -->
+    <circle cx="30" cy="-10" r="25" fill="#6366f1" opacity="0.6" />
+    <circle cx="30" cy="-10" r="15" fill="#6366f1" opacity="0.8" />
+    <!-- 连接点 -->
+    <rect x="-10" y="30" width="20" height="15" fill="white" opacity="0.8" />
+  </g>
+
+  <!-- 科技感图标装饰 - 代码图标 -->
+  <g transform="translate(1050, 450)" opacity="0.15">
+    <text x="-40" y="10" font-family="monospace" font-size="80" fill="#ffffff">
+      &lt;/&gt;
+    </text>
+  </g>
+
+  <!-- 文字发光效果 -->
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 主标题 -->
+  <text x="50%" y="35%" font-family="'Segoe UI', 'Roboto', 'Arial', sans-serif" font-size="44" font-weight="bold" fill="#ffffff" text-anchor="middle" filter="url(#glow)">
+    Ubuntu Server 24.04.4 LTS
+  </text>
+
+  <!-- 副标题 -->
+  <text x="50%" y="48%" font-family="'Segoe UI', 'Roboto', 'Arial', sans-serif" font-size="28" fill="#c7d2fe" text-anchor="middle">
+    从零部署 Ollama 大模型服务
+  </text>
+
+  <!-- 描述文字 -->
+  <text x="50%" y="56%" font-family="'Segoe UI', 'Roboto', 'Arial', sans-serif" font-size="18" fill="#a5b4fc" text-anchor="middle" opacity="0.8">
+    支持 GPU 加速和远程访问
+  </text>
+
+  <!-- 分类标签 -->
+  <g transform="translate(600, 445)">
+    <rect x="-140" y="-25" width="280" height="50" rx="25" fill="#6366f1" opacity="0.3" stroke="#6366f1" stroke-width="2" />
+    <text x="0" y="7" font-family="'Segoe UI', 'Roboto', 'Arial', sans-serif" font-size="18" fill="#ffffff" text-anchor="middle" font-weight="500">
+      Ollama • Ubuntu • GPU 加速
+    </text>
+  </g>
+
+  <!-- 底部装饰线 -->
+  <g>
+    <line x1="300" y1="560" x2="500" y2="560" stroke="#6366f1" stroke-width="2" />
+    <rect x="500" y="555" width="200" height="10" fill="#6366f1" opacity="0.5" />
+    <line x1="700" y1="560" x2="900" y2="560" stroke="#6366f1" stroke-width="2" />
+  </g>
+
+  <!-- 品牌标识 -->
+  <g transform="translate(1100, 580)">
+    <text x="0" y="0" font-family="'Segoe UI', 'Roboto', 'Arial', sans-serif" font-size="24" text-anchor="end">
+      🤖💚
+    </text>
+  </g>
+
+  <!-- 左下角小标识 -->
+  <g transform="translate(100, 580)">
+    <text x="0" y="0" font-family="'Segoe UI', 'Roboto', 'Arial', sans-serif" font-size="14" fill="#6366f1" opacity="0.8">
+      进化论 其余的事情
+    </text>
+  </g>
+</svg>
