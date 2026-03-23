@@ -1,0 +1,1198 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="VoC (Voice of Customer) 技能 📚 简介VoC（Voice of Customer）技能用于记录、分析和响应用户（客户）反馈，将用户的声音转化为可执行的决策和文档更新。 核心功能 如实记录用户发言  记录时间戳 记录发言内容 记录会话上下文   发掘有价值信息  分析用户需求 识别潜在问题 发现改进机会 更新相关文档     📖 快速开始安装步骤方法1：直接复制SKILL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进化概率论">
+<meta property="og:url" content="https://www.normdist.com/2026/03/24/ND-20260324-002-voc-skill-README/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="VoC (Voice of Customer) 技能 📚 简介VoC（Voice of Customer）技能用于记录、分析和响应用户（客户）反馈，将用户的声音转化为可执行的决策和文档更新。 核心功能 如实记录用户发言  记录时间戳 记录发言内容 记录会话上下文   发掘有价值信息  分析用户需求 识别潜在问题 发现改进机会 更新相关文档     📖 快速开始安装步骤方法1：直接复制SKILL">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-03-23T16:14:49.579Z">
+<meta property="article:modified_time" content="2026-03-23T16:14:49.579Z">
+<meta property="article:author" content="小瑞">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-03-24 00:14" pubdate>
+          2026年3月24日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header"></h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="VoC-Voice-of-Customer-技能"><a href="#VoC-Voice-of-Customer-技能" class="headerlink" title="VoC (Voice of Customer) 技能"></a>VoC (Voice of Customer) 技能</h1><hr>
+<h2 id="📚-简介"><a href="#📚-简介" class="headerlink" title="📚 简介"></a>📚 简介</h2><p>VoC（Voice of Customer）技能用于记录、分析和响应用户（客户）反馈，将用户的声音转化为可执行的决策和文档更新。</p>
+<h3 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h3><ol>
+<li><p><strong>如实记录用户发言</strong></p>
+<ul>
+<li>记录时间戳</li>
+<li>记录发言内容</li>
+<li>记录会话上下文</li>
+</ul>
+</li>
+<li><p><strong>发掘有价值信息</strong></p>
+<ul>
+<li>分析用户需求</li>
+<li>识别潜在问题</li>
+<li>发现改进机会</li>
+<li>更新相关文档</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="📖-快速开始"><a href="#📖-快速开始" class="headerlink" title="📖 快速开始"></a>📖 快速开始</h2><h3 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h3><h4 id="方法1：直接复制SKILL-md"><a href="#方法1：直接复制SKILL-md" class="headerlink" title="方法1：直接复制SKILL.md"></a>方法1：直接复制SKILL.md</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 创建技能目录</span><br><span class="hljs-built_in">mkdir</span> -p ~/.openclaw/skills/voc/<br><br><span class="hljs-comment"># 2. 复制SKILL.md文件</span><br><span class="hljs-comment"># 将 SKILL.md 文件复制到 ~/.openclaw/skills/voc/</span><br><span class="hljs-comment"># SKILL.md 文件位置：~/.openclaw/workspace-main/.openclaw/skills/voc/SKILL.md</span><br><br><span class="hljs-comment"># 3. 重启OpenClaw（如果需要）</span><br><span class="hljs-comment"># OpenClaw会自动加载新技能</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="方法2：通过ClawHub安装（如果可用）"><a href="#方法2：通过ClawHub安装（如果可用）" class="headerlink" title="方法2：通过ClawHub安装（如果可用）"></a>方法2：通过ClawHub安装（如果可用）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 使用ClawHub CLI安装</span><br>clawhub install voc<br><br><span class="hljs-comment"># 搜索技能</span><br>clawhub search voc<br><br><span class="hljs-comment"># 详细信息查看</span><br>clawhub info voc<br></code></pre></td></tr></table></figure>
+
+<h3 id="验证安装"><a href="#验证安装" class="headerlink" title="验证安装"></a>验证安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 检查技能是否加载</span><br><span class="hljs-comment"># 1. 查看OpenClaw技能列表</span><br><span class="hljs-comment"># 2. 发送消息给OpenClaw，询问是否识别到VoC技能</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="🎯-VoC技能使用指南"><a href="#🎯-VoC技能使用指南" class="headerlink" title="🎯 VoC技能使用指南"></a>🎯 VoC技能使用指南</h2><h3 id="触发场景"><a href="#触发场景" class="headerlink" title="触发场景"></a>触发场景</h3><p>VoC技能会在以下情况自动激活：</p>
+<ol>
+<li><p><strong>用户反馈意见</strong>：</p>
+<ul>
+<li>“我觉得…”</li>
+<li>“我希望…”</li>
+<li>“建议…”</li>
+</ul>
+</li>
+<li><p><strong>用户提出需求</strong>：</p>
+<ul>
+<li>“需要…”</li>
+<li>“想要…”</li>
+<li>“能否…”</li>
+</ul>
+</li>
+<li><p><strong>用户遇到问题</strong>：</p>
+<ul>
+<li>“问题…”</li>
+<li>“错误…”</li>
+<li>“不行…”</li>
+<li>“失败…”</li>
+</ul>
+</li>
+<li><p><strong>用户表达偏好</strong>：</p>
+<ul>
+<li>“喜欢…”</li>
+<li>“不喜欢…”</li>
+<li>“习惯…”</li>
+</ul>
+</li>
+</ol>
+<h3 id="不触发场景"><a href="#不触发场景" class="headerlink" title="不触发场景"></a>不触发场景</h3><ul>
+<li><strong>简单询问</strong>：如”今天天气怎么样？”</li>
+<li><strong>命令执行</strong>：如”重启服务”、”发布博客”</li>
+<li><strong>临时对话</strong>：无实质内容的寒暄</li>
+</ul>
+<hr>
+<h2 id="📊-VoC日志位置"><a href="#📊-VoC日志位置" class="headerlink" title="📊 VoC日志位置"></a>📊 VoC日志位置</h2><h3 id="日志文件"><a href="#日志文件" class="headerlink" title="日志文件"></a>日志文件</h3><ul>
+<li><strong>位置</strong>：<code>memory/voc/voc-log.jsonl</code></li>
+<li><strong>格式</strong>：JSONL（每行一个JSON对象）</li>
+</ul>
+<h3 id="查看日志"><a href="#查看日志" class="headerlink" title="查看日志"></a>查看日志</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看VoC日志</span><br><span class="hljs-built_in">cat</span> ~/.openclaw/workspace-main/memory/voc/voc-log.jsonl<br><br><span class="hljs-comment"># 查看最近10条</span><br><span class="hljs-built_in">tail</span> -n 10 ~/.openclaw/workspace-main/memory/voc/voc-log.jsonl<br><br><span class="hljs-comment"># 查看特定用户的记录</span><br>grep <span class="hljs-string">&quot;张晶&quot;</span> ~/.openclaw/workspace-main/memory/voc/voc-log.jsonl<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="🏷️-分类体系"><a href="#🏷️-分类体系" class="headerlink" title="🏷️ 分类体系"></a>🏷️ 分类体系</h2><h3 id="分类维度"><a href="#分类维度" class="headerlink" title="分类维度"></a>分类维度</h3><p>VoC技能使用5大分类维度进行分析：</p>
+<h4 id="1-NPS情感分类（基于Net-Promoter-Score理论）"><a href="#1-NPS情感分类（基于Net-Promoter-Score理论）" class="headerlink" title="1. NPS情感分类（基于Net Promoter Score理论）"></a>1. NPS情感分类（基于Net Promoter Score理论）</h4><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>评分范围</th>
+<th>特征</th>
+<th>应对策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>推广者</strong></td>
+<td>9-10分</td>
+<td>极其满意，推荐给他人</td>
+<td>🔔 请求推荐、分享成功案例</td>
+</tr>
+<tr>
+<td><strong>被动者</strong></td>
+<td>7-8分</td>
+<td>满意但缺乏热情</td>
+<td>🔄 了解原因、提升体验、转化为推广者</td>
+</tr>
+<tr>
+<td><strong>贬损者</strong></td>
+<td>0-6分</td>
+<td>不满意，可能批评</td>
+<td>⚠️ 优先解决问题、深入理解痛点、重建信任</td>
+</tr>
+</tbody></table>
+<h4 id="2-反馈类型分类（基于实际产品反馈）"><a href="#2-反馈类型分类（基于实际产品反馈）" class="headerlink" title="2. 反馈类型分类（基于实际产品反馈）"></a>2. 反馈类型分类（基于实际产品反馈）</h4><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>子分类</th>
+<th>优先级</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>功能需求</strong></td>
+<td>新功能</td>
+<td>🔴 高</td>
+<td>“希望添加xxx功能”</td>
+</tr>
+<tr>
+<td></td>
+<td>功能改进</td>
+<td>🟡 中</td>
+<td>“xxx功能可以优化”</td>
+</tr>
+<tr>
+<td></td>
+<td>功能删除</td>
+<td>🟢 低</td>
+<td>“xxx功能不需要”</td>
+</tr>
+<tr>
+<td><strong>问题报告</strong></td>
+<td>Bug</td>
+<td>🔴 高</td>
+<td>“xxx报错了”</td>
+</tr>
+<tr>
+<td></td>
+<td>性能问题</td>
+<td>🔴 高</td>
+<td>“xxx很慢”</td>
+</tr>
+<tr>
+<td></td>
+<td>兼容性问题</td>
+<td>🟡 中</td>
+<td>“xxx不兼容”</td>
+</tr>
+<tr>
+<td><strong>体验反馈</strong></td>
+<td>易用性</td>
+<td>🟡 中</td>
+<td>“xxx不好用”</td>
+</tr>
+<tr>
+<td></td>
+<td>界面设计</td>
+<td>🟡 中</td>
+<td>“xxx界面很乱”</td>
+</tr>
+<tr>
+<td></td>
+<td>交互流程</td>
+<td>🟡 中</td>
+<td>“xxx流程太繁琐”</td>
+</tr>
+<tr>
+<td><strong>偏好表达</strong></td>
+<td>喜好</td>
+<td>🟢 低</td>
+<td>“我喜欢xxx”</td>
+</tr>
+<tr>
+<td></td>
+<td>不喜欢</td>
+<td>🟢 低</td>
+<td>“我不喜欢xxx”</td>
+</tr>
+<tr>
+<td></td>
+<td>习惯</td>
+<td>🟢 低</td>
+<td>“我习惯xxx”</td>
+</tr>
+<tr>
+<td><strong>改进建议</strong></td>
+<td>优化建议</td>
+<td>🟡 中</td>
+<td>“建议xxx改进”</td>
+</tr>
+<tr>
+<td></td>
+<td>创新想法</td>
+<td>🟡 中</td>
+<td>“可以考虑xxx”</td>
+</tr>
+</tbody></table>
+<h4 id="3-业务影响分类（基于对业务的影响）"><a href="#3-业务影响分类（基于对业务的影响）" class="headerlink" title="3. 业务影响分类（基于对业务的影响）"></a>3. 业务影响分类（基于对业务的影响）</h4><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>影响维度</th>
+<th>价值评分</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>战略影响</strong></td>
+<td>影响长期方向、核心竞争力</td>
+<td>9-10分</td>
+<td>“影响核心竞争力”</td>
+</tr>
+<tr>
+<td><strong>产品影响</strong></td>
+<td>影响产品功能、性能、质量</td>
+<td>7-8分</td>
+<td>“影响主要功能”</td>
+</tr>
+<tr>
+<td><strong>用户体验影响</strong></td>
+<td>影响用户满意度、使用习惯</td>
+<td>5-6分</td>
+<td>“影响用户体验”</td>
+</tr>
+<tr>
+<td><strong>运营影响</strong></td>
+<td>影响工作效率、流程</td>
+<td>3-4分</td>
+<td>“影响工作效率”</td>
+</tr>
+<tr>
+<td><strong>无影响</strong></td>
+<td>一般性建议、闲聊</td>
+<td>1-2分</td>
+<td>“一般性建议”</td>
+</tr>
+</tbody></table>
+<h4 id="4-数据源分类（基于反馈来源）"><a href="#4-数据源分类（基于反馈来源）" class="headerlink" title="4. 数据源分类（基于反馈来源）"></a>4. 数据源分类（基于反馈来源）</h4><table>
+<thead>
+<tr>
+<th>数据源</th>
+<th>可靠性</th>
+<th>分析方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>直接反馈</strong></td>
+<td>⭐⭐⭐⭐</td>
+<td>直接分析</td>
+</tr>
+<tr>
+<td><strong>间接反馈</strong></td>
+<td>⭐⭐⭐</td>
+<td>需要推断</td>
+</tr>
+<tr>
+<td><strong>隐性需求</strong></td>
+<td>⭐⭐</td>
+<td>数据分析</td>
+</tr>
+</tbody></table>
+<h4 id="5-生命周期分类（基于产品发展阶段）"><a href="#5-生命周期分类（基于产品发展阶段）" class="headerlink" title="5. 生命周期分类（基于产品发展阶段）"></a>5. 生命周期分类（基于产品发展阶段）</h4><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>说明</th>
+<th>处理方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>发现阶段</strong></td>
+<td>新用户首次接触</td>
+<td>记录、观察、引导</td>
+</tr>
+<tr>
+<td><strong>采纳阶段</strong></td>
+<td>用户开始使用</td>
+<td>支持答疑、收集反馈</td>
+</tr>
+<tr>
+<td><strong>保留阶段</strong></td>
+<td>用户持续使用</td>
+<td>深化价值、提升体验</td>
+</tr>
+<tr>
+<td><strong>推荐阶段</strong></td>
+<td>用户推荐他人</td>
+<td>收集成功案例、请求推荐</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="💡-价值评分系统"><a href="#💡-价值评分系统" class="headerlink" title="💡 价值评分系统"></a>💡 价值评分系统</h2><h3 id="评分计算"><a href="#评分计算" class="headerlink" title="评分计算"></a>评分计算</h3><p><strong>总分 &#x3D; 重要性 + 可行性 + 影响范围</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>评分范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>重要性</strong></td>
+<td>1-3分</td>
+<td>战略级(3) &#x2F; 核心功能(3) &#x2F; 次要功能(2) &#x2F; 一般建议(1)</td>
+</tr>
+<tr>
+<td><strong>可行性</strong></td>
+<td>1-3分</td>
+<td>容易实现(3) &#x2F; 需要设计(2) &#x2F; 需要重构(1) &#x2F; 暂不可行(0)</td>
+</tr>
+<tr>
+<td><strong>影响范围</strong></td>
+<td>1-4分</td>
+<td>全局影响(4) &#x2F; 模块影响(2) &#x2F; 局部影响(1)</td>
+</tr>
+</tbody></table>
+<h3 id="评分示例"><a href="#评分示例" class="headerlink" title="评分示例"></a>评分示例</h3><p>| 场景 | 重要性 | 可行性 | 影响范围 | 总分 | 评级 |<br>|——|——–|——–|———-|——|<br>| 战略级需求 + 易实现 + 全局影响 | 3 | 3 | 4 | 10 | 🏆 极高价值 |<br>| 核心功能 + 需要设计 + 模块影响 | 3 | 2 | 2 | 7 | ⭐ 高价值 |<br>| 次要功能 + 容易实现 + 局部影响 | 2 | 3 | 1 | 6 | 🌟 中等价值 |<br>| 一般建议 + 需要重构 + 局部影响 | 1 | 1 | 1 | 3 | 💡 低价值 |<br>| 信息性查询 | 1+1+1 | 3 | ⭐⭐ 低价值&#x2F;信息性 |</p>
+<h3 id="评级标准"><a href="#评级标准" class="headerlink" title="评级标准"></a>评级标准</h3><ul>
+<li><strong>9-10分</strong>：🏆 极高价值 → 优先处理</li>
+<li><strong>7-8分</strong>：⭐ 高价值 → 近期规划</li>
+<li><strong>5-6分</strong>：🌟 中等价值 → 中期规划</li>
+<li><strong>3-4分</strong>：💡 低价值 → 暂存档</li>
+<li><strong>1-2分</strong>：📝 信息性 → 仅记录</li>
+</ul>
+<hr>
+<h2 id="🚀-后台处理策略"><a href="#🚀-后台处理策略" class="headerlink" title="🚀 后台处理策略"></a>🚀 后台处理策略</h2><h3 id="自动记录模式"><a href="#自动记录模式" class="headerlink" title="自动记录模式"></a>自动记录模式</h3><p>VoC技能会在后台静默处理所有用户发言，只在必要时主动通知用户。</p>
+<h3 id="通知条件"><a href="#通知条件" class="headerlink" title="通知条件"></a>通知条件</h3><table>
+<thead>
+<tr>
+<th>条件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户主动询问</td>
+<td>用户明确要求查看分析结果</td>
+</tr>
+<tr>
+<td>发现关键问题</td>
+<td>影响核心功能或安全的问题</td>
+</tr>
+<tr>
+<td>发现高价值需求</td>
+<td>价值评分 ≥ 9分的重大需求</td>
+</tr>
+<tr>
+<td>定期汇总</td>
+<td>每天或每周汇总时推送</td>
+</tr>
+</tbody></table>
+<h3 id="静默处理"><a href="#静默处理" class="headerlink" title="静默处理"></a>静默处理</h3><ul>
+<li><strong>日常对话</strong>：如实记录到VoC日志</li>
+<li><strong>常规分析</strong>：在后台进行分类和价值评分</li>
+<li><strong>汇总报告</strong>：定期生成VoC汇总报告</li>
+</ul>
+<h3 id="减少打扰"><a href="#减少打扰" class="headerlink" title="减少打扰"></a>减少打扰</h3><p>用户希望的日常对话正常进行，不必要的分析结果推送不会打扰到聊天。</p>
+<hr>
+<h2 id="📋-标签系统"><a href="#📋-标签系统" class="headerlink" title="📋 标签系统"></a>📋 标签系统</h2><h3 id="标签使用规则"><a href="#标签使用规则" class="headerlink" title="标签使用规则"></a>标签使用规则</h3><ol>
+<li><strong>主标签优先</strong>：每个记录至少1个主标签（反馈类型）</li>
+<li><strong>次标签补充</strong>：根据情况添加情感标签、影响标签</li>
+<li><strong>标签数量控制</strong>：每条记录最多3-5个标签</li>
+<li><strong>标签一致性</strong>：使用标准化标签，避免同义词混用</li>
+</ol>
+<h3 id="常用标签"><a href="#常用标签" class="headerlink" title="常用标签"></a>常用标签</h3><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>标签示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>反馈类型</td>
+<td>需求, 功能, 新功能, 功能改进</td>
+</tr>
+<tr>
+<td>问题报告</td>
+<td>问题, bug, 错误, 失败</td>
+</tr>
+<tr>
+<td>体验反馈</td>
+<td>体验, 易用性, 界面设计</td>
+</tr>
+<tr>
+<td>偏好表达</td>
+<td>偏好, 喜好, 不喜欢, 习惯</td>
+</tr>
+<tr>
+<td>改进建议</td>
+<td>建议, 优化, 改进</td>
+</tr>
+<tr>
+<td>NPS情感</td>
+<td>推广者, 满意, 不满, 批评</td>
+</tr>
+<tr>
+<td>业务影响</td>
+<td>战略, 产品, 用户体验, 运营</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="🔄-工作流程"><a href="#🔄-工作流程" class="headerlink" title="🔄 工作流程"></a>🔄 工作流程</h2><h3 id="记录阶段"><a href="#记录阶段" class="headerlink" title="记录阶段"></a>记录阶段</h3><ol>
+<li>接收用户消息</li>
+<li>生成记录条目（时间戳、发送者、内容）</li>
+<li>初始分类（分类决策树）</li>
+<li>计算价值评分</li>
+<li>添加标签</li>
+<li>写入日志文件</li>
+</ol>
+<h3 id="分析阶段"><a href="#分析阶段" class="headerlink" title="分析阶段"></a>分析阶段</h3><ol>
+<li>读取日志文件</li>
+<li>统计分析（按日期、用户、标签、分类）</li>
+<li>识别趋势和模式</li>
+<li>发现高价值信息</li>
+</ol>
+<h3 id="更新阶段"><a href="#更新阶段" class="headerlink" title="更新阶段"></a>更新阶段</h3><p>根据分析结果，更新以下文档：</p>
+<ol>
+<li><strong>MEMORY.md</strong>：添加新的用户偏好</li>
+<li><strong>规则文件</strong>：更新<code>USER.md</code>、<code>SOUL.md</code></li>
+<li><strong>任务记录</strong>：创建任务记录，跟踪需求实现进度</li>
+<li><strong>VoC汇总</strong>：定期生成VoC汇总报告</li>
+</ol>
+<hr>
+<h2 id="📊-汇总报告"><a href="#📊-汇总报告" class="headerlink" title="📊 汇总报告"></a>📊 汇总报告</h2><h3 id="报告类型"><a href="#报告类型" class="headerlink" title="报告类型"></a>报告类型</h3><ol>
+<li><strong>月度汇总</strong>：每月生成一次</li>
+<li><strong>季度汇总</strong>：每季度生成一次</li>
+<li><strong>高价值报告</strong>：针对高价值信息生成专项报告</li>
+</ol>
+<h3 id="报告内容"><a href="#报告内容" class="headerlink" title="报告内容"></a>报告内容</h3><ul>
+<li>统计数据（总记录数、有价值信息数量）</li>
+<li>价值评分Top 10</li>
+<li>分类统计</li>
+<li>主要发现和趋势</li>
+<li>待处理项</li>
+</ul>
+<hr>
+<h2 id="🎓-最佳实践"><a href="#🎓-最佳实践" class="headerlink" title="🎓 最佳实践"></a>🎓 最佳实践</h2><h3 id="对于用户"><a href="#对于用户" class="headerlink" title="对于用户"></a>对于用户</h3><ol>
+<li><strong>清晰表达</strong>：明确表达你的需求、问题和偏好</li>
+<li><strong>提供上下文</strong>：必要时提供更多背景信息</li>
+<li><strong>及时反馈</strong>：对VoC分析和响应给予反馈</li>
+</ol>
+<h3 id="对于技能维护者"><a href="#对于技能维护者" class="headerlink" title="对于技能维护者"></a>对于技能维护者</h3><ol>
+<li><strong>定期维护</strong>：定期查看日志和汇总报告</li>
+<li><strong>更新分类体系</strong>：根据业务发展调整分类维度和标签</li>
+<li><strong>优化价值评分</strong>：根据实际效果调整评分标准</li>
+<li><strong>确保数据安全</strong>：VoC日志包含用户信息，需要妥善保护</li>
+</ol>
+<hr>
+<h2 id="📞-支持与反馈"><a href="#📞-支持与反馈" class="headerlink" title="📞 支持与反馈"></a>📞 支持与反馈</h2><p>如有问题或建议，请通过以下方式反馈：</p>
+<ol>
+<li><strong>直接对话</strong>：在日常对话中提出</li>
+<li><strong>OpenClaw Issues</strong>：如果VoC技能有专门的Issue跟踪</li>
+<li><strong>社区讨论</strong>：在OpenClaw社区讨论VoC实践</li>
+</ol>
+<hr>
+<p><strong>文档版本</strong>：1.0<br><strong>编写时间</strong>：2026-03-24<br><strong>最后更新</strong>：2026-03-24<br><strong>维护人</strong>：xiaorui</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div></div>
+      <div>https://www.normdist.com/2026/03/24/ND-20260324-002-voc-skill-README/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年3月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/03/24/ND-20260324-001-voc-skill-guide/" title="OpenClaw VoC技能：Voice of Customer实践指南">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">OpenClaw VoC技能：Voice of Customer实践指南</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/23/ND-20260323-004-opencode-v1.3.0-update/" title="OpenCode v1.3.0 重大更新：GitLab集成与Node.js支持">
+                        <span class="hidden-mobile">OpenCode v1.3.0 重大更新：GitLab集成与Node.js支持</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      // 统一使用 ▶ 字符，通过旋转控制方向
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        // 没有子目录的条目也需要占位，保证缩进对齐
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">▶</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          // 统一使用 ▶ 字符，后续通过 CSS 旋转控制展开/折叠方向
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">▶</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
