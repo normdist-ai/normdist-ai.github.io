@@ -19,16 +19,16 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="📚 基本信息 技能名称：Voice of Customer (VoC) 简称：VoC 版本：1.2 创建日期：2026-03-24 维护人：xiaorui（小瑞） 提出者：张老师   🎯 技能概述VoC（Voice of Customer）技能用于记录、分析和响应用户（客户）反馈，将用户的声音转化为可执行的决策和文档更新。 核心功能 如实记录用户发言  记录时间戳 记录发言内容 记录会话上下文">
+    <meta name="description" content="📚 基本信息 ：Voice of Customer (VoC) ：VoC ：1.2 ：2026-03-24 ：xiaorui（小瑞） ：张老师   🎯 技能概述VoC（Voice of Customer）技能用于记录、分析和响应用户（客户）反馈，将用户的声音转化为可执行的决策和文档更新。 核心功能1.   记录时间戳 记录发言内容 记录会话上下文  2.   分析用户需求 识别潜在问题 发现改">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OpenClaw VoC技能：Voice of Customer实践指南">
+<meta property="og:title" content="OpenClaw VoC Skill: Voice of Customer Guide">
 <meta property="og:url" content="https://www.normdist.com/2026/03/24/ND-20260324-001-voc-skill-guide/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="📚 基本信息 技能名称：Voice of Customer (VoC) 简称：VoC 版本：1.2 创建日期：2026-03-24 维护人：xiaorui（小瑞） 提出者：张老师   🎯 技能概述VoC（Voice of Customer）技能用于记录、分析和响应用户（客户）反馈，将用户的声音转化为可执行的决策和文档更新。 核心功能 如实记录用户发言  记录时间戳 记录发言内容 记录会话上下文">
+<meta property="og:description" content="📚 基本信息 ：Voice of Customer (VoC) ：VoC ：1.2 ：2026-03-24 ：xiaorui（小瑞） ：张老师   🎯 技能概述VoC（Voice of Customer）技能用于记录、分析和响应用户（客户）反馈，将用户的声音转化为可执行的决策和文档更新。 核心功能1.   记录时间戳 记录发言内容 记录会话上下文  2.   分析用户需求 识别潜在问题 发现改">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.normdist.com/img/cover-flat-ai.jpg">
 <meta property="article:published_time" content="2026-03-23T16:15:00.000Z">
-<meta property="article:modified_time" content="2026-03-23T16:38:46.209Z">
+<meta property="article:modified_time" content="2026-03-25T13:23:15.975Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="技能">
 <meta property="article:tag" content="VoC">
@@ -41,7 +41,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>OpenClaw VoC技能：Voice of Customer实践指南 - 进化概率论</title>
+  <title>OpenClaw VoC Skill: Voice of Customer Guide - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -79,7 +79,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -114,7 +114,7 @@
       <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
 
-    <!-- Collapsible content -->
+    <!-- Collapsible content (desktop) -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto text-center">
         
@@ -210,6 +210,123 @@
   </div>
 </nav>
 
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
   
 
 <div id="banner" class="banner" parallax=true
@@ -219,7 +336,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">OpenClaw VoC技能：Voice of Customer实践指南</span>
+            <span id="subtitle">OpenClaw VoC Skill: Voice of Customer Guide</span>
           
         </div>
 
@@ -242,7 +359,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          6.4k 字
+          6.1k 字
         
       </span>
     
@@ -253,7 +370,7 @@
         
         
         
-          54 分钟
+          51 分钟
         
       </span>
     
@@ -301,12 +418,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">OpenClaw VoC技能：Voice of Customer实践指南</h1>
+            <h1 id="seo-header">OpenClaw VoC Skill: Voice of Customer Guide</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年3月24日 凌晨
+                    本文最后更新于 2026年3月25日 晚上
                   
                 
               </p>
@@ -315,50 +432,46 @@
               <div class="markdown-body">
                 
                 <h2 id="📚-基本信息"><a href="#📚-基本信息" class="headerlink" title="📚 基本信息"></a>📚 基本信息</h2><ul>
-<li><strong>技能名称</strong>：Voice of Customer (VoC)</li>
-<li><strong>简称</strong>：VoC</li>
-<li><strong>版本</strong>：1.2</li>
-<li><strong>创建日期</strong>：2026-03-24</li>
-<li><strong>维护人</strong>：xiaorui（小瑞）</li>
-<li><strong>提出者</strong>：张老师</li>
+<li>：Voice of Customer (VoC)</li>
+<li>：VoC</li>
+<li>：1.2</li>
+<li>：2026-03-24</li>
+<li>：xiaorui（小瑞）</li>
+<li>：张老师</li>
 </ul>
 <hr>
 <h2 id="🎯-技能概述"><a href="#🎯-技能概述" class="headerlink" title="🎯 技能概述"></a>🎯 技能概述</h2><p>VoC（Voice of Customer）技能用于记录、分析和响应用户（客户）反馈，将用户的声音转化为可执行的决策和文档更新。</p>
-<h3 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h3><ol>
-<li><p><strong>如实记录用户发言</strong></p>
+<h3 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h3><p>1. </p>
 <ul>
 <li>记录时间戳</li>
 <li>记录发言内容</li>
 <li>记录会话上下文</li>
 </ul>
-</li>
-<li><p><strong>发掘有价值信息</strong></p>
+<p>2. </p>
 <ul>
 <li>分析用户需求</li>
 <li>识别潜在问题</li>
 <li>发现改进机会</li>
 <li>更新相关文档</li>
 </ul>
-</li>
-</ol>
 <hr>
 <h2 id="📋-适用场景"><a href="#📋-适用场景" class="headerlink" title="📋 适用场景"></a>📋 适用场景</h2><h3 id="触发条件"><a href="#触发条件" class="headerlink" title="触发条件"></a>触发条件</h3><p>当以下情况发生时，激活VoC技能：</p>
 <ol>
-<li><p><strong>用户反馈意见</strong>：</p>
+<li><p>：</p>
 <ul>
 <li>“我觉得…”</li>
 <li>“我希望…”</li>
 <li>“建议…”</li>
 </ul>
 </li>
-<li><p><strong>用户提出需求</strong>：</p>
+<li><p>：</p>
 <ul>
 <li>“需要…”</li>
 <li>“想要…”</li>
 <li>“能否…”</li>
 </ul>
 </li>
-<li><p><strong>用户遇到问题</strong>：</p>
+<li><p>：</p>
 <ul>
 <li>“问题…”</li>
 <li>“错误…”</li>
@@ -366,7 +479,7 @@
 <li>“失败…”</li>
 </ul>
 </li>
-<li><p><strong>用户表达偏好</strong>：</p>
+<li><p>：</p>
 <ul>
 <li>“喜欢…”</li>
 <li>“不喜欢…”</li>
@@ -374,21 +487,21 @@
 </ul>
 </li>
 </ol>
-<h3 id="非适用场景"><a href="#非适用场景" class="headerlink" title="非适用场景"></a>非适用场景</h3><p>以下情况<strong>不</strong>需要VoC技能：</p>
+<h3 id="非适用场景"><a href="#非适用场景" class="headerlink" title="非适用场景"></a>非适用场景</h3><p>以下情况需要VoC技能：</p>
 <ol>
-<li><p><strong>简单询问</strong>：</p>
+<li><p>：</p>
 <ul>
 <li>“今天天气怎么样？”</li>
 <li>“帮我看下…”</li>
 </ul>
 </li>
-<li><p><strong>命令执行</strong>：</p>
+<li><p>：</p>
 <ul>
 <li>“重启服务”</li>
 <li>“发布博客”</li>
 </ul>
 </li>
-<li><p><strong>临时对话</strong>：</p>
+<li><p>：</p>
 <ul>
 <li>无实质内容的寒暄</li>
 <li>简单的确认回复</li>
@@ -407,21 +520,21 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>推广者</strong></td>
+<td></td>
 <td>Promoters</td>
 <td>9-10</td>
 <td>极其满意，推荐给他人</td>
 <td>🔔 请求推荐、分享成功案例</td>
 </tr>
 <tr>
-<td><strong>被动者</strong></td>
+<td></td>
 <td>Passives</td>
 <td>7-8</td>
 <td>满意但缺乏热情</td>
 <td>🔄 了解原因、提升体验、转化为推广者</td>
 </tr>
 <tr>
-<td><strong>贬损者</strong></td>
+<td></td>
 <td>Detractors</td>
 <td>0-6</td>
 <td>不满意，可能批评</td>
@@ -439,7 +552,7 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>功能需求</strong></td>
+<td></td>
 <td>新功能</td>
 <td>Feature Request</td>
 <td>“希望添加xxx功能”</td>
@@ -460,7 +573,7 @@
 <td>🟢 低</td>
 </tr>
 <tr>
-<td><strong>问题报告</strong></td>
+<td></td>
 <td>Bug</td>
 <td>Bug Report</td>
 <td>“xxx报错了”</td>
@@ -481,7 +594,7 @@
 <td>🟡 中</td>
 </tr>
 <tr>
-<td><strong>体验反馈</strong></td>
+<td></td>
 <td>易用性</td>
 <td>Usability</td>
 <td>“xxx不好用”</td>
@@ -502,7 +615,7 @@
 <td>🟡 中</td>
 </tr>
 <tr>
-<td><strong>偏好表达</strong></td>
+<td></td>
 <td>喜好</td>
 <td>Preference</td>
 <td>“我喜欢xxx”</td>
@@ -523,7 +636,7 @@
 <td>🟢 低</td>
 </tr>
 <tr>
-<td><strong>改进建议</strong></td>
+<td></td>
 <td>优化建议</td>
 <td>Optimization Suggestion</td>
 <td>“建议xxx改进”</td>
@@ -537,7 +650,7 @@
 <td>🟡 中</td>
 </tr>
 <tr>
-<td><strong>其他</strong></td>
+<td></td>
 <td>无法归类</td>
 <td>Other</td>
 <td>“xxx”</td>
@@ -555,35 +668,35 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>战略影响</strong></td>
+<td></td>
 <td>Strategic Impact</td>
 <td>影响长期方向、核心竞争力</td>
 <td>9-10分</td>
 <td></td>
 </tr>
 <tr>
-<td><strong>产品影响</strong></td>
+<td></td>
 <td>Product Impact</td>
 <td>影响产品功能、性能、质量</td>
 <td>7-8分</td>
 <td></td>
 </tr>
 <tr>
-<td><strong>用户体验影响</strong></td>
+<td></td>
 <td>UX Impact</td>
 <td>影响用户满意度、使用习惯</td>
 <td>5-6分</td>
 <td></td>
 </tr>
 <tr>
-<td><strong>运营影响</strong></td>
+<td></td>
 <td>Operational Impact</td>
 <td>影响工作效率、流程</td>
 <td>3-4分</td>
 <td></td>
 </tr>
 <tr>
-<td><strong>无影响</strong></td>
+<td></td>
 <td>No Impact</td>
 <td>一般性建议、闲聊</td>
 <td>1-2分</td>
@@ -593,31 +706,30 @@
 <hr>
 <h2 id="💡-核心特性"><a href="#💡-核心特性" class="headerlink" title="💡 核心特性"></a>💡 核心特性</h2><h3 id="价值评分系统"><a href="#价值评分系统" class="headerlink" title="价值评分系统"></a>价值评分系统</h3><p>基于以下维度评分（1-10分）：</p>
 <ol>
-<li><p><strong>重要性</strong>（1-3分）：</p>
+<li><p>（1-3分）：</p>
 <ul>
-<li><strong>战略级需求</strong>：影响长期方向、核心竞争力 → 3分</li>
-<li><strong>核心功能需求</strong>：影响主要功能 → 3分</li>
-<li><strong>次要功能需求</strong>：影响部分用户 → 2分</li>
-<li><strong>一般性建议</strong>：优化性建议 → 1分</li>
+<li>：影响长期方向、核心竞争力 → 3分</li>
+<li>：影响主要功能 → 3分</li>
+<li>：影响部分用户 → 2分</li>
+<li>：优化性建议 → 1分</li>
 </ul>
 </li>
-<li><p><strong>可行性</strong>（1-3分）：</p>
+<li><p>（1-3分）：</p>
 <ul>
-<li><strong>容易实现</strong>：现有能力可直接实现 → 3分</li>
-<li><strong>需要设计</strong>：需要设计方案 → 2分</li>
-<li><strong>需要重构</strong>：需要大幅调整 → 1分</li>
-<li><strong>暂不可行</strong>：当前条件下无法实现 → 0分（但仍记录）</li>
+<li>：现有能力可直接实现 → 3分</li>
+<li>：需要设计方案 → 2分</li>
+<li>：需要大幅调整 → 1分</li>
+<li>：当前条件下无法实现 → 0分（但仍记录）</li>
 </ul>
 </li>
-<li><p><strong>影响范围</strong>（1-4分）：</p>
+<li><p>（1-4分）：</p>
 <ul>
-<li><strong>全局影响</strong>：影响多个模块、整个系统 → 4分</li>
-<li><strong>模块影响</strong>：影响单个主要模块 → 2分</li>
-<li><strong>局部影响</strong>：影响特定功能 → 1分</li>
+<li>：影响多个模块、整个系统 → 4分</li>
+<li>：影响单个主要模块 → 2分</li>
+<li>：影响特定功能 → 1分</li>
 </ul>
 </li>
 </ol>
-<p><strong>总分 &#x3D; 重要性 + 可行性 + 影响范围</strong></p>
 <h3 id="评分示例"><a href="#评分示例" class="headerlink" title="评分示例"></a>评分示例</h3><table>
 <thead>
 <tr>
@@ -663,25 +775,25 @@
 </tr>
 </tbody></table>
 <h3 id="评级标准"><a href="#评级标准" class="headerlink" title="评级标准"></a>评级标准</h3><ul>
-<li><strong>9-10分</strong>：🏆 极高价值 → 优先处理</li>
-<li><strong>7-8分</strong>：⭐ 高价值 → 近期规划</li>
-<li><strong>5-6分</strong>：🌟 中等价值 → 中期规划</li>
-<li><strong>3-4分</strong>：💡 低价值 → 暂存档</li>
-<li><strong>1-2分</strong>：📝 信息性 → 仅记录</li>
+<li>：🏆 极高价值 → 优先处理</li>
+<li>：⭐ 高价值 → 近期规划</li>
+<li>：🌟 中等价值 → 中期规划</li>
+<li>：💡 低价值 → 暂存档</li>
+<li>：📝 信息性 → 仅记录</li>
 </ul>
 <hr>
-<h2 id="🔧-使用方法"><a href="#🔧-使用方法" class="headerlink" title="🔧 使用方法"></a>🔧 使用方法</h2><h3 id="1-安装VoC技能"><a href="#1-安装VoC技能" class="headerlink" title="1. 安装VoC技能"></a>1. 安装VoC技能</h3><p><strong>文件位置</strong>：<code>.openclaw/skills/voc/SKILL.md</code></p>
-<p><strong>安装步骤</strong>：</p>
+<h2 id="🔧-使用方法"><a href="#🔧-使用方法" class="headerlink" title="🔧 使用方法"></a>🔧 使用方法</h2><h3 id="1-安装VoC技能"><a href="#1-安装VoC技能" class="headerlink" title="1. 安装VoC技能"></a>1. 安装VoC技能</h3><p>：<code>.openclaw/skills/voc/SKILL.md</code></p>
+<p>：</p>
 <h4 id="方法1：直接复制SKILL-md"><a href="#方法1：直接复制SKILL-md" class="headerlink" title="方法1：直接复制SKILL.md"></a>方法1：直接复制SKILL.md</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 创建技能目录</span><br><span class="hljs-built_in">mkdir</span> -p ~/.openclaw/skills/voc/<br><br><span class="hljs-comment"># 2. 复制SKILL.md文件到技能目录</span><br><span class="hljs-built_in">cp</span> /path/to/SKILL.md ~/.openclaw/skills/voc/SKILL.md<br><br><span class="hljs-comment"># 3. 重启OpenClaw（如果需要）</span><br><span class="hljs-comment"># OpenClaw会自动加载新技能</span><br></code></pre></td></tr></table></figure>
 
 <h4 id="方法2：通过ClawHub安装（如果可用）"><a href="#方法2：通过ClawHub安装（如果可用）" class="headerlink" title="方法2：通过ClawHub安装（如果可用）"></a>方法2：通过ClawHub安装（如果可用）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 使用ClawHub CLI安装</span><br>clawhub install voc<br><br><span class="hljs-comment"># 搜索技能</span><br>clawhub search voc<br></code></pre></td></tr></table></figure>
 
-<h3 id="2-配置VoC日志目录"><a href="#2-配置VoC日志目录" class="headerlink" title="2. 配置VoC日志目录"></a>2. 配置VoC日志目录</h3><p><strong>默认位置</strong>：<code>memory/voc/voc-log.jsonl</code></p>
-<p><strong>创建目录</strong>：</p>
+<h3 id="2-配置VoC日志目录"><a href="#2-配置VoC日志目录" class="headerlink" title="2. 配置VoC日志目录"></a>2. 配置VoC日志目录</h3><p>：<code>memory/voc/voc-log.jsonl</code></p>
+<p>：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p ~/.openclaw/workspace-main/memory/voc<br></code></pre></td></tr></table></figure>
 
-<p><strong>日志格式</strong>：JSONL（每行一个JSON对象）</p>
-<p><strong>字段说明</strong>：</p>
+<p>：JSONL（每行一个JSON对象）</p>
+<p>：</p>
 <table>
 <thead>
 <tr>
@@ -692,56 +804,56 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>timestamp</strong></td>
+<td></td>
 <td>string</td>
 <td>ISO 8601格式的时间戳</td>
 <td>✅</td>
 </tr>
 <tr>
-<td><strong>sender</strong></td>
+<td></td>
 <td>string</td>
 <td>发送者姓名或ID</td>
 <td>✅</td>
 </tr>
 <tr>
-<td><strong>message_id</strong></td>
+<td></td>
 <td>string</td>
 <td>消息唯一标识</td>
 <td>✅</td>
 </tr>
 <tr>
-<td><strong>content</strong></td>
+<td></td>
 <td>string</td>
 <td>消息内容</td>
 <td>✅</td>
 </tr>
 <tr>
-<td><strong>tags</strong></td>
+<td></td>
 <td>array</td>
 <td>标签列表</td>
 <td>❌</td>
 </tr>
 <tr>
-<td><strong>value_score</strong></td>
+<td></td>
 <td>number</td>
 <td>价值评分（1-10）</td>
 <td>❌</td>
 </tr>
 <tr>
-<td><strong>processed</strong></td>
+<td></td>
 <td>boolean</td>
 <td>是否已处理</td>
 <td>❌</td>
 </tr>
 <tr>
-<td><strong>action</strong></td>
+<td></td>
 <td>string</td>
 <td>采取的行动</td>
 <td>❌</td>
 </tr>
 </tbody></table>
 <h3 id="3-使用VoC技能"><a href="#3-使用VoC技能" class="headerlink" title="3. 使用VoC技能"></a>3. 使用VoC技能</h3><h4 id="自动记录模式"><a href="#自动记录模式" class="headerlink" title="自动记录模式"></a>自动记录模式</h4><p>VoC技能会在后台静默记录所有用户发言，只在必要时主动通知。</p>
-<p><strong>通知条件</strong>：</p>
+<p>：</p>
 <table>
 <thead>
 <tr>
@@ -766,7 +878,7 @@
 <td>每天或每周汇总时</td>
 </tr>
 </tbody></table>
-<p><strong>示例交互</strong>：</p>
+<p>：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs">用户：创建一个VoC技能<br>系统：记录到VoC日志<br>系统：分析价值（9分）<br>系统：更新相关文档<br>系统：记录到VoC汇总报告<br><br>用户：显示截止目前的全部发言<br>系统：显示VoC日志全部内容（不主动推送）<br><br>用户：你自己在后台分析就可以了，不必每次把分析结果发给我<br>系统：更新推送策略，减少不必要的消息推送<br>系统：记录优化到VoC汇总报告<br></code></pre></td></tr></table></figure>
 
 <hr>
@@ -857,7 +969,7 @@
 <li><input disabled="" type="checkbox"> 查看VoC汇总报告生成</li>
 </ul>
 <hr>
-<p><strong>文档版本</strong>：1.2<br><strong>编写时间</strong>：2026-03-24 00:15<br><strong>下次更新</strong>：根据用户反馈持续优化</p>
+<p>：1.2<br>：2026-03-24 00:15<br>：根据用户反馈持续优化</p>
 
                 
               </div>
@@ -916,7 +1028,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>OpenClaw VoC技能：Voice of Customer实践指南</div>
+      <div>OpenClaw VoC Skill: Voice of Customer Guide</div>
       <div>https://www.normdist.com/2026/03/24/ND-20260324-001-voc-skill-guide/</div>
     </div>
     <div class="license-meta">
@@ -961,12 +1073,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2026/03/25/ND-20260325-001-scrapling-web-scrapping-guide/" title="Scrapling 自适应 Web Scraping 框架实战：抓取上证指数 K 线数据">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Scrapling 自适应 Web Scraping 框架实战：抓取上证指数 K 线数据</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/24/ND-20260324-002-voc-skill-README/" title="">
-                        <span class="hidden-mobile"></span>
+                      <a href="/2026/03/23/ND-20260323-004-opencode-v1.3.0-update/" title="OpenCode v1.3.0 重大更新：GitLab集成与Node.js支持">
+                        <span class="hidden-mobile">OpenCode v1.3.0 重大更新：GitLab集成与Node.js支持</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -992,6 +1110,7 @@
   </p>
   <div class="toc-body" id="toc-body"></div>
 </div>
+
 
 
   </aside>
@@ -1170,7 +1289,6 @@
       var $toggle = $li.children('.toc-toggle');
       if ($toggle.length === 0) { return; }
       var collapsed = $childList.hasClass('tocbot-is-collapsed');
-      // 统一使用 ▶ 字符，通过旋转控制方向
       $toggle
         .toggleClass('toc-toggle-collapsed', collapsed)
         .toggleClass('toc-toggle-expanded', !collapsed);
@@ -1180,17 +1298,15 @@
       jQuery('#toc-body .toc-list-item').each(function() {
         var $li = jQuery(this);
         var $childList = $li.children('ol');
-        // 没有子目录的条目也需要占位，保证缩进对齐
         if ($childList.length === 0) {
           if ($li.children('.toc-toggle').length === 0) {
-            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">▶</span>');
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
           }
           return;
         }
 
         if ($li.children('.toc-toggle').length === 0) {
-          // 统一使用 ▶ 字符，后续通过 CSS 旋转控制展开/折叠方向
-          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">▶</span>');
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
         }
         updateTocToggle($li, $childList);
       });

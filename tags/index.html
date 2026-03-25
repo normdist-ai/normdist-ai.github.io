@@ -65,7 +65,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -100,7 +100,7 @@
       <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
 
-    <!-- Collapsible content -->
+    <!-- Collapsible content (desktop) -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto text-center">
         
@@ -196,6 +196,123 @@
   </div>
 </nav>
 
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
   
 
 <div id="banner" class="banner" parallax=true
@@ -239,7 +356,7 @@
                 
 
 <div class="text-center tagcloud">
-  <a href="/tags/5S/" style="font-size: 15px; color: #bbe">5S</a> <a href="/tags/AI-Agent/" style="font-size: 15px; color: #bbe">AI Agent</a> <a href="/tags/AI-Coding-Agent/" style="font-size: 18.75px; color: #99abe0">AI Coding Agent</a> <a href="/tags/AI-Agent/" style="font-size: 15px; color: #bbe">AI-Agent</a> <a href="/tags/AI%E4%BB%A3%E7%90%86/" style="font-size: 15px; color: #bbe">AI代理</a> <a href="/tags/AI%E6%B2%BB%E7%90%86/" style="font-size: 15px; color: #bbe">AI治理</a> <a href="/tags/API/" style="font-size: 15px; color: #bbe">API</a> <a href="/tags/Agent%E6%9E%B6%E6%9E%84/" style="font-size: 15px; color: #bbe">Agent架构</a> <a href="/tags/Agent%E6%A1%86%E6%9E%B6/" style="font-size: 15px; color: #bbe">Agent框架</a> <a href="/tags/AutoQuant/" style="font-size: 15px; color: #bbe">AutoQuant</a> <a href="/tags/BlogWatcher/" style="font-size: 15px; color: #bbe">BlogWatcher</a> <a href="/tags/CLIProxyAPI/" style="font-size: 15px; color: #bbe">CLIProxyAPI</a> <a href="/tags/GPU/" style="font-size: 15px; color: #bbe">GPU</a> <a href="/tags/Go/" style="font-size: 15px; color: #bbe">Go</a> <a href="/tags/Hexo/" style="font-size: 18.75px; color: #99abe0">Hexo</a> <a href="/tags/LM-Studio/" style="font-size: 15px; color: #bbe">LM-Studio</a> <a href="/tags/MECE/" style="font-size: 15px; color: #bbe">MECE</a> <a href="/tags/Mermaid/" style="font-size: 18.75px; color: #99abe0">Mermaid</a> <a href="/tags/MultiAgent/" style="font-size: 15px; color: #bbe">MultiAgent</a> <a href="/tags/NVIDIA/" style="font-size: 18.75px; color: #99abe0">NVIDIA</a> <a href="/tags/Ollama/" style="font-size: 18.75px; color: #99abe0">Ollama</a> <a href="/tags/OpenClaw/" style="font-size: 30px; color: #337ab7">OpenClaw</a> <a href="/tags/OpenCode/" style="font-size: 22.5px; color: #779bd3">OpenCode</a> <a href="/tags/SOP/" style="font-size: 15px; color: #bbe">SOP</a> <a href="/tags/VoC/" style="font-size: 15px; color: #bbe">VoC</a> <a href="/tags/v1-3-0/" style="font-size: 15px; color: #bbe">v1.3.0</a> <a href="/tags/%E4%BB%A3%E7%90%86/" style="font-size: 15px; color: #bbe">代理</a> <a href="/tags/%E5%8D%8F%E4%BD%9C/" style="font-size: 15px; color: #bbe">协作</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 18.75px; color: #99abe0">博客</a> <a href="/tags/%E5%8F%8C%E6%98%BE%E5%8D%A1/" style="font-size: 15px; color: #bbe">双显卡</a> <a href="/tags/%E5%9B%BE%E8%A1%A8/" style="font-size: 18.75px; color: #99abe0">图表</a> <a href="/tags/%E5%A4%9AAgent/" style="font-size: 15px; color: #bbe">多Agent</a> <a href="/tags/%E5%A4%9AAgent%E5%8D%8F%E4%BD%9C/" style="font-size: 15px; color: #bbe">多Agent协作</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 15px; color: #bbe">安全</a> <a href="/tags/%E5%AE%A2%E6%88%B7%E4%BD%93%E9%AA%8C/" style="font-size: 15px; color: #bbe">客户体验</a> <a href="/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 18.75px; color: #99abe0">客户端</a> <a href="/tags/%E5%BC%80%E6%BA%90/" style="font-size: 15px; color: #bbe">开源</a> <a href="/tags/%E6%8A%80%E6%9C%AF%E8%B6%8B%E5%8A%BF/" style="font-size: 15px; color: #bbe">技术趋势</a> <a href="/tags/%E6%8A%80%E8%83%BD/" style="font-size: 18.75px; color: #99abe0">技能</a> <a href="/tags/%E6%8F%92%E4%BB%B6%E7%B3%BB%E7%BB%9F/" style="font-size: 15px; color: #bbe">插件系统</a> <a href="/tags/%E6%96%87%E4%BB%B6%E6%95%B4%E7%90%86/" style="font-size: 15px; color: #bbe">文件整理</a> <a href="/tags/%E6%9B%B4%E6%96%B0/" style="font-size: 26.25px; color: #558ac5">更新</a> <a href="/tags/%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/" style="font-size: 18.75px; color: #99abe0">版本更新</a> <a href="/tags/%E7%94%A8%E6%88%B7%E5%8F%8D%E9%A6%88/" style="font-size: 15px; color: #bbe">用户反馈</a> <a href="/tags/%E8%B4%AA%E5%90%83%E8%9B%87/" style="font-size: 15px; color: #bbe">贪吃蛇</a> <a href="/tags/%E9%85%8D%E7%BD%AE/" style="font-size: 15px; color: #bbe">配置</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 15px; color: #bbe">量化交易</a> <a href="/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" style="font-size: 15px; color: #bbe">问题排查</a>
+  <a href="/tags/5S/" style="font-size: 15px; color: #bbe">5S</a> <a href="/tags/AI-Agent/" style="font-size: 15px; color: #bbe">AI Agent</a> <a href="/tags/AI-Coding-Agent/" style="font-size: 18.75px; color: #99abe0">AI Coding Agent</a> <a href="/tags/AI-Agent/" style="font-size: 15px; color: #bbe">AI-Agent</a> <a href="/tags/AI%E4%BB%A3%E7%90%86/" style="font-size: 15px; color: #bbe">AI代理</a> <a href="/tags/AI%E6%B2%BB%E7%90%86/" style="font-size: 15px; color: #bbe">AI治理</a> <a href="/tags/API/" style="font-size: 15px; color: #bbe">API</a> <a href="/tags/Agent%E6%9E%B6%E6%9E%84/" style="font-size: 15px; color: #bbe">Agent架构</a> <a href="/tags/Agent%E6%A1%86%E6%9E%B6/" style="font-size: 15px; color: #bbe">Agent框架</a> <a href="/tags/AutoQuant/" style="font-size: 15px; color: #bbe">AutoQuant</a> <a href="/tags/BlogWatcher/" style="font-size: 15px; color: #bbe">BlogWatcher</a> <a href="/tags/CLIProxyAPI/" style="font-size: 15px; color: #bbe">CLIProxyAPI</a> <a href="/tags/GPU/" style="font-size: 15px; color: #bbe">GPU</a> <a href="/tags/Go/" style="font-size: 15px; color: #bbe">Go</a> <a href="/tags/Hexo/" style="font-size: 18.75px; color: #99abe0">Hexo</a> <a href="/tags/LM-Studio/" style="font-size: 15px; color: #bbe">LM-Studio</a> <a href="/tags/MECE/" style="font-size: 15px; color: #bbe">MECE</a> <a href="/tags/Mermaid/" style="font-size: 18.75px; color: #99abe0">Mermaid</a> <a href="/tags/MultiAgent/" style="font-size: 15px; color: #bbe">MultiAgent</a> <a href="/tags/NVIDIA/" style="font-size: 18.75px; color: #99abe0">NVIDIA</a> <a href="/tags/Ollama/" style="font-size: 18.75px; color: #99abe0">Ollama</a> <a href="/tags/OpenClaw/" style="font-size: 30px; color: #337ab7">OpenClaw</a> <a href="/tags/OpenCode/" style="font-size: 22.5px; color: #779bd3">OpenCode</a> <a href="/tags/Python/" style="font-size: 15px; color: #bbe">Python</a> <a href="/tags/SOP/" style="font-size: 15px; color: #bbe">SOP</a> <a href="/tags/Scrapling/" style="font-size: 15px; color: #bbe">Scrapling</a> <a href="/tags/Web-Scraping/" style="font-size: 15px; color: #bbe">Web Scraping</a> <a href="/tags/v1-3-0/" style="font-size: 15px; color: #bbe">v1.3.0</a> <a href="/tags/%E4%BB%A3%E7%90%86/" style="font-size: 15px; color: #bbe">代理</a> <a href="/tags/%E5%8D%8F%E4%BD%9C/" style="font-size: 15px; color: #bbe">协作</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 18.75px; color: #99abe0">博客</a> <a href="/tags/%E5%8F%8C%E6%98%BE%E5%8D%A1/" style="font-size: 15px; color: #bbe">双显卡</a> <a href="/tags/%E5%9B%BE%E8%A1%A8/" style="font-size: 18.75px; color: #99abe0">图表</a> <a href="/tags/%E5%A4%9AAgent/" style="font-size: 15px; color: #bbe">多Agent</a> <a href="/tags/%E5%A4%9AAgent%E5%8D%8F%E4%BD%9C/" style="font-size: 15px; color: #bbe">多Agent协作</a> <a href="/tags/%E5%AE%89%E5%85%A8/" style="font-size: 15px; color: #bbe">安全</a> <a href="/tags/%E5%AE%A2%E6%88%B7%E7%AB%AF/" style="font-size: 18.75px; color: #99abe0">客户端</a> <a href="/tags/%E5%BC%80%E6%BA%90/" style="font-size: 15px; color: #bbe">开源</a> <a href="/tags/%E6%8A%80%E6%9C%AF%E8%B6%8B%E5%8A%BF/" style="font-size: 15px; color: #bbe">技术趋势</a> <a href="/tags/%E6%8A%80%E8%83%BD/" style="font-size: 15px; color: #bbe">技能</a> <a href="/tags/%E6%8F%92%E4%BB%B6%E7%B3%BB%E7%BB%9F/" style="font-size: 15px; color: #bbe">插件系统</a> <a href="/tags/%E6%96%87%E4%BB%B6%E6%95%B4%E7%90%86/" style="font-size: 15px; color: #bbe">文件整理</a> <a href="/tags/%E6%9B%B4%E6%96%B0/" style="font-size: 26.25px; color: #558ac5">更新</a> <a href="/tags/%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/" style="font-size: 18.75px; color: #99abe0">版本更新</a> <a href="/tags/%E8%B4%AA%E5%90%83%E8%9B%87/" style="font-size: 15px; color: #bbe">贪吃蛇</a> <a href="/tags/%E9%85%8D%E7%BD%AE/" style="font-size: 15px; color: #bbe">配置</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 15px; color: #bbe">量化交易</a> <a href="/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" style="font-size: 15px; color: #bbe">问题排查</a>
 </div>
 
               </div>
