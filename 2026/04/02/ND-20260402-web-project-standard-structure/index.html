@@ -19,28 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文记录一次真实的博客系统优化过程：从一次 YAML 缩进错误导致的 Hexo生成失败出发，逐步定位根因、修复配置、完成部署，并将经验固化到 SOP。文章整理了排查思路、关键命令、验证清单与风险点，帮助你在日常发布中减少踩坑、提高交付稳定性。">
+    <meta name="description" content="在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供 Vue3&#x2F;Vite 前端和 FastAPI 后端的具体优化建议。同时，本文还对比了官方推荐模式与企业级推荐模式的差异，并给出了最终的优化结构建议和实践指南，帮助不同规">
 <meta property="og:type" content="article">
-<meta property="og:title" content="博客系统优化实战：从配置踩坑到稳定发布">
-<meta property="og:url" content="https://www.normdist.com/2026/03/15/ND-20260315-001-blog-system-optimization/index.html">
+<meta property="og:title" content="网页项目的标准文件结构：最佳实践与优化建议">
+<meta property="og:url" content="https://www.normdist.com/2026/04/02/ND-20260402-web-project-standard-structure/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="本文记录一次真实的博客系统优化过程：从一次 YAML 缩进错误导致的 Hexo生成失败出发，逐步定位根因、修复配置、完成部署，并将经验固化到 SOP。文章整理了排查思路、关键命令、验证清单与风险点，帮助你在日常发布中减少踩坑、提高交付稳定性。">
+<meta property="og:description" content="在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供 Vue3&#x2F;Vite 前端和 FastAPI 后端的具体优化建议。同时，本文还对比了官方推荐模式与企业级推荐模式的差异，并给出了最终的优化结构建议和实践指南，帮助不同规">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-08.jpg">
-<meta property="article:published_time" content="2026-03-15T12:45:00.000Z">
-<meta property="article:modified_time" content="2026-03-15T16:07:11.142Z">
+<meta property="article:published_time" content="2026-04-02T07:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-02T07:46:29.379Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="博客">
-<meta property="article:tag" content="Hexo">
-<meta property="article:tag" content="SOP">
+<meta property="article:tag" content="Web开发">
+<meta property="article:tag" content="最佳实践">
+<meta property="article:tag" content="项目架构">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-08.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>博客系统优化实战：从配置踩坑到稳定发布 - 进化概率论</title>
+  <title>网页项目的标准文件结构：最佳实践与优化建议 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -335,7 +333,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">博客系统优化实战：从配置踩坑到稳定发布</span>
+            <span id="subtitle">网页项目的标准文件结构：最佳实践与优化建议</span>
           
         </div>
 
@@ -346,8 +344,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-15 20:45" pubdate>
-          2026年3月15日 晚上
+        <time datetime="2026-04-02 15:00" pubdate>
+          2026年4月2日 下午
         </time>
       </span>
     
@@ -358,7 +356,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.9k 字
+          4k 字
         
       </span>
     
@@ -369,7 +367,7 @@
         
         
         
-          25 分钟
+          34 分钟
         
       </span>
     
@@ -417,12 +415,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">博客系统优化实战：从配置踩坑到稳定发布</h1>
+            <h1 id="seo-header">网页项目的标准文件结构：最佳实践与优化建议</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年3月16日 凌晨
+                    本文最后更新于 2026年4月2日 下午
                   
                 
               </p>
@@ -430,165 +428,97 @@
             
               <div class="markdown-body">
                 
-                <h2 id="1-背景与目标"><a href="#1-背景与目标" class="headerlink" title="1. 背景与目标"></a>1. 背景与目标</h2><h3 id="1-1-项目编号规范"><a href="#1-1-项目编号规范" class="headerlink" title="1.1 项目编号规范"></a>1.1 项目编号规范</h3><p>根据文件编号规范，本项目采用：<code>ND-20260315-001-博客系统优化实战</code></p>
-<h3 id="1-2-文章规范要素"><a href="#1-2-文章规范要素" class="headerlink" title="1.2 文章规范要素"></a>1.2 文章规范要素</h3><ul>
-<li><strong>编号规则</strong>：遵循 <code>ND-YYYYMMDD-XXX-项目名称</code> 格式</li>
-<li><strong>封面图片</strong>：使用 <code>/img/cover-flat-*.jpg</code> 系列统一风格</li>
-<li><strong>摘要规范</strong>：使用纯文本，避免 Markdown 格式，长度控制在 80 字内</li>
-<li><strong>标签分类</strong>：使用标准化标签组合，便于后续搜索和分析</li>
-</ul>
-<h3 id="1-3-优化目标"><a href="#1-3-优化目标" class="headerlink" title="1.3 优化目标"></a>1.3 优化目标</h3><p>这次优化的目标很简单：<strong>恢复博客的稳定生成与发布能力</strong>。实际问题出现在主题配置文件 <code>_config.fluid.yml</code> 的缩进错误，导致 <code>hexo generate</code>直接失败。我们需要做到三件事：</p>
+                <h1 id="网页项目的标准文件结构：最佳实践与优化建议"><a href="#网页项目的标准文件结构：最佳实践与优化建议" class="headerlink" title="网页项目的标准文件结构：最佳实践与优化建议"></a>网页项目的标准文件结构：最佳实践与优化建议</h1><p>在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供 Vue3&#x2F;Vite 前端和 FastAPI 后端的具体优化建议。</p>
+<h2 id="一、当前结构的合理性分析"><a href="#一、当前结构的合理性分析" class="headerlink" title="一、当前结构的合理性分析"></a>一、当前结构的合理性分析</h2><h3 id="✅-符合的行业标准"><a href="#✅-符合的行业标准" class="headerlink" title="✅ 符合的行业标准"></a>✅ 符合的行业标准</h3><p>一个现代化的网页项目通常具备以下特征：</p>
 <ol>
-<li>快速定位并修复错误</li>
-<li>确保生成与部署流程稳定可复用</li>
-<li>将经验固化到 SOP，避免重复踩坑</li>
+<li><strong>前后端分离</strong>：明确分离前端和后端目录，符合现代开发标准</li>
+<li><strong>模块化组织</strong>：按功能&#x2F;职责划分目录，便于团队协作</li>
+<li><strong>配置分离</strong>：环境变量、构建配置与代码分离</li>
+<li><strong>版本控制友好</strong>：合理的 .gitignore 配置</li>
+<li><strong>Docker 化支持</strong>：容器化部署结构</li>
 </ol>
-<h2 id="2-问题现象"><a href="#2-问题现象" class="headerlink" title="2. 问题现象"></a>2. 问题现象</h2><h3 id="2-1-严格遵循-Hexo-官方文档"><a href="#2-1-严格遵循-Hexo-官方文档" class="headerlink" title="2.1 严格遵循 Hexo 官方文档"></a>2.1 严格遵循 Hexo 官方文档</h3><p>本次优化严格遵循 Hexo 官方文档（<a target="_blank" rel="noopener" href="https://hexo.io/docs/">Hexo 官方文档</a>）和 Fluid 主题文档（<a target="_blank" rel="noopener" href="https://hexo.fluid-dev.com/docs/">Fluid 主题文档</a>）的最佳实践。</p>
-<p>执行 <code>hexo generate</code> 时出现报错：</p>
-<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">FATAL YAMLException: bad indentation <span class="hljs-keyword">of</span> a mapping <span class="hljs-keyword">entry</span><br></code></pre></td></tr></table></figure>
+<p>这些特征不仅提升了项目的可维护性，还为团队协作和自动化部署打下了坚实基础。</p>
+<h2 id="二、优化空间和改进建议"><a href="#二、优化空间和改进建议" class="headerlink" title="二、优化空间和改进建议"></a>二、优化空间和改进建议</h2><h3 id="1-前端（Vite）优化建议"><a href="#1-前端（Vite）优化建议" class="headerlink" title="1. 前端（Vite）优化建议"></a>1. 前端（Vite）优化建议</h3><p>对于基于 Vue3 和 Vite 的前端项目，推荐以下目录结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">frontend/<br>├── .vscode/              # IDE 配置（推荐）<br>│   ├── extensions.json<br>│   └── settings.json<br>├── src/<br>│   ├── composables/      # Vue 组合式函数<br>│   ├── directives/       # 自定义指令<br>│   ├── plugins/          # Vue 插件<br>│   ├── locales/          # 国际化文件<br>│   ├── hooks/           # React 自定义钩子（如使用 React）<br>│   └── types/           # TypeScript 类型定义<br>├── tests/               # 前端测试<br>│   ├── unit/           # 单元测试<br>│   ├── e2e/            # 端到端测试<br>│   └── fixtures/       # 测试数据<br>├── .storybook/          # 组件文档（可选）<br>├── vitest.config.ts     # 测试配置<br>└── eslint.config.js     # ESLint 配置<br></code></pre></td></tr></table></figure>
 
-<p>这是一个典型的 <strong>YAML 缩进错误</strong>。虽然只有一处缩进不一致，但足以让整个构建失败。</p>
-<h3 id="2-2-主题配置错误分析"><a href="#2-2-主题配置错误分析" class="headerlink" title="2.2 主题配置错误分析"></a>2.2 主题配置错误分析</h3><p>错误发生在 Fluid 主题的 <code>_config.fluid.yml</code> 文件中，该文件是 Hexo 主题的标准配置文件，必须严格遵循 YAML 格式规范。</p>
-<hr>
-<h2 id="3-根因分析"><a href="#3-根因分析" class="headerlink" title="3. 根因分析"></a>3. 根因分析</h2><h3 id="3-1-封面图片风格规范与获取方式"><a href="#3-1-封面图片风格规范与获取方式" class="headerlink" title="3.1 封面图片风格规范与获取方式"></a>3.1 封面图片风格规范与获取方式</h3><p>根据博客系统规范，封面图片采用统一风格：</p>
-<p><strong>图片系列规范</strong>：</p>
+<p><strong>关键优化点</strong>：</p>
 <ul>
-<li>使用 <code>/img/cover-flat-*.jpg</code> 系列</li>
-<li>统一扁平设计风格</li>
-<li>分辨率 1200x630px（分享卡片标准）</li>
-<li>存放路径：<code>/home/jarvis/blog/source/img/</code></li>
+<li><strong>composables 目录</strong>：Vue3 的组合式 API 最佳实践，便于状态复用</li>
+<li><strong>directives 目录</strong>：自定义指令集中管理，提升代码可读性</li>
+<li><strong>tests 分层</strong>：单元测试、E2E 测试和测试数据分离，提升测试覆盖率</li>
+<li><strong>Storybook 集成</strong>：可视化组件文档，提升设计和开发协作效率</li>
 </ul>
-<p><strong>获取方式调整</strong>：</p>
-<ol>
-<li><strong>搜索引擎</strong>：通过 bing.com 搜索获取高质量图片</li>
-<li><strong>图片筛选</strong>：选择符合扁平设计风格的图片</li>
-<li><strong>格式转换</strong>：统一调整为 JPG 格式，标准分辨率 1200x630px</li>
-</ol>
-<h3 id="3-2-摘要规范化"><a href="#3-2-摘要规范化" class="headerlink" title="3.2 摘要规范化"></a>3.2 摘要规范化</h3><p>摘要必须遵循以下规范：</p>
+<h3 id="2-后端（FastAPI）优化建议"><a href="#2-后端（FastAPI）优化建议" class="headerlink" title="2. 后端（FastAPI）优化建议"></a>2. 后端（FastAPI）优化建议</h3><p>对于 FastAPI 后端项目，推荐以下目录结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── app/<br>│   ├── middleware/       # 中间件（推荐单独目录）<br>│   │   ├── logging.py<br>│   │   └── cors.py<br>│   ├── events/          # 事件处理器<br>│   │   ├── handlers.py<br>│   │   └── listeners.py<br>│   ├── cache/           # 缓存相关<br>│   └── background/      # 后台任务<br>│       └── tasks.py<br>├── alembic/             # Alembic 迁移（官方推荐名称）<br>│   └── versions/<br>├── tests/<br>│   ├── integration/     # 集成测试<br>│   ├── unit/<br>│   └── conftest.py<br>├── .pre-commit-config.yaml  # Git 钩子配置<br>├── pytest.ini           # 测试配置<br>└── setup.cfg           # 工具配置<br></code></pre></td></tr></table></figure>
+
+<p><strong>关键优化点</strong>：</p>
 <ul>
-<li><strong>纯文本格式</strong>：避免使用 Markdown 标记</li>
-<li><strong>长度控制</strong>：80 字以内</li>
-<li><strong>内容格式</strong>：使用双引号包裹，保持格式统一</li>
+<li><strong>middleware 独立目录</strong>：中间件集中管理，便于维护和扩展</li>
+<li><strong>events 系统</strong>：事件驱动架构，提升系统解耦性</li>
+<li><strong>cache 和 background 分离</strong>：缓存和后台任务独立管理，提升性能</li>
+<li><strong>pre-commit 钩子</strong>：自动化代码质量检查，减少 Bug 流入</li>
 </ul>
-<h3 id="3-3-根因分析"><a href="#3-3-根因分析" class="headerlink" title="3.3 根因分析"></a>3.3 根因分析</h3><p>检查 <code>_config.fluid.yml</code> 的 <code>index</code> 段落时发现缩进不一致：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">index:</span><br> <span class="hljs-attr">excerpt:</span> <span class="hljs-literal">true</span><br> <span class="hljs-comment"># 首页 Banner头图，可以是相对路径或绝对路径，以下相同</span><br> <span class="hljs-attr">banner_img:</span> <span class="hljs-string">/img/default.png</span><br></code></pre></td></tr></table></figure>
+<h3 id="3-根目录结构优化"><a href="#3-根目录结构优化" class="headerlink" title="3. 根目录结构优化"></a>3. 根目录结构优化</h3><p>项目根目录应包含以下关键文件和目录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">project-root/<br>├── .husky/             # Git 钩子配置<br>├── .commitlintrc.js    # Commit 信息规范<br>├── .github/<br>│   ├── workflows/<br>│   │   ├── ci.yml      # CI 流水线<br>│   │   ├── cd.yml      # CD 流水线<br>│   │   └── security-scan.yml<br>│   ├── PULL_REQUEST_TEMPLATE.md<br>│   └── ISSUE_TEMPLATE.md<br>├── docker-compose.yml<br>├── docker-compose.dev.yml<br>├── docker-compose.prod.yml<br>├── Makefile            # 常用命令脚本<br>├── CHANGELOG.md        # 变更日志<br>├── CONTRIBUTING.md     # 贡献指南<br>└── SECURITY.md         # 安全策略<br></code></pre></td></tr></table></figure>
 
-<p>问题是 <code>excerpt:</code> 的缩进不正确（应为 <strong>2 空格</strong>），导致 YAML解析失败。</p>
-<hr>
-<h2 id="4-解决方案"><a href="#4-解决方案" class="headerlink" title="4.解决方案"></a>4.解决方案</h2><p>修复方式是统一缩进为2 空格：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">index:</span><br> <span class="hljs-attr">excerpt:</span> <span class="hljs-literal">true</span><br> <span class="hljs-attr">banner_img:</span> <span class="hljs-string">/img/default.png</span><br></code></pre></td></tr></table></figure>
-
-<p>随后重新执行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo clean &amp;&amp; hexo generate<br></code></pre></td></tr></table></figure>
-
-<p>确认构建成功后再执行部署：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo deploy<br></code></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="5-过程沉淀（SOP-更新）"><a href="#5-过程沉淀（SOP-更新）" class="headerlink" title="5. 过程沉淀（SOP 更新）"></a>5. 过程沉淀（SOP 更新）</h2><h3 id="5-1-草稿模式审批方法建立"><a href="#5-1-草稿模式审批方法建立" class="headerlink" title="5.1 草稿模式审批方法建立"></a>5.1 草稿模式审批方法建立</h3><p>根据 SOP-003 新增要求，建立完整的草稿审批流程：</p>
-<p><strong>草稿审核流程</strong>：</p>
-<ol>
-<li><strong>草稿创建</strong> → 放入 <code>_drafts/</code> 目录</li>
-<li><strong>本地预览</strong> → 执行 <code>hexo server --draft --port 4001</code></li>
-<li><strong>浏览器审核</strong> → <strong>必须</strong> 在浏览器中查看（非文本审查）</li>
-<li><strong>张老师审批</strong> → 确认内容质量和格式</li>
-<li><strong>草稿发布</strong> → 移至 <code>_posts/</code>，按 SOP 发布</li>
-</ol>
-<p><strong>审批要点</strong>：</p>
+<p><strong>关键优化点</strong>：</p>
 <ul>
-<li>格式规范性（标题、摘要、标签、封面图）</li>
-<li>内容完整性和技术准确性</li>
-<li>遵循官方文档标准</li>
+<li><strong>CI&#x2F;CD 流水线</strong>：自动化测试、构建和部署</li>
+<li><strong>Commit 规范</strong>：统一的 Commit 信息格式，提升代码审查效率</li>
+<li><strong>多环境配置</strong>：开发、测试、生产环境独立配置</li>
+<li><strong>文档完善</strong>：变更日志、贡献指南和安全策略</li>
 </ul>
-<h3 id="5-2-SOP-优化内容"><a href="#5-2-SOP-优化内容" class="headerlink" title="5.2 SOP 优化内容"></a>5.2 SOP 优化内容</h3><p>这次问题暴露出四个重要风险点：</p>
-<h4 id="✅-风险点1：配置文件缩进不一致"><a href="#✅-风险点1：配置文件缩进不一致" class="headerlink" title="✅ 风险点1：配置文件缩进不一致"></a>✅ 风险点1：配置文件缩进不一致</h4><ul>
-<li>YAML 对缩进极其敏感</li>
-<li>小改动可能造成整体构建失败</li>
-<li><strong>改进措施</strong>：所有 <code>_config*.yml</code>统一 <strong>2 空格缩进</strong></li>
-<li><strong>验证流程</strong>：每次改动后必须执行 <code>hexo clean &amp;&amp; hexo generate</code> 验证</li>
+<h2 id="三、行业最佳实践差异点"><a href="#三、行业最佳实践差异点" class="headerlink" title="三、行业最佳实践差异点"></a>三、行业最佳实践差异点</h2><h3 id="1-FastAPI-项目结构模式差异"><a href="#1-FastAPI-项目结构模式差异" class="headerlink" title="1. FastAPI 项目结构模式差异"></a>1. FastAPI 项目结构模式差异</h3><p>官方推荐模式（简单项目）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">app/<br>├── routers/<br>├── dependencies.py<br>└── main.py<br></code></pre></td></tr></table></figure>
+
+<p>企业级推荐模式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── src/                      # 源代码<br>│   └── your_package/<br>│       ├── api/<br>│       ├── core/<br>│       └── ...<br>├── tests/<br>├── pyproject.toml<br>└── setup.cfg<br></code></pre></td></tr></table></figure>
+
+<p><strong>建议</strong>：使用 src&#x2F; 布局（将应用代码放在 src&#x2F; 下），避免导入问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── src/<br>│   └── app/           # 主应用包<br>│       ├── __init__.py<br>│       └── main.py<br>├── tests/<br>└── pyproject.toml<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-前端构建工具优化"><a href="#2-前端构建工具优化" class="headerlink" title="2. 前端构建工具优化"></a>2. 前端构建工具优化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">frontend/<br>├── .vscode/          # IDE 配置<br>├── .husky/          # Git 钩子<br>├── .changeset/       # 版本管理<br>├── src/<br>│   └── lib/         # 工具库/第三方库封装<br>├── .npmrc           # npm 配置<br>├── .nvmrc           # Node 版本<br>└── .npmignore<br></code></pre></td></tr></table></figure>
+
+<p><strong>关键优化点</strong>：</p>
+<ul>
+<li><strong>.changeset 目录</strong>：版本管理自动化，便于多包管理</li>
+<li><strong>.npmrc 和 .nvmrc</strong>：统一 npm 配置和 Node 版本</li>
+<li><strong>lib 目录</strong>：工具库集中管理，提升代码复用</li>
 </ul>
-<h4 id="✅-风险点2：重复尝试无果时的求助规则"><a href="#✅-风险点2：重复尝试无果时的求助规则" class="headerlink" title="✅ 风险点2：重复尝试无果时的求助规则"></a>✅ 风险点2：重复尝试无果时的求助规则</h4><ul>
-<li><strong>三次失败换方法</strong>：完全相同操作连续3次失败，必须更换方法</li>
-<li><strong>多方法失败即求助</strong>：尝试多种方法仍无法成功，立即停止并向张老师求助</li>
+<h3 id="3-数据库管理优化"><a href="#3-数据库管理优化" class="headerlink" title="3. 数据库管理优化"></a>3. 数据库管理优化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── migrations/       # Alembic 迁移<br>├── seeds/           # 种子数据<br>├── database/<br>│   ├── base.py      # 数据库基类<br>│   ├── session.py   # 会话管理<br>│   └── models/<br>└── docker/<br>    └── init.sql     # 初始化脚本<br></code></pre></td></tr></table></figure>
+
+<p><strong>关键优化点</strong>：</p>
+<ul>
+<li><strong>migrations 目录</strong>：数据库版本控制和迁移脚本</li>
+<li><strong>seeds 目录</strong>：种子数据，便于开发和测试</li>
+<li><strong>docker&#x2F;init.sql</strong>：数据库初始化脚本，容器化部署</li>
 </ul>
-<h4 id="✅-风险点3：封面图片管理规范"><a href="#✅-风险点3：封面图片管理规范" class="headerlink" title="✅ 风险点3：封面图片管理规范"></a>✅ 风险点3：封面图片管理规范</h4><ul>
-<li><strong>命名规范</strong>：使用统一的 cover-flat-* 命名体系</li>
-<li><strong>尺寸标准</strong>：1200x630px 分辨率</li>
-<li><strong>路径管理</strong>：严格按 <code>/img/</code> 目录组织</li>
-</ul>
-<h4 id="✅-风险点4：摘要和格式规范"><a href="#✅-风险点4：摘要和格式规范" class="headerlink" title="✅ 风险点4：摘要和格式规范"></a>✅ 风险点4：摘要和格式规范</h4><ul>
-<li><strong>纯文本摘要</strong>：避免 Markdown 格式，使用双引号包裹</li>
-<li><strong>长度控制</strong>：80 字以内，确保清晰表达</li>
-<li><strong>标签标准化</strong>：使用预定义的标签分类体系</li>
-</ul>
-<h3 id="5-3-严格遵循官方文档"><a href="#5-3-严格遵循官方文档" class="headerlink" title="5.3 严格遵循官方文档"></a>5.3 严格遵循官方文档</h3><h4 id="Hexo-官方文档要求："><a href="#Hexo-官方文档要求：" class="headerlink" title="Hexo 官方文档要求："></a>Hexo 官方文档要求：</h4><ol>
-<li><strong>配置文件格式</strong>：严格遵循 YAML 标准</li>
-<li><strong>Front-matter 规范</strong>：必须包含必要字段（title, date, categories, tags）</li>
-<li><strong>目录结构</strong>：遵循 Hexo 标准目录组织</li>
-<li><strong>主题配置</strong>：严格按照主题文档配置参数</li>
+<h2 id="四、推荐的最终优化结构"><a href="#四、推荐的最终优化结构" class="headerlink" title="四、推荐的最终优化结构"></a>四、推荐的最终优化结构</h2><p>综合以上最佳实践，推荐以下最终的项目结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">my-project/<br>├── frontend/        # 前端<br>│   ├── .vscode/<br>│   ├── src/<br>│   │   ├── components/<br>│   │   ├── views/<br>│   │   ├── composables/<br>│   │   ├── plugins/<br>│   │   ├── locales/<br>│   │   ├── types/<br>│   │   ├── stores/<br>│   │   └── utils/<br>│   ├── tests/<br>│   ├── .storybook/<br>│   ├── .husky/<br>│   ├── .env.*<br>│   ├── vite.config.ts<br>│   └── package.json<br>├── backend/         # 后端<br>│   ├── src/<br>│   │   └── app/<br>│   │       ├── api/<br>│   │       ├── core/<br>│   │       ├── models/<br>│   │       ├── schemas/<br>│   │       ├── middleware/<br>│   │       └── utils/<br>│   ├── tests/<br>│   ├── migrations/<br>│   ├── alembic.ini<br>│   ├── requirements.txt<br>│   └── pyproject.toml<br>├── docker/<br>│   ├── nginx/<br>│   ├── db/<br>│   ├── Dockerfile.frontend<br>│   └── Dockerfile.backend<br>├── docs/<br>│   ├── api/<br>│   ├── architecture/<br>│   └── deployment/<br>├── scripts/<br>│   ├── dev.sh<br>│   ├── test.sh<br>│   └── deploy.sh<br>├── .github/<br>│   └── workflows/<br>├── docker-compose.yml<br>├── docker-compose.override.yml<br>├── Makefile<br>├── README.md<br>└── CONTRIBUTING.md<br></code></pre></td></tr></table></figure>
+
+<h2 id="五、关键优化总结"><a href="#五、关键优化总结" class="headerlink" title="五、关键优化总结"></a>五、关键优化总结</h2><ol>
+<li><strong>添加开发工具配置</strong>：IDE 配置、Git 钩子、代码规范工具</li>
+<li><strong>标准化测试结构</strong>：区分单元测试、集成测试、E2E 测试</li>
+<li><strong>改进 Python 项目布局</strong>：考虑使用 src&#x2F; 布局避免导入问题</li>
+<li><strong>增强 CI&#x2F;CD 支持</strong>：GitHub Actions 工作流模板</li>
+<li><strong>文档完善</strong>：添加架构、部署、贡献指南</li>
+<li><strong>环境区分</strong>：开发、测试、生产环境的独立配置</li>
 </ol>
-<h4 id="Fluid-主题官方规范："><a href="#Fluid-主题官方规范：" class="headerlink" title="Fluid 主题官方规范："></a>Fluid 主题官方规范：</h4><ol>
-<li><strong>主题配置</strong>：使用 <code>_config.fluid.yml</code>，不可修改主题源文件</li>
-<li><strong>自定义覆盖</strong>：通过 <code>_config.yml</code> 覆盖主题配置</li>
-<li><strong>插件兼容性</strong>：确保所选插件与主题兼容</li>
-</ol>
-<p>这些优化已写入 SOP-003 v3.0（Hexo 发布工作指导书）。</p>
+<h2 id="六、实践建议"><a href="#六、实践建议" class="headerlink" title="六、实践建议"></a>六、实践建议</h2><p>根据团队规模选择合适的复杂度：</p>
+<ul>
+<li><strong>小型团队（1-3人）</strong>：可保持简单结构，优先开发效率</li>
+<li><strong>中型团队（4-10人）</strong>：推荐采用优化后的完整结构，提升可维护性</li>
+<li><strong>大型团队（10人以上）</strong>：必须采用完整的标准化结构，建立严格的代码规范和审查流程</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一个合理的项目文件结构是高质量软件交付的基础。通过前后端分离、模块化组织、配置分离、Docker 化支持和完善的 CI&#x2F;CD 流程，我们不仅能提升开发效率，还能确保代码质量和系统稳定性。</p>
+<p>希望本文的建议能帮助你在实际项目中做出更明智的架构决策。如果你有其他优化建议或实践经验，欢迎分享和讨论。</p>
 <hr>
-<h2 id="6-发布验证清单（关键）"><a href="#6-发布验证清单（关键）" class="headerlink" title="6. 发布验证清单（关键）"></a>6. 发布验证清单（关键）</h2><p>发布后必须闭环验证，建议按以下清单执行：</p>
-<h3 id="6-1-技术验证"><a href="#6-1-技术验证" class="headerlink" title="6.1 技术验证"></a>6.1 技术验证</h3><ul>
-<li><input disabled="" type="checkbox"> <code>hexo deploy</code> 无报错</li>
-<li><input disabled="" type="checkbox"> GitHub Pages 构建成功</li>
-<li><input disabled="" type="checkbox"> 博客首页可访问（<a target="_blank" rel="noopener" href="https://normdist-ai.github.io)/">https://normdist-ai.github.io）</a></li>
-<li><input disabled="" type="checkbox"> 自定义域名解析正常（<a target="_blank" rel="noopener" href="https://www.normdist.com)/">https://www.normdist.com）</a></li>
-<li><input disabled="" type="checkbox"> 控制台无错误</li>
-<li><input disabled="" type="checkbox"> 封面图和资源加载正常</li>
+<p><strong>相关阅读</strong>：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://vuejs.org/">Vue3 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/">FastAPI 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.docker.com/develop/dev-best-practices/">Docker 最佳实践</a></li>
 </ul>
-<h3 id="6-2-内容质量验证"><a href="#6-2-内容质量验证" class="headerlink" title="6.2 内容质量验证"></a>6.2 内容质量验证</h3><ul>
-<li><input disabled="" type="checkbox"> 文章编号符合规范（ND-20260315-001-博客系统优化实战）</li>
-<li><input disabled="" type="checkbox"> 封面图片风格统一（cover-flat-*.jpg）</li>
-<li><input disabled="" type="checkbox"> 摘要格式规范（纯文本、双引号、80字内）</li>
-<li><input disabled="" type="checkbox"> 标签分类准确（技术指南、Hexo、博客、问题排查、SOP优化）</li>
-<li><input disabled="" type="checkbox"> 目录结构正确</li>
-</ul>
-<h3 id="6-3-遵循官方文档验证"><a href="#6-3-遵循官方文档验证" class="headerlink" title="6.3 遵循官方文档验证"></a>6.3 遵循官方文档验证</h3><ul>
-<li><input disabled="" type="checkbox"> Hexo 官方配置标准</li>
-<li><input disabled="" type="checkbox"> Fluid 主题配置规范</li>
-<li><input disabled="" type="checkbox"> Front-matter 格式要求</li>
-<li><input disabled="" type="checkbox"> 图片资源管理规范</li>
-</ul>
-<hr>
-<h2 id="7-经验总结"><a href="#7-经验总结" class="headerlink" title="7. 经验总结"></a>7. 经验总结</h2><h3 id="7-1-核心经验"><a href="#7-1-核心经验" class="headerlink" title="7.1 核心经验"></a>7.1 核心经验</h3><p>这次优化的核心经验是：</p>
-<ol>
-<li><strong>配置文件小错误可能引发整体失败</strong> - YAML 缩进错误是常见但致命的问题</li>
-<li><strong>固定流程比临场发挥更可靠</strong> - 建立标准化操作流程，避免重复踩坑</li>
-<li><strong>经验必须沉淀为 SOP 才能持续减少踩坑</strong> - 知识文档化是长期稳定的保障</li>
-<li><strong>严格遵循官方文档</strong> - 避免自定义配置导致的不兼容问题</li>
-<li><strong>封面图片标准化管理</strong> - 统一风格获取方式和命名规范</li>
-<li><strong>摘要和格式规范化</strong> - 确保内容质量和展示效果</li>
-</ol>
-<h3 id="7-2-最佳实践建议"><a href="#7-2-最佳实践建议" class="headerlink" title="7.2 最佳实践建议"></a>7.2 最佳实践建议</h3><p>如果你也在维护自己的 Hexo 博客，建议建立以下固定流程：</p>
-<h4 id="7-2-1-日常发布流程"><a href="#7-2-1-日常发布流程" class="headerlink" title="7.2.1 日常发布流程"></a>7.2.1 日常发布流程</h4><ol>
-<li><strong>草稿审核</strong>：必须通过浏览器预览审核</li>
-<li><strong>格式检查</strong>：按 ND-编号-项目名称 命名</li>
-<li><strong>封面规范</strong>：使用统一风格和尺寸</li>
-<li><strong>摘要验证</strong>：纯文本、80字内、双引号包裹</li>
-<li><strong>构建验证</strong>：<code>hexo clean &amp;&amp; hexo generate</code></li>
-<li><strong>发布验收</strong>：按技术+质量双重验证清单</li>
-</ol>
-<h4 id="7-2-2-质量保证措施"><a href="#7-2-2-质量保证措施" class="headerlink" title="7.2.2 质量保证措施"></a>7.2.2 质量保证措施</h4><ul>
-<li><strong>版本控制</strong>：所有配置文件纳入 Git 管理</li>
-<li><strong>文档同步</strong>：SOP 随流程更新及时同步</li>
-<li><strong>备份策略</strong>：定期备份配置和源文件</li>
-<li><strong>故障演练</strong>：定期模拟故障场景，验证应急流程</li>
-</ul>
-<h3 id="7-3-持续改进机制"><a href="#7-3-持续改进机制" class="headerlink" title="7.3 持续改进机制"></a>7.3 持续改进机制</h3><ol>
-<li><strong>定期审查 SOP</strong>：每季度审查并优化发布流程</li>
-<li><strong>收集反馈</strong>：从实际使用中收集问题和改进建议</li>
-<li><strong>技术更新</strong>：跟踪 Hexo 和主题的最新版本，适时升级</li>
-<li><strong>经验分享</strong>：将成功的优化经验文档化，分享给团队</li>
-</ol>
-<hr>
-<p>下一次再遇到类似问题，我们只需沿 SOP 执行即可快速恢复，这正是标准化管理的价值所在。通过建立完善的规范流程，我们不仅能提高发布质量，还能大幅降低维护成本。</p>
 
                 
               </div>
@@ -607,8 +537,15 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%8C%87%E5%8D%97/" class="category-chain-item">技术指南</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5/" class="category-chain-item">技术实践</a>
   
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5/%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84/" class="category-chain-item">项目架构</a>
+  
+  
+
   
 
       </span>
@@ -622,11 +559,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%8D%9A%E5%AE%A2/" class="print-no-link">#博客</a>
+        <a href="/tags/Web%E5%BC%80%E5%8F%91/" class="print-no-link">#Web开发</a>
       
-        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
+        <a href="/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="print-no-link">#最佳实践</a>
       
-        <a href="/tags/SOP/" class="print-no-link">#SOP</a>
+        <a href="/tags/%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84/" class="print-no-link">#项目架构</a>
       
     </div>
   
@@ -638,8 +575,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>博客系统优化实战：从配置踩坑到稳定发布</div>
-      <div>https://www.normdist.com/2026/03/15/ND-20260315-001-blog-system-optimization/</div>
+      <div>网页项目的标准文件结构：最佳实践与优化建议</div>
+      <div>https://www.normdist.com/2026/04/02/ND-20260402-web-project-standard-structure/</div>
     </div>
     <div class="license-meta">
       
@@ -651,7 +588,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月15日</div>
+          <div>2026年4月2日</div>
         </div>
       
       
@@ -683,9 +620,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/18/ND-20260318-001-daily-learning/" title="2026年3月18日学习日报">
+                      <a href="/2026/04/02/ND-20260402-001-web-project-standard-structure/" title="网页项目的标准文件结构：最佳实践与优化建议">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">2026年3月18日学习日报</span>
+                        <span class="hidden-mobile">网页项目的标准文件结构：最佳实践与优化建议</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -693,8 +630,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/14/ND-20260314-002-DualGPU-Ollama-Deployment/" title="Ubuntu 双显卡部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速完整指南">
-                        <span class="hidden-mobile">Ubuntu 双显卡部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速完整指南</span>
+                      <a href="/2026/03/25/ND-20260324-002-voc-skill-README/" title="">
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
