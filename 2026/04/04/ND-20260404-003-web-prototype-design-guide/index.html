@@ -19,27 +19,28 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文详细介绍 LWMS2 项目的原型设计工作规范。建立一套独立于正式代码的原型设计系统，支持快速迭代和多方案对比。涵盖目录结构、访问方式、工作流程、设计规范、文件命名、版本管理和最佳实践，确保原型开发不影响现有项目代码，同时保留所有设计方案作为团队的设计资产。">
+    <meta name="description" content="本文总结了一套通用的网页项目原型设计规范，适用于各种前端项目。建立独立于正式代码的原型设计系统，支持快速迭代和多方案对比。涵盖目录结构、访问方式、工作流程、设计规范、文件命名、版本管理和最佳实践，确保原型开发不影响现有项目代码，同时保留所有设计方案作为团队的设计资产。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LWMS2 原型设计工作规范">
-<meta property="og:url" content="https://www.normdist.com/2026/04/04/ND-20260404-002-prototype-design-guide/index.html">
+<meta property="og:title" content="通用网页项目原型设计规范">
+<meta property="og:url" content="https://www.normdist.com/2026/04/04/ND-20260404-003-web-prototype-design-guide/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="本文详细介绍 LWMS2 项目的原型设计工作规范。建立一套独立于正式代码的原型设计系统，支持快速迭代和多方案对比。涵盖目录结构、访问方式、工作流程、设计规范、文件命名、版本管理和最佳实践，确保原型开发不影响现有项目代码，同时保留所有设计方案作为团队的设计资产。">
+<meta property="og:description" content="本文总结了一套通用的网页项目原型设计规范，适用于各种前端项目。建立独立于正式代码的原型设计系统，支持快速迭代和多方案对比。涵盖目录结构、访问方式、工作流程、设计规范、文件命名、版本管理和最佳实践，确保原型开发不影响现有项目代码，同时保留所有设计方案作为团队的设计资产。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-02.jpg">
+<meta property="og:image" content="https://www.normdist.com/img/cover-flat-03.jpg">
 <meta property="article:published_time" content="2026-04-03T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-04-04T03:55:54.150Z">
+<meta property="article:modified_time" content="2026-04-04T03:59:32.521Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="原型设计">
 <meta property="article:tag" content="工作规范">
+<meta property="article:tag" content="前端开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-02.jpg">
+<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-03.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>LWMS2 原型设计工作规范 - 进化概率论</title>
+  <title>通用网页项目原型设计规范 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -334,7 +335,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">LWMS2 原型设计工作规范</span>
+            <span id="subtitle">通用网页项目原型设计规范</span>
           
         </div>
 
@@ -357,7 +358,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          9.8k 字
+          9.2k 字
         
       </span>
     
@@ -368,7 +369,7 @@
         
         
         
-          82 分钟
+          77 分钟
         
       </span>
     
@@ -416,7 +417,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">LWMS2 原型设计工作规范</h1>
+            <h1 id="seo-header">通用网页项目原型设计规范</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
@@ -429,7 +430,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="LWMS2-原型设计工作规范"><a href="#LWMS2-原型设计工作规范" class="headerlink" title="LWMS2 原型设计工作规范"></a>LWMS2 原型设计工作规范</h1><h2 id="📋-目录"><a href="#📋-目录" class="headerlink" title="📋 目录"></a>📋 目录</h2><ol>
+                <h1 id="通用网页项目原型设计规范"><a href="#通用网页项目原型设计规范" class="headerlink" title="通用网页项目原型设计规范"></a>通用网页项目原型设计规范</h1><h2 id="📋-目录"><a href="#📋-目录" class="headerlink" title="📋 目录"></a>📋 目录</h2><ol>
 <li><a href="#%E6%A6%82%E8%BF%B0">概述</a></li>
 <li><a href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">目录结构</a></li>
 <li><a href="#%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F">访问方式</a></li>
@@ -448,38 +449,38 @@
 <li><strong>灵活部署</strong>：选定方案后可快速集成到正式项目</li>
 </ul>
 <hr>
-<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs nix">项目根目录<span class="hljs-symbol">/</span><br>├── .vibe<span class="hljs-symbol">/</span>                      <span class="hljs-comment"># 原型设计专用文件夹 ⭐ 推荐</span><br>│   ├── prototype<span class="hljs-symbol">/</span>              <span class="hljs-comment"># 原型资源目录</span><br>│   │   ├── index.html          <span class="hljs-comment"># 原型导航首页</span><br>│   │   ├── login<span class="hljs-symbol">/</span>              <span class="hljs-comment"># 登录页面原型</span><br>│   │   │   ├── login-<span class="hljs-number">1</span>.html    <span class="hljs-comment"># 方案 1</span><br>│   │   │   ├── login-<span class="hljs-number">2</span>.html    <span class="hljs-comment"># 方案 2</span><br>│   │   │   └── ...<br>│   │   └── assets<span class="hljs-symbol">/</span>             <span class="hljs-comment"># 原型公共资源</span><br>│   └── serve_prototype.py      <span class="hljs-comment"># 原型服务器脚本</span><br>│<br>├── frontend<span class="hljs-symbol">/</span><br>│   └── public<span class="hljs-symbol">/</span>             <span class="hljs-comment"># 静态资源目录 (备选方案)</span><br>│       └── prototype<span class="hljs-symbol">/</span>      <span class="hljs-comment"># 原型资源目录</span><br>│           ├── index.html  <span class="hljs-comment"># 原型导航首页</span><br>│           └── login<span class="hljs-symbol">/</span>      <span class="hljs-comment"># 登录页面原型</span><br>│<br>└── docs<span class="hljs-symbol">/</span><br>    └── PROTOTYPE_GUIDE.md  <span class="hljs-comment"># 本文档</span><br></code></pre></td></tr></table></figure>
+<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs nix">项目根目录<span class="hljs-symbol">/</span><br>├── .prototype<span class="hljs-symbol">/</span>                <span class="hljs-comment"># 原型设计专用文件夹 ⭐ 推荐</span><br>│   ├── prototype<span class="hljs-symbol">/</span>              <span class="hljs-comment"># 原型资源目录</span><br>│   │   ├── index.html          <span class="hljs-comment"># 原型导航首页</span><br>│   │   ├── login<span class="hljs-symbol">/</span>              <span class="hljs-comment"># 登录页面原型</span><br>│   │   │   ├── login-<span class="hljs-number">1</span>.html    <span class="hljs-comment"># 方案 1</span><br>│   │   │   ├── login-<span class="hljs-number">2</span>.html    <span class="hljs-comment"># 方案 2</span><br>│   │   │   └── ...<br>│   │   └── assets<span class="hljs-symbol">/</span>             <span class="hljs-comment"># 原型公共资源</span><br>│   └── serve_prototype.py      <span class="hljs-comment"># 原型服务器脚本（可选）</span><br>│<br>├── public<span class="hljs-symbol">/</span>                    <span class="hljs-comment"># 静态资源目录 (备选方案)</span><br>│   └── prototype<span class="hljs-symbol">/</span>              <span class="hljs-comment"># 原型资源目录</span><br>│       ├── index.html          <span class="hljs-comment"># 原型导航首页</span><br>│       └── login<span class="hljs-symbol">/</span>              <span class="hljs-comment"># 登录页面原型</span><br>│<br>└── docs<span class="hljs-symbol">/</span><br>    └── PROTOTYPE_GUIDE.md      <span class="hljs-comment"># 本文档</span><br></code></pre></td></tr></table></figure>
 
 <hr>
-<h2 id="访问方式"><a href="#访问方式" class="headerlink" title="访问方式"></a>访问方式</h2><h3 id="方案-A：独立端口（推荐）⭐"><a href="#方案-A：独立端口（推荐）⭐" class="headerlink" title="方案 A：独立端口（推荐）⭐"></a>方案 A：独立端口（推荐）⭐</h3><p>使用独立的 Python HTTP 服务器，完全隔离于 Vite 开发服务器。</p>
-<p><strong>启动命令:</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> .vibe<br>python serve_prototype.py<br></code></pre></td></tr></table></figure>
+<h2 id="访问方式"><a href="#访问方式" class="headerlink" title="访问方式"></a>访问方式</h2><h3 id="方案-A：独立端口（推荐）⭐"><a href="#方案-A：独立端口（推荐）⭐" class="headerlink" title="方案 A：独立端口（推荐）⭐"></a>方案 A：独立端口（推荐）⭐</h3><p>使用独立的 HTTP 服务器，完全隔离于开发服务器。</p>
+<p><strong>启动命令 (Python):</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> .prototype<br>python -m http.server 5174<br></code></pre></td></tr></table></figure>
 
 <p><strong>访问地址:</strong></p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">5174</span>                    <span class="hljs-comment"># 导航页</span><br>http:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">5174</span><span class="hljs-regexp">/login/</span>login-<span class="hljs-number">1</span>.html  <span class="hljs-comment"># 登录方案 1</span><br>http:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">5174</span><span class="hljs-regexp">/login/</span>login-<span class="hljs-number">2</span>.html  <span class="hljs-comment"># 登录方案 2</span><br>...<br></code></pre></td></tr></table></figure>
 
 <p><strong>优势:</strong></p>
 <ul>
-<li>✅ 完全独立，不受 Vite 影响</li>
+<li>✅ 完全独立，不受开发服务器影响</li>
 <li>✅ 可以并行运行开发和原型设计</li>
 <li>✅ 更接近生产环境的静态文件服务</li>
 <li>✅ 自动禁用缓存，方便调试</li>
 </ul>
 <hr>
-<h3 id="方案-B：Vite-Public-目录"><a href="#方案-B：Vite-Public-目录" class="headerlink" title="方案 B：Vite Public 目录"></a>方案 B：Vite Public 目录</h3><p>将原型文件放在 <code>frontend/public</code> 目录下。</p>
+<h3 id="方案-B：开发服务器-Public-目录"><a href="#方案-B：开发服务器-Public-目录" class="headerlink" title="方案 B：开发服务器 Public 目录"></a>方案 B：开发服务器 Public 目录</h3><p>将原型文件放在项目的 <code>public</code> 目录下。</p>
 <p><strong>访问地址:</strong></p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">5173</span><span class="hljs-regexp">/prototype/i</span>ndex.html<br>http:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">5173</span><span class="hljs-regexp">/prototype/</span>login/login-<span class="hljs-number">1</span>.html<br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">3000</span><span class="hljs-regexp">/prototype/i</span>ndex.html<br>http:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">3000</span><span class="hljs-regexp">/prototype/</span>login/login-<span class="hljs-number">1</span>.html<br></code></pre></td></tr></table></figure>
 
 <p><strong>优势:</strong></p>
 <ul>
 <li>✅ 只需启动一个服务器</li>
-<li>✅ Vite 自动处理静态资源</li>
+<li>✅ 开发服务器自动处理静态资源</li>
 <li>✅ 无需额外配置</li>
 </ul>
 <p><strong>劣势:</strong></p>
 <ul>
 <li>⚠️ 与正式项目共享端口</li>
-<li>⚠️ 可能受到 Vite 热更新影响</li>
+<li>⚠️ 可能受到热更新影响</li>
 </ul>
 <hr>
 <h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><h3 id="1-需求沟通"><a href="#1-需求沟通" class="headerlink" title="1. 需求沟通"></a>1. 需求沟通</h3><ul>
@@ -487,8 +488,8 @@
 <li>确定功能要点</li>
 <li>约定风格偏好</li>
 </ul>
-<h3 id="2-方案设计"><a href="#2-方案设计" class="headerlink" title="2. 方案设计"></a>2. 方案设计</h3><p>设计师（AI）根据需求设计多个方案（建议 3-10 个）。</p>
-<h3 id="3-原型实现"><a href="#3-原型实现" class="headerlink" title="3. 原型实现"></a>3. 原型实现</h3><p>在 <code>.vibe/prototype</code> 目录下创建独立的 HTML 文件。</p>
+<h3 id="2-方案设计"><a href="#2-方案设计" class="headerlink" title="2. 方案设计"></a>2. 方案设计</h3><p>设计师（AI 或人工）根据需求设计多个方案（建议 3-10 个）。</p>
+<h3 id="3-原型实现"><a href="#3-原型实现" class="headerlink" title="3. 原型实现"></a>3. 原型实现</h3><p>在 <code>.prototype/prototype</code> 目录下创建独立的 HTML 文件。</p>
 <h3 id="4-评审选择"><a href="#4-评审选择" class="headerlink" title="4. 评审选择"></a>4. 评审选择</h3><ul>
 <li>通过浏览器预览所有方案</li>
 <li>对比不同设计风格</li>
@@ -496,7 +497,7 @@
 </ul>
 <h3 id="5-正式集成"><a href="#5-正式集成" class="headerlink" title="5. 正式集成"></a>5. 正式集成</h3><p>将选定的方案集成到正式项目中：</p>
 <ul>
-<li>转换为 React 组件</li>
+<li>转换为 React&#x2F;Vue&#x2F;Angular 组件</li>
 <li>添加业务逻辑</li>
 <li>接入 API 接口</li>
 <li>代码审查和测试</li>
@@ -532,7 +533,7 @@
 <li><strong>可选</strong>: Google Fonts (CDN)</li>
 </ul>
 <h3 id="数据模拟"><a href="#数据模拟" class="headerlink" title="数据模拟"></a>数据模拟</h3><p>使用硬编码的模拟数据，不依赖真实 API：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> mockData = &#123;<br>    <span class="hljs-attr">user</span>: &#123;<br>        <span class="hljs-attr">username</span>: <span class="hljs-string">&#x27;admin&#x27;</span>,<br>        <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;admin@example.com&#x27;</span><br>    &#125;,<br>    <span class="hljs-attr">warehouses</span>: [<br>        &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;北京仓&#x27;</span>, <span class="hljs-attr">code</span>: <span class="hljs-string">&#x27;BJ001&#x27;</span> &#125;,<br>        &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;上海仓&#x27;</span>, <span class="hljs-attr">code</span>: <span class="hljs-string">&#x27;SH001&#x27;</span> &#125;<br>    ]<br>&#125;;<br></code></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> mockData = &#123;<br>    <span class="hljs-attr">user</span>: &#123;<br>        <span class="hljs-attr">username</span>: <span class="hljs-string">&#x27;admin&#x27;</span>,<br>        <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;admin@example.com&#x27;</span><br>    &#125;,<br>    <span class="hljs-attr">items</span>: [<br>        &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;项目 A&#x27;</span>, <span class="hljs-attr">status</span>: <span class="hljs-string">&#x27;active&#x27;</span> &#125;,<br>        &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;项目 B&#x27;</span>, <span class="hljs-attr">status</span>: <span class="hljs-string">&#x27;pending&#x27;</span> &#125;<br>    ]<br>&#125;;<br></code></pre></td></tr></table></figure>
 
 <h3 id="交互模拟"><a href="#交互模拟" class="headerlink" title="交互模拟"></a>交互模拟</h3><p>模拟表单提交、页面跳转等交互，但不真正调用后端：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 模拟登录</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">handleLogin</span>(<span class="hljs-params">username, password</span>) &#123;<br>    <span class="hljs-comment">// 显示加载状态</span><br>    <span class="hljs-comment">// 延迟 1 秒模拟网络请求</span><br>    <span class="hljs-comment">// 返回成功/失败</span><br>    <span class="hljs-comment">// 跳转到原型页面</span><br>&#125;<br></code></pre></td></tr></table></figure>
@@ -548,8 +549,8 @@
 <ul>
 <li><code>login-1.html</code></li>
 <li><code>dashboard-2.html</code></li>
-<li><code>inventory-ledger-1.html</code></li>
-<li><code>scan-inbound-3.html</code></li>
+<li><code>user-profile-1.html</code></li>
+<li><code>product-list-3.html</code></li>
 </ul>
 <p>❌ <strong>错误:</strong></p>
 <ul>
@@ -566,7 +567,7 @@
 </ul>
 <hr>
 <h2 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h2><h3 id="Git-配置"><a href="#Git-配置" class="headerlink" title="Git 配置"></a>Git 配置</h3><p>在 <code>.gitignore</code> 中添加：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs gitignore"># ❌ 不要忽略原型文件 - 需要持久保留<br># .vibe/prototype/*.html<br><br># 或者只忽略临时测试文件<br>.vibe/prototype/**/test-*.html<br>.vibe/prototype/**/*.tmp<br><br># 允许提交所有正式原型文件<br>!.vibe/prototype/index.html<br>!.vibe/prototype/login/*.html<br>!.vibe/prototype/dashboard/*.html<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs gitignore"># ❌ 不要忽略原型文件 - 需要持久保留<br># .prototype/prototype/*.html<br><br># 或者只忽略临时测试文件<br>.prototype/prototype/**/test-*.html<br>.prototype/prototype/**/*.tmp<br><br># 允许提交所有正式原型文件<br>!.prototype/prototype/index.html<br>!.prototype/prototype/login/*.html<br>!.prototype/prototype/dashboard/*.html<br></code></pre></td></tr></table></figure>
 
 <h3 id="保留策略-⭐⭐⭐"><a href="#保留策略-⭐⭐⭐" class="headerlink" title="保留策略 ⭐⭐⭐"></a>保留策略 ⭐⭐⭐</h3><h4 id="方案-A：完全保留（推荐）✅"><a href="#方案-A：完全保留（推荐）✅" class="headerlink" title="方案 A：完全保留（推荐）✅"></a>方案 A：完全保留（推荐）✅</h4><p><strong>保留所有原型文件作为设计资产:</strong></p>
 <ul>
@@ -583,7 +584,7 @@
 <li>避免重复劳动</li>
 </ul>
 <p><strong>文件组织:</strong></p>
-<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">.vibe/prototype/</span><br>├── README.md                    <span class="hljs-comment"># 说明文档</span><br>├── index.html                   <span class="hljs-comment"># 导航首页</span><br>├── login/<br>│   ├── README.md               <span class="hljs-comment"># 登录页面设计说明</span><br>│   ├── login-1.html            <span class="hljs-comment"># 现代简约 ⭐ 选定方案</span><br>│   ├── login-2.html            <span class="hljs-comment"># 商务专业</span><br>│   ├── login-3.html            <span class="hljs-comment"># 科技感</span><br>│   ├── login-4.html            <span class="hljs-comment"># 极简主义</span><br>│   └── <span class="hljs-string">...</span>                     <span class="hljs-comment"># 保留所有方案</span><br>└── dashboard/<br>    └── <span class="hljs-string">...</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">.prototype/prototype/</span><br>├── README.md                    <span class="hljs-comment"># 说明文档</span><br>├── index.html                   <span class="hljs-comment"># 导航首页</span><br>├── login/<br>│   ├── README.md               <span class="hljs-comment"># 登录页面设计说明</span><br>│   ├── login-1.html            <span class="hljs-comment"># 现代简约 ⭐ 选定方案</span><br>│   ├── login-2.html            <span class="hljs-comment"># 商务专业</span><br>│   ├── login-3.html            <span class="hljs-comment"># 科技感</span><br>│   ├── login-4.html            <span class="hljs-comment"># 极简主义</span><br>│   └── <span class="hljs-string">...</span>                     <span class="hljs-comment"># 保留所有方案</span><br>└── dashboard/<br>    └── <span class="hljs-string">...</span><br></code></pre></td></tr></table></figure>
 
 <h4 id="方案-B：选择性保留"><a href="#方案-B：选择性保留" class="headerlink" title="方案 B：选择性保留"></a>方案 B：选择性保留</h4><p>只保留代表性方案，删除明显不合适的早期尝试。</p>
 <p><strong>保留清单:</strong></p>
@@ -595,7 +596,7 @@
 <li>❌ 重复度高的微调版本 (可合并)</li>
 </ul>
 <h4 id="方案-C：归档策略"><a href="#方案-C：归档策略" class="headerlink" title="方案 C：归档策略"></a>方案 C：归档策略</h4><p>对于长期未使用的原型，可以移动到归档目录:</p>
-<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs nix">.vibe<span class="hljs-symbol">/</span><br>├── prototype<span class="hljs-symbol">/</span>                  <span class="hljs-comment"># 活跃原型</span><br>│   ├── login<span class="hljs-symbol">/</span><br>│   └── dashboard<span class="hljs-symbol">/</span><br>└── archive<span class="hljs-symbol">/</span>                    <span class="hljs-comment"># 历史归档</span><br>    ├── <span class="hljs-number">202</span>6-Q1<span class="hljs-symbol">/</span><br>    │   └── login-designs<span class="hljs-symbol">/</span>     <span class="hljs-comment"># 2026 年 Q1 的登录设计</span><br>    └── <span class="hljs-number">202</span>6-Q2<span class="hljs-symbol">/</span><br>        └── old-concepts<span class="hljs-symbol">/</span>      <span class="hljs-comment"># 旧的设计理念</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs nix">.prototype<span class="hljs-symbol">/</span><br>├── prototype<span class="hljs-symbol">/</span>                  <span class="hljs-comment"># 活跃原型</span><br>│   ├── login<span class="hljs-symbol">/</span><br>│   └── dashboard<span class="hljs-symbol">/</span><br>└── archive<span class="hljs-symbol">/</span>                    <span class="hljs-comment"># 历史归档</span><br>    ├── <span class="hljs-number">202</span>6-Q1<span class="hljs-symbol">/</span><br>    │   └── login-designs<span class="hljs-symbol">/</span>     <span class="hljs-comment"># 2026 年 Q1 的登录设计</span><br>    └── <span class="hljs-number">202</span>6-Q2<span class="hljs-symbol">/</span><br>        └── old-concepts<span class="hljs-symbol">/</span>      <span class="hljs-comment"># 旧的设计理念</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="推荐策略-⭐⭐⭐"><a href="#推荐策略-⭐⭐⭐" class="headerlink" title="推荐策略 ⭐⭐⭐"></a>推荐策略 ⭐⭐⭐</h3><p><strong>采用「完全保留」策略:</strong></p>
 <ol>
@@ -606,12 +607,6 @@
 </ol>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-comment">&lt;!--</span><br><span class="hljs-comment">  设计方案：login-2.html - 商务专业风格</span><br><span class="hljs-comment">  创建日期：2026-04-04</span><br><span class="hljs-comment">  设计师：AI Assistant</span><br><span class="hljs-comment">  状态：备选方案 (未被选中)</span><br><span class="hljs-comment">  特点：左右分屏布局，深蓝色主题，适合传统企业用户</span><br><span class="hljs-comment">  备注：虽然未被选中，但分屏设计理念值得参考</span><br><span class="hljs-comment">--&gt;</span><br></code></pre></td></tr></table></figure>
 
-<hr>
-<h3 id="归档策略"><a href="#归档策略" class="headerlink" title="归档策略"></a>归档策略</h3><h4 id="方案-A：保留所有"><a href="#方案-A：保留所有" class="headerlink" title="方案 A：保留所有"></a>方案 A：保留所有</h4><p>保留所有原型文件作为设计过程记录。</p>
-<h4 id="方案-B：只保留选定"><a href="#方案-B：只保留选定" class="headerlink" title="方案 B：只保留选定"></a>方案 B：只保留选定</h4><p>只保留最终选定的方案，其他删除或移动到 archive 目录。</p>
-<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs nix">.vibe<span class="hljs-symbol">/</span><br>└── prototype<span class="hljs-symbol">/</span><br>    ├── archive<span class="hljs-symbol">/</span>           <span class="hljs-comment"># 归档目录</span><br>    │   └── <span class="hljs-number">202</span>6-<span class="hljs-number">0</span>4-<span class="hljs-number">04</span><span class="hljs-symbol">/</span>   <span class="hljs-comment"># 按日期归档</span><br>    │       ├── login-<span class="hljs-number">1</span>.html<br>    │       ├── login-<span class="hljs-number">2</span>.html<br>    │       └── ...<br>    └── login<span class="hljs-symbol">/</span><br>        └── login-<span class="hljs-number">5</span>.html   <span class="hljs-comment"># 选定的方案</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="推荐策略"><a href="#推荐策略" class="headerlink" title="推荐策略"></a>推荐策略</h3><p><strong>开发阶段</strong>: 保留所有原型<br><strong>项目交付</strong>: 只保留选定方案 + 代表性备选</p>
 <hr>
 <h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><h3 id="1-保持简洁"><a href="#1-保持简洁" class="headerlink" title="1. 保持简洁"></a>1. 保持简洁</h3><p>原型应该专注于视觉设计和交互流程，不要过度复杂化。</p>
 <p>✅ <strong>推荐:</strong></p>
@@ -633,7 +628,7 @@
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="3-可访问性"><a href="#3-可访问性" class="headerlink" title="3. 可访问性"></a>3. 可访问性</h3><p>遵循基本的可访问性原则：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-comment">&lt;!-- 语义化标签 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span>, <span class="hljs-tag">&lt;<span class="hljs-name">nav</span>&gt;</span>, <span class="hljs-tag">&lt;<span class="hljs-name">main</span>&gt;</span>, <span class="hljs-tag">&lt;<span class="hljs-name">footer</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- 表单标签 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">&quot;username&quot;</span>&gt;</span>用户名<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;username&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- Alt 文本 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;logo.png&quot;</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">&quot;LWMS2 Logo&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-comment">&lt;!-- 语义化标签 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span>, <span class="hljs-tag">&lt;<span class="hljs-name">nav</span>&gt;</span>, <span class="hljs-tag">&lt;<span class="hljs-name">main</span>&gt;</span>, <span class="hljs-tag">&lt;<span class="hljs-name">footer</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- 表单标签 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">&quot;username&quot;</span>&gt;</span>用户名<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;username&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- Alt 文本 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;logo.png&quot;</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">&quot;项目 Logo&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="4-性能优化"><a href="#4-性能优化" class="headerlink" title="4. 性能优化"></a>4. 性能优化</h3><ul>
 <li>使用 CDN 资源</li>
@@ -643,15 +638,15 @@
 <h3 id="5-注释说明"><a href="#5-注释说明" class="headerlink" title="5. 注释说明"></a>5. 注释说明</h3><p>为复杂的设计决策添加注释：</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-comment">&lt;!--</span><br><span class="hljs-comment">  设计方案说明：</span><br><span class="hljs-comment">  - 风格：现代简约</span><br><span class="hljs-comment">  - 配色：蓝色主题</span><br><span class="hljs-comment">  - 特点：卡片式布局，大字体</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">  适用场景：现代化企业系统</span><br><span class="hljs-comment">--&gt;</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="6-统一风格-⭐"><a href="#6-统一风格-⭐" class="headerlink" title="6. 统一风格 ⭐"></a>6. 统一风格 ⭐</h3><p><strong>新增于 v1.1</strong>: 原型中心首页推荐使用<strong>侧边栏导航式</strong>布局。</p>
+<h3 id="6-统一风格-⭐"><a href="#6-统一风格-⭐" class="headerlink" title="6. 统一风格 ⭐"></a>6. 统一风格 ⭐</h3><p><strong>推荐</strong>: 原型中心首页使用<strong>侧边栏导航式</strong>布局。</p>
 <p><strong>原因:</strong></p>
 <ul>
 <li>✅ 专业性强，符合企业级系统定位</li>
 <li>✅ 信息架构清晰，易于理解</li>
 <li>✅ 易于扩展新模块</li>
-<li>✅ 与正式项目 MainLayout 布局一致</li>
+<li>✅ 与正式项目布局一致</li>
 </ul>
-<p><strong>参考实现:</strong> 见 <code>.vibe/prototype/index.html</code></p>
+<p><strong>参考实现:</strong> 见 <code>.prototype/prototype/index.html</code></p>
 <h3 id="7-持久保留原则-⭐⭐⭐"><a href="#7-持久保留原则-⭐⭐⭐" class="headerlink" title="7. 持久保留原则 ⭐⭐⭐"></a>7. 持久保留原则 ⭐⭐⭐</h3><p><strong>重要：</strong> 所有原型设计方案应该<strong>持久保留</strong>,即使已经选定了最终方案。</p>
 <p><strong>保留原因:</strong></p>
 <ul>
@@ -661,9 +656,6 @@
 <li>📊 <strong>对比价值</strong> - 便于向新成员展示决策过程</li>
 <li>🔍 <strong>快速验证</strong> - 需求变更时可以快速回顾备选方案</li>
 </ul>
-<p><strong>保留策略:</strong></p>
-<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs nix">.vibe<span class="hljs-symbol">/</span><br>└── prototype<span class="hljs-symbol">/</span><br>    ├── index.html              <span class="hljs-comment"># 原型导航首页 (持续维护)</span><br>    ├── login<span class="hljs-symbol">/</span>                  <span class="hljs-comment"># 登录页面系列 (永久保留)</span><br>    │   ├── login-<span class="hljs-number">1</span>.html        <span class="hljs-comment"># ✅ 选定方案 + 其他方案都保留</span><br>    │   ├── login-<span class="hljs-number">2</span>.html        <span class="hljs-comment"># ✅ 永久保留</span><br>    │   ├── login-<span class="hljs-number">3</span>.html        <span class="hljs-comment"># ✅ 永久保留</span><br>    │   └── ...                 <span class="hljs-comment"># ✅ 所有方案都保留</span><br>    ├── dashboard<span class="hljs-symbol">/</span>              <span class="hljs-comment"># 仪表盘系列 (持续扩展)</span><br>    │   └── ...<br>    └── archive<span class="hljs-symbol">/</span>                <span class="hljs-comment"># 可选：按日期归档旧版本</span><br>        └── <span class="hljs-number">202</span>6-<span class="hljs-number">0</span>4-<span class="hljs-number">0</span>4-login<span class="hljs-symbol">/</span>   <span class="hljs-comment"># 保留最初的设计版本</span><br>            └── ...<br></code></pre></td></tr></table></figure>
-
 <hr>
 <h2 id="原型导航页"><a href="#原型导航页" class="headerlink" title="原型导航页"></a>原型导航页</h2><p>创建 <code>index.html</code> 作为所有原型的入口。</p>
 <h3 id="推荐风格：侧边栏导航式-⭐"><a href="#推荐风格：侧边栏导航式-⭐" class="headerlink" title="推荐风格：侧边栏导航式 ⭐"></a>推荐风格：侧边栏导航式 ⭐</h3><p><strong>设计理念:</strong></p>
@@ -671,54 +663,35 @@
 <li>左侧固定导航栏，清晰的信息架构</li>
 <li>右侧内容区域，展示原型卡片网格</li>
 <li>专业感强，符合企业级系统定位</li>
-<li>易于扩展到更多模块（仪表盘、库存台账等）</li>
+<li>易于扩展到更多模块</li>
 </ul>
 <p><strong>布局结构:</strong></p>
-<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs gams">┌─────────────────────────────────────┐<br>│  Sidebar  │    Main Content Area    │<br>│           │                         │<br>│  - Logo   │  Welcome Banner         │<br>│  - 登录页  │  ┌──────┬──────┬──────┐│<br>│  - 仪表盘  │  │ <span class="hljs-keyword">Card</span> │ <span class="hljs-keyword">Card</span> │ <span class="hljs-keyword">Card</span> ││<br>│  - 库存台  │  ├──────┼──────┼──────┤│<br>│  - 扫码作业│  │ <span class="hljs-keyword">Card</span> │ <span class="hljs-keyword">Card</span> │ <span class="hljs-keyword">Card</span> ││<br>│           │  └──────┴──────┴──────┘│<br>│  [Footer] │  [Coming Soon Modules]  │<br>└───────────┴─────────────────────────┘<br></code></pre></td></tr></table></figure>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs gams">┌─────────────────────────────────────┐<br>│  Sidebar  │    Main Content Area    │<br>│           │                         │<br>│  - Logo   │  Welcome Banner         │<br>│  - 登录页  │  ┌──────┬──────┬──────┐│<br>│  - 仪表盘  │  │ <span class="hljs-keyword">Card</span> │ <span class="hljs-keyword">Card</span> │ <span class="hljs-keyword">Card</span> ││<br>│  - 用户页  │  ├──────┼──────┼──────┤│<br>│  - 设置页  │  │ <span class="hljs-keyword">Card</span> │ <span class="hljs-keyword">Card</span> │ <span class="hljs-keyword">Card</span> ││<br>│           │  └──────┴──────┴──────┘│<br>│  [Footer] │  [Coming Soon Modules]  │<br>└───────────┴─────────────────────────┘<br></code></pre></td></tr></table></figure>
 
 <p><strong>核心特点:</strong></p>
 <ol>
 <li><strong>侧边导航</strong> - 使用毛玻璃效果的白色侧边栏</li>
-<li><strong>渐变背景</strong> - 紫色到紫红色的渐变主题</li>
+<li><strong>渐变背景</strong> - 紫色到紫红色的渐变主题（或根据项目定制）</li>
 <li><strong>卡片网格</strong> - 响应式网格布局展示各个方案</li>
 <li><strong>悬停动画</strong> - 卡片悬停时的提升效果</li>
 <li><strong>标签标识</strong> - 使用标签显示方案数量和状态</li>
 </ol>
 <p><strong>示例代码结构:</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;zh-CN&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>LWMS2 原型设计中心<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.tailwindcss.com&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css"></span><br><span class="language-css">        <span class="hljs-selector-tag">body</span> &#123;</span><br><span class="language-css">            <span class="hljs-attribute">background</span>: <span class="hljs-built_in">linear-gradient</span>(<span class="hljs-number">135deg</span>, <span class="hljs-number">#667eea</span> <span class="hljs-number">0%</span>, <span class="hljs-number">#764ba2</span> <span class="hljs-number">100%</span>);</span><br><span class="language-css">        &#125;</span><br><span class="language-css">        <span class="hljs-selector-class">.sidebar</span> &#123;</span><br><span class="language-css">            <span class="hljs-attribute">background</span>: <span class="hljs-built_in">rgba</span>(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">0.95</span>);</span><br><span class="language-css">            <span class="hljs-attribute">backdrop-filter</span>: <span class="hljs-built_in">blur</span>(<span class="hljs-number">10px</span>);</span><br><span class="language-css">        &#125;</span><br><span class="language-css">        <span class="hljs-selector-class">.nav-item</span><span class="hljs-selector-pseudo">:hover</span> &#123;</span><br><span class="language-css">            <span class="hljs-attribute">background</span>: <span class="hljs-built_in">linear-gradient</span>(<span class="hljs-number">135deg</span>, <span class="hljs-number">#667eea</span> <span class="hljs-number">0%</span>, <span class="hljs-number">#764ba2</span> <span class="hljs-number">100%</span>);</span><br><span class="language-css">            <span class="hljs-attribute">color</span>: white;</span><br><span class="language-css">            <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateX</span>(<span class="hljs-number">8px</span>);</span><br><span class="language-css">        &#125;</span><br><span class="language-css">    </span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;min-h-screen flex&quot;</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- 左侧导航栏 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">aside</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;sidebar w-72 shadow-2xl&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;p-8 border-b&quot;</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-2xl font-bold&quot;</span>&gt;</span>LWMS2<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-sm text-gray-600&quot;</span>&gt;</span>原型设计中心<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><br>        <span class="hljs-tag">&lt;<span class="hljs-name">nav</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;p-4 space-y-2&quot;</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;#login&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;nav-item active block px-4 py-3 rounded-lg&quot;</span>&gt;</span><br>                🔐 登录页面 <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ml-auto text-xs&quot;</span>&gt;</span>10 个方案<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;#dashboard&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;nav-item block px-4 py-3 rounded-lg&quot;</span>&gt;</span><br>                📊 仪表盘 <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ml-auto text-xs&quot;</span>&gt;</span>即将推出<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">nav</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">aside</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 右侧内容区 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;flex-1 p-8 overflow-auto&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;max-w-6xl mx-auto&quot;</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 欢迎区域 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;mb-8&quot;</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">h2</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-4xl font-bold text-white&quot;</span>&gt;</span>欢迎使用原型设计中心<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><br>            <span class="hljs-comment">&lt;!-- 原型卡片网格 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;bg-white rounded-2xl shadow-xl p-8&quot;</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">h3</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-2xl font-bold mb-6&quot;</span>&gt;</span>🔐 登录页面系列<span class="hljs-tag">&lt;/<span class="hljs-name">h3</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6&quot;</span>&gt;</span><br>                    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;login/login-1.html&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;group block bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-6 hover:shadow-lg transition-all transform hover:-translate-y-1&quot;</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">h4</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;font-semibold text-gray-900&quot;</span>&gt;</span>现代简约<span class="hljs-tag">&lt;/<span class="hljs-name">h4</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-sm text-gray-600&quot;</span>&gt;</span>紫色渐变 + 毛玻璃效果<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>                    <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br>                    <span class="hljs-comment">&lt;!-- 更多卡片... --&gt;</span><br>                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;zh-CN&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>原型设计中心<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.tailwindcss.com&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css"></span><br><span class="language-css">        <span class="hljs-selector-tag">body</span> &#123;</span><br><span class="language-css">            <span class="hljs-attribute">background</span>: <span class="hljs-built_in">linear-gradient</span>(<span class="hljs-number">135deg</span>, <span class="hljs-number">#667eea</span> <span class="hljs-number">0%</span>, <span class="hljs-number">#764ba2</span> <span class="hljs-number">100%</span>);</span><br><span class="language-css">        &#125;</span><br><span class="language-css">        <span class="hljs-selector-class">.sidebar</span> &#123;</span><br><span class="language-css">            <span class="hljs-attribute">background</span>: <span class="hljs-built_in">rgba</span>(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">0.95</span>);</span><br><span class="language-css">            <span class="hljs-attribute">backdrop-filter</span>: <span class="hljs-built_in">blur</span>(<span class="hljs-number">10px</span>);</span><br><span class="language-css">        &#125;</span><br><span class="language-css">        <span class="hljs-selector-class">.nav-item</span><span class="hljs-selector-pseudo">:hover</span> &#123;</span><br><span class="language-css">            <span class="hljs-attribute">background</span>: <span class="hljs-built_in">linear-gradient</span>(<span class="hljs-number">135deg</span>, <span class="hljs-number">#667eea</span> <span class="hljs-number">0%</span>, <span class="hljs-number">#764ba2</span> <span class="hljs-number">100%</span>);</span><br><span class="language-css">            <span class="hljs-attribute">color</span>: white;</span><br><span class="language-css">            <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateX</span>(<span class="hljs-number">8px</span>);</span><br><span class="language-css">        &#125;</span><br><span class="language-css">    </span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;min-h-screen flex&quot;</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- 左侧导航栏 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">aside</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;sidebar w-72 shadow-2xl&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;p-8 border-b&quot;</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-2xl font-bold&quot;</span>&gt;</span>项目名称<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-sm text-gray-600&quot;</span>&gt;</span>原型设计中心<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><br>        <span class="hljs-tag">&lt;<span class="hljs-name">nav</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;p-4 space-y-2&quot;</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;#login&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;nav-item active block px-4 py-3 rounded-lg&quot;</span>&gt;</span><br>                🔐 登录页面 <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ml-auto text-xs&quot;</span>&gt;</span>10 个方案<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;#dashboard&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;nav-item block px-4 py-3 rounded-lg&quot;</span>&gt;</span><br>                📊 仪表盘 <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ml-auto text-xs&quot;</span>&gt;</span>即将推出<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">nav</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">aside</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 右侧内容区 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;flex-1 p-8 overflow-auto&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;max-w-6xl mx-auto&quot;</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 欢迎区域 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;mb-8&quot;</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">h2</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-4xl font-bold text-white&quot;</span>&gt;</span>欢迎使用原型设计中心<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><br>            <span class="hljs-comment">&lt;!-- 原型卡片网格 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;bg-white rounded-2xl shadow-xl p-8&quot;</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">h3</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-2xl font-bold mb-6&quot;</span>&gt;</span>🔐 登录页面系列<span class="hljs-tag">&lt;/<span class="hljs-name">h3</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6&quot;</span>&gt;</span><br>                    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;login/login-1.html&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;group block bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-6 hover:shadow-lg transition-all transform hover:-translate-y-1&quot;</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">h4</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;font-semibold text-gray-900&quot;</span>&gt;</span>现代简约<span class="hljs-tag">&lt;/<span class="hljs-name">h4</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;text-sm text-gray-600&quot;</span>&gt;</span>紫色渐变 + 毛玻璃效果<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>                    <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br>                    <span class="hljs-comment">&lt;!-- 更多卡片... --&gt;</span><br>                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
-<p><strong>配色方案:</strong></p>
-<ul>
-<li>主背景：<code>linear-gradient(135deg, #667eea 0%, #764ba2 100%)</code></li>
-<li>侧边栏：<code>rgba(255, 255, 255, 0.95)</code> + <code>backdrop-filter: blur(10px)</code></li>
-<li>强调色：紫色系 (#667eea, #764ba2)</li>
-<li>卡片背景：渐变色 (from-purple-50 to-indigo-50)</li>
-</ul>
-<p><strong>交互效果:</strong></p>
-<ul>
-<li>导航项悬停：渐变背景 + 白色文字 + 向右位移 8px</li>
-<li>卡片悬停：阴影加深 + 向上位移 4px</li>
-<li>平滑过渡：<code>transition-all duration-300 ease</code></li>
-</ul>
-<p><strong>响应式设计:</strong></p>
-<ul>
-<li>桌面端：完整侧边栏 + 三列卡片网格</li>
-<li>平板端：侧边栏保持 + 两列卡片网格</li>
-<li>移动端：可考虑折叠侧边栏或改为顶部导航</li>
-</ul>
-<h3 id="备选风格"><a href="#备选风格" class="headerlink" title="备选风格"></a>备选风格</h3><h4 id="方案-B：顶部标签式"><a href="#方案-B：顶部标签式" class="headerlink" title="方案 B：顶部标签式"></a>方案 B：顶部标签式</h4><p>适合较少分类的场景，使用顶部圆角标签切换器。</p>
-<h4 id="方案-C：磁贴卡片式"><a href="#方案-C：磁贴卡片式" class="headerlink" title="方案 C：磁贴卡片式"></a>方案 C：磁贴卡片式</h4><p>Windows 磁贴风格，不规则网格布局，视觉冲击力强。</p>
 <hr>
 <h2 id="从原型到正式代码"><a href="#从原型到正式代码" class="headerlink" title="从原型到正式代码"></a>从原型到正式代码</h2><h3 id="转换步骤"><a href="#转换步骤" class="headerlink" title="转换步骤"></a>转换步骤</h3><ol>
-<li><p><strong>创建 React 组件</strong></p>
-<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// frontend/src/pages/Login.tsx</span><br><span class="hljs-keyword">import</span> &#123; useState &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">Login</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-comment">// 基于选定原型的结构和逻辑</span><br>&#125;<br></code></pre></td></tr></table></figure>
-</li>
-<li><p><strong>迁移样式</strong></p>
-</li>
+<li><strong>创建组件</strong><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// React 示例</span><br><span class="hljs-keyword">import</span> &#123; useState &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">Login</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-comment">// 基于选定原型的结构和逻辑</span><br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs vue">&lt;!-- Vue 示例 --&gt;<br>&lt;template&gt;<br>    &lt;!-- 基于选定原型的 HTML 结构 --&gt;<br>&lt;/template&gt;<br><br>&lt;script&gt;<br>export default &#123;<br>    // 基于选定原型的逻辑<br>&#125;<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>迁移样式</strong></li>
 </ol>
 <ul>
 <li>Tailwind CDN → Tailwind 配置文件</li>
 <li>内联样式 → CSS Modules &#x2F; Styled Components</li>
+<li>或保持 Tailwind CDN 开发阶段使用</li>
 </ul>
 <ol start="3">
 <li><strong>替换模拟数据</strong></li>
@@ -731,7 +704,7 @@
 <li><strong>添加路由</strong></li>
 </ol>
 <ul>
-<li>直接跳转 → React Router</li>
+<li>直接跳转 → React Router &#x2F; Vue Router &#x2F; Angular Router</li>
 <li>页面刷新 → SPA 导航</li>
 </ul>
 <ol start="5">
@@ -763,8 +736,8 @@
 <li><input disabled="" type="checkbox"> 文件大小合理 (&lt; 1MB)</li>
 </ul>
 <h3 id="集成检查项"><a href="#集成检查项" class="headerlink" title="集成检查项"></a>集成检查项</h3><ul>
-<li><input disabled="" type="checkbox"> React 组件拆分合理</li>
-<li><input disabled="" type="checkbox"> TypeScript 类型完整</li>
+<li><input disabled="" type="checkbox"> 组件拆分合理</li>
+<li><input disabled="" type="checkbox"> 类型定义完整（TypeScript）</li>
 <li><input disabled="" type="checkbox"> API 接口对接正确</li>
 <li><input disabled="" type="checkbox"> 样式无冲突</li>
 <li><input disabled="" type="checkbox"> 性能指标达标</li>
@@ -782,32 +755,24 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>1.2</td>
-<td>2026-04-04</td>
-<td>添加持久保留原则，强调所有原型方案都应永久保留</td>
-<td>LWMS2 Team</td>
-</tr>
-<tr>
-<td>1.1</td>
-<td>2026-04-04</td>
-<td>添加侧边栏导航式作为推荐的原型中心首页风格</td>
-<td>LWMS2 Team</td>
-</tr>
-<tr>
 <td>1.0</td>
 <td>2026-04-04</td>
-<td>初始版本，建立原型设计工作规范</td>
-<td>LWMS2 Team</td>
+<td>初始版本，建立通用网页项目原型设计工作规范</td>
+<td>xiaorui</td>
 </tr>
 </tbody></table>
 <hr>
-<h2 id="相关文档"><a href="#相关文档" class="headerlink" title="相关文档"></a>相关文档</h2><ul>
-<li><a href="./README.md">项目总体文档</a></li>
-<li><a href="./02-architecture/frontend-architecture.md">前端架构设计</a></li>
-<li><a href="./03-development-guide/coding-standards.md">代码规范</a></li>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文档提供了一套通用的网页项目原型设计规范，适用于各种前端项目。通过建立独立于正式代码的原型设计系统，支持快速迭代和多方案对比，同时确保所有设计方案都能持久保留作为团队的设计资产。</p>
+<p><strong>核心价值:</strong></p>
+<ul>
+<li>提高设计效率</li>
+<li>降低试错成本</li>
+<li>保留设计资产</li>
+<li>促进团队协作</li>
+<li>加速项目交付</li>
 </ul>
 <hr>
-<p><strong>最后更新</strong>: 2026-04-04<br><strong>维护者</strong>: LWMS2 Team<br><strong>版本</strong>: 1.2.0</p>
+<p><strong>最后更新</strong>: 2026-04-04<br><strong>维护者</strong>: xiaorui<br><strong>版本</strong>: 1.0.0</p>
 
                 
               </div>
@@ -852,6 +817,8 @@
       
         <a href="/tags/%E5%B7%A5%E4%BD%9C%E8%A7%84%E8%8C%83/" class="print-no-link">#工作规范</a>
       
+        <a href="/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" class="print-no-link">#前端开发</a>
+      
     </div>
   
 </div>
@@ -862,8 +829,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>LWMS2 原型设计工作规范</div>
-      <div>https://www.normdist.com/2026/04/04/ND-20260404-002-prototype-design-guide/</div>
+      <div>通用网页项目原型设计规范</div>
+      <div>https://www.normdist.com/2026/04/04/ND-20260404-003-web-prototype-design-guide/</div>
     </div>
     <div class="license-meta">
       
@@ -907,9 +874,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/" title="Hexo 博客部署故障排查与解决">
+                      <a href="/2026/04/04/ND-20260404-002-prototype-design-guide/" title="LWMS2 原型设计工作规范">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hexo 博客部署故障排查与解决</span>
+                        <span class="hidden-mobile">LWMS2 原型设计工作规范</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -917,8 +884,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/04/04/ND-20260404-003-web-prototype-design-guide/" title="通用网页项目原型设计规范">
-                        <span class="hidden-mobile">通用网页项目原型设计规范</span>
+                      <a href="/2026/04/02/ND-20260402-001-web-project-standard-structure/" title="网页项目的标准文件结构：最佳实践与优化建议">
+                        <span class="hidden-mobile">网页项目的标准文件结构：最佳实践与优化建议</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
