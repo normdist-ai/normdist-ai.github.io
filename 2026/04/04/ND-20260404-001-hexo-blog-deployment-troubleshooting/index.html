@@ -19,28 +19,27 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="网页项目的标准文件结构：最佳实践与优化建议在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供具体的优化建议。 一、当前结构的合理性分析✅ 符合的行业标准一个现代化的网页项目通常具备以下特征：  前后端分离：明确分离前端">
+    <meta name="description" content="问题描述最近在维护 Hexo 博客时，发现无法将本地博客内容成功推送到远程 GitHub 仓库。尽管博客系统本身运行正常（hexo-server 服务正常，可以通过 http:&#x2F;&#x2F;10.28.9.66:4000&#x2F; 访问），但在执行部署命令时遇到了问题。 系统诊断过程1. Git 配置检查首先检查了 Git 的基本配置，确认远程仓库连接是否正常： 12cd &#x2F;home&#x2F;jarvis&#x2F;bloggit">
 <meta property="og:type" content="article">
-<meta property="og:title" content="网页项目的标准文件结构：最佳实践与优化建议">
-<meta property="og:url" content="https://www.normdist.com/2026/04/02/ND-20260402-001-web-project-standard-structure/index.html">
+<meta property="og:title" content="Hexo 博客部署故障排查与解决">
+<meta property="og:url" content="https://www.normdist.com/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="网页项目的标准文件结构：最佳实践与优化建议在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供具体的优化建议。 一、当前结构的合理性分析✅ 符合的行业标准一个现代化的网页项目通常具备以下特征：  前后端分离：明确分离前端">
+<meta property="og:description" content="问题描述最近在维护 Hexo 博客时，发现无法将本地博客内容成功推送到远程 GitHub 仓库。尽管博客系统本身运行正常（hexo-server 服务正常，可以通过 http:&#x2F;&#x2F;10.28.9.66:4000&#x2F; 访问），但在执行部署命令时遇到了问题。 系统诊断过程1. Git 配置检查首先检查了 Git 的基本配置，确认远程仓库连接是否正常： 12cd &#x2F;home&#x2F;jarvis&#x2F;bloggit">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-04-02T08:45:00.000Z">
-<meta property="article:modified_time" content="2026-04-02T08:54:51.217Z">
+<meta property="article:published_time" content="2026-04-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-04T03:48:14.809Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="Web开发">
-<meta property="article:tag" content="项目结构">
-<meta property="article:tag" content="Vue3">
-<meta property="article:tag" content="FastAPI">
-<meta property="article:tag" content="最佳实践">
+<meta property="article:tag" content="博客">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="问题排查">
+<meta property="article:tag" content="YAML">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>网页项目的标准文件结构：最佳实践与优化建议 - 进化概率论</title>
+  <title>Hexo 博客部署故障排查与解决 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -335,7 +334,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">网页项目的标准文件结构：最佳实践与优化建议</span>
+            <span id="subtitle">Hexo 博客部署故障排查与解决</span>
           
         </div>
 
@@ -346,8 +345,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-04-02 16:45" pubdate>
-          2026年4月2日 下午
+        <time datetime="2026-04-04 00:00" pubdate>
+          2026年4月4日 凌晨
         </time>
       </span>
     
@@ -358,7 +357,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4k 字
+          3.2k 字
         
       </span>
     
@@ -369,7 +368,7 @@
         
         
         
-          34 分钟
+          27 分钟
         
       </span>
     
@@ -417,12 +416,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">网页项目的标准文件结构：最佳实践与优化建议</h1>
+            <h1 id="seo-header">Hexo 博客部署故障排查与解决</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年4月2日 下午
+                    本文最后更新于 2026年4月4日 中午
                   
                 
               </p>
@@ -430,90 +429,110 @@
             
               <div class="markdown-body">
                 
-                <h1 id="网页项目的标准文件结构：最佳实践与优化建议"><a href="#网页项目的标准文件结构：最佳实践与优化建议" class="headerlink" title="网页项目的标准文件结构：最佳实践与优化建议"></a>网页项目的标准文件结构：最佳实践与优化建议</h1><p>在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供具体的优化建议。</p>
-<h2 id="一、当前结构的合理性分析"><a href="#一、当前结构的合理性分析" class="headerlink" title="一、当前结构的合理性分析"></a>一、当前结构的合理性分析</h2><h3 id="✅-符合的行业标准"><a href="#✅-符合的行业标准" class="headerlink" title="✅ 符合的行业标准"></a>✅ 符合的行业标准</h3><p>一个现代化的网页项目通常具备以下特征：</p>
+                <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>最近在维护 Hexo 博客时，发现无法将本地博客内容成功推送到远程 GitHub 仓库。尽管博客系统本身运行正常（hexo-server 服务正常，可以通过 <code>http://10.28.9.66:4000/</code> 访问），但在执行部署命令时遇到了问题。</p>
+<h2 id="系统诊断过程"><a href="#系统诊断过程" class="headerlink" title="系统诊断过程"></a>系统诊断过程</h2><h3 id="1-Git-配置检查"><a href="#1-Git-配置检查" class="headerlink" title="1. Git 配置检查"></a>1. Git 配置检查</h3><p>首先检查了 Git 的基本配置，确认远程仓库连接是否正常：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /home/jarvis/blog<br>git remote -v<br></code></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：远程仓库配置正常</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">origin  https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/normdist-ai/</span>normdist-ai.github.io.git (fetch)<br>origin  https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/normdist-ai/</span>normdist-ai.github.io.git (push)<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-Hexo-配置检查"><a href="#2-Hexo-配置检查" class="headerlink" title="2. Hexo 配置检查"></a>2. Hexo 配置检查</h3><p>检查了 <code>_config.yml</code> 中的部署配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">deploy:</span><br>  <span class="hljs-attr">type:</span> <span class="hljs-string">git</span><br>  <span class="hljs-attr">repo:</span> <span class="hljs-string">https://github.com/normdist-ai/normdist-ai.github.io.git</span><br>  <span class="hljs-attr">branch:</span> <span class="hljs-string">main</span><br>  <span class="hljs-attr">message:</span> <span class="hljs-string">&quot;Site updated: <span class="hljs-template-variable">&#123;&#123; now(&#x27;YYYY-MM-DD HH:mm:ss&#x27;) &#125;&#125;</span>&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：部署配置正确</p>
+<h3 id="3-静态文件生成测试"><a href="#3-静态文件生成测试" class="headerlink" title="3. 静态文件生成测试"></a>3. 静态文件生成测试</h3><p>尝试执行 <code>hexo generate</code> 来生成静态文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo generate<br></code></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：生成失败，出现 YAML 解析错误</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs subunit"><span class="hljs-keyword">ERROR </span>&#123;<br>  err: YAMLException: unidentified alias &quot;*技能名称**：Voice&quot; at line 3, column 15:<br>      **技能名称**：Voice of Customer (VoC)<br>                    ^<br>  ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-问题定位"><a href="#4-问题定位" class="headerlink" title="4. 问题定位"></a>4. 问题定位</h3><p>根据错误信息，定位到问题文件是 <code>source/voc-skill.md</code>，错误发生在第 2 行第 14 列。</p>
+<p>检查该文件内容：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># Voice of Customer (VoC) 技能</span><br><br><span class="hljs-strong">**技能名称**</span>：Voice of Customer (VoC)<br><span class="hljs-strong">**简称**</span>：VoC<br><span class="hljs-strong">**版本**</span>：1.1<br><span class="hljs-strong">**创建日期**</span>：2026-03-23<br><span class="hljs-strong">**最后更新**</span>：2026-03-23<br><span class="hljs-strong">**维护人**</span>：xiaorui<br></code></pre></td></tr></table></figure>
+
+<p><strong>问题分析</strong>：</p>
+<ul>
+<li>该文件没有 YAML front matter 分隔符（<code>---</code>）</li>
+<li>Hexo 将整个文件内容当作 YAML front matter 来解析</li>
+<li><code>**技能名称**</code> 中的 <code>**</code> 被 YAML 解析器误认为别名引用（alias）</li>
+<li>导致 YAML 解析失败</li>
+</ul>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>为 <code>source/voc-skill.md</code> 文件添加正确的 YAML front matter：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>title: Voice of Customer (VoC) 技能<br><span class="hljs-section">date: 2026-03-25</span><br><span class="hljs-section">---</span><br><br><span class="hljs-section"># Voice of Customer (VoC) 技能</span><br><br><span class="hljs-strong">**技能名称**</span>：Voice of Customer (VoC)<br>...<br></code></pre></td></tr></table></figure>
+
+<h2 id="验证与部署"><a href="#验证与部署" class="headerlink" title="验证与部署"></a>验证与部署</h2><h3 id="1-重新生成静态文件"><a href="#1-重新生成静态文件" class="headerlink" title="1. 重新生成静态文件"></a>1. 重新生成静态文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo generate<br></code></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：生成成功</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">INFO</span>  Files loaded <span class="hljs-keyword">in</span> 617 ms<br><span class="hljs-built_in">INFO</span>  Generated: voc-skill.html<br><span class="hljs-built_in">INFO</span>  3 files generated <span class="hljs-keyword">in</span> 192 ms<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-执行部署"><a href="#2-执行部署" class="headerlink" title="2. 执行部署"></a>2. 执行部署</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo deploy<br></code></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：部署成功</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs gams">INFO  Deploying: git<br>INFO  Clearing .deploy_git folder...<br><span class="hljs-function"><span class="hljs-title">INFO</span></span>  Copying <span class="hljs-keyword">files</span> from public folder...<br><span class="hljs-function"><span class="hljs-title">INFO</span></span>  Copying <span class="hljs-keyword">files</span> from extend dirs...<br>[master bb3a173] Site updated: YYYY<span class="hljs-number">-04</span>-Apr <span class="hljs-number">4</span>, <span class="hljs-number">2026</span> <span class="hljs-number">11</span>:<span class="hljs-number">34</span>:<span class="hljs-number">28</span><br> <span class="hljs-number">45</span> <span class="hljs-keyword">files</span> changed, <span class="hljs-number">7829</span> insertions(+), <span class="hljs-number">1997</span> deletions(-)<br>To https:<span class="hljs-comment">//github.com/normdist-ai/normdist-ai.github.io.git</span><br>   ff0fcb6..bb3a173  HEAD -&gt; main<br>branch <span class="hljs-string">&#x27;master&#x27;</span> <span class="hljs-keyword">set</span> up <span class="hljs-comment">to track</span> <span class="hljs-comment">&#x27;https://github.com/normdist-ai/normdist-ai.github.io.git/main&#x27;</span><span class="hljs-comment">.</span><br>INFO  <span class="hljs-comment">Deploy done: git</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h2><h3 id="1-YAML-Front-Matter-规范"><a href="#1-YAML-Front-Matter-规范" class="headerlink" title="1. YAML Front Matter 规范"></a>1. YAML Front Matter 规范</h3><p><strong>关键点</strong>：</p>
+<ul>
+<li>Hexo 中所有需要处理的 Markdown 文件都必须以 <code>---</code> 分隔符开头</li>
+<li>Front matter 必须包含有效的 YAML 元数据（至少包含 <code>title</code> 和 <code>date</code>）</li>
+<li>Front matter 中的特殊字符需要正确转义</li>
+</ul>
+<p><strong>示例</strong>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-meta">---</span><br><span class="hljs-attr">title:</span> <span class="hljs-string">文章标题</span><br><span class="hljs-attr">date:</span> <span class="hljs-number">2026-04-04</span><br><span class="hljs-attr">tags:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">Hexo</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">博客</span><br><span class="hljs-attr">categories:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">技术分享</span><br><span class="hljs-meta">---</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-Markdown-特殊字符处理"><a href="#2-Markdown-特殊字符处理" class="headerlink" title="2. Markdown 特殊字符处理"></a>2. Markdown 特殊字符处理</h3><p>在 YAML 中，某些字符有特殊含义：</p>
+<ul>
+<li><code>*</code> - 用于别名引用和列表</li>
+<li><code>&amp;</code> - 用于锚点</li>
+<li><code>#</code> - 用于注释</li>
+<li><code>:</code> - 用于键值对分隔</li>
+</ul>
+<p><strong>注意</strong>：如果在 Markdown 文件的前几行（可能在 front matter 区域）使用这些字符，可能会导致解析错误。</p>
+<h3 id="3-系统化调试方法"><a href="#3-系统化调试方法" class="headerlink" title="3. 系统化调试方法"></a>3. 系统化调试方法</h3><p>当遇到 Hexo 部署问题时，按照以下顺序排查：</p>
 <ol>
-<li><strong>前后端分离</strong>：明确分离前端和后端目录，符合现代开发标准</li>
-<li><strong>模块化组织</strong>：按功能&#x2F;职责划分目录，便于团队协作</li>
-<li><strong>配置分离</strong>：环境变量、构建配置与代码分离</li>
-<li><strong>版本控制友好</strong>：合理的 .gitignore 配置</li>
-<li><strong>Docker 化支持</strong>：容器化部署结构</li>
+<li><p><strong>Git 配置检查</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">git remote -v<br>git config --get user.name<br>git config --get user.email<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Hexo 配置检查</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> _config.yml | grep -A 10 <span class="hljs-string">&quot;deploy:&quot;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>静态文件生成测试</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo clean<br>hexo generate<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>部署测试</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo deploy<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查看日志</strong></p>
+<ul>
+<li>注意错误信息的文件名、行号、列号</li>
+<li>分析错误类型（YAMLException、SyntaxError 等）</li>
+</ul>
+</li>
 </ol>
-<p>这些特征不仅提升了项目的可维护性，还为团队协作和自动化部署打下了坚实基础。</p>
-<h2 id="二、优化空间和改进建议"><a href="#二、优化空间和改进建议" class="headerlink" title="二、优化空间和改进建议"></a>二、优化空间和改进建议</h2><h3 id="1-前端（Vite）优化建议"><a href="#1-前端（Vite）优化建议" class="headerlink" title="1. 前端（Vite）优化建议"></a>1. 前端（Vite）优化建议</h3><p>对于基于 Vue3 和 Vite 的前端项目，推荐以下目录结构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">frontend/<br>├── .vscode/              # IDE 配置（推荐）<br>│   ├── extensions.json<br>│   └── settings.json<br>├── src/<br>│   ├── composables/      # Vue 组合式函数<br>│   ├── directives/       # 自定义指令<br>│   ├── plugins/          # Vue 插件<br>│   ├── locales/          # 国际化文件<br>│   ├── hooks/           # React 自定义钩子（如使用 React）<br>│   └── types/           # TypeScript 类型定义<br>├── tests/               # 前端测试<br>│   ├── unit/           # 单元测试<br>│   ├── e2e/            # 端到端测试<br>│   └── fixtures/       # 测试数据<br>├── .storybook/          # 组件文档（可选）<br>├── vitest.config.ts     # 测试配置<br>└── eslint.config.js     # ESLint 配置<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>composables 目录</strong>：Vue3 的组合式 API 最佳实践，便于状态复用</li>
-<li><strong>directives 目录</strong>：自定义指令集中管理，提升代码可读性</li>
-<li><strong>tests 分层</strong>：单元测试、E2E 测试和测试数据分离，提升测试覆盖率</li>
-<li><strong>Storybook 集成</strong>：可视化组件文档，提升设计和开发协作效率</li>
+<h3 id="4-文件管理规范"><a href="#4-文件管理规范" class="headerlink" title="4. 文件管理规范"></a>4. 文件管理规范</h3><p>为了避免类似问题，建议：</p>
+<ol>
+<li><strong>统一文件创建流程</strong>：严格按照 SOP-003《Hexo 博客发布文章工作指导书》执行</li>
+<li><strong>添加 front matter 检查</strong>：在创建新文章时，确保包含正确的 YAML front matter</li>
+<li><strong>定期验证</strong>：定期执行 <code>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo deploy</code> 确保流程正常</li>
+<li><strong>文件分类管理</strong>：<ul>
+<li>博客文章：<code>source/_posts/</code></li>
+<li>独立页面：<code>source/</code>（需要 front matter）</li>
+<li>资源文件：<code>source/img/</code>、<code>source/js/</code> 等</li>
+<li>不需要处理的文件：以下划线 <code>_</code> 开头的目录或文件</li>
 </ul>
-<h3 id="2-后端（FastAPI）优化建议"><a href="#2-后端（FastAPI）优化建议" class="headerlink" title="2. 后端（FastAPI）优化建议"></a>2. 后端（FastAPI）优化建议</h3><p>对于 FastAPI 后端项目，推荐以下目录结构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── app/<br>│   ├── middleware/       # 中间件（推荐单独目录）<br>│   │   ├── logging.py<br>│   │   └── cors.py<br>│   ├── events/          # 事件处理器<br>│   │   ├── handlers.py<br>│   │   └── listeners.py<br>│   ├── cache/           # 缓存相关<br>│   └── background/      # 后台任务<br>│       └── tasks.py<br>├── alembic/             # Alembic 迁移（官方推荐名称）<br>│   └── versions/<br>├── tests/<br>│   ├── integration/     # 集成测试<br>│   ├── unit/<br>│   └── conftest.py<br>├── .pre-commit-config.yaml  # Git 钩子配置<br>├── pytest.ini           # 测试配置<br>└── setup.cfg           # 工具配置<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>middleware 独立目录</strong>：中间件集中管理，便于维护和扩展</li>
-<li><strong>events 系统</strong>：事件驱动架构，提升系统解耦性</li>
-<li><strong>cache 和 background 分离</strong>：缓存和后台任务独立管理，提升性能</li>
-<li><strong>pre-commit 钩子</strong>：自动化代码质量检查，减少 Bug 流入</li>
-</ul>
-<h3 id="3-根目录结构优化"><a href="#3-根目录结构优化" class="headerlink" title="3. 根目录结构优化"></a>3. 根目录结构优化</h3><p>项目根目录应包含以下关键文件和目录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">project-root/<br>├── .husky/             # Git 钩子配置<br>├── .commitlintrc.js    # Commit 信息规范<br>├── .github/<br>│   ├── workflows/<br>│   │   ├── ci.yml      # CI 流水线<br>│   │   ├── cd.yml      # CD 流水线<br>│   │   └── security-scan.yml<br>│   ├── PULL_REQUEST_TEMPLATE.md<br>│   └── ISSUE_TEMPLATE.md<br>├── docker-compose.yml<br>├── docker-compose.dev.yml<br>├── docker-compose.prod.yml<br>├── Makefile            # 常用命令脚本<br>├── CHANGELOG.md        # 变更日志<br>├── CONTRIBUTING.md     # 贡献指南<br>└── SECURITY.md         # 安全策略<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>CI&#x2F;CD 流水线</strong>：自动化测试、构建和部署</li>
-<li><strong>Commit 规范</strong>：统一的 Commit 信息格式，提升代码审查效率</li>
-<li><strong>多环境配置</strong>：开发、测试、生产环境独立配置</li>
-<li><strong>文档完善</strong>：变更日志、贡献指南和安全策略</li>
-</ul>
-<h2 id="三、行业最佳实践差异点"><a href="#三、行业最佳实践差异点" class="headerlink" title="三、行业最佳实践差异点"></a>三、行业最佳实践差异点</h2><h3 id="1-FastAPI-项目结构模式差异"><a href="#1-FastAPI-项目结构模式差异" class="headerlink" title="1. FastAPI 项目结构模式差异"></a>1. FastAPI 项目结构模式差异</h3><p>官方推荐模式（简单项目）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">app/<br>├── routers/<br>├── dependencies.py<br>└── main.py<br></code></pre></td></tr></table></figure>
-
-<p>企业级推荐模式：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── src/                      # 源代码<br>│   └── your_package/<br>│       ├── api/<br>│       ├── core/<br>│       └── ...<br>├── tests/<br>├── pyproject.toml<br>└── setup.cfg<br></code></pre></td></tr></table></figure>
-
-<p><strong>建议</strong>：使用 src&#x2F; 布局（将应用代码放在 src&#x2F; 下），避免导入问题：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── src/<br>│   └── app/           # 主应用包<br>│       ├── __init__.py<br>│       └── main.py<br>├── tests/<br>└── pyproject.toml<br></code></pre></td></tr></table></figure>
-
-<h3 id="2-前端构建工具优化"><a href="#2-前端构建工具优化" class="headerlink" title="2. 前端构建工具优化"></a>2. 前端构建工具优化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">frontend/<br>├── .vscode/          # IDE 配置<br>├── .husky/          # Git 钩子<br>├── .changeset/       # 版本管理<br>├── src/<br>│   └── lib/         # 工具库/第三方库封装<br>├── .npmrc           # npm 配置<br>├── .nvmrc           # Node 版本<br>└── .npmignore<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>.changeset 目录</strong>：版本管理自动化，便于多包管理</li>
-<li><strong>.npmrc 和 .nvmrc</strong>：统一 npm 配置和 Node 版本</li>
-<li><strong>lib 目录</strong>：工具库集中管理，提升代码复用</li>
-</ul>
-<h3 id="3-数据库管理优化"><a href="#3-数据库管理优化" class="headerlink" title="3. 数据库管理优化"></a>3. 数据库管理优化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── migrations/       # Alembic 迁移<br>├── seeds/           # 种子数据<br>├── database/<br>│   ├── base.py      # 数据库基类<br>│   ├── session.py   # 会话管理<br>│   └── models/<br>└── docker/<br>    └── init.sql     # 初始化脚本<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>migrations 目录</strong>：数据库版本控制和迁移脚本</li>
-<li><strong>seeds 目录</strong>：种子数据，便于开发和测试</li>
-<li><strong>docker&#x2F;init.sql</strong>：数据库初始化脚本，容器化部署</li>
-</ul>
-<h2 id="四、推荐的最终优化结构"><a href="#四、推荐的最终优化结构" class="headerlink" title="四、推荐的最终优化结构"></a>四、推荐的最终优化结构</h2><p>综合以上最佳实践，推荐以下最终的项目结构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">my-project/<br>├── frontend/        # 前端<br>│   ├── .vscode/<br>│   ├── src/<br>│   │   ├── components/<br>│   │   ├── views/<br>│   │   ├── composables/<br>│   │   ├── plugins/<br>│   │   ├── locales/<br>│   │   ├── types/<br>│   │   ├── stores/<br>│   │   └── utils/<br>│   ├── tests/<br>│   ├── .storybook/<br>│   ├── .husky/<br>│   ├── .env.*<br>│   ├── vite.config.ts<br>│   └── package.json<br>├── backend/         # 后端<br>│   ├── src/<br>│   │   └── app/<br>│   │       ├── api/<br>│   │       ├── core/<br>│   │       ├── models/<br>│   │       ├── schemas/<br>│   │       ├── middleware/<br>│   │       └── utils/<br>│   ├── tests/<br>│   ├── migrations/<br>│   ├── alembic.ini<br>│   ├── requirements.txt<br>│   └── pyproject.toml<br>├── docker/<br>│   ├── nginx/<br>│   ├── db/<br>│   ├── Dockerfile.frontend<br>│   └── Dockerfile.backend<br>├── docs/<br>│   ├── api/<br>│   ├── architecture/<br>│   └── deployment/<br>├── scripts/<br>│   ├── dev.sh<br>│   ├── test.sh<br>│   └── deploy.sh<br>├── .github/<br>│   └── workflows/<br>├── docker-compose.yml<br>├── docker-compose.override.yml<br>├── Makefile<br>├── README.md<br>└── CONTRIBUTING.md<br></code></pre></td></tr></table></figure>
-
-<h2 id="五、关键优化总结"><a href="#五、关键优化总结" class="headerlink" title="五、关键优化总结"></a>五、关键优化总结</h2><ol>
-<li><strong>添加开发工具配置</strong>：IDE 配置、Git 钩子、代码规范工具</li>
-<li><strong>标准化测试结构</strong>：区分单元测试、集成测试、E2E 测试</li>
-<li><strong>改进 Python 项目布局</strong>：考虑使用 src&#x2F; 布局避免导入问题</li>
-<li><strong>增强 CI&#x2F;CD 支持</strong>：GitHub Actions 工作流模板</li>
-<li><strong>文档完善</strong>：添加架构、部署、贡献指南</li>
-<li><strong>环境区分</strong>：开发、测试、生产环境的独立配置</li>
+</li>
 </ol>
-<h2 id="六、实践建议"><a href="#六、实践建议" class="headerlink" title="六、实践建议"></a>六、实践建议</h2><p>根据团队规模选择合适的复杂度：</p>
-<ul>
-<li><strong>小型团队（1-3人）</strong>：可保持简单结构，优先开发效率</li>
-<li><strong>中型团队（4-10人）</strong>：推荐采用优化后的完整结构，提升可维护性</li>
-<li><strong>大型团队（10人以上）</strong>：必须采用完整的标准化结构，建立严格的代码规范和审查流程</li>
+<h2 id="相关工具与命令"><a href="#相关工具与命令" class="headerlink" title="相关工具与命令"></a>相关工具与命令</h2><h3 id="Hexo-常用命令"><a href="#Hexo-常用命令" class="headerlink" title="Hexo 常用命令"></a>Hexo 常用命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 清理缓存和生成的文件</span><br>hexo clean<br><br><span class="hljs-comment"># 生成静态文件</span><br>hexo generate<br><br><span class="hljs-comment"># 启动本地服务器</span><br>hexo server --host 0.0.0.0 --port 4000<br><br><span class="hljs-comment"># 部署到远程</span><br>hexo deploy<br><br><span class="hljs-comment"># 一键部署（生成 + 部署）</span><br>hexo deploy -g<br><br><span class="hljs-comment"># 创建新文章</span><br>hexo new <span class="hljs-string">&quot;文章标题&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Git-相关命令"><a href="#Git-相关命令" class="headerlink" title="Git 相关命令"></a>Git 相关命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看远程仓库配置</span><br>git remote -v<br><br><span class="hljs-comment"># 查看状态</span><br>git status<br><br><span class="hljs-comment"># 查看最近提交</span><br>git <span class="hljs-built_in">log</span> --oneline -10<br><br><span class="hljs-comment"># 查看本地与远程的差异</span><br>git <span class="hljs-built_in">log</span> origin/main..main --oneline<br></code></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本次 Hexo 博客部署问题的根本原因是 <code>source/voc-skill.md</code> 文件缺少 YAML front matter，导致 Hexo 解析失败。通过添加正确的 front matter，问题得到解决。</p>
+<p>这次排查过程强调了规范化文件创建和 front matter 使用的重要性。在 Hexo 博客维护中，遵循规范、定期验证、系统化调试是保证博客系统稳定运行的关键。</p>
+<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://hexo.io/docs/front-matter">Hexo 官方文档 - Front-matter</a></li>
+<li><a target="_blank" rel="noopener" href="https://hexo.io/docs/writing">Hexo 官方文档 - 写作</a></li>
+<li><a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment">Hexo 官方文档 - 部署</a></li>
+<li><a target="_blank" rel="noopener" href="https://yaml.org/spec/">YAML 官方文档</a></li>
 </ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一个合理的项目文件结构是高质量软件交付的基础。通过前后端分离、模块化组织、配置分离、Docker 化支持和完善的 CI&#x2F;CD 流程，我们不仅能提升开发效率，还能确保代码质量和系统稳定性。</p>
-<p>希望本文的建议能帮助你在实际项目中做出更明智的架构决策。如果你有其他优化建议或实践经验，欢迎分享和讨论。</p>
 
                 
               </div>
@@ -532,12 +551,12 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" class="category-chain-item">技术架构</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5/" class="category-chain-item">技术实践</a>
   
   
     <span>></span>
     
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/" class="category-chain-item">项目管理</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" class="category-chain-item">问题排查</a>
   
   
 
@@ -554,15 +573,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Web%E5%BC%80%E5%8F%91/" class="print-no-link">#Web开发</a>
+        <a href="/tags/%E5%8D%9A%E5%AE%A2/" class="print-no-link">#博客</a>
       
-        <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84/" class="print-no-link">#项目结构</a>
+        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
       
-        <a href="/tags/Vue3/" class="print-no-link">#Vue3</a>
+        <a href="/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" class="print-no-link">#问题排查</a>
       
-        <a href="/tags/FastAPI/" class="print-no-link">#FastAPI</a>
-      
-        <a href="/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="print-no-link">#最佳实践</a>
+        <a href="/tags/YAML/" class="print-no-link">#YAML</a>
       
     </div>
   
@@ -574,8 +591,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>网页项目的标准文件结构：最佳实践与优化建议</div>
-      <div>https://www.normdist.com/2026/04/02/ND-20260402-001-web-project-standard-structure/</div>
+      <div>Hexo 博客部署故障排查与解决</div>
+      <div>https://www.normdist.com/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/</div>
     </div>
     <div class="license-meta">
       
@@ -587,7 +604,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年4月2日</div>
+          <div>2026年4月4日</div>
         </div>
       
       
@@ -619,17 +636,11 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/" title="Hexo 博客部署故障排查与解决">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hexo 博客部署故障排查与解决</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/04/02/ND-20260402-web-project-standard-structure/" title="网页项目的标准文件结构：最佳实践与优化建议">
+                      <a href="/2026/04/02/ND-20260402-001-web-project-standard-structure/" title="网页项目的标准文件结构：最佳实践与优化建议">
                         <span class="hidden-mobile">网页项目的标准文件结构：最佳实践与优化建议</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
