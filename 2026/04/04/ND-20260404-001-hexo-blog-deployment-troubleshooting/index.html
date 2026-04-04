@@ -19,21 +19,21 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="问题描述最近在维护 Hexo 博客时，发现无法将本地博客内容成功推送到远程 GitHub 仓库。尽管博客系统本身运行正常（hexo-server 服务正常，可以通过 http:&#x2F;&#x2F;10.28.9.66:4000&#x2F; 访问），但在执行部署命令时遇到了问题。 系统诊断过程1. Git 配置检查首先检查了 Git 的基本配置，确认远程仓库连接是否正常： 12cd &#x2F;home&#x2F;jarvis&#x2F;bloggit">
+    <meta name="description" content="本文记录了一次 Hexo 博客部署故障的完整排查过程。从 Git 配置检查、Hexo 配置验证，到静态文件生成测试，最终定位到 YAML 解析错误。详细分析了问题根源，提供了具体的解决方案，并总结了经验教训和调试方法，为以后的类似问题提供参考。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexo 博客部署故障排查与解决">
 <meta property="og:url" content="https://www.normdist.com/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="问题描述最近在维护 Hexo 博客时，发现无法将本地博客内容成功推送到远程 GitHub 仓库。尽管博客系统本身运行正常（hexo-server 服务正常，可以通过 http:&#x2F;&#x2F;10.28.9.66:4000&#x2F; 访问），但在执行部署命令时遇到了问题。 系统诊断过程1. Git 配置检查首先检查了 Git 的基本配置，确认远程仓库连接是否正常： 12cd &#x2F;home&#x2F;jarvis&#x2F;bloggit">
+<meta property="og:description" content="本文记录了一次 Hexo 博客部署故障的完整排查过程。从 Git 配置检查、Hexo 配置验证，到静态文件生成测试，最终定位到 YAML 解析错误。详细分析了问题根源，提供了具体的解决方案，并总结了经验教训和调试方法，为以后的类似问题提供参考。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.normdist.com/img/cover-flat-01.jpg">
 <meta property="article:published_time" content="2026-04-03T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-04-04T03:48:14.809Z">
+<meta property="article:modified_time" content="2026-04-04T03:49:55.158Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="博客">
 <meta property="article:tag" content="Hexo">
 <meta property="article:tag" content="问题排查">
-<meta property="article:tag" content="YAML">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-01.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -573,13 +573,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%8D%9A%E5%AE%A2/" class="print-no-link">#博客</a>
-      
         <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
       
         <a href="/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" class="print-no-link">#问题排查</a>
-      
-        <a href="/tags/YAML/" class="print-no-link">#YAML</a>
       
     </div>
   

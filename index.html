@@ -360,7 +360,13 @@
   <div class="row mx-auto index-card">
     
     
-    <article class="col-12 col-md-12 mx-auto index-info">
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/" target="_self">
+          <img src="/img/cover-flat-01.jpg" srcset="/img/loading.gif" lazyload alt="Hexo 博客部署故障排查与解决">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
         <a href="/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/" target="_self">
@@ -369,9 +375,9 @@
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/" target="_self">
+      <a class="index-excerpt " href="/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/" target="_self">
         <div>
-          问题描述最近在维护 Hexo 博客时，发现无法将本地博客内容成功推送到远程 GitHub 仓库。尽管博客系统本身运行正常（hexo-server 服务正常，可以通过 http://10.28.9.66:4000/ 访问），但在执行部署命令时遇到了问题。 系统诊断过程1. Git 配置检查首先检查了 Git 的基本配置，确认远程仓库连接是否正常： 12cd /home/jarvis/bloggit
+          本文记录了一次 Hexo 博客部署故障的完整排查过程。从 Git 配置检查、Hexo 配置验证，到静态文件生成测试，最终定位到 YAML 解析错误。详细分析了问题根源，提供了具体的解决方案，并总结了经验教训和调试方法，为以后的类似问题提供参考。
         </div>
       </a>
 
@@ -417,13 +423,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%8D%9A%E5%AE%A2/">#博客</a>
-            
               <a href="/tags/Hexo/">#Hexo</a>
             
               <a href="/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/">#问题排查</a>
-            
-              <a href="/tags/YAML/">#YAML</a>
             
           </div>
         
