@@ -1,0 +1,1173 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MCP Playwright 将 AI 助手与浏览器自动化工具相结合，提供智能化调试、全面上下文感知、高效迭代循环等核心优势。本指南涵盖环境准备、核心功能详解、实战案例、最佳实践、常见问题与解决方案、高级技巧，帮助前端开发者、测试工程师、全栈开发者快速上手。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MCP Playwright 自动化调试实战指南">
+<meta property="og:url" content="https://www.normdist.com/2026/04/06/ND-20260406-001-mcp-playwright-practical-guide/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="MCP Playwright 将 AI 助手与浏览器自动化工具相结合，提供智能化调试、全面上下文感知、高效迭代循环等核心优势。本指南涵盖环境准备、核心功能详解、实战案例、最佳实践、常见问题与解决方案、高级技巧，帮助前端开发者、测试工程师、全栈开发者快速上手。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-06T01:30:00.000Z">
+<meta property="article:modified_time" content="2026-04-05T18:32:37.180Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="MCP">
+<meta property="article:tag" content="Playwright">
+<meta property="article:tag" content="自动化调试">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>MCP Playwright 自动化调试实战指南 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">MCP Playwright 自动化调试实战指南</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-04-06 09:30" pubdate>
+          2026年4月6日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          18k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          148 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MCP Playwright 自动化调试实战指南</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年4月6日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="MCP-Playwright-自动化调试实战指南"><a href="#MCP-Playwright-自动化调试实战指南" class="headerlink" title="MCP Playwright 自动化调试实战指南"></a>MCP Playwright 自动化调试实战指南</h1><blockquote>
+<p><strong>作者:</strong> LWMS2 开发团队<br><strong>日期:</strong> 2026-04-06<br><strong>版本:</strong> v1.0<br><strong>适用对象:</strong> 前端开发者、测试工程师、全栈开发者</p>
+</blockquote>
+<hr>
+<h2 id="📖-目录"><a href="#📖-目录" class="headerlink" title="📖 目录"></a>📖 目录</h2><ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF-mcp-playwright">什么是 MCP Playwright</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9-mcp-playwright">为什么选择 MCP Playwright</a></li>
+<li><a href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">环境准备</a></li>
+<li><a href="#%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E8%AF%A6%E8%A7%A3">核心功能详解</a></li>
+<li><a href="#%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B%E7%99%BB%E5%BD%95%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5">实战案例：登录问题排查</a></li>
+<li><a href="#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5">最佳实践</a></li>
+<li><a href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">常见问题与解决方案</a></li>
+<li><a href="#%E9%AB%98%E7%BA%A7%E6%8A%80%E5%B7%A7">高级技巧</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E5%B1%95%E6%9C%9B">总结与展望</a></li>
+</ul>
+<hr>
+<h2 id="什么是-MCP-Playwright"><a href="#什么是-MCP-Playwright" class="headerlink" title="什么是 MCP Playwright"></a>什么是 MCP Playwright</h2><p><strong>MCP (Model Context Protocol)</strong> 是一种标准化的协议，允许 AI 助手与外部工具进行交互。<strong>Playwright</strong> 是微软开发的现代化浏览器自动化工具。</p>
+<p><strong>MCP Playwright</strong> 将两者结合，让 AI 助手能够：</p>
+<ul>
+<li>🌐 控制真实浏览器（Chrome、Edge、Firefox）</li>
+<li>🔍 捕获页面元素、截图、录制视频</li>
+<li>📊 监控网络请求和控制台日志</li>
+<li>⚡ 执行 JavaScript 代码</li>
+<li>🎯 模拟用户交互（点击、输入、滚动等）</li>
+</ul>
+<h3 id="与传统调试方式的对比"><a href="#与传统调试方式的对比" class="headerlink" title="与传统调试方式的对比"></a>与传统调试方式的对比</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>手动调试</th>
+<th>传统自动化脚本</th>
+<th>MCP Playwright</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>启动速度</td>
+<td>慢（手动操作）</td>
+<td>中等</td>
+<td>快（AI 驱动）</td>
+</tr>
+<tr>
+<td>灵活性</td>
+<td>高</td>
+<td>低（需预编写）</td>
+<td>高（动态生成）</td>
+</tr>
+<tr>
+<td>学习成本</td>
+<td>低</td>
+<td>高</td>
+<td>中</td>
+</tr>
+<tr>
+<td>问题定位</td>
+<td>依赖经验</td>
+<td>依赖脚本质量</td>
+<td>AI 智能分析</td>
+</tr>
+<tr>
+<td>文档化</td>
+<td>手动记录</td>
+<td>部分自动</td>
+<td>完全自动化</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="为什么选择-MCP-Playwright"><a href="#为什么选择-MCP-Playwright" class="headerlink" title="为什么选择 MCP Playwright"></a>为什么选择 MCP Playwright</h2><h3 id="1-智能化调试"><a href="#1-智能化调试" class="headerlink" title="1. 智能化调试"></a>1. <strong>智能化调试</strong></h3><p>AI 可以：</p>
+<ul>
+<li>自动分析错误信息</li>
+<li>智能选择最优的选择器</li>
+<li>动态调整调试策略</li>
+<li>自动生成调试报告</li>
+</ul>
+<h3 id="2-完整的上下文感知"><a href="#2-完整的上下文感知" class="headerlink" title="2. 完整的上下文感知"></a>2. <strong>完整的上下文感知</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># AI 可以看到：</span><br>- 当前页面 DOM 结构<br>- 控制台日志（console.log, error, warning）<br>- 网络请求和响应<br>- 页面截图和视频<br>- localStorage/sessionStorage 状态<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-高效的迭代循环"><a href="#3-高效的迭代循环" class="headerlink" title="3. 高效的迭代循环"></a>3. <strong>高效的迭代循环</strong></h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs">发现问题 → AI 分析 → 生成修复方案 → 自动验证 → 输出报告<br>   ↓                                              ↑<br>   └──────────── 快速迭代，无需手动干预 ──────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-可复用的调试资产"><a href="#4-可复用的调试资产" class="headerlink" title="4. 可复用的调试资产"></a>4. <strong>可复用的调试资产</strong></h3><p>每次调试都会生成：</p>
+<ul>
+<li>📸 关键步骤截图</li>
+<li>📹 完整操作视频</li>
+<li>📄 详细的 JSON 日志</li>
+<li>📝 结构化的问题报告</li>
+</ul>
+<hr>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><h3 id="1-安装-Playwright"><a href="#1-安装-Playwright" class="headerlink" title="1. 安装 Playwright"></a>1. 安装 Playwright</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装 Playwright Python 库</span><br>pip install playwright<br><br><span class="hljs-comment"># 安装浏览器驱动</span><br>playwright install chromium<br>playwright install chrome  <span class="hljs-comment"># 可选：使用系统 Chrome</span><br>playwright install msedge  <span class="hljs-comment"># 可选：使用系统 Edge</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-配置-MCP-服务器"><a href="#2-配置-MCP-服务器" class="headerlink" title="2. 配置 MCP 服务器"></a>2. 配置 MCP 服务器</h3><p>在项目根目录创建 <code>.lingma/mcps/playwright/</code> 目录，确保包含以下文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs mcps/playwright/">├── SERVER_METADATA.json    # 服务器元数据<br>└── tools/<br>    ├── browser_navigate.json<br>    ├── browser_click.json<br>    ├── browser_type.json<br>    ├── browser_snapshot.json<br>    ├── browser_take_screenshot.json<br>    └── ... (其他工具定义)<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-验证安装"><a href="#3-验证安装" class="headerlink" title="3. 验证安装"></a>3. 验证安装</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> playwright.sync_api <span class="hljs-keyword">import</span> sync_playwright<br><br><span class="hljs-keyword">with</span> sync_playwright() <span class="hljs-keyword">as</span> p:<br>    browser = p.chromium.launch(headless=<span class="hljs-literal">True</span>)<br>    page = browser.new_page()<br>    page.goto(<span class="hljs-string">&quot;https://example.com&quot;</span>)<br>    <span class="hljs-built_in">print</span>(page.title())<br>    browser.close()<br></code></pre></td></tr></table></figure>
+
+<p>预期输出：<code>Example Domain</code></p>
+<hr>
+<h2 id="核心功能详解"><a href="#核心功能详解" class="headerlink" title="核心功能详解"></a>核心功能详解</h2><h3 id="1-浏览器导航"><a href="#1-浏览器导航" class="headerlink" title="1. 浏览器导航"></a>1. 浏览器导航</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 基本导航</span><br>page.goto(<span class="hljs-string">&quot;http://localhost:5173/login&quot;</span>)<br><br><span class="hljs-comment"># 等待页面完全加载</span><br>page.wait_for_load_state(<span class="hljs-string">&quot;networkidle&quot;</span>)<br><br><span class="hljs-comment"># 等待特定元素出现</span><br>page.wait_for_selector(<span class="hljs-string">&quot;#username&quot;</span>, timeout=<span class="hljs-number">5000</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>最佳实践：</strong></p>
+<ul>
+<li>✅ 始终使用 <code>wait_for_load_state()</code> 确保页面加载完成</li>
+<li>✅ 设置合理的超时时间（默认 30 秒）</li>
+<li>✅ 对于 SPA 应用，等待关键元素而非网络空闲</li>
+</ul>
+<h3 id="2-元素定位与交互"><a href="#2-元素定位与交互" class="headerlink" title="2. 元素定位与交互"></a>2. 元素定位与交互</h3><h4 id="多种选择器策略"><a href="#多种选择器策略" class="headerlink" title="多种选择器策略"></a>多种选择器策略</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># CSS 选择器（推荐）</span><br>page.locator(<span class="hljs-string">&#x27;input[name=&quot;username&quot;]&#x27;</span>)<br>page.locator(<span class="hljs-string">&#x27;.btn-primary&#x27;</span>)<br>page.locator(<span class="hljs-string">&#x27;#login-form &gt; button[type=&quot;submit&quot;]&#x27;</span>)<br><br><span class="hljs-comment"># XPath（复杂场景）</span><br>page.locator(<span class="hljs-string">&#x27;//button[contains(text(), &quot;登录&quot;)]&#x27;</span>)<br><br><span class="hljs-comment"># 文本选择器</span><br>page.locator(<span class="hljs-string">&#x27;text=忘记密码&#x27;</span>)<br><br><span class="hljs-comment"># 组合选择器（提高准确性）</span><br>page.locator(<span class="hljs-string">&#x27;input[name=&quot;username&quot;], input[id=&quot;username&quot;]&#x27;</span>).first<br></code></pre></td></tr></table></figure>
+
+<h4 id="常见交互操作"><a href="#常见交互操作" class="headerlink" title="常见交互操作"></a>常见交互操作</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 填写表单</span><br>page.fill(<span class="hljs-string">&#x27;input[name=&quot;username&quot;]&#x27;</span>, <span class="hljs-string">&#x27;admin&#x27;</span>)<br>page.fill(<span class="hljs-string">&#x27;input[name=&quot;password&quot;]&#x27;</span>, <span class="hljs-string">&#x27;admin123&#x27;</span>)<br><br><span class="hljs-comment"># 点击按钮</span><br>page.click(<span class="hljs-string">&#x27;button[type=&quot;submit&quot;]&#x27;</span>)<br><br><span class="hljs-comment"># 下拉框选择</span><br>page.select_option(<span class="hljs-string">&#x27;select#warehouse&#x27;</span>, <span class="hljs-string">&#x27;WH001&#x27;</span>)<br><br><span class="hljs-comment"># 上传文件</span><br>page.set_input_files(<span class="hljs-string">&#x27;input[type=&quot;file&quot;]&#x27;</span>, <span class="hljs-string">&#x27;test.pdf&#x27;</span>)<br><br><span class="hljs-comment"># 键盘操作</span><br>page.press(<span class="hljs-string">&#x27;input#search&#x27;</span>, <span class="hljs-string">&#x27;Enter&#x27;</span>)<br>page.press(<span class="hljs-string">&#x27;body&#x27;</span>, <span class="hljs-string">&#x27;Control+A&#x27;</span>)  <span class="hljs-comment"># 全选</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-截图与录制"><a href="#3-截图与录制" class="headerlink" title="3. 截图与录制"></a>3. 截图与录制</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 全屏截图</span><br>page.screenshot(path=<span class="hljs-string">&#x27;full_page.png&#x27;</span>, full_page=<span class="hljs-literal">True</span>)<br><br><span class="hljs-comment"># 元素截图</span><br>element = page.locator(<span class="hljs-string">&#x27;#error-message&#x27;</span>)<br>element.screenshot(path=<span class="hljs-string">&#x27;error_element.png&#x27;</span>)<br><br><span class="hljs-comment"># 录制视频（在 context 级别配置）</span><br>context = browser.new_context(<br>    record_video_dir=<span class="hljs-string">&#x27;videos/&#x27;</span>,<br>    record_video_size=&#123;<span class="hljs-string">&#x27;width&#x27;</span>: <span class="hljs-number">1920</span>, <span class="hljs-string">&#x27;height&#x27;</span>: <span class="hljs-number">1080</span>&#125;<br>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>截图命名规范：</strong></p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs 1c">debug_01_initial.png      <span class="hljs-meta"># 初始状态</span><br>debug_02_filled.png       <span class="hljs-meta"># 填写完成后</span><br>debug_03_after_click.png  <span class="hljs-meta"># 点击后</span><br>debug_04_error.png        <span class="hljs-meta"># 错误状态</span><br>debug_05_success.png      <span class="hljs-meta"># 成功状态</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-日志捕获"><a href="#4-日志捕获" class="headerlink" title="4. 日志捕获"></a>4. 日志捕获</h3><h4 id="控制台日志"><a href="#控制台日志" class="headerlink" title="控制台日志"></a>控制台日志</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python">console_messages = []<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">handle_console</span>(<span class="hljs-params">msg</span>):<br>    console_messages.append(&#123;<br>        <span class="hljs-string">&#x27;type&#x27;</span>: msg.<span class="hljs-built_in">type</span>,      <span class="hljs-comment"># log, error, warning, info</span><br>        <span class="hljs-string">&#x27;text&#x27;</span>: msg.text,<br>        <span class="hljs-string">&#x27;location&#x27;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;msg.location.get(<span class="hljs-string">&#x27;url&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>)&#125;</span>:<span class="hljs-subst">&#123;msg.location.get(<span class="hljs-string">&#x27;lineNumber&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>)&#125;</span>&quot;</span><br>    &#125;)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[Console <span class="hljs-subst">&#123;msg.<span class="hljs-built_in">type</span>&#125;</span>] <span class="hljs-subst">&#123;msg.text&#125;</span>&quot;</span>)<br><br>page.on(<span class="hljs-string">&quot;console&quot;</span>, handle_console)<br></code></pre></td></tr></table></figure>
+
+<h4 id="网络请求监控"><a href="#网络请求监控" class="headerlink" title="网络请求监控"></a>网络请求监控</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">network_requests = []<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">handle_response</span>(<span class="hljs-params">response</span>):<br>    network_requests.append(&#123;<br>        <span class="hljs-string">&#x27;url&#x27;</span>: response.url,<br>        <span class="hljs-string">&#x27;method&#x27;</span>: response.request.method,<br>        <span class="hljs-string">&#x27;status&#x27;</span>: response.status,<br>        <span class="hljs-string">&#x27;headers&#x27;</span>: <span class="hljs-built_in">dict</span>(response.headers),<br>        <span class="hljs-string">&#x27;timestamp&#x27;</span>: time.time()<br>    &#125;)<br><br>page.on(<span class="hljs-string">&quot;response&quot;</span>, handle_response)<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-JavaScript-执行"><a href="#5-JavaScript-执行" class="headerlink" title="5. JavaScript 执行"></a>5. JavaScript 执行</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 获取 localStorage</span><br>auth_data = page.evaluate(<span class="hljs-string">&quot;&quot;&quot;() =&gt; &#123;</span><br><span class="hljs-string">    return &#123;</span><br><span class="hljs-string">        token: localStorage.getItem(&#x27;token&#x27;),</span><br><span class="hljs-string">        user: localStorage.getItem(&#x27;user&#x27;)</span><br><span class="hljs-string">    &#125;;</span><br><span class="hljs-string">&#125;&quot;&quot;&quot;</span>)<br><br><span class="hljs-comment"># 修改页面状态</span><br>page.evaluate(<span class="hljs-string">&quot;&quot;&quot;() =&gt; &#123;</span><br><span class="hljs-string">    document.body.style.backgroundColor = &#x27;red&#x27;;</span><br><span class="hljs-string">&#125;&quot;&quot;&quot;</span>)<br><br><span class="hljs-comment"># 调用页面函数</span><br>result = page.evaluate(<span class="hljs-string">&quot;&quot;&quot;(arg1, arg2) =&gt; &#123;</span><br><span class="hljs-string">    return window.myFunction(arg1, arg2);</span><br><span class="hljs-string">&#125;&quot;&quot;&quot;</span>, <span class="hljs-string">&quot;value1&quot;</span>, <span class="hljs-string">&quot;value2&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="实战案例：登录问题排查"><a href="#实战案例：登录问题排查" class="headerlink" title="实战案例：登录问题排查"></a>实战案例：登录问题排查</h2><h3 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h3><p>用户报告无法登录系统，提示”登录失败，请检查用户名和密码”。</p>
+<h3 id="调试流程"><a href="#调试流程" class="headerlink" title="调试流程"></a>调试流程</h3><h4 id="Step-1-创建调试脚本"><a href="#Step-1-创建调试脚本" class="headerlink" title="Step 1: 创建调试脚本"></a>Step 1: 创建调试脚本</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">登录功能调试脚本 - debug_login.py</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-keyword">from</span> playwright.sync_api <span class="hljs-keyword">import</span> sync_playwright<br><span class="hljs-keyword">import</span> time<br><span class="hljs-keyword">import</span> json<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">debug_login</span>():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;=&quot;</span>*<span class="hljs-number">80</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;🔍 开始调试登录功能&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;=&quot;</span>*<span class="hljs-number">80</span>)<br>    <br>    <span class="hljs-keyword">with</span> sync_playwright() <span class="hljs-keyword">as</span> p:<br>        <span class="hljs-comment"># 1. 启动浏览器</span><br>        browser = p.chromium.launch(<br>            headless=<span class="hljs-literal">False</span>,<br>            channel=<span class="hljs-string">&quot;chrome&quot;</span>,<br>            slow_mo=<span class="hljs-number">500</span>,<br>            args=[<br>                <span class="hljs-string">&#x27;--no-sandbox&#x27;</span>,<br>                <span class="hljs-string">&#x27;--disable-infobars&#x27;</span>,<br>                <span class="hljs-string">&#x27;--disable-extensions&#x27;</span><br>            ]<br>        )<br>        <br>        context = browser.new_context(viewport=&#123;<span class="hljs-string">&#x27;width&#x27;</span>: <span class="hljs-number">1920</span>, <span class="hljs-string">&#x27;height&#x27;</span>: <span class="hljs-number">1080</span>&#125;)<br>        page = context.new_page()<br>        <br>        <span class="hljs-comment"># 2. 启用日志捕获</span><br>        console_messages = []<br>        network_requests = []<br>        <br>        page.on(<span class="hljs-string">&quot;console&quot;</span>, <span class="hljs-keyword">lambda</span> msg: console_messages.append(&#123;<br>            <span class="hljs-string">&#x27;type&#x27;</span>: msg.<span class="hljs-built_in">type</span>,<br>            <span class="hljs-string">&#x27;text&#x27;</span>: msg.text<br>        &#125;))<br>        <br>        page.on(<span class="hljs-string">&quot;response&quot;</span>, <span class="hljs-keyword">lambda</span> res: network_requests.append(&#123;<br>            <span class="hljs-string">&#x27;url&#x27;</span>: res.url,<br>            <span class="hljs-string">&#x27;status&#x27;</span>: res.status,<br>            <span class="hljs-string">&#x27;method&#x27;</span>: res.request.method<br>        &#125;))<br>        <br>        <span class="hljs-comment"># 3. 导航到登录页</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n→ 导航到登录页面...&quot;</span>)<br>        page.goto(<span class="hljs-string">&#x27;http://localhost:5173/login&#x27;</span>)<br>        page.wait_for_load_state(<span class="hljs-string">&#x27;networkidle&#x27;</span>)<br>        time.sleep(<span class="hljs-number">2</span>)<br>        <br>        <span class="hljs-comment"># 4. 截图：初始状态</span><br>        page.screenshot(path=<span class="hljs-string">&#x27;debug_01_initial.png&#x27;</span>, full_page=<span class="hljs-literal">True</span>)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;📸 已保存初始状态截图&quot;</span>)<br>        <br>        <span class="hljs-comment"># 5. 检查页面元素</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n🔍 检查页面元素...&quot;</span>)<br>        username_input = page.locator(<span class="hljs-string">&#x27;input[name=&quot;username&quot;]&#x27;</span>).first<br>        password_input = page.locator(<span class="hljs-string">&#x27;input[name=&quot;password&quot;]&#x27;</span>).first<br>        login_button = page.locator(<span class="hljs-string">&#x27;button[type=&quot;submit&quot;]&#x27;</span>).first<br>        <br>        <span class="hljs-keyword">assert</span> username_input.count() &gt; <span class="hljs-number">0</span>, <span class="hljs-string">&quot;❌ 未找到用户名输入框&quot;</span><br>        <span class="hljs-keyword">assert</span> password_input.count() &gt; <span class="hljs-number">0</span>, <span class="hljs-string">&quot;❌ 未找到密码输入框&quot;</span><br>        <span class="hljs-keyword">assert</span> login_button.count() &gt; <span class="hljs-number">0</span>, <span class="hljs-string">&quot;❌ 未找到登录按钮&quot;</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;✓ 所有必需元素都存在&quot;</span>)<br>        <br>        <span class="hljs-comment"># 6. 填写表单</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n→ 填写用户名: admin&quot;</span>)<br>        username_input.fill(<span class="hljs-string">&#x27;admin&#x27;</span>)<br>        <br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;→ 填写密码: admin123&quot;</span>)<br>        password_input.fill(<span class="hljs-string">&#x27;admin123&#x27;</span>)<br>        time.sleep(<span class="hljs-number">1</span>)<br>        <br>        <span class="hljs-comment"># 7. 截图：填写完成</span><br>        page.screenshot(path=<span class="hljs-string">&#x27;debug_02_filled.png&#x27;</span>, full_page=<span class="hljs-literal">True</span>)<br>        <br>        <span class="hljs-comment"># 8. 点击登录</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n→ 点击登录按钮...&quot;</span>)<br>        login_button.click()<br>        time.sleep(<span class="hljs-number">3</span>)<br>        <br>        <span class="hljs-comment"># 9. 截图：点击后</span><br>        page.screenshot(path=<span class="hljs-string">&#x27;debug_03_after_click.png&#x27;</span>, full_page=<span class="hljs-literal">True</span>)<br>        <br>        <span class="hljs-comment"># 10. 检查结果</span><br>        current_url = page.url<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n→ 当前 URL: <span class="hljs-subst">&#123;current_url&#125;</span>&quot;</span>)<br>        <br>        <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;/login&#x27;</span> <span class="hljs-keyword">in</span> current_url:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;⚠️  仍在登录页面，登录可能失败&quot;</span>)<br>            <br>            <span class="hljs-comment"># 检查错误提示</span><br>            error_element = page.locator(<span class="hljs-string">&#x27;.bg-red-50&#x27;</span>).first<br>            <span class="hljs-keyword">if</span> error_element.count() &gt; <span class="hljs-number">0</span>:<br>                error_text = error_element.inner_text()<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;❌ 错误提示: <span class="hljs-subst">&#123;error_text&#125;</span>&quot;</span>)<br>                page.screenshot(path=<span class="hljs-string">&#x27;debug_04_error.png&#x27;</span>, full_page=<span class="hljs-literal">True</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;✅ 已跳转到首页，登录成功&quot;</span>)<br>            page.screenshot(path=<span class="hljs-string">&#x27;debug_05_success.png&#x27;</span>, full_page=<span class="hljs-literal">True</span>)<br>        <br>        <span class="hljs-comment"># 11. 保存调试信息</span><br>        debug_info = &#123;<br>            <span class="hljs-string">&#x27;console_messages&#x27;</span>: console_messages[-<span class="hljs-number">20</span>:],<br>            <span class="hljs-string">&#x27;network_requests&#x27;</span>: [r <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> network_requests <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;api&#x27;</span> <span class="hljs-keyword">in</span> r[<span class="hljs-string">&#x27;url&#x27;</span>]],<br>            <span class="hljs-string">&#x27;current_url&#x27;</span>: current_url,<br>            <span class="hljs-string">&#x27;timestamp&#x27;</span>: time.time()<br>        &#125;<br>        <br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;debug_login_info.json&#x27;</span>, <span class="hljs-string">&#x27;w&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>            json.dump(debug_info, f, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>)<br>        <br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n📄 调试信息已保存到 debug_login_info.json&quot;</span>)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n按 Enter 关闭浏览器...&quot;</span>)<br>        <span class="hljs-built_in">input</span>()<br>        <br>        browser.close()<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    debug_login()<br></code></pre></td></tr></table></figure>
+
+<h4 id="Step-2-运行调试脚本"><a href="#Step-2-运行调试脚本" class="headerlink" title="Step 2: 运行调试脚本"></a>Step 2: 运行调试脚本</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> backend<br>python scripts/debug_login.py<br></code></pre></td></tr></table></figure>
+
+<h4 id="Step-3-分析输出"><a href="#Step-3-分析输出" class="headerlink" title="Step 3: 分析输出"></a>Step 3: 分析输出</h4><p><strong>发现的关键信息：</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs routeros">[Console <span class="hljs-built_in">error</span>] Access <span class="hljs-keyword">to</span> XMLHttpRequest at <span class="hljs-string">&#x27;http://localhost:8000/api/v1/auth/login&#x27;</span> <br><span class="hljs-keyword">from</span> origin <span class="hljs-string">&#x27;http://localhost:5173&#x27;</span> has been blocked by CORS<span class="hljs-built_in"> policy</span><br><span class="hljs-built_in"></span><br>[Console <span class="hljs-built_in">error</span>] Failed <span class="hljs-keyword">to</span> load resource: net::ERR_FAILED<br><br>❌ 错误提示: 登录失败，请检查用户名和密码<br></code></pre></td></tr></table></figure>
+
+<p><strong>后端日志显示：</strong></p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs arduino">ValueError: password cannot be longer than <span class="hljs-number">72</span> bytes<br><span class="hljs-built_in">File</span> <span class="hljs-string">&quot;app/core/security.py&quot;</span>, line <span class="hljs-number">26</span>, in verify_password<br>    <span class="hljs-keyword">return</span> pwd_context.<span class="hljs-built_in">verify</span>(plain_password, hashed_password)<br></code></pre></td></tr></table></figure>
+
+<h4 id="Step-4-定位根本原因"><a href="#Step-4-定位根本原因" class="headerlink" title="Step 4: 定位根本原因"></a>Step 4: 定位根本原因</h4><p>通过综合分析：</p>
+<ol>
+<li>❌ <strong>CORS 错误</strong> - 实际是表象，请求被后端拒绝</li>
+<li>❌ <strong>bcrypt 兼容性问题</strong> - passlib 与新版 bcrypt 不兼容</li>
+<li>✅ <strong>根本原因</strong> - 密码验证逻辑崩溃导致返回错误响应</li>
+</ol>
+<h4 id="Step-5-实施修复"><a href="#Step-5-实施修复" class="headerlink" title="Step 5: 实施修复"></a>Step 5: 实施修复</h4><p>修改 <code>backend/app/core/security.py</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 修改前：使用 passlib</span><br><span class="hljs-keyword">from</span> passlib.context <span class="hljs-keyword">import</span> CryptContext<br>pwd_context = CryptContext(schemes=[<span class="hljs-string">&quot;bcrypt&quot;</span>], deprecated=<span class="hljs-string">&quot;auto&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">verify_password</span>(<span class="hljs-params">plain_password: <span class="hljs-built_in">str</span>, hashed_password: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:<br>    <span class="hljs-keyword">return</span> pwd_context.verify(plain_password, hashed_password)<br><br><span class="hljs-comment"># 修改后：直接使用 bcrypt</span><br><span class="hljs-keyword">import</span> bcrypt<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">verify_password</span>(<span class="hljs-params">plain_password: <span class="hljs-built_in">str</span>, hashed_password: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">return</span> bcrypt.checkpw(<br>            plain_password.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>),<br>            hashed_password.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>        )<br>    <span class="hljs-keyword">except</span> Exception:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure>
+
+<p>重置密码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> bcrypt<br><span class="hljs-keyword">from</span> app.db.session <span class="hljs-keyword">import</span> SessionLocal<br><span class="hljs-keyword">from</span> app.models.user <span class="hljs-keyword">import</span> User<br><br>db = SessionLocal()<br>user = db.query(User).<span class="hljs-built_in">filter</span>(User.username == <span class="hljs-string">&quot;admin&quot;</span>).first()<br><br><span class="hljs-keyword">if</span> user:<br>    password = <span class="hljs-string">b&#x27;admin123&#x27;</span><br>    salt = bcrypt.gensalt()<br>    hashed = bcrypt.hashpw(password, salt)<br>    user.password_hash = hashed.decode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>    db.commit()<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;✅ 密码更新成功&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="Step-6-验证修复"><a href="#Step-6-验证修复" class="headerlink" title="Step 6: 验证修复"></a>Step 6: 验证修复</h4><p>重新运行调试脚本，确认：</p>
+<ul>
+<li>✅ 无 CORS 错误</li>
+<li>✅ 无控制台错误</li>
+<li>✅ 成功跳转到首页</li>
+<li>✅ localStorage 中有 token</li>
+</ul>
+<hr>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><h3 id="1-浏览器配置"><a href="#1-浏览器配置" class="headerlink" title="1. 浏览器配置"></a>1. 浏览器配置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 推荐配置</span><br>browser = p.chromium.launch(<br>    headless=<span class="hljs-literal">False</span>,           <span class="hljs-comment"># 调试时设为 False，便于观察</span><br>    channel=<span class="hljs-string">&quot;chrome&quot;</span>,         <span class="hljs-comment"># 使用系统 Chrome（更稳定）</span><br>    slow_mo=<span class="hljs-number">500</span>,              <span class="hljs-comment"># 放慢操作，便于调试</span><br>    args=[<br>        <span class="hljs-string">&#x27;--no-sandbox&#x27;</span>,<br>        <span class="hljs-string">&#x27;--disable-infobars&#x27;</span>,<br>        <span class="hljs-string">&#x27;--disable-extensions&#x27;</span>,<br>        <span class="hljs-string">&#x27;--disable-popup-blocking&#x27;</span><br>    ]<br>)<br><br><span class="hljs-comment"># ❌ 避免的配置</span><br>browser = p.chromium.launch(<br>    headless=<span class="hljs-literal">True</span>,            <span class="hljs-comment"># 调试时看不到页面</span><br>    slow_mo=<span class="hljs-number">0</span>,                <span class="hljs-comment"># 太快，难以观察</span><br>    args=[]                   <span class="hljs-comment"># 缺少必要的禁用参数</span><br>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-元素定位策略"><a href="#2-元素定位策略" class="headerlink" title="2. 元素定位策略"></a>2. 元素定位策略</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 优先级顺序</span><br><span class="hljs-comment"># 1. 使用 name/id 属性（最稳定）</span><br>page.locator(<span class="hljs-string">&#x27;input[name=&quot;username&quot;]&#x27;</span>)<br>page.locator(<span class="hljs-string">&#x27;#login-button&#x27;</span>)<br><br><span class="hljs-comment"># 2. 使用 data-testid（专为测试设计）</span><br>page.locator(<span class="hljs-string">&#x27;[data-testid=&quot;submit-btn&quot;]&#x27;</span>)<br><br><span class="hljs-comment"># 3. 使用 CSS 类名（注意可能的变化）</span><br>page.locator(<span class="hljs-string">&#x27;.btn.btn-primary&#x27;</span>)<br><br><span class="hljs-comment"># 4. 使用文本内容（多语言场景需注意）</span><br>page.locator(<span class="hljs-string">&#x27;text=登录&#x27;</span>)<br><br><span class="hljs-comment"># 5. 使用 XPath（最后手段）</span><br>page.locator(<span class="hljs-string">&#x27;//div[@class=&quot;form&quot;]/input[1]&#x27;</span>)<br><br><span class="hljs-comment"># ❌ 避免的做法</span><br>page.locator(<span class="hljs-string">&#x27;div &gt; div &gt; div &gt; button&#x27;</span>)  <span class="hljs-comment"># 脆弱的层级选择器</span><br>page.locator(<span class="hljs-string">&#x27;:nth-child(3)&#x27;</span>)             <span class="hljs-comment"># 位置依赖，易失效</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-等待策略"><a href="#3-等待策略" class="headerlink" title="3. 等待策略"></a>3. 等待策略</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 推荐的等待方式</span><br><span class="hljs-comment"># 1. 等待网络空闲</span><br>page.wait_for_load_state(<span class="hljs-string">&#x27;networkidle&#x27;</span>)<br><br><span class="hljs-comment"># 2. 等待元素可见</span><br>page.wait_for_selector(<span class="hljs-string">&#x27;#element&#x27;</span>, state=<span class="hljs-string">&#x27;visible&#x27;</span>)<br><br><span class="hljs-comment"># 3. 等待元素可点击</span><br>page.wait_for_selector(<span class="hljs-string">&#x27;#button&#x27;</span>, state=<span class="hljs-string">&#x27;enabled&#x27;</span>)<br><br><span class="hljs-comment"># 4. 等待 API 响应</span><br><span class="hljs-keyword">with</span> page.expect_response(<span class="hljs-string">&quot;**/api/login&quot;</span>) <span class="hljs-keyword">as</span> response_info:<br>    page.click(<span class="hljs-string">&#x27;#login-btn&#x27;</span>)<br>response = response_info.value<br><span class="hljs-keyword">assert</span> response.status == <span class="hljs-number">200</span><br><br><span class="hljs-comment"># ❌ 避免的做法</span><br>time.sleep(<span class="hljs-number">5</span>)  <span class="hljs-comment"># 硬编码等待，不可靠且浪费时间</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-错误处理"><a href="#4-错误处理" class="headerlink" title="4. 错误处理"></a>4. 错误处理</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 完善的错误处理</span><br><span class="hljs-keyword">try</span>:<br>    page.goto(<span class="hljs-string">&#x27;http://localhost:5173/login&#x27;</span>, timeout=<span class="hljs-number">10000</span>)<br><span class="hljs-keyword">except</span> TimeoutError:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;❌ 页面加载超时&quot;</span>)<br>    page.screenshot(path=<span class="hljs-string">&#x27;error_timeout.png&#x27;</span>)<br>    <span class="hljs-keyword">raise</span><br><span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;❌ 未知错误: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>    page.screenshot(path=<span class="hljs-string">&#x27;error_unknown.png&#x27;</span>)<br>    <span class="hljs-keyword">raise</span><br><br><span class="hljs-comment"># ✅ 断言验证</span><br>username_input = page.locator(<span class="hljs-string">&#x27;input[name=&quot;username&quot;]&#x27;</span>)<br><span class="hljs-keyword">assert</span> username_input.count() &gt; <span class="hljs-number">0</span>, <span class="hljs-string">&quot;用户名输入框不存在&quot;</span><br><span class="hljs-keyword">assert</span> username_input.is_visible(), <span class="hljs-string">&quot;用户名输入框不可见&quot;</span><br><span class="hljs-keyword">assert</span> username_input.is_enabled(), <span class="hljs-string">&quot;用户名输入框被禁用&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-资源清理"><a href="#5-资源清理" class="headerlink" title="5. 资源清理"></a>5. 资源清理</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 确保资源释放</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">run_test</span>():<br>    browser = <span class="hljs-literal">None</span><br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">with</span> sync_playwright() <span class="hljs-keyword">as</span> p:<br>            browser = p.chromium.launch()<br>            page = browser.new_page()<br>            <span class="hljs-comment"># ... 测试逻辑</span><br>    <span class="hljs-keyword">finally</span>:<br>        <span class="hljs-keyword">if</span> browser:<br>            browser.close()<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;✅ 浏览器已关闭&quot;</span>)<br><br><span class="hljs-comment"># 或使用 context manager</span><br><span class="hljs-keyword">with</span> sync_playwright() <span class="hljs-keyword">as</span> p:<br>    browser = p.chromium.launch()<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-comment"># ... 测试逻辑</span><br>    <span class="hljs-keyword">finally</span>:<br>        browser.close()<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="常见问题与解决方案"><a href="#常见问题与解决方案" class="headerlink" title="常见问题与解决方案"></a>常见问题与解决方案</h2><h3 id="Q1-浏览器启动失败"><a href="#Q1-浏览器启动失败" class="headerlink" title="Q1: 浏览器启动失败"></a>Q1: 浏览器启动失败</h3><p><strong>症状：</strong></p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nix">playwright._impl._errors.<span class="hljs-params">Error:</span> BrowserType.<span class="hljs-params">launch:</span> Executable doesn&#x27;t exist<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 重新安装浏览器</span><br>playwright install chromium<br>playwright install chrome<br></code></pre></td></tr></table></figure>
+
+<h3 id="Q2-元素找不到"><a href="#Q2-元素找不到" class="headerlink" title="Q2: 元素找不到"></a>Q2: 元素找不到</h3><p><strong>症状：</strong></p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nix"><span class="hljs-params">TimeoutError:</span> locator.<span class="hljs-params">click:</span> Timeout <span class="hljs-number">30000</span>ms exceeded<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 1. 检查选择器是否正确</span><br><span class="hljs-built_in">print</span>(page.content())  <span class="hljs-comment"># 打印页面 HTML</span><br><br><span class="hljs-comment"># 2. 截图查看当前状态</span><br>page.screenshot(path=<span class="hljs-string">&#x27;debug_current.png&#x27;</span>)<br><br><span class="hljs-comment"># 3. 尝试多种选择器</span><br>element = page.locator(<span class="hljs-string">&#x27;input[name=&quot;username&quot;], input#username, .username-input&#x27;</span>).first<br><br><span class="hljs-comment"># 4. 增加等待时间</span><br>page.wait_for_selector(<span class="hljs-string">&#x27;input[name=&quot;username&quot;]&#x27;</span>, timeout=<span class="hljs-number">10000</span>)<br><br><span class="hljs-comment"># 5. 检查是否在 iframe 中</span><br>frame = page.frame_locator(<span class="hljs-string">&#x27;iframe#content-frame&#x27;</span>)<br>frame.locator(<span class="hljs-string">&#x27;input[name=&quot;username&quot;]&#x27;</span>).fill(<span class="hljs-string">&#x27;admin&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="Q3-CORS-跨域错误"><a href="#Q3-CORS-跨域错误" class="headerlink" title="Q3: CORS 跨域错误"></a>Q3: CORS 跨域错误</h3><p><strong>症状：</strong></p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">Access</span> <span class="hljs-keyword">to</span> XMLHttpRequest has been blocked <span class="hljs-keyword">by</span> CORS <span class="hljs-keyword">policy</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>解决：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 方法1：检查后端 CORS 配置</span><br><span class="hljs-comment"># backend/app/core/config.py</span><br>BACKEND_CORS_ORIGINS = [<br>    <span class="hljs-string">&quot;http://localhost:5173&quot;</span>,<br>    <span class="hljs-string">&quot;http://127.0.0.1:5173&quot;</span><br>]<br><br><span class="hljs-comment"># 方法2：使用 Playwright 绕过 CORS（仅用于调试）</span><br>context = browser.new_context(<br>    bypass_csp=<span class="hljs-literal">True</span>,  <span class="hljs-comment"># 绕过 Content Security Policy</span><br>    ignore_https_errors=<span class="hljs-literal">True</span><br>)<br><br><span class="hljs-comment"># 方法3：检查后端是否正常运行</span><br><span class="hljs-keyword">import</span> requests<br>response = requests.get(<span class="hljs-string">&#x27;http://localhost:8000/health&#x27;</span>)<br><span class="hljs-built_in">print</span>(response.status_code)  <span class="hljs-comment"># 应该是 200</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Q4-异步操作不同步"><a href="#Q4-异步操作不同步" class="headerlink" title="Q4: 异步操作不同步"></a>Q4: 异步操作不同步</h3><p><strong>症状：</strong></p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xquery">Element <span class="hljs-literal">is</span><span class="hljs-built_in"> not</span> attached <span class="hljs-keyword">to</span> the DOM<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 等待元素稳定后再操作</span><br>element = page.locator(<span class="hljs-string">&#x27;#dynamic-element&#x27;</span>)<br>element.wait_for(state=<span class="hljs-string">&#x27;attached&#x27;</span>)<br>element.wait_for(state=<span class="hljs-string">&#x27;visible&#x27;</span>)<br>element.click()<br><br><span class="hljs-comment"># ✅ 使用 expect 断言（自动重试）</span><br><span class="hljs-keyword">from</span> playwright.sync_api <span class="hljs-keyword">import</span> expect<br>expect(element).to_be_visible(timeout=<span class="hljs-number">5000</span>)<br>element.click()<br></code></pre></td></tr></table></figure>
+
+<h3 id="Q5-内存泄漏"><a href="#Q5-内存泄漏" class="headerlink" title="Q5: 内存泄漏"></a>Q5: 内存泄漏</h3><p><strong>症状：</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">浏览器占用内存持续增长<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 定期清理上下文</span><br><span class="hljs-keyword">for</span> test_case <span class="hljs-keyword">in</span> test_cases:<br>    context = browser.new_context()<br>    page = context.new_page()<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-comment"># 执行测试</span><br>        run_test(page)<br>    <span class="hljs-keyword">finally</span>:<br>        context.close()  <span class="hljs-comment"># 关闭上下文释放资源</span><br><br><span class="hljs-comment"># ✅ 限制并发数量</span><br><span class="hljs-keyword">from</span> concurrent.futures <span class="hljs-keyword">import</span> ThreadPoolExecutor<br><br><span class="hljs-keyword">with</span> ThreadPoolExecutor(max_workers=<span class="hljs-number">3</span>) <span class="hljs-keyword">as</span> executor:<br>    futures = [executor.submit(run_test, url) <span class="hljs-keyword">for</span> url <span class="hljs-keyword">in</span> urls]<br>    <span class="hljs-keyword">for</span> future <span class="hljs-keyword">in</span> futures:<br>        future.result()<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="高级技巧"><a href="#高级技巧" class="headerlink" title="高级技巧"></a>高级技巧</h2><h3 id="1-自定义认证状态"><a href="#1-自定义认证状态" class="headerlink" title="1. 自定义认证状态"></a>1. 自定义认证状态</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 保存登录状态</span><br>context = browser.new_context()<br>page = context.new_page()<br>page.goto(<span class="hljs-string">&#x27;http://localhost:5173/login&#x27;</span>)<br>page.fill(<span class="hljs-string">&#x27;input[name=&quot;username&quot;]&#x27;</span>, <span class="hljs-string">&#x27;admin&#x27;</span>)<br>page.fill(<span class="hljs-string">&#x27;input[name=&quot;password&quot;]&#x27;</span>, <span class="hljs-string">&#x27;admin123&#x27;</span>)<br>page.click(<span class="hljs-string">&#x27;button[type=&quot;submit&quot;]&#x27;</span>)<br>page.wait_for_url(<span class="hljs-string">&#x27;**/&#x27;</span>)<br><br><span class="hljs-comment"># 保存状态</span><br>context.storage_state(path=<span class="hljs-string">&#x27;auth_state.json&#x27;</span>)<br><br><span class="hljs-comment"># 在其他测试中复用</span><br>new_context = browser.new_context(storage_state=<span class="hljs-string">&#x27;auth_state.json&#x27;</span>)<br>new_page = new_context.new_page()<br>new_page.goto(<span class="hljs-string">&#x27;http://localhost:5173/dashboard&#x27;</span>)<br><span class="hljs-comment"># 已经处于登录状态</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-网络拦截与-Mock"><a href="#2-网络拦截与-Mock" class="headerlink" title="2. 网络拦截与 Mock"></a>2. 网络拦截与 Mock</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 拦截并修改 API 响应</span><br>page.route(<span class="hljs-string">&#x27;**/api/users&#x27;</span>, <span class="hljs-keyword">lambda</span> route: route.fulfill(<br>    status=<span class="hljs-number">200</span>,<br>    content_type=<span class="hljs-string">&#x27;application/json&#x27;</span>,<br>    body=json.dumps([<br>        &#123;<span class="hljs-string">&#x27;id&#x27;</span>:<span class="hljs-number">1</span>, <span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;Mock User&#x27;</span>&#125;<br>    ])<br>))<br><br><span class="hljs-comment"># 阻止某些请求</span><br>page.route(<span class="hljs-string">&#x27;**/analytics/**&#x27;</span>, <span class="hljs-keyword">lambda</span> route: route.abort())<br><br><span class="hljs-comment"># 记录所有请求</span><br>requests_log = []<br>page.route(<span class="hljs-string">&#x27;**/*&#x27;</span>, <span class="hljs-keyword">lambda</span> route: (<br>    requests_log.append(&#123;<br>        <span class="hljs-string">&#x27;url&#x27;</span>: route.request.url,<br>        <span class="hljs-string">&#x27;method&#x27;</span>: route.request.method<br>    &#125;),<br>    route.continue_()<br>))<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-视觉回归测试"><a href="#3-视觉回归测试" class="headerlink" title="3. 视觉回归测试"></a>3. 视觉回归测试</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 截图并与基准对比</span><br><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">compare_screenshots</span>(<span class="hljs-params">baseline_path, current_path, threshold=<span class="hljs-number">0.01</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;比较两张截图的差异&quot;&quot;&quot;</span><br>    baseline = np.array(Image.<span class="hljs-built_in">open</span>(baseline_path))<br>    current = np.array(Image.<span class="hljs-built_in">open</span>(current_path))<br>    <br>    <span class="hljs-keyword">if</span> baseline.shape != current.shape:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;尺寸不匹配&quot;</span><br>    <br>    diff = np.mean(np.<span class="hljs-built_in">abs</span>(baseline.astype(<span class="hljs-built_in">float</span>) - current.astype(<span class="hljs-built_in">float</span>))) / <span class="hljs-number">255</span><br>    is_similar = diff &lt; threshold<br>    <br>    <span class="hljs-keyword">return</span> is_similar, <span class="hljs-string">f&quot;差异度: <span class="hljs-subst">&#123;diff:<span class="hljs-number">.4</span>f&#125;</span>&quot;</span><br><br><span class="hljs-comment"># 使用</span><br>page.screenshot(path=<span class="hljs-string">&#x27;current.png&#x27;</span>)<br>is_similar, message = compare_screenshots(<span class="hljs-string">&#x27;baseline.png&#x27;</span>, <span class="hljs-string">&#x27;current.png&#x27;</span>)<br><span class="hljs-built_in">print</span>(message)<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-性能监控"><a href="#4-性能监控" class="headerlink" title="4. 性能监控"></a>4. 性能监控</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 监控页面性能指标</span><br>performance_metrics = page.evaluate(<span class="hljs-string">&quot;&quot;&quot;() =&gt; &#123;</span><br><span class="hljs-string">    const timing = performance.getEntriesByType(&#x27;navigation&#x27;)[0];</span><br><span class="hljs-string">    return &#123;</span><br><span class="hljs-string">        dnsLookup: timing.domainLookupEnd - timing.domainLookupStart,</span><br><span class="hljs-string">        tcpConnection: timing.connectEnd - timing.connectStart,</span><br><span class="hljs-string">        ttfb: timing.responseStart - timing.requestStart,</span><br><span class="hljs-string">        domContentLoaded: timing.domContentLoadedEventEnd - timing.navigationStart,</span><br><span class="hljs-string">        pageLoad: timing.loadEventEnd - timing.navigationStart</span><br><span class="hljs-string">    &#125;;</span><br><span class="hljs-string">&#125;&quot;&quot;&quot;</span>)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;DNS 查询: <span class="hljs-subst">&#123;performance_metrics[<span class="hljs-string">&#x27;dnsLookup&#x27;</span>]&#125;</span>ms&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;TCP 连接: <span class="hljs-subst">&#123;performance_metrics[<span class="hljs-string">&#x27;tcpConnection&#x27;</span>]&#125;</span>ms&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;首字节: <span class="hljs-subst">&#123;performance_metrics[<span class="hljs-string">&#x27;ttfb&#x27;</span>]&#125;</span>ms&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;DOM 就绪: <span class="hljs-subst">&#123;performance_metrics[<span class="hljs-string">&#x27;domContentLoaded&#x27;</span>]&#125;</span>ms&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;页面加载: <span class="hljs-subst">&#123;performance_metrics[<span class="hljs-string">&#x27;pageLoad&#x27;</span>]&#125;</span>ms&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-并行测试"><a href="#5-并行测试" class="headerlink" title="5. 并行测试"></a>5. 并行测试</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用 pytest-playwright 进行并行测试</span><br><span class="hljs-comment"># conftest.py</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">pytest_configure</span>(<span class="hljs-params">config</span>):<br>    config.option.numprocesses = <span class="hljs-number">4</span>  <span class="hljs-comment"># 4 个并行进程</span><br><br><span class="hljs-comment"># test_login.py</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">test_login_with_different_users</span>(<span class="hljs-params">page, username, password</span>):<br>    page.goto(<span class="hljs-string">&#x27;http://localhost:5173/login&#x27;</span>)<br>    page.fill(<span class="hljs-string">&#x27;input[name=&quot;username&quot;]&#x27;</span>, username)<br>    page.fill(<span class="hljs-string">&#x27;input[name=&quot;password&quot;]&#x27;</span>, password)<br>    page.click(<span class="hljs-string">&#x27;button[type=&quot;submit&quot;]&#x27;</span>)<br>    expect(page).to_have_url(<span class="hljs-string">&#x27;**/dashboard&#x27;</span>)<br><br><span class="hljs-comment"># 运行</span><br>pytest tests/ -n <span class="hljs-number">4</span> --browser chromium<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="总结与展望"><a href="#总结与展望" class="headerlink" title="总结与展望"></a>总结与展望</h2><h3 id="核心优势回顾"><a href="#核心优势回顾" class="headerlink" title="核心优势回顾"></a>核心优势回顾</h3><ol>
+<li><strong>智能化</strong> - AI 驱动的自动化调试，减少人工干预</li>
+<li><strong>全面性</strong> - 从 UI 到网络，从截图到日志，全方位监控</li>
+<li><strong>高效性</strong> - 快速定位问题，自动生成报告</li>
+<li><strong>可复用</strong> - 调试脚本和最佳实践可以沉淀为团队资产</li>
+</ol>
+<h3 id="未来发展方向"><a href="#未来发展方向" class="headerlink" title="未来发展方向"></a>未来发展方向</h3><ul>
+<li>🤖 <strong>更智能的元素识别</strong> - 基于 AI 的智能选择器生成</li>
+<li>📊 <strong>可视化调试面板</strong> - 实时展示调试过程和结果</li>
+<li>🔗 <strong>CI&#x2F;CD 集成</strong> - 自动化回归测试和质量门禁</li>
+<li>🌍 <strong>跨浏览器测试</strong> - 同时测试 Chrome、Firefox、Safari</li>
+<li>📱 <strong>移动端支持</strong> - 响应式设计和移动端适配测试</li>
+</ul>
+<h3 id="行动建议"><a href="#行动建议" class="headerlink" title="行动建议"></a>行动建议</h3><ol>
+<li><strong>立即开始</strong> - 在你的下一个 bug 修复中使用 Playwright 调试</li>
+<li><strong>建立规范</strong> - 制定团队的 Playwright 使用规范</li>
+<li><strong>积累资产</strong> - 将常用的调试脚本整理成工具库</li>
+<li><strong>持续优化</strong> - 定期回顾和改进调试流程</li>
+</ol>
+<hr>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="A-常用命令速查"><a href="#A-常用命令速查" class="headerlink" title="A. 常用命令速查"></a>A. 常用命令速查</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装</span><br>pip install playwright<br>playwright install<br><br><span class="hljs-comment"># 更新</span><br>pip install --upgrade playwright<br>playwright install --force<br><br><span class="hljs-comment"># 查看版本</span><br>playwright --version<br><br><span class="hljs-comment"># 生成代码（录制操作）</span><br>playwright codegen http://localhost:5173<br><br><span class="hljs-comment"># 打开 Inspector</span><br>playwright inspector<br></code></pre></td></tr></table></figure>
+
+<h3 id="B-参考资源"><a href="#B-参考资源" class="headerlink" title="B. 参考资源"></a>B. 参考资源</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://playwright.dev/">Playwright 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://playwright.dev/python/docs/intro">Playwright Python API</a></li>
+<li><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/">MCP 协议规范</a></li>
+<li><a href="../03-development-guide/debugging-guide.md">LWMS2 项目调试规范</a></li>
+<li><a href="../issues/LOGIN-001-login-failure-bcrypt-compatibility.md">Issue LOGIN-001: 登录故障排查</a></li>
+</ul>
+<h3 id="C-工具链推荐"><a href="#C-工具链推荐" class="headerlink" title="C. 工具链推荐"></a>C. 工具链推荐</h3><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>工具</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>浏览器自动化</td>
+<td>Playwright</td>
+<td>本文主角</td>
+</tr>
+<tr>
+<td>API 测试</td>
+<td>Postman &#x2F; Insomnia</td>
+<td>接口调试</td>
+</tr>
+<tr>
+<td>性能分析</td>
+<td>Lighthouse</td>
+<td>页面性能</td>
+</tr>
+<tr>
+<td>视觉测试</td>
+<td>Percy &#x2F; Chromatic</td>
+<td>视觉回归</td>
+</tr>
+<tr>
+<td>测试框架</td>
+<td>pytest</td>
+<td>Python 测试</td>
+</tr>
+<tr>
+<td>CI&#x2F;CD</td>
+<td>GitHub Actions</td>
+<td>自动化流水线</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>文档维护者:</strong> LWMS2 开发团队<br><strong>最后更新:</strong> 2026-04-06<br><strong>反馈与建议:</strong> 欢迎提交 Issue 或 PR</p>
+<hr>
+<blockquote>
+<p>💡 <strong>提示:</strong> 本文档会随着项目发展和实践经验不断更新，建议定期查看最新版本。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" class="category-chain-item">技术文档</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MCP/" class="print-no-link">#MCP</a>
+      
+        <a href="/tags/Playwright/" class="print-no-link">#Playwright</a>
+      
+        <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%B0%83%E8%AF%95/" class="print-no-link">#自动化调试</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MCP Playwright 自动化调试实战指南</div>
+      <div>https://www.normdist.com/2026/04/06/ND-20260406-001-mcp-playwright-practical-guide/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年4月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/04/04/ND-20260404-001-hexo-blog-deployment-troubleshooting/" title="Hexo 博客部署故障排查与解决">
+                        <span class="hidden-mobile">Hexo 博客部署故障排查与解决</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
