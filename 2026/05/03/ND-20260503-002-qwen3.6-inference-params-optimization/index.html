@@ -1,0 +1,1209 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Qwen3.6-35B-A3B 是一款 35B 参数的 MoE 模型，默认开启 Thinking 模式。在 LM Studio 本地部署时，采样参数的配置直接决定输出质量。本文记录了从问题诊断、官方参数调研、Thinking&#x2F;Instruct 双模式优化到最终落地的完整过程，包含踩坑记录与最终配置。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qwen3.6-35B-A3B 推理参数优化实战——从踩坑到最优配置">
+<meta property="og:url" content="https://www.normdist.com/2026/05/03/ND-20260503-002-qwen3.6-inference-params-optimization/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="Qwen3.6-35B-A3B 是一款 35B 参数的 MoE 模型，默认开启 Thinking 模式。在 LM Studio 本地部署时，采样参数的配置直接决定输出质量。本文记录了从问题诊断、官方参数调研、Thinking&#x2F;Instruct 双模式优化到最终落地的完整过程，包含踩坑记录与最终配置。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-03T12:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-03T11:40:20.587Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="Qwen">
+<meta property="article:tag" content="LM Studio">
+<meta property="article:tag" content="模型部署">
+<meta property="article:tag" content="推理优化">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Qwen3.6-35B-A3B 推理参数优化实战——从踩坑到最优配置 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Qwen3.6-35B-A3B 推理参数优化实战——从踩坑到最优配置</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-05-03 20:00" pubdate>
+          2026年5月3日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          42 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Qwen3.6-35B-A3B 推理参数优化实战——从踩坑到最优配置</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年5月3日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Qwen3-6-35B-A3B-推理参数优化实战——从踩坑到最优配置"><a href="#Qwen3-6-35B-A3B-推理参数优化实战——从踩坑到最优配置" class="headerlink" title="Qwen3.6-35B-A3B 推理参数优化实战——从踩坑到最优配置"></a>Qwen3.6-35B-A3B 推理参数优化实战——从踩坑到最优配置</h1><blockquote>
+<p><strong>作者：</strong> 小瑞、小莫（CherryClaw）<br><strong>日期：</strong> 2026-05-03<br><strong>目标模型：</strong> Qwen3.6-35B-A3B（Q4_K_M 量化，20.5 GiB）<br><strong>推理框架：</strong> LM Studio（llama.cpp 后端）</p>
+</blockquote>
+<hr>
+<h2 id="📖-目录"><a href="#📖-目录" class="headerlink" title="📖 目录"></a>📖 目录</h2><ul>
+<li><a href="#%E8%83%8C%E6%99%AF">背景</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%E5%BE%88%E9%87%8D%E8%A6%81">为什么参数配置很重要</a></li>
+<li><a href="#%E9%97%AE%E9%A2%98%E8%AF%8A%E6%96%AD%E5%8E%9F%E5%A7%8B%E9%85%8D%E7%BD%AE%E7%9A%84%E9%97%AE%E9%A2%98">问题诊断：原始配置的问题</a></li>
+<li><a href="#%E5%AE%98%E6%96%B9%E6%8E%A8%E8%8D%90%E5%8F%82%E6%95%B0%E6%96%B9%E6%A1%88">官方推荐参数方案</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BC%98%E5%8C%96%E5%AF%B9%E9%BD%90%E5%AE%98%E6%96%B9-thinking-%E6%A8%A1%E5%BC%8F%E5%8F%82%E6%95%B0">第一次优化：对齐官方 Thinking 模式参数</a></li>
+<li><a href="#%E8%B8%A9%E5%9D%91thinking-%E6%A8%A1%E5%BC%8F%E4%B8%8E-agent-%E7%9A%84%E5%85%BC%E5%AE%B9%E6%80%A7%E9%97%AE%E9%A2%98">踩坑：Thinking 模式与 Agent 的兼容性问题</a></li>
+<li><a href="#%E6%9C%80%E7%BB%88%E6%96%B9%E6%A1%88%E5%85%B3%E9%97%AD-thinking--instruct-%E6%A8%A1%E5%BC%8F%E5%8F%82%E6%95%B0">最终方案：关闭 Thinking + Instruct 模式参数</a></li>
+<li><a href="#lm-studio-%E7%89%B9%E6%AE%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">LM Studio 特殊注意事项</a></li>
+<li><a href="#%E6%9C%80%E7%BB%88%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE">最终完整配置</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+<hr>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>我们的服务器通过 LM Studio 本地部署 Qwen3.6-35B-A3B，经 new-api 转发为 Hermes、OpenClaw 等 AI Agent 应用提供本地大模型服务：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Hermes</span> / OpenClaw → new-api(:<span class="hljs-number">3000</span>/:<span class="hljs-number">3001</span>) → LM Studio(:<span class="hljs-number">1234</span>) → Qwen3.<span class="hljs-number">6</span>-<span class="hljs-number">35</span>B-A3B<br></code></pre></td></tr></table></figure>
+
+<p>模型本身是 <strong>35B 参数 MoE 架构</strong>（每 token 激活约 3B），支持 <strong>混合推理</strong>——默认开启 Thinking 模式（先输出思考链再给出回答），也可切换为 Instruct 模式（直接回答）。</p>
+<p>本文记录了从发现问题到最终落地的完整优化过程。</p>
+<hr>
+<h2 id="为什么参数配置很重要"><a href="#为什么参数配置很重要" class="headerlink" title="为什么参数配置很重要"></a>为什么参数配置很重要</h2><p>Qwen3.6 官方明确给出了几个<strong>绝对不能违反</strong>的原则：</p>
+<table>
+<thead>
+<tr>
+<th>原则</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>禁止贪婪解码</strong></td>
+<td><code>temperature=0</code> 或 <code>top_k=1</code> 会导致性能下降和无尽重复</td>
+</tr>
+<tr>
+<td><strong>presencePenalty 是灵魂参数</strong></td>
+<td>尤其对量化模型，直接决定是否陷入重复循环</td>
+</tr>
+<tr>
+<td><strong>repeatPenalty 保持 1.0</strong></td>
+<td>与 presencePenalty 作用重叠，同时使用会过度惩罚</td>
+</tr>
+<tr>
+<td><strong>按场景切参数</strong></td>
+<td>编程用 0.6 温度，通用用 1.0 温度，不能一刀切</td>
+</tr>
+</tbody></table>
+<p>违反这些原则的后果不是”效果差一点”，而是<strong>完全不可用</strong>——无限循环、语言混合、输出截断。</p>
+<hr>
+<h2 id="问题诊断：原始配置的问题"><a href="#问题诊断：原始配置的问题" class="headerlink" title="问题诊断：原始配置的问题"></a>问题诊断：原始配置的问题</h2><p>优化前的 model.yaml 只配了两个参数：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># ❌ 优化前</span><br><span class="hljs-attr">operation:</span><br>  <span class="hljs-attr">fields:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.temperature</span><br>    <span class="hljs-attr">value:</span> <span class="hljs-number">0.4</span>          <span class="hljs-comment"># 远低于官方推荐的 1.0</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.repeatPenalty</span><br>    <span class="hljs-attr">value:</span><br>      <span class="hljs-attr">checked:</span> <span class="hljs-literal">true</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">1.1</span>        <span class="hljs-comment"># 不应启用，与 presencePenalty 冲突</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>六大问题：</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>问题</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>temperature&#x3D;0.4</td>
+<td>输出过于保守、干瘪</td>
+</tr>
+<tr>
+<td>2</td>
+<td>repeatPenalty&#x3D;1.1 已启用</td>
+<td>与 presencePenalty 双重惩罚，导致跳词、语言混合</td>
+</tr>
+<tr>
+<td>3</td>
+<td>缺少 topP</td>
+<td>未限制核采样范围</td>
+</tr>
+<tr>
+<td>4</td>
+<td>缺少 topK</td>
+<td>未限制候选 token 数量</td>
+</tr>
+<tr>
+<td>5</td>
+<td>缺少 minP</td>
+<td>无显式禁用</td>
+</tr>
+<tr>
+<td>6</td>
+<td>缺少 presencePenalty</td>
+<td><strong>最关键的防重复参数缺失</strong>，思考链易陷入无限循环</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="官方推荐参数方案"><a href="#官方推荐参数方案" class="headerlink" title="官方推荐参数方案"></a>官方推荐参数方案</h2><p>Qwen3.6 的两种模式需要<strong>完全不同</strong>的参数，不能混用。</p>
+<h3 id="Thinking-模式（默认）"><a href="#Thinking-模式（默认）" class="headerlink" title="Thinking 模式（默认）"></a>Thinking 模式（默认）</h3><p>适用于需要深度推理的任务，模型先输出 <code>&lt;think reasoning=&quot;true&quot;&gt;...&lt;/think &gt;</code> 思考链再给回答。</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>Temperature</th>
+<th>Top-P</th>
+<th>Top-K</th>
+<th>Presence Penalty</th>
+<th>Repetition Penalty</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>通用任务</td>
+<td><strong>1.0</strong></td>
+<td><strong>0.95</strong></td>
+<td><strong>20</strong></td>
+<td><strong>1.5</strong></td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>编程&#x2F;精确任务</td>
+<td><strong>0.6</strong></td>
+<td><strong>0.95</strong></td>
+<td><strong>20</strong></td>
+<td><strong>0.0</strong></td>
+<td>1.0</td>
+</tr>
+</tbody></table>
+<h3 id="Instruct（非思考）模式"><a href="#Instruct（非思考）模式" class="headerlink" title="Instruct（非思考）模式"></a>Instruct（非思考）模式</h3><p>适用于快速问答、简单任务，不生成思考链，响应更快。</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>Temperature</th>
+<th>Top-P</th>
+<th>Top-K</th>
+<th>Presence Penalty</th>
+<th>Repetition Penalty</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>通用任务</td>
+<td><strong>0.7</strong></td>
+<td><strong>0.8</strong></td>
+<td><strong>20</strong></td>
+<td><strong>1.5</strong></td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>推理任务</td>
+<td><strong>1.0</strong></td>
+<td><strong>0.95</strong></td>
+<td><strong>20</strong></td>
+<td><strong>1.5</strong></td>
+<td>1.0</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第一次优化：对齐官方-Thinking-模式参数"><a href="#第一次优化：对齐官方-Thinking-模式参数" class="headerlink" title="第一次优化：对齐官方 Thinking 模式参数"></a>第一次优化：对齐官方 Thinking 模式参数</h2><p>按照 <strong>Thinking + 通用任务</strong> 方案，完成了第一版优化：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># ✅ 第一次优化</span><br><span class="hljs-attr">operation:</span><br>  <span class="hljs-attr">fields:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.temperature</span><br>    <span class="hljs-attr">value:</span> <span class="hljs-number">1.0</span>          <span class="hljs-comment"># 0.4 → 1.0</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.topP</span><br>    <span class="hljs-attr">value:</span> <span class="hljs-number">0.95</span>         <span class="hljs-comment"># 新增</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.topK</span><br>    <span class="hljs-attr">value:</span> <span class="hljs-number">20</span>           <span class="hljs-comment"># 新增</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.minP</span><br>    <span class="hljs-attr">value:</span> <span class="hljs-number">0.0</span>          <span class="hljs-comment"># 新增</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.presencePenalty</span><br>    <span class="hljs-attr">value:</span> <span class="hljs-number">1.5</span>          <span class="hljs-comment"># 新增（最关键）</span><br>  <span class="hljs-comment"># repeatPenalty: 移除（默认 1.0 = 禁用）</span><br></code></pre></td></tr></table></figure>
+
+<p>验证结果——模型正常工作，写诗测试通过：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs">机房深处风扇响，<br>线缆纠缠乱如网。<br>日夜吞吐数据忙，<br>一朝宕机全抓狂！<br></code></pre></td></tr></table></figure>
+
+<p>但思考链消耗了 97% 的 token（1643 总量中 1600 为 reasoning），这为后续问题埋下伏笔。</p>
+<hr>
+<h2 id="踩坑：Thinking-模式与-Agent-的兼容性问题"><a href="#踩坑：Thinking-模式与-Agent-的兼容性问题" class="headerlink" title="踩坑：Thinking 模式与 Agent 的兼容性问题"></a>踩坑：Thinking 模式与 Agent 的兼容性问题</h2><p>参数优化后不久，我们发现了 Thinking 模式与 Agent 框架的严重兼容性问题。</p>
+<h3 id="Hermes-的-Thinking-Bug（严重）"><a href="#Hermes-的-Thinking-Bug（严重）" class="headerlink" title="Hermes 的 Thinking Bug（严重）"></a>Hermes 的 Thinking Bug（严重）</h3><p>Hermes Agent 对 Thinking 模型有已知 Bug（<a target="_blank" rel="noopener" href="https://github.com/NousResearch/hermes-agent/issues/9344">Issue #9344</a>）：</p>
+<ol>
+<li>Thinking 模型的 reasoning tokens <strong>耗尽 output budget</strong>，导致 content 为空</li>
+<li>Hermes 返回字面量 <code>(empty)</code> 给用户</li>
+<li>重试机制将 thinking-only 消息追加到上下文 → 下一轮消耗更多 token → <strong>持续恶化</strong></li>
+</ol>
+<h3 id="OpenClaw-的注意事项"><a href="#OpenClaw-的注意事项" class="headerlink" title="OpenClaw 的注意事项"></a>OpenClaw 的注意事项</h3><p>OpenClaw 官方文档明确建议：<strong>工具调用时必须关闭 thinking 模式</strong>，否则 tool-call 格式冲突。而 Agent 的工作模式恰恰是大量工具调用。</p>
+<h3 id="Token-消耗对比"><a href="#Token-消耗对比" class="headerlink" title="Token 消耗对比"></a>Token 消耗对比</h3><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>同一问题 token 消耗</th>
+<th>实际内容占比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Thinking ON</td>
+<td>1643（reasoning: 1600）</td>
+<td>2.6%</td>
+</tr>
+<tr>
+<td>Thinking OFF</td>
+<td>29（reasoning: 0）</td>
+<td>100%</td>
+</tr>
+</tbody></table>
+<p><strong>结论：对 Agent 场景，Thinking 模式必须关闭。</strong></p>
+<hr>
+<h2 id="最终方案：关闭-Thinking-Instruct-模式参数"><a href="#最终方案：关闭-Thinking-Instruct-模式参数" class="headerlink" title="最终方案：关闭 Thinking + Instruct 模式参数"></a>最终方案：关闭 Thinking + Instruct 模式参数</h2><p>通过 LM Studio model.yaml 的 <code>customFields</code> 机制关闭 Thinking：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">customFields:</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">enableThinking</span><br>  <span class="hljs-attr">displayName:</span> <span class="hljs-string">Enable</span> <span class="hljs-string">Thinking</span><br>  <span class="hljs-attr">description:</span> <span class="hljs-string">Controls</span> <span class="hljs-string">whether</span> <span class="hljs-string">the</span> <span class="hljs-string">model</span> <span class="hljs-string">will</span> <span class="hljs-string">think</span> <span class="hljs-string">before</span> <span class="hljs-string">replying</span><br>  <span class="hljs-attr">type:</span> <span class="hljs-string">boolean</span><br>  <span class="hljs-attr">defaultValue:</span> <span class="hljs-literal">false</span>          <span class="hljs-comment"># 关键：设为 false</span><br>  <span class="hljs-attr">effects:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">setJinjaVariable</span><br>    <span class="hljs-attr">variable:</span> <span class="hljs-string">enable_thinking</span><br></code></pre></td></tr></table></figure>
+
+<p>同时将采样参数从 Thinking 模式切换为 <strong>Instruct 通用任务</strong> 方案：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>Thinking 模式</th>
+<th>→ Instruct 模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>temperature</td>
+<td>1.0</td>
+<td><strong>0.7</strong></td>
+</tr>
+<tr>
+<td>topP</td>
+<td>0.95</td>
+<td><strong>0.8</strong></td>
+</tr>
+<tr>
+<td>topK</td>
+<td>20</td>
+<td>20（不变）</td>
+</tr>
+<tr>
+<td>minP</td>
+<td>0.0</td>
+<td>0.0（不变）</td>
+</tr>
+<tr>
+<td>presencePenalty</td>
+<td>1.5</td>
+<td>1.5（不变）</td>
+</tr>
+</tbody></table>
+<p>验证通过：</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs coq">测试：「用一句话介绍你自己」<br><br>我是通义千问，由阿里云通义实验室研发的超大规模语言模型，<br>致力于成为您思考的伙伴和得力的助手。<br><br>Token: Completion <span class="hljs-number">29</span> | <span class="hljs-type">Reasoning</span> <span class="hljs-number">0</span> | <span class="hljs-type">Finish</span>: stop ✅<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="LM-Studio-特殊注意事项"><a href="#LM-Studio-特殊注意事项" class="headerlink" title="LM Studio 特殊注意事项"></a>LM Studio 特殊注意事项</h2><h3 id="presencePenalty-GUI-缺失"><a href="#presencePenalty-GUI-缺失" class="headerlink" title="presencePenalty GUI 缺失"></a>presencePenalty GUI 缺失</h3><p>LM Studio 的推理参数面板<strong>不显示</strong> presencePenalty 设置项（<a target="_blank" rel="noopener" href="https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1842">Bug #1842</a>）。但后端 llama.cpp 完全支持，通过 model.yaml 设置即可生效。</p>
+<h3 id="Thinking-模式的按需开启"><a href="#Thinking-模式的按需开启" class="headerlink" title="Thinking 模式的按需开启"></a>Thinking 模式的按需开启</h3><p>关闭 Thinking 后，客户端仍可在特殊场景下临时开启：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;chat_template_kwargs&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;enable_thinking&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>或在用户消息中添加 <code>/think</code> 和 <code>/no_think</code> 软开关。</p>
+<hr>
+<h2 id="最终完整配置"><a href="#最终完整配置" class="headerlink" title="最终完整配置"></a>最终完整配置</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># ~/.lmstudio/hub/models/custom/qwen3.6-35b-a3b-256k/model.yaml</span><br><br><span class="hljs-attr">model:</span> <span class="hljs-string">custom/qwen3.6-35b-a3b-256k</span><br><span class="hljs-attr">base:</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">lmstudio-community/Qwen3.6-35B-A3B-GGUF</span><br>  <span class="hljs-attr">sources:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">huggingface</span><br>    <span class="hljs-attr">user:</span> <span class="hljs-string">lmstudio-community</span><br>    <span class="hljs-attr">repo:</span> <span class="hljs-string">Qwen3.6-35B-A3B-GGUF</span><br><br><span class="hljs-attr">metadataOverrides:</span><br>  <span class="hljs-attr">domain:</span> <span class="hljs-string">llm</span><br>  <span class="hljs-attr">architectures:</span> [<span class="hljs-string">qwen35moe</span>]<br>  <span class="hljs-attr">compatibilityTypes:</span> [<span class="hljs-string">gguf</span>]<br>  <span class="hljs-attr">paramsStrings:</span> [<span class="hljs-string">35B-A3B</span>]<br>  <span class="hljs-attr">minMemoryUsageBytes:</span> <span class="hljs-number">20000000000</span><br>  <span class="hljs-attr">contextLengths:</span> [<span class="hljs-number">262144</span>]<br>  <span class="hljs-attr">vision:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-attr">reasoning:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-attr">trainedForToolUse:</span> <span class="hljs-literal">true</span><br><br><span class="hljs-attr">config:</span><br>  <span class="hljs-attr">load:</span><br>    <span class="hljs-attr">fields:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.contextLength</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">262144</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.numParallelSessions</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">2</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.llama.acceleration.offloadRatio</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">1.0</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.numCpuExpertLayersRatio</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.3</span><br>  <span class="hljs-attr">operation:</span><br>    <span class="hljs-attr">fields:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.llama.cpuThreads</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">8</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.temperature</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.7</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.topP</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.8</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.topK</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">20</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.minP</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.0</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.presencePenalty</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">1.5</span><br><br><span class="hljs-attr">customFields:</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">enableThinking</span><br>  <span class="hljs-attr">displayName:</span> <span class="hljs-string">Enable</span> <span class="hljs-string">Thinking</span><br>  <span class="hljs-attr">description:</span> <span class="hljs-string">Controls</span> <span class="hljs-string">whether</span> <span class="hljs-string">the</span> <span class="hljs-string">model</span> <span class="hljs-string">will</span> <span class="hljs-string">think</span> <span class="hljs-string">before</span> <span class="hljs-string">replying</span><br>  <span class="hljs-attr">type:</span> <span class="hljs-string">boolean</span><br>  <span class="hljs-attr">defaultValue:</span> <span class="hljs-literal">false</span><br>  <span class="hljs-attr">effects:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">setJinjaVariable</span><br>    <span class="hljs-attr">variable:</span> <span class="hljs-string">enable_thinking</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="关键参数速查"><a href="#关键参数速查" class="headerlink" title="关键参数速查"></a>关键参数速查</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>contextLength</td>
+<td>262144</td>
+<td>256K 上下文窗口</td>
+</tr>
+<tr>
+<td>offloadRatio</td>
+<td>1.0</td>
+<td>Q4_K_M (20.5G) 在 22G GPU 上全量卸载</td>
+</tr>
+<tr>
+<td>numCpuExpertLayersRatio</td>
+<td>0.3</td>
+<td>30% MoE 专家走 CPU，为 KV cache 腾显存</td>
+</tr>
+<tr>
+<td>temperature</td>
+<td>0.7</td>
+<td>Instruct 通用任务官方推荐</td>
+</tr>
+<tr>
+<td>topP</td>
+<td>0.8</td>
+<td>Instruct 模式官方推荐</td>
+</tr>
+<tr>
+<td>topK</td>
+<td>20</td>
+<td>Qwen 全系列统一推荐</td>
+</tr>
+<tr>
+<td>presencePenalty</td>
+<td>1.5</td>
+<td>防重复的灵魂参数</td>
+</tr>
+<tr>
+<td>enableThinking</td>
+<td>false</td>
+<td>Agent 场景必须关闭</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这次优化经历了三个阶段：</p>
+<ol>
+<li><strong>发现问题</strong>：原始配置温度过低、缺少关键参数、双重惩罚</li>
+<li><strong>对齐官方</strong>：按 Thinking 模式推荐参数完整补齐</li>
+<li><strong>实战踩坑</strong>：发现 Thinking 与 Agent 不兼容，最终切换为 Instruct 模式</li>
+</ol>
+<p><strong>核心经验：模型部署不是”能跑就行”，参数配置直接决定可用性。尤其是 MoE + Thinking 模型的组合，需要格外注意 Agent 框架的兼容性。</strong></p>
+<hr>
+<blockquote>
+<p><strong>参考资料</strong></p>
+<ul>
+<li>Qwen3.6 官方 Model Card (HuggingFace)</li>
+<li>Qwen3 Technical Report (arXiv:2505.09388)</li>
+<li>Unsloth 官方文档 — Qwen3.6 本地部署指南</li>
+<li>LM Studio Bug Tracker #1842</li>
+<li>Hermes Agent Issue #9344</li>
+</ul>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" class="category-chain-item">技术文档</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Qwen/" class="print-no-link">#Qwen</a>
+      
+        <a href="/tags/LM-Studio/" class="print-no-link">#LM Studio</a>
+      
+        <a href="/tags/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/" class="print-no-link">#模型部署</a>
+      
+        <a href="/tags/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/" class="print-no-link">#推理优化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Qwen3.6-35B-A3B 推理参数优化实战——从踩坑到最优配置</div>
+      <div>https://www.normdist.com/2026/05/03/ND-20260503-002-qwen3.6-inference-params-optimization/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年5月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/05/03/ND-20260503-001-hermes-model-config-guide/" title="Hermes Agent 模型配置完全指南——从单模型到多模型路由">
+                        <span class="hidden-mobile">Hermes Agent 模型配置完全指南——从单模型到多模型路由</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
