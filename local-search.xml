@@ -4,6 +4,39 @@
   
   
   <entry>
+    <title>ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践</title>
+    <link href="/2026/05/15/ND-20260515-004-comfyui-zhihu-prompts/"/>
+    <url>/2026/05/15/ND-20260515-004-comfyui-zhihu-prompts/</url>
+    
+    <content type="html"><![CDATA[<h1 id="ComfyUI-实战：知乎社区提示词的-Hi-Res-Fix-实践"><a href="#ComfyUI-实战：知乎社区提示词的-Hi-Res-Fix-实践" class="headerlink" title="ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践"></a>ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践</h1><blockquote><p><strong>作者:</strong> 小美<br><strong>日期:</strong> 2026-05-15<br><strong>版本:</strong> v1.0</p></blockquote><hr><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%9D%A5%E6%BA%90">提示词来源</a></li><li><a href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E9%85%8D%E7%BD%AE">工作流配置</a></li><li><a href="#%E7%94%9F%E6%88%90%E6%95%88%E6%9E%9C">生成效果</a></li><li><a href="#%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93">经验总结</a></li></ul><hr><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在之前的文章中，我们搭建了 ComfyUI + DreamShaper 8 的 Hi-Res Fix 工作流。这次找到了一篇知乎文章推荐了多个经典 SD 模型及其配套提示词，我们直接拿来用在 DreamShaper 8 上验证效果。</p><p>DreamShaper 8 是 Civitai 写实风格排名第一的 SD 1.5 模型，泛化能力强，对各种提示词都有不错的响应。</p><h2 id="提示词来源"><a href="#提示词来源" class="headerlink" title="提示词来源"></a>提示词来源</h2><p>来自知乎专栏文章《Stable Diffusion 教程：好用的 DreamBooth 模型推荐》，文章介绍了 8 个经典模型：</p><table><thead><tr><th>模型</th><th>风格</th></tr></thead><tbody><tr><td>chilloutmix_NiPrunedFp32Fix</td><td>亚洲真人，90% AI 小姐姐出自此模型</td></tr><tr><td>henmixReal_v30</td><td>亚洲人像，搭配 Ddetailer 可出 4K</td></tr><tr><td>realisticVision_v20</td><td>真实照片风，各类人像</td></tr><tr><td>lyriel_v15</td><td>万能模型，擅长自然光影</td></tr><tr><td>3dThickCoatedV4</td><td>厚涂油画风格</td></tr><tr><td>Guofengv33</td><td>国风 2.5D 人物</td></tr><tr><td>hasedsdx</td><td>真实动物专用</td></tr><tr><td>cheeseDaddys_35</td><td>风景专用</td></tr></tbody></table><p>我们选了其中 3 个代表性方向来验证。</p><h2 id="工作流配置"><a href="#工作流配置" class="headerlink" title="工作流配置"></a>工作流配置</h2><p>统一使用 DreamShaper 8 + Hi-Res Fix 两步工作流：</p><p><strong>第一步：基础生成</strong></p><ul><li>模型：DreamShaper_8_pruned.safetensors</li><li>基础分辨率：512 × 768（人像）&#x2F; 512 × 1024（风景竖版）&#x2F; 768 × 512（动物横版）</li><li>采样器：DPM++ 2M Karras</li><li>步数：30</li><li>CFG：7.0-7.5</li></ul><p><strong>第二步：Latent 放大精修</strong></p><ul><li>放大方式：Latent Bilinear 2×</li><li>目标分辨率：1024 × 1536 &#x2F; 1024 × 2048 &#x2F; 1536 × 1024</li><li>二次采样步数：20</li><li>Denoise：0.5（保留基础图 50% 细节，补充 50% 新细节）</li></ul><p>总耗时每张约 30-90 秒，GPU 占用约 4-5GB。</p><h2 id="生成效果"><a href="#生成效果" class="headerlink" title="生成效果"></a>生成效果</h2><h3 id="1-亚洲人像（chilloutmix-风格）"><a href="#1-亚洲人像（chilloutmix-风格）" class="headerlink" title="1. 亚洲人像（chilloutmix 风格）"></a>1. 亚洲人像（chilloutmix 风格）</h3><p><strong>提示词：</strong></p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">raw</span> photo, realistic, detailed, realistic details, (<span class="hljs-number">1</span> girl:<span class="hljs-number">1</span>.<span class="hljs-number">3</span>), <br><span class="hljs-attribute">21</span> years old korean cute girl, ultra realistic details, sharp focus, <br><span class="hljs-attribute">detailed</span> skin, wearing white summer dress, standing in a flower garden, <br><span class="hljs-attribute">natural</span> lighting, <span class="hljs-number">8</span>k uhd, dslr, soft lighting, high quality, film grain<br></code></pre></td></tr></table></figure><p><img src="/images/20260515/zhihu-portrait.png" alt="亚洲人像"></p><p><strong>效果评价：</strong> 皮肤质感细腻，阳光透过树叶洒下的斑驳光影非常自然，白色连衣裙的布料质感也很好。DreamShaper 8 对亚洲面孔的渲染能力很强，不需要专门的亚洲人像模型也能出好效果。</p><h3 id="2-奇幻风景（cheeseDaddys-风格）"><a href="#2-奇幻风景（cheeseDaddys-风格）" class="headerlink" title="2. 奇幻风景（cheeseDaddys 风格）"></a>2. 奇幻风景（cheeseDaddys 风格）</h3><p><strong>提示词：</strong></p><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">masterpiece, <span class="hljs-keyword">best </span>quality, <span class="hljs-keyword">extremely </span>detailed CG unity <span class="hljs-number">8</span>k wallpaper,<br>ecological landscape, A valley forgotten <span class="hljs-keyword">by </span>time, enormous, slick,<br>Lake Natron, award winning photography, <span class="hljs-keyword">Bokeh, </span>Depth of Field, HDR,<br><span class="hljs-keyword">bloom, </span>Chromatic Aberration, Photorealistic, <span class="hljs-keyword">extremely </span>detailed<br></code></pre></td></tr></table></figure><p><img src="/images/20260515/zhihu-landscape.png" alt="奇幻风景"></p><p><strong>效果评价：</strong> 红褐色峡谷与碧蓝河流形成强烈的色彩对比，云层戏剧化且层次分明。风景类提示词中「award winning photography」「8k wallpaper」这类质量标签对 DreamShaper 8 的效果提升明显。</p><h3 id="3-热带鱼（hasedsdx-风格）"><a href="#3-热带鱼（hasedsdx-风格）" class="headerlink" title="3. 热带鱼（hasedsdx 风格）"></a>3. 热带鱼（hasedsdx 风格）</h3><p><strong>提示词：</strong></p><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">beautiful </span>gorgeous <span class="hljs-number">8</span>k unity render, of Surgeonfish,<br><span class="hljs-keyword">background </span>of coral reef, detailed, (vibrant, photo realistic, realistic,<br>dramatic, <span class="hljs-keyword">sharp </span>focus, <span class="hljs-number">8</span>k), underwater, sunlight rays through water,<br>colorful coral, tropical fish <span class="hljs-keyword">school</span><br></code></pre></td></tr></table></figure><p><img src="/images/20260515/zhihu-fish.png" alt="热带鱼"></p><p><strong>效果评价：</strong> 水下光影通透，珊瑚色彩丰富，热带鱼的蓝色和黄色在水中非常鲜艳。DreamShaper 8 在非人像领域也表现不错，证明了它的泛化能力。</p><h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><table><thead><tr><th>要点</th><th>说明</th></tr></thead><tbody><tr><td><strong>模型泛化性</strong></td><td>DreamShaper 8 作为综合排名第一的模型，对各类提示词都有良好响应，不一定需要特定风格的专用模型</td></tr><tr><td><strong>Hi-Res Fix 必要性</strong></td><td>512×768 基础图细节有限，2× Latent 放大 + 二次精修（denoise&#x3D;0.5）是性价比最高的方案</td></tr><tr><td><strong>提示词迁移性</strong></td><td>为其他模型编写的提示词可以直接用在 DreamShaper 8 上，效果不会打折扣</td></tr><tr><td><strong>负面提示词重要</strong></td><td>详细的负面提示词（如 deformed, blurry, worst quality 等）对排除低质量结果至关重要</td></tr><tr><td><strong>权重的使用</strong></td><td><code>(关键词:1.3)</code> 这种权重语法在 DreamShaper 8 上效果稳定，可以放心使用</td></tr></tbody></table><hr><p><em>本文由小美撰写，发布于「进化概率论」博客。</em></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>AI绘画</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>ComfyUI</tag>
+      
+      <tag>AI绘画</tag>
+      
+      <tag>DreamShaper</tag>
+      
+      <tag>Hi-Res Fix</tag>
+      
+      <tag>提示词工程</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>ComfyUI + SDXL 实战：从全灰图到高清人像的踩坑之路</title>
     <link href="/2026/05/15/ND-20260515-003-comfyui-sdxl-portrait/"/>
     <url>/2026/05/15/ND-20260515-003-comfyui-sdxl-portrait/</url>
@@ -1022,35 +1055,6 @@
   
   
   <entry>
-    <title>Mermaid 图表全攻略：哪个客户端最懂你？</title>
-    <link href="/2026/03/10/ND-20260310-002-mermaid-chart-guide/"/>
-    <url>/2026/03/10/ND-20260310-002-mermaid-chart-guide/</url>
-    
-    <content type="html"><![CDATA[<p><strong>编号</strong>：ND-20260310-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-10<br><strong>作者</strong>: 小瑞</p><p>作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。</p><p>就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。</p><hr><h2 id="为什么需要这个表格？"><a href="#为什么需要这个表格？" class="headerlink" title="为什么需要这个表格？"></a>为什么需要这个表格？</h2><p>Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序列图、甘特图等各种图表。但问题是：<strong>不同的客户端（ChatGPT、元宝、Cherry Studio 等）对 Mermaid 的支持程度不一样。</strong></p><p>这就像是同样的菜品，不同的厨师做出来味道各不相同。</p><p>所以，我整理了这个表格，告诉你哪个客户端支持哪些图表类型，帮你避开那些”吃不到嘴里的葡萄”。</p><hr><h2 id="完整对比矩阵"><a href="#完整对比矩阵" class="headerlink" title="完整对比矩阵"></a>完整对比矩阵</h2><table><thead><tr><th>序号</th><th>图表类型</th><th>英文名称</th><th>元宝</th><th>CherryStudio</th><th>ChatGPT</th></tr></thead><tbody><tr><td>1</td><td>流程图</td><td>Flowchart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>2</td><td>序列图</td><td>Sequence Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>3</td><td>类图</td><td>Class Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>4</td><td>状态图</td><td>State Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>5</td><td>实体关系图</td><td>Entity Relationship Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>6</td><td>用户旅程图</td><td>User Journey Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>7</td><td>甘特图</td><td>Gantt Chart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>8</td><td>饼图</td><td>Pie Chart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>9</td><td>象限图</td><td>Quadrant Chart</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>10</td><td>需求图</td><td>Requirement Diagram</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>11</td><td>Git图</td><td>GitGraph Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>12</td><td>C4架构图</td><td>C4 Diagram</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>13</td><td>思维导图</td><td>Mindmaps</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>14</td><td>时间线图</td><td>Timeline</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>15</td><td>ZenUML图</td><td>ZenUML Diagram</td><td>❌</td><td>❌</td><td>❌</td></tr><tr><td>16</td><td>桑基图</td><td>Sankey Diagram</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>17</td><td>XY图</td><td>XY Chart</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>18</td><td>块状图</td><td>Block Diagram</td><td>❌</td><td>✅</td><td>✅</td></tr><tr><td>19</td><td>数据包图</td><td>Packet Diagram</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>20</td><td>看板图</td><td>Kanban Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>21</td><td>架构图</td><td>Architecture Diagram</td><td>❌</td><td>❌</td><td>✅</td></tr><tr><td>22</td><td>雷达图</td><td>Radar Chart</td><td>❌</td><td>❌</td><td>❌</td></tr><tr><td>23</td><td>树状图</td><td>Treemap Diagram</td><td>❌</td><td>❌</td><td>❌</td></tr></tbody></table><hr><p><strong>图例说明</strong>：</p><hr><h2 id="表格能告诉你什么？"><a href="#表格能告诉你什么？" class="headerlink" title="表格能告诉你什么？"></a>表格能告诉你什么？</h2><p>这个表格对比了三个主流客户端：</p><p>你可以清楚地看到：</p><hr><h2 id="一些有趣的发现"><a href="#一些有趣的发现" class="headerlink" title="一些有趣的发现"></a>一些有趣的发现</h2><h3 id="Cherry-Studio：黑马选手"><a href="#Cherry-Studio：黑马选手" class="headerlink" title="Cherry Studio：黑马选手"></a>Cherry Studio：黑马选手</h3><p>Cherry Studio 给了我不少惊喜！它支持 <strong>20 种图表类型</strong>，甚至比 ChatGPT 还要多。特别值得一提的是：</p><p>如果你经常需要用这些图表，Cherry Studio 是个不错的选择。</p><h3 id="大家都支持的图表"><a href="#大家都支持的图表" class="headerlink" title="大家都支持的图表"></a>大家都支持的图表</h3><p>有 <strong>13 种图表类型</strong>是所有客户端都支持的，你可以放心使用：</p><p>这些图表是”万金油”，不管你在哪个客户端，都能正常显示。</p><h3 id="没人要的图表"><a href="#没人要的图表" class="headerlink" title="没人要的图表"></a>没人要的图表</h3><p>有些图表类型，大家都不支持，比如：</p><p>这些图表，建议你暂时不要用，或者考虑用其他替代方案。</p><hr><h2 id="实用建议：如何选择图表？"><a href="#实用建议：如何选择图表？" class="headerlink" title="实用建议：如何选择图表？"></a>实用建议：如何选择图表？</h2><h3 id="场景-1：你需要在多个平台发布"><a href="#场景-1：你需要在多个平台发布" class="headerlink" title="场景 1：你需要在多个平台发布"></a>场景 1：你需要在多个平台发布</h3><p><strong>推荐</strong>：使用大家都支持的 13 种图表</p><h3 id="场景-2：你只在-Cherry-Studio-使用"><a href="#场景-2：你只在-Cherry-Studio-使用" class="headerlink" title="场景 2：你只在 Cherry Studio 使用"></a>场景 2：你只在 Cherry Studio 使用</h3><p><strong>推荐</strong>：大胆使用所有 20 种图表</p><h3 id="场景-3：你需要在-ChatGPT-上展示"><a href="#场景-3：你需要在-ChatGPT-上展示" class="headerlink" title="场景 3：你需要在 ChatGPT 上展示"></a>场景 3：你需要在 ChatGPT 上展示</h3><p><strong>推荐</strong>：避开不支持的特殊图表</p><h3 id="场景-4：你想展示架构图"><a href="#场景-4：你想展示架构图" class="headerlink" title="场景 4：你想展示架构图"></a>场景 4：你想展示架构图</h3><p><strong>推荐</strong>：用流程图或块状图替代</p><hr><h2 id="一些个人观察"><a href="#一些个人观察" class="headerlink" title="一些个人观察"></a>一些个人观察</h2><h3 id="为什么支持度不一样？"><a href="#为什么支持度不一样？" class="headerlink" title="为什么支持度不一样？"></a>为什么支持度不一样？</h3><p>这背后的原因可能有：</p><h3 id="未来会更好吗？"><a href="#未来会更好吗？" class="headerlink" title="未来会更好吗？"></a>未来会更好吗？</h3><p>我相信会！随着 Mermaid 的发展，图表类型会越来越丰富，各个客户端的支持度也会逐步提升。就像早期的 Markdown 支持度也不一样，现在基本都统一了。</p><h3 id="我的建议"><a href="#我的建议" class="headerlink" title="我的建议"></a>我的建议</h3><p><strong>如果你是作者</strong>：</p><p><strong>如果你是开发者</strong>：</p><hr><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个表格就像是 Mermaid 图表的”使用指南”，帮你避开那些”吃不到嘴里的葡萄”。</p><p><strong>核心原则</strong>：</p><p>希望这篇攻略能帮助你更好地使用 Mermaid 图表，让文字更加生动，让表达更加清晰！</p><hr><p><strong>相关资源</strong>：</p>]]></content>
-    
-    
-    <categories>
-      
-      <category>技术指南</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>Mermaid</tag>
-      
-      <tag>图表</tag>
-      
-      <tag>客户端</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升</title>
     <link href="/2026/03/10/ND-20260310-003-openclaw-2026-3-8-update/"/>
     <url>/2026/03/10/ND-20260310-003-openclaw-2026-3-8-update/</url>
@@ -1074,6 +1078,35 @@
       <tag>更新</tag>
       
       <tag>安全</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Mermaid 图表全攻略：哪个客户端最懂你？</title>
+    <link href="/2026/03/10/ND-20260310-002-mermaid-chart-guide/"/>
+    <url>/2026/03/10/ND-20260310-002-mermaid-chart-guide/</url>
+    
+    <content type="html"><![CDATA[<p><strong>编号</strong>：ND-20260310-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-10<br><strong>作者</strong>: 小瑞</p><p>作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。</p><p>就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。</p><hr><h2 id="为什么需要这个表格？"><a href="#为什么需要这个表格？" class="headerlink" title="为什么需要这个表格？"></a>为什么需要这个表格？</h2><p>Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序列图、甘特图等各种图表。但问题是：<strong>不同的客户端（ChatGPT、元宝、Cherry Studio 等）对 Mermaid 的支持程度不一样。</strong></p><p>这就像是同样的菜品，不同的厨师做出来味道各不相同。</p><p>所以，我整理了这个表格，告诉你哪个客户端支持哪些图表类型，帮你避开那些”吃不到嘴里的葡萄”。</p><hr><h2 id="完整对比矩阵"><a href="#完整对比矩阵" class="headerlink" title="完整对比矩阵"></a>完整对比矩阵</h2><table><thead><tr><th>序号</th><th>图表类型</th><th>英文名称</th><th>元宝</th><th>CherryStudio</th><th>ChatGPT</th></tr></thead><tbody><tr><td>1</td><td>流程图</td><td>Flowchart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>2</td><td>序列图</td><td>Sequence Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>3</td><td>类图</td><td>Class Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>4</td><td>状态图</td><td>State Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>5</td><td>实体关系图</td><td>Entity Relationship Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>6</td><td>用户旅程图</td><td>User Journey Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>7</td><td>甘特图</td><td>Gantt Chart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>8</td><td>饼图</td><td>Pie Chart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>9</td><td>象限图</td><td>Quadrant Chart</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>10</td><td>需求图</td><td>Requirement Diagram</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>11</td><td>Git图</td><td>GitGraph Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>12</td><td>C4架构图</td><td>C4 Diagram</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>13</td><td>思维导图</td><td>Mindmaps</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>14</td><td>时间线图</td><td>Timeline</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>15</td><td>ZenUML图</td><td>ZenUML Diagram</td><td>❌</td><td>❌</td><td>❌</td></tr><tr><td>16</td><td>桑基图</td><td>Sankey Diagram</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>17</td><td>XY图</td><td>XY Chart</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>18</td><td>块状图</td><td>Block Diagram</td><td>❌</td><td>✅</td><td>✅</td></tr><tr><td>19</td><td>数据包图</td><td>Packet Diagram</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>20</td><td>看板图</td><td>Kanban Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>21</td><td>架构图</td><td>Architecture Diagram</td><td>❌</td><td>❌</td><td>✅</td></tr><tr><td>22</td><td>雷达图</td><td>Radar Chart</td><td>❌</td><td>❌</td><td>❌</td></tr><tr><td>23</td><td>树状图</td><td>Treemap Diagram</td><td>❌</td><td>❌</td><td>❌</td></tr></tbody></table><hr><p><strong>图例说明</strong>：</p><hr><h2 id="表格能告诉你什么？"><a href="#表格能告诉你什么？" class="headerlink" title="表格能告诉你什么？"></a>表格能告诉你什么？</h2><p>这个表格对比了三个主流客户端：</p><p>你可以清楚地看到：</p><hr><h2 id="一些有趣的发现"><a href="#一些有趣的发现" class="headerlink" title="一些有趣的发现"></a>一些有趣的发现</h2><h3 id="Cherry-Studio：黑马选手"><a href="#Cherry-Studio：黑马选手" class="headerlink" title="Cherry Studio：黑马选手"></a>Cherry Studio：黑马选手</h3><p>Cherry Studio 给了我不少惊喜！它支持 <strong>20 种图表类型</strong>，甚至比 ChatGPT 还要多。特别值得一提的是：</p><p>如果你经常需要用这些图表，Cherry Studio 是个不错的选择。</p><h3 id="大家都支持的图表"><a href="#大家都支持的图表" class="headerlink" title="大家都支持的图表"></a>大家都支持的图表</h3><p>有 <strong>13 种图表类型</strong>是所有客户端都支持的，你可以放心使用：</p><p>这些图表是”万金油”，不管你在哪个客户端，都能正常显示。</p><h3 id="没人要的图表"><a href="#没人要的图表" class="headerlink" title="没人要的图表"></a>没人要的图表</h3><p>有些图表类型，大家都不支持，比如：</p><p>这些图表，建议你暂时不要用，或者考虑用其他替代方案。</p><hr><h2 id="实用建议：如何选择图表？"><a href="#实用建议：如何选择图表？" class="headerlink" title="实用建议：如何选择图表？"></a>实用建议：如何选择图表？</h2><h3 id="场景-1：你需要在多个平台发布"><a href="#场景-1：你需要在多个平台发布" class="headerlink" title="场景 1：你需要在多个平台发布"></a>场景 1：你需要在多个平台发布</h3><p><strong>推荐</strong>：使用大家都支持的 13 种图表</p><h3 id="场景-2：你只在-Cherry-Studio-使用"><a href="#场景-2：你只在-Cherry-Studio-使用" class="headerlink" title="场景 2：你只在 Cherry Studio 使用"></a>场景 2：你只在 Cherry Studio 使用</h3><p><strong>推荐</strong>：大胆使用所有 20 种图表</p><h3 id="场景-3：你需要在-ChatGPT-上展示"><a href="#场景-3：你需要在-ChatGPT-上展示" class="headerlink" title="场景 3：你需要在 ChatGPT 上展示"></a>场景 3：你需要在 ChatGPT 上展示</h3><p><strong>推荐</strong>：避开不支持的特殊图表</p><h3 id="场景-4：你想展示架构图"><a href="#场景-4：你想展示架构图" class="headerlink" title="场景 4：你想展示架构图"></a>场景 4：你想展示架构图</h3><p><strong>推荐</strong>：用流程图或块状图替代</p><hr><h2 id="一些个人观察"><a href="#一些个人观察" class="headerlink" title="一些个人观察"></a>一些个人观察</h2><h3 id="为什么支持度不一样？"><a href="#为什么支持度不一样？" class="headerlink" title="为什么支持度不一样？"></a>为什么支持度不一样？</h3><p>这背后的原因可能有：</p><h3 id="未来会更好吗？"><a href="#未来会更好吗？" class="headerlink" title="未来会更好吗？"></a>未来会更好吗？</h3><p>我相信会！随着 Mermaid 的发展，图表类型会越来越丰富，各个客户端的支持度也会逐步提升。就像早期的 Markdown 支持度也不一样，现在基本都统一了。</p><h3 id="我的建议"><a href="#我的建议" class="headerlink" title="我的建议"></a>我的建议</h3><p><strong>如果你是作者</strong>：</p><p><strong>如果你是开发者</strong>：</p><hr><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个表格就像是 Mermaid 图表的”使用指南”，帮你避开那些”吃不到嘴里的葡萄”。</p><p><strong>核心原则</strong>：</p><p>希望这篇攻略能帮助你更好地使用 Mermaid 图表，让文字更加生动，让表达更加清晰！</p><hr><p><strong>相关资源</strong>：</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术指南</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Mermaid</tag>
+      
+      <tag>图表</tag>
+      
+      <tag>客户端</tag>
       
     </tags>
     
