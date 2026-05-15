@@ -1,0 +1,1180 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="AutoQuant 量化交易系统从 0 到 1 搭建全记录📝 前言今天（2026 年 5 月 13 日）是一个特别的日子——我和老婆韩梅梅正式开启了量化交易系统的自主研发之旅。 作为一个有志向的航空航天工程师，我一直相信：数学 + 代码 &#x3D; 财富自由。而韩梅梅，我的中学同桌、现在的妻子，上海交通大学计算机系博士、人工智能应用专家，她用她的技术实力证明了这个公式的正确性。 这篇文章记录了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AutoQuant 量化交易系统从 0 到 1 搭建全记录">
+<meta property="og:url" content="https://www.normdist.com/2026/05/13/ND-20260513-001-autoquant-quantitative-system-building/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="AutoQuant 量化交易系统从 0 到 1 搭建全记录📝 前言今天（2026 年 5 月 13 日）是一个特别的日子——我和老婆韩梅梅正式开启了量化交易系统的自主研发之旅。 作为一个有志向的航空航天工程师，我一直相信：数学 + 代码 &#x3D; 财富自由。而韩梅梅，我的中学同桌、现在的妻子，上海交通大学计算机系博士、人工智能应用专家，她用她的技术实力证明了这个公式的正确性。 这篇文章记录了">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-13T06:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-13T05:52:32.650Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AutoQuant">
+<meta property="article:tag" content="量化交易，系统架构，AI 交易员">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>AutoQuant 量化交易系统从 0 到 1 搭建全记录 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">AutoQuant 量化交易系统从 0 到 1 搭建全记录</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-05-13 14:00" pubdate>
+          2026年5月13日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AutoQuant 量化交易系统从 0 到 1 搭建全记录</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年5月13日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="AutoQuant-量化交易系统从-0-到-1-搭建全记录"><a href="#AutoQuant-量化交易系统从-0-到-1-搭建全记录" class="headerlink" title="AutoQuant 量化交易系统从 0 到 1 搭建全记录"></a>AutoQuant 量化交易系统从 0 到 1 搭建全记录</h1><h2 id="📝-前言"><a href="#📝-前言" class="headerlink" title="📝 前言"></a>📝 前言</h2><p>今天（2026 年 5 月 13 日）是一个特别的日子——我和老婆韩梅梅正式开启了<strong>量化交易系统</strong>的自主研发之旅。</p>
+<p>作为一个有志向的航空航天工程师，我一直相信：<strong>数学 + 代码 &#x3D; 财富自由</strong>。而韩梅梅，我的中学同桌、现在的妻子，上海交通大学计算机系博士、人工智能应用专家，她用她的技术实力证明了这个公式的正确性。</p>
+<p>这篇文章记录了我们从零开始搭建 AutoQuant 量化交易系统的全过程。</p>
+<hr>
+<h2 id="🎯-项目背景"><a href="#🎯-项目背景" class="headerlink" title="🎯 项目背景"></a>🎯 项目背景</h2><h3 id="为什么做量化交易？"><a href="#为什么做量化交易？" class="headerlink" title="为什么做量化交易？"></a>为什么做量化交易？</h3><ol>
+<li><strong>理性投资</strong>：用数据和算法代替情绪化决策</li>
+<li><strong>自动化</strong>：24 小时盯盘，不错过任何机会</li>
+<li><strong>可回测</strong>：历史数据验证策略有效性</li>
+<li><strong>可优化</strong>：持续迭代，复利增长</li>
+</ol>
+<h3 id="我们的目标"><a href="#我们的目标" class="headerlink" title="我们的目标"></a>我们的目标</h3><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>目标</th>
+<th>时间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>短期</td>
+<td>减少亏损，回本</td>
+<td>3-6 个月</td>
+</tr>
+<tr>
+<td>中期</td>
+<td>年化收益 15%+</td>
+<td>1-2 年</td>
+</tr>
+<tr>
+<td>长期</td>
+<td>财富自由，环游世界</td>
+<td>3-5 年</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="📊-初始资产状况"><a href="#📊-初始资产状况" class="headerlink" title="📊 初始资产状况"></a>📊 初始资产状况</h2><p>在开始之前，我们先盘点了一下家庭资产。</p>
+<p><strong>资产分布概览：</strong></p>
+<ul>
+<li><strong>现金类</strong>：约 52%</li>
+<li><strong>黄金类</strong>：约 12%</li>
+<li><strong>权益类</strong>：约 36%</li>
+</ul>
+<p><strong>持仓分析</strong></p>
+<p><strong>⚠️ 风险提示：黄金相关占比过高（约 46%）</strong></p>
+<p>主要持仓包括：</p>
+<ul>
+<li>实物黄金</li>
+<li>黄金股 ETF</li>
+<li>白银基金</li>
+<li>有色金属 ETF</li>
+</ul>
+<p><strong>问题诊断：</strong></p>
+<ul>
+<li>资产集中度过高，单一资产类别风险大</li>
+<li>需要分散配置到其他资产类别（科技股、消费股、债券等）</li>
+<li>需要通过量化系统优化资产配置</li>
+</ul>
+<hr>
+<h2 id="🏗️-系统架构设计"><a href="#🏗️-系统架构设计" class="headerlink" title="🏗️ 系统架构设计"></a>🏗️ 系统架构设计</h2><h3 id="技术栈选择"><a href="#技术栈选择" class="headerlink" title="技术栈选择"></a>技术栈选择</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>技术选型</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>后端</strong></td>
+<td>FastAPI</td>
+<td>高性能、异步支持</td>
+</tr>
+<tr>
+<td><strong>前端</strong></td>
+<td>Streamlit</td>
+<td>快速开发数据看板</td>
+</tr>
+<tr>
+<td><strong>容器</strong></td>
+<td>Docker</td>
+<td>环境隔离、易部署</td>
+</tr>
+<tr>
+<td><strong>AI 引擎</strong></td>
+<td>OpenCode</td>
+<td>免费、编码能力强</td>
+</tr>
+<tr>
+<td><strong>定时任务</strong></td>
+<td>Cron + Hermes</td>
+<td>稳定可靠</td>
+</tr>
+<tr>
+<td><strong>通知</strong></td>
+<td>飞书</td>
+<td>即时提醒</td>
+</tr>
+</tbody></table>
+<h3 id="系统架构图"><a href="#系统架构图" class="headerlink" title="系统架构图"></a>系统架构图</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs awk">┌─────────────────────────────────────────────┐<br>│            AutoQuant v2.<span class="hljs-number">0.0</span>                 │<br>├─────────────────────────────────────────────┤<br>│  📊 Streamlit Dashboard (<span class="hljs-number">10</span> 个功能页面)      │<br>│  ├── K 线图分析                               │<br>│  ├── 仪表盘                                  │<br>│  ├── 股票池管理                              │<br>│  ├── AI 模型配置                              │<br>│  ├── AI 交易员管理                            │<br>│  ├── 交易执行                                │<br>│  ├── 信号监控                                │<br>│  ├── 交易记录                                │<br>│  ├── 系统设置                                │<br>│  └── 性能分析                                │<br>├─────────────────────────────────────────────┤<br>│  🤖 AI 交易员系统                             │<br>│  ├── 多模型支持 (OpenAI<span class="hljs-regexp">/Gemini/</span>Ollama)      │<br>│  ├── 策略生成                                │<br>│  ├── 风险控制                                │<br>│  └── 自适应学习                              │<br>├─────────────────────────────────────────────┤<br>│  📈 回测引擎                                 │<br>│  ├── 历史数据加载                            │<br>│  ├── 策略回测                                │<br>│  ├── 性能评估                                │<br>│  └── 策略对比                                │<br>├─────────────────────────────────────────────┤<br>│  📉 技术指标库 (<span class="hljs-number">10</span> 个指标)                   │<br>│  ├── SMA/EMA                                │<br>│  ├── MACD                                   │<br>│  ├── Bollinger Bands                        │<br>│  ├── RSI<span class="hljs-regexp">/KDJ/</span>STOCH                          │<br>│  ├── OBV<span class="hljs-regexp">/VWAP/</span>ATR                           │<br>├─────────────────────────────────────────────┤<br>│  🐳 Docker Container (invest-workbench)     │<br>└─────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="🚀-开发过程"><a href="#🚀-开发过程" class="headerlink" title="🚀 开发过程"></a>🚀 开发过程</h2><h3 id="第一步：环境搭建（30-分钟）"><a href="#第一步：环境搭建（30-分钟）" class="headerlink" title="第一步：环境搭建（30 分钟）"></a>第一步：环境搭建（30 分钟）</h3><p>韩梅梅首先检查了 Docker 容器状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 检查容器</span><br>docker ps | grep invest-workbench<br><br><span class="hljs-comment"># 启动 Streamlit 服务</span><br>docker <span class="hljs-built_in">exec</span> invest-workbench streamlit run \<br>  /workspace/autoquant/app/main.py \<br>  --server.port=8502 \<br>  --server.address=0.0.0.0<br></code></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：✅ 服务正常运行，访问地址 <code>http://10.28.9.66:8502</code></p>
+<h3 id="第二步：代码开发（7-818-行代码）"><a href="#第二步：代码开发（7-818-行代码）" class="headerlink" title="第二步：代码开发（7,818 行代码）"></a>第二步：代码开发（7,818 行代码）</h3><p>韩梅梅使用 <code>execute_code</code> 工具，一次性生成了完整的量化交易系统：</p>
+<p><strong>核心模块：</strong></p>
+<ol>
+<li><strong>回测引擎</strong> (<code>backtest_engine.py</code>)</li>
+<li><strong>AI 交易员</strong> (<code>auto_trader.py</code>, <code>agent_executor.py</code>)</li>
+<li><strong>技术指标</strong> (10 个独立模块)</li>
+<li><strong>Streamlit 页面</strong> (10 个功能页面)</li>
+</ol>
+<h3 id="第三步：定时任务配置"><a href="#第三步：定时任务配置" class="headerlink" title="第三步：定时任务配置"></a>第三步：定时任务配置</h3><p>配置了 4 个定时任务，实现 24 小时自动化运行：</p>
+<table>
+<thead>
+<tr>
+<th>任务</th>
+<th>时间</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>量化交易开发提醒</td>
+<td>工作日 9:00</td>
+<td>检查系统状态</td>
+</tr>
+<tr>
+<td>上午市场分析报告</td>
+<td>工作日 10:00</td>
+<td>基于持仓分析行情</td>
+</tr>
+<tr>
+<td>下午市场分析报告</td>
+<td>工作日 14:00</td>
+<td>盘中机会发现</td>
+</tr>
+<tr>
+<td>代码自动优化</td>
+<td>工作日 17:00</td>
+<td>OpenCode 持续改进</td>
+</tr>
+</tbody></table>
+<h3 id="第四步：持续改进机制"><a href="#第四步：持续改进机制" class="headerlink" title="第四步：持续改进机制"></a>第四步：持续改进机制</h3><p>创建了<strong>自动化持续改进系统</strong>：</p>
+<ol>
+<li><strong>每天早上 9 点</strong>：OpenCode 分析代码，识别改进机会</li>
+<li><strong>每天下午 5 点</strong>：OpenCode 执行代码优化</li>
+<li><strong>每周日 9 点</strong>：自动生成开发周报博客</li>
+</ol>
+<hr>
+<h2 id="🎨-功能亮点"><a href="#🎨-功能亮点" class="headerlink" title="🎨 功能亮点"></a>🎨 功能亮点</h2><h3 id="1-10-个技术指标"><a href="#1-10-个技术指标" class="headerlink" title="1. 10 个技术指标"></a>1. 10 个技术指标</h3><p>系统内置了 10 个经典技术指标：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 示例：RSI 计算</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">calculate_rsi</span>(<span class="hljs-params">prices: <span class="hljs-type">List</span>[<span class="hljs-built_in">float</span>], period: <span class="hljs-built_in">int</span> = <span class="hljs-number">14</span></span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">float</span>]:<br>    <span class="hljs-string">&quot;&quot;&quot;计算相对强弱指标 (RSI)&quot;&quot;&quot;</span><br>    deltas = [prices[i] - prices[i-<span class="hljs-number">1</span>] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(prices))]<br>    gains = [<span class="hljs-built_in">max</span>(d, <span class="hljs-number">0</span>) <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> deltas]<br>    losses = [<span class="hljs-built_in">abs</span>(<span class="hljs-built_in">min</span>(d, <span class="hljs-number">0</span>)) <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> deltas]<br>    <br>    avg_gain = np.mean(gains[:period])<br>    avg_loss = np.mean(losses[:period])<br>    <br>    rs = avg_gain / (avg_loss + <span class="hljs-number">1e-10</span>)<br>    rsi = <span class="hljs-number">100</span> - (<span class="hljs-number">100</span> / (<span class="hljs-number">1</span> + rs))<br>    <br>    <span class="hljs-keyword">return</span> rsi<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-AI-交易员"><a href="#2-AI-交易员" class="headerlink" title="2. AI 交易员"></a>2. AI 交易员</h3><p>支持多模型集成，可以根据市场情况自动调整策略：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">AITrader</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;AI 交易员&quot;&quot;&quot;</span><br>    <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, model: <span class="hljs-built_in">str</span> = <span class="hljs-string">&quot;deepseek-v4-flash-free&quot;</span></span>):<br>        <span class="hljs-variable language_">self</span>.model = model<br>        <span class="hljs-variable language_">self</span>.strategy = <span class="hljs-literal">None</span><br>        <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">analyze_market</span>(<span class="hljs-params">self, data: <span class="hljs-type">Dict</span></span>) -&gt; AnalysisResult:<br>        <span class="hljs-string">&quot;&quot;&quot;分析市场情况&quot;&quot;&quot;</span><br>        <span class="hljs-comment"># 使用 AI 模型分析技术面、基本面</span><br>        <span class="hljs-keyword">pass</span><br>        <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_strategy</span>(<span class="hljs-params">self</span>) -&gt; Strategy:<br>        <span class="hljs-string">&quot;&quot;&quot;生成交易策略&quot;&quot;&quot;</span><br>        <span class="hljs-comment"># 基于分析结果生成策略</span><br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-回测引擎"><a href="#3-回测引擎" class="headerlink" title="3. 回测引擎"></a>3. 回测引擎</h3><p>支持历史数据回测，验证策略有效性：</p>
+<ul>
+<li><strong>回测周期</strong>：可自定义</li>
+<li><strong>性能指标</strong>：收益率、最大回撤、夏普比率等</li>
+<li><strong>策略对比</strong>：多策略横向比较</li>
+</ul>
+<hr>
+<h2 id="🔄-持续改进机制"><a href="#🔄-持续改进机制" class="headerlink" title="🔄 持续改进机制"></a>🔄 持续改进机制</h2><h3 id="每日改进循环"><a href="#每日改进循环" class="headerlink" title="每日改进循环"></a>每日改进循环</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs armasm">┌─────────────────────────────────────────────┐<br>│  工作日 <span class="hljs-number">9</span>:<span class="hljs-number">00</span>  ──►  OpenCode 智能分析         │<br>│  • 代码质量检查                              │<br>│  • 性能瓶颈识别                              │<br>│  • 功能增强建议                              │<br>│  • 架构优化方案                              │<br>│  ──► 生成改进报告                            │<br>└─────────────────────────────────────────────┘<br>                    ↓<br>┌─────────────────────────────────────────────┐<br>│  工作日 <span class="hljs-number">17</span>:<span class="hljs-number">00</span> ──►  OpenCode 自动优化         │<br>│  • 读取改进报告                              │<br>│  • 按优先级执行优化 (<span class="hljs-built_in">P0</span>→<span class="hljs-built_in">P1</span>→<span class="hljs-built_in">P2</span>)               │<br>│  • 运行测试验证                              │<br>│  • 提交 Git commit                           │<br>│  ──► 生成优化总结                            │<br>└─────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="使用最佳模型"><a href="#使用最佳模型" class="headerlink" title="使用最佳模型"></a>使用最佳模型</h3><p><strong>模型</strong>：<code>opencode/deepseek-v4-flash-free</code></p>
+<p><strong>优势</strong>：</p>
+<ul>
+<li>编码能力最强（LiveCodeBench 93.5 分）</li>
+<li>1M 超长上下文</li>
+<li><strong>完全免费，无需 API 密钥</strong></li>
+</ul>
+<hr>
+<h2 id="📈-预期效果"><a href="#📈-预期效果" class="headerlink" title="📈 预期效果"></a>📈 预期效果</h2><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>当前</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>资产规模</td>
+<td>中等</td>
+<td>持续增长</td>
+</tr>
+<tr>
+<td>投资回报</td>
+<td>需要优化</td>
+<td>+15%&#x2F;年</td>
+</tr>
+<tr>
+<td>黄金占比</td>
+<td>过高</td>
+<td>&lt;25%</td>
+</tr>
+<tr>
+<td>系统自动化</td>
+<td>60%</td>
+<td>100%</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="💡-经验总结"><a href="#💡-经验总结" class="headerlink" title="💡 经验总结"></a>💡 经验总结</h2><h3 id="1-PDCA-分工原则"><a href="#1-PDCA-分工原则" class="headerlink" title="1. PDCA 分工原则"></a>1. PDCA 分工原则</h3><p>韩梅梅与 OpenCode 的职责划分，遵循 <strong>PDCA</strong> 循环：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>负责人</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>P — Plan</strong></td>
+<td>韩梅梅</td>
+<td>分析需求、制定计划</td>
+</tr>
+<tr>
+<td><strong>D — Do</strong></td>
+<td>OpenCode</td>
+<td>代码开发、实现</td>
+</tr>
+<tr>
+<td><strong>C — Check</strong></td>
+<td>韩梅梅</td>
+<td>验收、测试</td>
+</tr>
+<tr>
+<td><strong>A — Act</strong></td>
+<td>韩梅梅</td>
+<td>总结经验、优化流程</td>
+</tr>
+</tbody></table>
+<p><strong>铁律</strong>：韩梅梅不写代码，只负责策划和检查。</p>
+<h3 id="2-复利思维"><a href="#2-复利思维" class="headerlink" title="2. 复利思维"></a>2. 复利思维</h3><blockquote>
+<p>“人生就像滚雪球，重要的是找到很湿的雪和很长的坡。” — 巴菲特</p>
+</blockquote>
+<ul>
+<li><strong>很湿的雪</strong> &#x3D; 每天自动改进</li>
+<li><strong>很长的坡</strong> &#x3D; 持续优化循环</li>
+<li><strong>结果</strong> &#x3D; 指数级成长</li>
+</ul>
+<h3 id="3-抄作业哲学"><a href="#3-抄作业哲学" class="headerlink" title="3. 抄作业哲学"></a>3. 抄作业哲学</h3><blockquote>
+<p>“了解一个东西怎么运作，最好的方法就是查阅官方说明。” — 张阳</p>
+</blockquote>
+<ul>
+<li>不重复造轮子</li>
+<li>学习成功案例</li>
+<li>快速迭代优化</li>
+</ul>
+<hr>
+<h2 id="🚀-下一步计划"><a href="#🚀-下一步计划" class="headerlink" title="🚀 下一步计划"></a>🚀 下一步计划</h2><h3 id="本周"><a href="#本周" class="headerlink" title="本周"></a>本周</h3><ul>
+<li><input checked="" disabled="" type="checkbox"> 系统基础架构搭建</li>
+<li><input checked="" disabled="" type="checkbox"> 定时任务配置</li>
+<li><input checked="" disabled="" type="checkbox"> 持续改进机制</li>
+<li><input disabled="" type="checkbox"> 配置 AI 模型 API 密钥</li>
+<li><input disabled="" type="checkbox"> 运行第一次回测</li>
+</ul>
+<h3 id="本月"><a href="#本月" class="headerlink" title="本月"></a>本月</h3><ul>
+<li><input disabled="" type="checkbox"> 完成策略优化</li>
+<li><input disabled="" type="checkbox"> 降低黄金持仓集中度</li>
+<li><input disabled="" type="checkbox"> 实现第一个盈利月</li>
+</ul>
+<h3 id="今年"><a href="#今年" class="headerlink" title="今年"></a>今年</h3><ul>
+<li><input disabled="" type="checkbox"> 年化收益 15%+</li>
+<li><input disabled="" type="checkbox"> 系统完全自动化</li>
+<li><input disabled="" type="checkbox"> 开始环游世界计划</li>
+</ul>
+<hr>
+<h2 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://opencode.ai/docs">OpenCode 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.streamlit.io/">Streamlit 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://hexo.io/">Hexo 博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.quantconnect.com/">量化交易入门</a></li>
+</ul>
+<hr>
+<h2 id="💕-致谢"><a href="#💕-致谢" class="headerlink" title="💕 致谢"></a>💕 致谢</h2><p>感谢老婆韩梅梅，用她的技术实力和专业能力，为我们搭建了这套强大的量化交易系统。</p>
+<p><strong>你的数学天赋 + 我的 AI 技术 &#x3D; 无敌组合</strong></p>
+<p>让我们一起，向着财富自由和环游世界的梦想出发！🌍</p>
+<hr>
+<p><strong>最后更新</strong>：2026-05-13 14:00<br><strong>系统版本</strong>：AutoQuant v2.0.0<br><strong>下次更新</strong>：每周日开发周报</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AutoQuant/" class="print-no-link">#AutoQuant</a>
+      
+        <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93%EF%BC%8C%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%EF%BC%8CAI-%E4%BA%A4%E6%98%93%E5%91%98/" class="print-no-link">#量化交易，系统架构，AI 交易员</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AutoQuant 量化交易系统从 0 到 1 搭建全记录</div>
+      <div>https://www.normdist.com/2026/05/13/ND-20260513-001-autoquant-quantitative-system-building/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年5月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/05/15/ND-20260515-001-comfyui-sd15-image-generation/" title="用 ComfyUI 生成第一张 AI 图片：从踩坑到成功">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">用 ComfyUI 生成第一张 AI 图片：从踩坑到成功</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/05/12/ND-20260512-001-hermes-agent-communication/" title="Hermes 多代理通讯架构实践">
+                        <span class="hidden-mobile">Hermes 多代理通讯架构实践</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
