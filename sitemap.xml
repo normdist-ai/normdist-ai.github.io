@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.normdist.com/2026/05/15/ND-20260515-003-comfyui-sdxl-portrait/</loc>
+    
+    <lastmod>2026-05-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/2026/05/15/ND-20260515-002-comfyui-dreamshaper-portrait/</loc>
     
     <lastmod>2026-05-15</lastmod>
@@ -454,27 +463,6 @@
   </url>
   
   <url>
-    <loc>https://www.normdist.com/tags/%E5%8D%9A%E5%AE%A2/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/Hexo/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://www.normdist.com/tags/OpenClaw/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -496,7 +484,21 @@
   </url>
   
   <url>
-    <loc>https://www.normdist.com/tags/%E5%AE%89%E5%85%A8/</loc>
+    <loc>https://www.normdist.com/tags/%E5%8D%9A%E5%AE%A2/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/Hexo/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -524,6 +526,13 @@
   </url>
   
   <url>
+    <loc>https://www.normdist.com/tags/%E5%AE%89%E5%85%A8/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/tags/LM-Studio/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -532,6 +541,20 @@
   
   <url>
     <loc>https://www.normdist.com/tags/%E9%85%8D%E7%BD%AE/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/BlogWatcher/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E6%8A%80%E8%83%BD/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -559,20 +582,6 @@
   </url>
   
   <url>
-    <loc>https://www.normdist.com/tags/BlogWatcher/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/%E6%8A%80%E8%83%BD/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://www.normdist.com/tags/Ollama/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -581,6 +590,13 @@
   
   <url>
     <loc>https://www.normdist.com/tags/NVIDIA/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/GPU/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -608,7 +624,7 @@
   </url>
   
   <url>
-    <loc>https://www.normdist.com/tags/GPU/</loc>
+    <loc>https://www.normdist.com/tags/SOP/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -636,7 +652,21 @@
   </url>
   
   <url>
-    <loc>https://www.normdist.com/tags/SOP/</loc>
+    <loc>https://www.normdist.com/tags/AI-Agent/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E6%8A%80%E6%9C%AF%E8%B6%8B%E5%8A%BF/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/AI%E6%B2%BB%E7%90%86/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -672,27 +702,6 @@
   
   <url>
     <loc>https://www.normdist.com/tags/%E4%BB%A3%E7%90%86/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/AI-Agent/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/%E6%8A%80%E6%9C%AF%E8%B6%8B%E5%8A%BF/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/AI%E6%B2%BB%E7%90%86/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -930,6 +939,20 @@
   </url>
   
   <url>
+    <loc>https://www.normdist.com/tags/%E8%81%94%E7%BD%91%E8%83%BD%E5%8A%9B/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E6%8A%80%E8%83%BD%E7%94%9F%E6%80%81/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/tags/Hermes-Agent/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -952,20 +975,6 @@
   
   <url>
     <loc>https://www.normdist.com/tags/Kanban-Board/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/%E8%81%94%E7%BD%91%E8%83%BD%E5%8A%9B/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/%E6%8A%80%E8%83%BD%E7%94%9F%E6%80%81/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1027,6 +1036,27 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://www.normdist.com/tags/SDXL/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/Stable-Diffusion-XL/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E6%98%BE%E5%AD%98%E4%BC%98%E5%8C%96/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -1058,6 +1088,13 @@
   </url>
   
   <url>
+    <loc>https://www.normdist.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/OpenClaw/</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -1079,13 +1116,6 @@
   </url>
   
   <url>
-    <loc>https://www.normdist.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/OpenClaw/</loc>
-    <lastmod>2026-05-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://www.normdist.com/categories/%E5%AD%A6%E4%B9%A0%E6%97%A5%E6%8A%A5/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -1093,14 +1123,14 @@
   </url>
   
   <url>
-    <loc>https://www.normdist.com/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/</loc>
+    <loc>https://www.normdist.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.normdist.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    <loc>https://www.normdist.com/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1142,14 +1172,14 @@
   </url>
   
   <url>
-    <loc>https://www.normdist.com/categories/AI-%E5%BA%94%E7%94%A8/</loc>
+    <loc>https://www.normdist.com/categories/%E6%8A%80%E6%9C%AF%E6%8A%A5%E5%91%8A/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://www.normdist.com/categories/%E6%8A%80%E6%9C%AF%E6%8A%A5%E5%91%8A/</loc>
+    <loc>https://www.normdist.com/categories/AI-%E5%BA%94%E7%94%A8/</loc>
     <lastmod>2026-05-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
