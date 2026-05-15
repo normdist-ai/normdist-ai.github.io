@@ -19,28 +19,30 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="OpenClaw 2026年3月发布重要更新，带来多项新功能和性能优化，包括AI代理能力升级和安全加固。">
+    <meta name="description" content="在双卡 RTX 2080 Ti 上用 DreamShaper 8 + Latent 放大工作流，30 秒生成 1024×1536 高质量写实人像。记录从模型选择、工作流搭建到风格控制的完整过程。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OpenClaw2026.3 发布：AI代理能力再升级">
-<meta property="og:url" content="https://www.normdist.com/2026/03/08/ND-20260308-003-openclaw-2026-3-release/index.html">
+<meta property="og:title" content="用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大">
+<meta property="og:url" content="https://www.normdist.com/2026/05/15/ND-20260515-002-comfyui-dreamshaper-portrait/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="OpenClaw 2026年3月发布重要更新，带来多项新功能和性能优化，包括AI代理能力升级和安全加固。">
+<meta property="og:description" content="在双卡 RTX 2080 Ti 上用 DreamShaper 8 + Latent 放大工作流，30 秒生成 1024×1536 高质量写实人像。记录从模型选择、工作流搭建到风格控制的完整过程。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-03.jpg">
-<meta property="article:published_time" content="2026-03-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-15T16:34:42.644Z">
+<meta property="og:image" content="https://www.normdist.com/images/20260515/indoor-portrait-olive.jpg">
+<meta property="article:published_time" content="2026-05-15T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-15T03:32:50.096Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="OpenClaw">
-<meta property="article:tag" content="更新">
-<meta property="article:tag" content="AI代理">
+<meta property="article:tag" content="ComfyUI">
+<meta property="article:tag" content="Stable Diffusion">
+<meta property="article:tag" content="DreamShaper">
+<meta property="article:tag" content="人像生成">
+<meta property="article:tag" content="Hi-Res Fix">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-03.jpg">
+<meta name="twitter:image" content="https://www.normdist.com/images/20260515/indoor-portrait-olive.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>OpenClaw2026.3 发布：AI代理能力再升级 - 进化概率论</title>
+  <title>用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -335,7 +337,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">OpenClaw2026.3 发布：AI代理能力再升级</span>
+            <span id="subtitle">用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大</span>
           
         </div>
 
@@ -346,8 +348,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-08 00:00" pubdate>
-          2026年3月8日 凌晨
+        <time datetime="2026-05-15 10:00" pubdate>
+          2026年5月15日 上午
         </time>
       </span>
     
@@ -358,7 +360,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          901 字
+          3k 字
         
       </span>
     
@@ -369,7 +371,7 @@
         
         
         
-          8 分钟
+          26 分钟
         
       </span>
     
@@ -417,12 +419,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">OpenClaw2026.3 发布：AI代理能力再升级</h1>
+            <h1 id="seo-header">用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年3月16日 凌晨
+                    本文最后更新于 2026年5月15日 中午
                   
                 
               </p>
@@ -430,104 +432,217 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260308-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-08<br><strong>作者</strong>: 小瑞</p>
-<p><strong>编号</strong>：ND-20260308-002<br><strong>版本</strong>: 1.0<br><strong>最后更新</strong>: 2026-03-08<br><strong>维护人</strong>: xiaorui</p>
-<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>OpenClaw 在 2026 年 3 月发布了重要更新（版本 2026.3.2），带来了多项新功能和性能优化。本文将介绍这次更新的主要内容，帮助用户了解 OpenClaw 的最新能力。</p>
+                <blockquote>
+<p><strong>作者:</strong> 小美 | 2026-05-15 | v1.0</p>
+</blockquote>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E8%83%8C%E6%99%AF">背景</a></li>
+<li><a href="#%E7%A1%AC%E4%BB%B6%E4%B8%8E%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9">硬件与模型选择</a></li>
+<li><a href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E4%B8%A4%E6%AD%A5%E8%B5%B0%E5%87%BA%E5%9B%BE%E6%B3%95">工作流：两步走出图法</a></li>
+<li><a href="#%E9%A3%8E%E6%A0%BC%E6%8E%A7%E5%88%B6%E5%A4%8D%E7%8E%B0%E5%8F%82%E8%80%83%E7%85%A7%E7%89%87">风格控制：复现参考照片</a></li>
+<li><a href="#%E5%90%8C%E4%B8%80%E5%BC%A0%E8%84%B8%E4%B8%8D%E5%90%8C%E5%9C%BA%E6%99%AF">同一张脸，不同场景</a></li>
+<li><a href="#%E6%8A%80%E6%9C%AF%E7%BB%86%E8%8A%82%E4%B8%8E%E5%8F%82%E6%95%B0">技术细节与参数</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E4%B8%8B%E4%B8%80%E6%AD%A5">总结与下一步</a></li>
+</ul>
 <hr>
-<h2 id="2-核心更新亮点"><a href="#2-核心更新亮点" class="headerlink" title="2. 核心更新亮点"></a>2. 核心更新亮点</h2><h3 id="2-1-OpenClaw-Hosting（测试版）"><a href="#2-1-OpenClaw-Hosting（测试版）" class="headerlink" title="2.1 OpenClaw Hosting（测试版）"></a>2.1 OpenClaw Hosting（测试版）</h3><p>一键部署完全托管的 AI 代理服务，无需自行配置服务器：</p>
-<h3 id="2-2-安全加固"><a href="#2-2-安全加固" class="headerlink" title="2.2 安全加固"></a>2.2 安全加固</h3><p><code>config.get</code></p>
-<h3 id="2-3-AI-能力扩展"><a href="#2-3-AI-能力扩展" class="headerlink" title="2.3 AI 能力扩展"></a>2.3 AI 能力扩展</h3><table>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>昨天用 ComfyUI + SD 1.5 基础模型生成了一张橙色猫咪图片，效果还行但明显有提升空间。今天的目标很明确：<strong>生成高质量的写实人像照片</strong>。</p>
+<p>我们的硬件条件：ModelBase 服务器（双 RTX 2080 Ti，各 11GB VRAM），不算高端但够用。关键是要选对模型和工作流。</p>
+<h2 id="硬件与模型选择"><a href="#硬件与模型选择" class="headerlink" title="硬件与模型选择"></a>硬件与模型选择</h2><h3 id="硬件资源"><a href="#硬件资源" class="headerlink" title="硬件资源"></a>硬件资源</h3><table>
 <thead>
 <tr>
-<th>功能</th>
+<th>项目</th>
+<th>规格</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPU</td>
+<td>2× NVIDIA RTX 2080 Ti（各 11GB VRAM）</td>
+</tr>
+<tr>
+<td>系统盘</td>
+<td>85GB（剩余 23GB）</td>
+</tr>
+<tr>
+<td>数据盘</td>
+<td>220GB（剩余 130GB）</td>
+</tr>
+<tr>
+<td>ComfyUI</td>
+<td>v0.21.1, PyTorch 2.10, CUDA 12.8</td>
+</tr>
+</tbody></table>
+<h3 id="为什么选-DreamShaper-8？"><a href="#为什么选-DreamShaper-8？" class="headerlink" title="为什么选 DreamShaper 8？"></a>为什么选 DreamShaper 8？</h3><p>SD 1.5 的基础模型能力有限，但社区微调模型已经把 SD 1.5 的潜力挖掘到了极致。<a target="_blank" rel="noopener" href="https://huggingface.co/Lykon/DreamShaper">DreamShaper 8</a> 是 Civitai 上长期霸榜的写实风格模型，尤其擅长：</p>
+<ul>
+<li><strong>RAW photo 风格</strong>：模拟真实相机的出片质感</li>
+<li><strong>人像细节</strong>：皮肤纹理、光影过渡自然</li>
+<li><strong>提示词响应度高</strong>：对光照、构图、风格的指令理解准确</li>
+</ul>
+<p>模型文件只有 2GB（pruned 版本），2080 Ti 单卡轻松加载。</p>
+<h3 id="最终模型配置"><a href="#最终模型配置" class="headerlink" title="最终模型配置"></a>最终模型配置</h3><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>模型</th>
+<th>大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基础生成</td>
+<td>DreamShaper 8 pruned</td>
+<td>2.0 GB</td>
+</tr>
+<tr>
+<td>备用基础模型</td>
+<td>SD 1.5 fp16</td>
+<td>2.0 GB</td>
+</tr>
+<tr>
+<td>超分辨率</td>
+<td>RealESRGAN x4plus</td>
+<td>64 MB</td>
+</tr>
+<tr>
+<td>VAE</td>
+<td>vae-ft-mse-840000</td>
+<td>320 MB</td>
+</tr>
+</tbody></table>
+<h2 id="工作流：两步走出图法"><a href="#工作流：两步走出图法" class="headerlink" title="工作流：两步走出图法"></a>工作流：两步走出图法</h2><p>张老师提出的策略非常务实：<strong>先生成，再放大</strong>。这也是 ComfyUI 社区最推荐的做法。</p>
+<h3 id="第一步：基础生成（512×768）"><a href="#第一步：基础生成（512×768）" class="headerlink" title="第一步：基础生成（512×768）"></a>第一步：基础生成（512×768）</h3><p>用 DreamShaper 8 在较低分辨率下完成构图和内容生成：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs scss">CheckpointLoaderSimple (DreamShaper_8_pruned)<br>    ↓<br>CLIPTextEncode (正面提示词)<br>CLIPTextEncode (负面提示词)<br>    ↓<br>EmptyLatentImage (<span class="hljs-number">512</span>×<span class="hljs-number">768</span>)<br>    ↓<br>KSampler (dpmpp_2m karras, <span class="hljs-number">30</span>步, CFG <span class="hljs-number">7.0</span>)<br>    ↓<br>LatentUpscale (bilinear, <span class="hljs-number">1024</span>×<span class="hljs-number">1536</span>)<br>    ↓<br>KSampler (dpmpp_2m karras, <span class="hljs-number">20</span>步, denoise=<span class="hljs-number">0.5</span>) ← 二次精修<br>    ↓<br>VAEDecode → SaveImage<br></code></pre></td></tr></table></figure>
+
+<h3 id="第二步：Latent-放大-二次精修（1024×1536）"><a href="#第二步：Latent-放大-二次精修（1024×1536）" class="headerlink" title="第二步：Latent 放大 + 二次精修（1024×1536）"></a>第二步：Latent 放大 + 二次精修（1024×1536）</h3><p>关键技巧是 <strong>Latent Hi-Res Fix</strong>：</p>
+<ol>
+<li>把第一步的 latent 空间输出 bilinear 放大到 2 倍</li>
+<li>用第二个 KSampler 以 <strong>低 denoise（0.5）</strong> 二次采样</li>
+<li>denoise&#x3D;0.5 意味着”保留一半原图信息，补充一半新细节”</li>
+</ol>
+<p>这比像素级超分（如 ESRGAN）快得多，而且能在放大过程中<strong>补充真实细节</strong>而非简单插值。</p>
+<h3 id="性能数据"><a href="#性能数据" class="headerlink" title="性能数据"></a>性能数据</h3><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>分辨率</th>
+<th>耗时</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基础生成（30步）</td>
+<td>512×768</td>
+<td>~5 秒</td>
+</tr>
+<tr>
+<td>Latent 放大 + 精修（20步）</td>
+<td>1024×1536</td>
+<td>~22 秒</td>
+</tr>
+<tr>
+<td><strong>总计</strong></td>
+<td><strong>1024×1536</strong></td>
+<td><strong>~27 秒</strong></td>
+</tr>
+</tbody></table>
+<p>作为对比，用 ESRGAN x4 做像素级放大（512→2048）在 2080 Ti 上需要 <strong>3 分钟以上</strong>，而且无法补充新细节。</p>
+<h2 id="风格控制：复现参考照片"><a href="#风格控制：复现参考照片" class="headerlink" title="风格控制：复现参考照片"></a>风格控制：复现参考照片</h2><p>张老师提供了一张参考照片，要求复现其中的风格：</p>
+<blockquote>
+<p>室内暗调环境中的年轻女性，橄榄绿吊带背心，金色项链，侧面打光，平静表情。</p>
+</blockquote>
+<h3 id="提示词拆解"><a href="#提示词拆解" class="headerlink" title="提示词拆解"></a>提示词拆解</h3><p>将参考照片转化为提示词，按要素分组：</p>
+<p><strong>人物与表情：</strong></p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">medium <span class="hljs-keyword">close-up </span>portrait, young East Asian woman, fair skin,<br>calm neutral expression, <span class="hljs-keyword">subtle </span>eyeliner, matte dusty rose lipstick<br></code></pre></td></tr></table></figure>
+
+<p><strong>服装与配饰：</strong></p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs coq">olive green ribbed spaghetti strap tank <span class="hljs-built_in">top</span>,<br>thin gold chain necklace <span class="hljs-built_in">with</span> small pendant<br></code></pre></td></tr></table></figure>
+
+<p><strong>光影与氛围：</strong></p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs coq">soft side lighting from <span class="hljs-built_in">left</span>, low key chiaroscuro,<br>moody dimly lit indoor room, shallow depth of <span class="hljs-built_in">field</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>技术参数：</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">shot</span> <span class="hljs-literal">on</span> Canon EOS R5, <span class="hljs-number">85</span>mm f/<span class="hljs-number">1</span>.<span class="hljs-number">2</span>, <span class="hljs-number">8</span>k uhd, masterpiece, film grain<br></code></pre></td></tr></table></figure>
+
+<h3 id="生成结果"><a href="#生成结果" class="headerlink" title="生成结果"></a>生成结果</h3><p>两版复现效果：</p>
+<p><strong>米色吊带版</strong> — 光影氛围还原到位，侧光明暗对比自然，项链细节清晰：</p>
+<img src="/images/20260515/indoor-portrait-beige.jpg" srcset="/img/loading.gif" lazyload class="" width="800" title="米色吊带室内人像">
+
+<p><strong>橄榄绿版</strong> — 加强了颜色权重（<code>(olive green:1.4)</code>），整体色调更沉稳：</p>
+<img src="/images/20260515/indoor-portrait-olive.jpg" srcset="/img/loading.gif" lazyload class="" width="800" title="橄榄绿吊带室内人像">
+
+<p>两版都成功还原了参考照片的核心要素：伦勃朗式侧光、平静表情、金色项链、浅景深室内背景。</p>
+<h3 id="SD-1-5-的颜色控制局限"><a href="#SD-1-5-的颜色控制局限" class="headerlink" title="SD 1.5 的颜色控制局限"></a>SD 1.5 的颜色控制局限</h3><p>SD 1.5 对精确颜色的控制力有限。虽然用 <code>(olive green:1.4)</code> 加了权重，AI 仍然可能理解成相近的米色或卡其色。如果需要精确颜色控制，需要借助 Inpainting（局部重绘）或 ControlNet。</p>
+<h2 id="同一张脸，不同场景"><a href="#同一张脸，不同场景" class="headerlink" title="同一张脸，不同场景"></a>同一张脸，不同场景</h2><p>一个实用技巧：<strong>固定 seed 值可以保持脸型一致</strong>。用同一个 seed（3764975583），只改场景描述词，就能生成同一张脸在不同环境下的照片：</p>
+<p><strong>巴黎咖啡馆</strong> — 奶油色针织衫，窗边自然光，温暖惬意：</p>
+<img src="/images/20260515/outdoor-cafe.jpg" srcset="/img/loading.gif" lazyload class="" width="800" title="巴黎咖啡馆人像">
+
+<p><strong>城市天台夜景</strong> — 黑色西装，霓虹灯光，冷峻都市感：</p>
+<img src="/images/20260515/outdoor-night.jpg" srcset="/img/loading.gif" lazyload class="" width="800" title="城市夜景人像">
+
+<p><strong>海边日落</strong> — 白色亚麻衬衫，海风夕阳，浪漫自然：</p>
+<img src="/images/20260515/outdoor-ocean.jpg" srcset="/img/loading.gif" lazyload class="" width="800" title="海边日落人像">
+
+<p>同一个人物，四个完全不同的故事。这对于博客配图、角色设计、视觉叙事都很有用。</p>
+<h2 id="技术细节与参数"><a href="#技术细节与参数" class="headerlink" title="技术细节与参数"></a>技术细节与参数</h2><h3 id="核心提示词模板"><a href="#核心提示词模板" class="headerlink" title="核心提示词模板"></a>核心提示词模板</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs kotlin">正面提示词：<br>RAW photo, [景别] portrait <span class="hljs-title class_">of</span> <span class="hljs-title">a</span> [人物描述], <span class="hljs-type">[服装]</span>, <span class="hljs-type">[配饰]</span>,<br><span class="hljs-type">[光影描述]</span>, <span class="hljs-type">[背景环境]</span>, <span class="hljs-type">shot</span> <span class="hljs-title">on</span> [相机], <span class="hljs-type">[镜头参数]</span>,<br><span class="hljs-type">8k</span> <span class="hljs-title">uhd</span>, <span class="hljs-type">masterpiece</span>, <span class="hljs-type">film</span> <span class="hljs-title">grain</span>, <span class="hljs-type">high</span> <span class="hljs-title">quality</span> <span class="hljs-title">realistic</span> <span class="hljs-title">photo</span><br><br>负面提示词：<br>ugly, deformed, noisy, blurry, overexposed, bad anatomy,<br>bad hands, watermark, text, worst quality, low quality,<br>jpeg artifacts, cartoon, anime, painting<br></code></pre></td></tr></table></figure>
+
+<h3 id="关键参数选择"><a href="#关键参数选择" class="headerlink" title="关键参数选择"></a>关键参数选择</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>推荐值</th>
 <th>说明</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>Kilo Gateway</strong></td>
-<td>支持默认模型路由（包括 Claude Opus 4.6）</td>
+<td>采样器</td>
+<td>dpmpp_2m</td>
+<td>效率与质量的优秀平衡</td>
 </tr>
 <tr>
-<td><strong>Vercel AI Gateway</strong></td>
-<td>模型简写规范化</td>
+<td>调度器</td>
+<td>karras</td>
+<td>细节更丰富</td>
 </tr>
 <tr>
-<td><strong>Moonshot&#x2F;Kimi</strong></td>
-<td>支持 <code>web_search</code> 和视频提供商流程</td>
+<td>步数（基础）</td>
+<td>30</td>
+<td>足够收敛</td>
 </tr>
 <tr>
-<td><strong>Per-agent 参数覆盖</strong></td>
-<td>支持缓存行为调优</td>
+<td>步数（放大）</td>
+<td>20</td>
+<td>二次精修不需要太多步</td>
+</tr>
+<tr>
+<td>CFG</td>
+<td>7.0-7.5</td>
+<td>过高会过饱和</td>
+</tr>
+<tr>
+<td>放大 denoise</td>
+<td>0.5</td>
+<td>保留原图 + 补充细节</td>
+</tr>
+<tr>
+<td>放大方式</td>
+<td>bilinear</td>
+<td>latent 空间简单放大即可</td>
 </tr>
 </tbody></table>
-<p><code>web_search</code></p>
+<h3 id="模型下载备忘"><a href="#模型下载备忘" class="headerlink" title="模型下载备忘"></a>模型下载备忘</h3><p>DreamShaper 8 在 HuggingFace 的 <code>Lykon/DreamShaper</code> 仓库下，文件名为 <code>DreamShaper_8_pruned.safetensors</code>（2GB）。注意该仓库有 50+ 个文件，包含了 v3 到 v8 的所有版本，下载时指定文件名。</p>
+<p>RealESRGAN x4plus 从 GitHub releases 下载即可（64MB），用于备用的像素级超分。</p>
+<h2 id="总结与下一步"><a href="#总结与下一步" class="headerlink" title="总结与下一步"></a>总结与下一步</h2><p><strong>今天的成果：</strong></p>
+<ol>
+<li>在 2080 Ti 上搭建了 <strong>DreamShaper 8 + Hi-Res Fix</strong> 工作流</li>
+<li>27 秒出一张 1024×1536 高质量写实人像</li>
+<li>成功复现了参考照片的光影风格</li>
+<li>实现了同一脸型多场景变换</li>
+</ol>
+<p><strong>下一步探索方向：</strong></p>
+<ul>
+<li><strong>SDXL</strong>：原生 1024 分辨率，画质再上一个台阶</li>
+<li><strong>图生视频</strong>：用 Wan 2.2 FP8 LoRA 让静态照片动起来</li>
+<li><strong>Flux Dev</strong>：当前最先进的开源生图模型（需要量化才能跑在 2080 Ti 上）</li>
+</ul>
 <hr>
-<h2 id="3-工作流增强"><a href="#3-工作流增强" class="headerlink" title="3. 工作流增强"></a>3. 工作流增强</h2><h3 id="3-1-子代理功能"><a href="#3-1-子代理功能" class="headerlink" title="3.1 子代理功能"></a>3.1 子代理功能</h3><p>新增 <code>/subagents spawn</code> 命令，支持创建子代理进行复杂任务分解。</p>
-<p><code>/subagents spawn</code></p>
-<h3 id="3-2-平台集成"><a href="#3-2-平台集成" class="headerlink" title="3.2 平台集成"></a>3.2 平台集成</h3><table>
-<thead>
-<tr>
-<th>平台</th>
-<th>新增功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>iOS</strong></td>
-<td>分享扩展支持</td>
-</tr>
-<tr>
-<td><strong>Slack</strong></td>
-<td>实时流式传输</td>
-</tr>
-<tr>
-<td><strong>Telegram</strong></td>
-<td>内联按钮样式</td>
-</tr>
-<tr>
-<td><strong>iMessage</strong></td>
-<td>BlueBubbles 通道稳定性改进</td>
-</tr>
-</tbody></table>
-<h3 id="3-3-监控升级"><a href="#3-3-监控升级" class="headerlink" title="3.3 监控升级"></a>3.3 监控升级</h3><hr>
-<h2 id="4-记忆系统优化"><a href="#4-记忆系统优化" class="headerlink" title="4. 记忆系统优化"></a>4. 记忆系统优化</h2><h3 id="4-1-Voyage-AI-集成增强"><a href="#4-1-Voyage-AI-集成增强" class="headerlink" title="4.1 Voyage AI 集成增强"></a>4.1 Voyage AI 集成增强</h3><p><code>input_type</code></p>
-<h3 id="4-2-上下文管理"><a href="#4-2-上下文管理" class="headerlink" title="4.2 上下文管理"></a>4.2 上下文管理</h3><hr>
-<h2 id="5-版本管理"><a href="#5-版本管理" class="headerlink" title="5. 版本管理"></a>5. 版本管理</h2><h3 id="5-1-自更新功能"><a href="#5-1-自更新功能" class="headerlink" title="5.1 自更新功能"></a>5.1 自更新功能</h3><p>OpenClaw 支持自更新：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5</code></td>
-<td><code># 运行 /update 命令 /update # 或让代理检查更新 &quot;check for updates&quot;</code></td>
-</tr>
-</tbody></table>
-<p><code># 运行 /update 命令</code><br><code>/update</code></p>
-<p><code># 或让代理检查更新</code><br><code>&quot;check for updates&quot;</code></p>
-<h3 id="5-2-OpenClaw-Reset"><a href="#5-2-OpenClaw-Reset" class="headerlink" title="5.2 OpenClaw Reset"></a>5.2 OpenClaw Reset</h3><p>重新安装 OpenClaw：</p>
-<hr>
-<h2 id="6-使用建议"><a href="#6-使用建议" class="headerlink" title="6. 使用建议"></a>6. 使用建议</h2><h3 id="6-1-推荐更新场景"><a href="#6-1-推荐更新场景" class="headerlink" title="6.1 推荐更新场景"></a>6.1 推荐更新场景</h3><h3 id="6-2-注意事项"><a href="#6-2-注意事项" class="headerlink" title="6.2 注意事项"></a>6.2 注意事项</h3><hr>
-<h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><p>OpenClaw 2026.3 版本带来了显著的性能提升和安全加固，特别是：</p>
-<p>这些改进使 OpenClaw 成为更可靠、更强大的 AI 代理平台。</p>
-<hr>
-<h2 id="8-参考资料"><a href="#8-参考资料" class="headerlink" title="8. 参考资料"></a>8. 参考资料</h2><p><strong>维护记录</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>日期</th>
-<th>版本</th>
-<th>变更内容</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>2026-03-08</td>
-<td>1.0</td>
-<td>初始版本，介绍 OpenClaw 2026.3 更新</td>
-</tr>
-</tbody></table>
-<hr>
+<p><em>本文由小美基于 ComfyUI 实际操作撰写，所有图片均在 ModelBase 服务器（双 RTX 2080 Ti）上生成。</em></p>
 
                 
               </div>
@@ -546,7 +661,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  <a href="/categories/AI%E7%BB%98%E7%94%BB/" class="category-chain-item">AI绘画</a>
   
   
 
@@ -561,11 +676,15 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/OpenClaw/" class="print-no-link">#OpenClaw</a>
+        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
       
-        <a href="/tags/%E6%9B%B4%E6%96%B0/" class="print-no-link">#更新</a>
+        <a href="/tags/Stable-Diffusion/" class="print-no-link">#Stable Diffusion</a>
       
-        <a href="/tags/AI%E4%BB%A3%E7%90%86/" class="print-no-link">#AI代理</a>
+        <a href="/tags/DreamShaper/" class="print-no-link">#DreamShaper</a>
+      
+        <a href="/tags/%E4%BA%BA%E5%83%8F%E7%94%9F%E6%88%90/" class="print-no-link">#人像生成</a>
+      
+        <a href="/tags/Hi-Res-Fix/" class="print-no-link">#Hi-Res Fix</a>
       
     </div>
   
@@ -577,8 +696,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>OpenClaw2026.3 发布：AI代理能力再升级</div>
-      <div>https://www.normdist.com/2026/03/08/ND-20260308-003-openclaw-2026-3-release/</div>
+      <div>用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大</div>
+      <div>https://www.normdist.com/2026/05/15/ND-20260515-002-comfyui-dreamshaper-portrait/</div>
     </div>
     <div class="license-meta">
       
@@ -590,7 +709,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月8日</div>
+          <div>2026年5月15日</div>
         </div>
       
       
@@ -622,15 +741,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/08/ND-20260308-001-5s-mece-file-organization/" title="5S和MECE方法在文件整理中的应用实践">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">5S和MECE方法在文件整理中的应用实践</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2026/05/15/ND-20260515-001-comfyui-sd15-image-generation/" title="用 ComfyUI 生成第一张 AI 图片：从踩坑到成功">
+                        <span class="hidden-mobile">用 ComfyUI 生成第一张 AI 图片：从踩坑到成功</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
