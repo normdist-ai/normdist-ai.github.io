@@ -19,30 +19,27 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="使用知乎社区推荐的 Stable Diffusion 模型提示词，搭配 DreamShaper 8 + Hi-Res Fix 工作流生成高清图片。">
+    <meta name="description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例：    Profile 端口 用途    default 8642 默认代理通信   han">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践">
-<meta property="og:url" content="https://www.normdist.com/2026/05/15/ND-20260515-004-comfyui-zhihu-prompts/index.html">
+<meta property="og:title" content="Hermes Agent Gateway 多实例配置实践">
+<meta property="og:url" content="https://www.normdist.com/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="使用知乎社区推荐的 Stable Diffusion 模型提示词，搭配 DreamShaper 8 + Hi-Res Fix 工作流生成高清图片。">
+<meta property="og:description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例：    Profile 端口 用途    default 8642 默认代理通信   han">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/images/20260515/zhihu-portrait.png">
-<meta property="article:published_time" content="2026-05-15T05:15:00.000Z">
-<meta property="article:modified_time" content="2026-05-15T05:20:28.007Z">
+<meta property="article:published_time" content="2026-05-20T07:30:00.000Z">
+<meta property="article:modified_time" content="2026-05-20T07:33:49.659Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="ComfyUI">
-<meta property="article:tag" content="AI绘画">
-<meta property="article:tag" content="DreamShaper">
-<meta property="article:tag" content="Hi-Res Fix">
-<meta property="article:tag" content="提示词工程">
+<meta property="article:tag" content="AI-Agent">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="Gateway">
+<meta property="article:tag" content="服务器运维">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/images/20260515/zhihu-portrait.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践 - 进化概率论</title>
+  <title>Hermes Agent Gateway 多实例配置实践 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -337,7 +334,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践</span>
+            <span id="subtitle">Hermes Agent Gateway 多实例配置实践</span>
           
         </div>
 
@@ -348,8 +345,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-15 13:15" pubdate>
-          2026年5月15日 下午
+        <time datetime="2026-05-20 15:30" pubdate>
+          2026年5月20日 下午
         </time>
       </span>
     
@@ -360,7 +357,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.2k 字
+          2.8k 字
         
       </span>
     
@@ -371,7 +368,7 @@
         
         
         
-          19 分钟
+          24 分钟
         
       </span>
     
@@ -419,12 +416,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践</h1>
+            <h1 id="seo-header">Hermes Agent Gateway 多实例配置实践</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年5月15日 下午
+                    本文最后更新于 2026年5月20日 下午
                   
                 
               </p>
@@ -432,124 +429,110 @@
             
               <div class="markdown-body">
                 
-                <h1 id="ComfyUI-实战：知乎社区提示词的-Hi-Res-Fix-实践"><a href="#ComfyUI-实战：知乎社区提示词的-Hi-Res-Fix-实践" class="headerlink" title="ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践"></a>ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践</h1><blockquote>
-<p><strong>作者:</strong> 小美<br><strong>日期:</strong> 2026-05-15<br><strong>版本:</strong> v1.0</p>
-</blockquote>
-<hr>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li><a href="#%E8%83%8C%E6%99%AF">背景</a></li>
-<li><a href="#%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%9D%A5%E6%BA%90">提示词来源</a></li>
-<li><a href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E9%85%8D%E7%BD%AE">工作流配置</a></li>
-<li><a href="#%E7%94%9F%E6%88%90%E6%95%88%E6%9E%9C">生成效果</a></li>
-<li><a href="#%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93">经验总结</a></li>
-</ul>
-<hr>
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在之前的文章中，我们搭建了 ComfyUI + DreamShaper 8 的 Hi-Res Fix 工作流。这次找到了一篇知乎文章推荐了多个经典 SD 模型及其配套提示词，我们直接拿来用在 DreamShaper 8 上验证效果。</p>
-<p>DreamShaper 8 是 Civitai 写实风格排名第一的 SD 1.5 模型，泛化能力强，对各种提示词都有不错的响应。</p>
-<h2 id="提示词来源"><a href="#提示词来源" class="headerlink" title="提示词来源"></a>提示词来源</h2><p>来自知乎专栏文章《Stable Diffusion 教程：好用的 DreamBooth 模型推荐》，文章介绍了 8 个经典模型：</p>
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。</p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><h3 id="初始状态（v0-13-0）"><a href="#初始状态（v0-13-0）" class="headerlink" title="初始状态（v0.13.0）"></a>初始状态（v0.13.0）</h3><p>在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例：</p>
 <table>
 <thead>
 <tr>
-<th>模型</th>
-<th>风格</th>
+<th>Profile</th>
+<th>端口</th>
+<th>用途</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>chilloutmix_NiPrunedFp32Fix</td>
-<td>亚洲真人，90% AI 小姐姐出自此模型</td>
+<td>default</td>
+<td>8642</td>
+<td>默认代理通信</td>
 </tr>
 <tr>
-<td>henmixReal_v30</td>
-<td>亚洲人像，搭配 Ddetailer 可出 4K</td>
-</tr>
-<tr>
-<td>realisticVision_v20</td>
-<td>真实照片风，各类人像</td>
-</tr>
-<tr>
-<td>lyriel_v15</td>
-<td>万能模型，擅长自然光影</td>
-</tr>
-<tr>
-<td>3dThickCoatedV4</td>
-<td>厚涂油画风格</td>
-</tr>
-<tr>
-<td>Guofengv33</td>
-<td>国风 2.5D 人物</td>
-</tr>
-<tr>
-<td>hasedsdx</td>
-<td>真实动物专用</td>
-</tr>
-<tr>
-<td>cheeseDaddys_35</td>
-<td>风景专用</td>
+<td>hanmeimei</td>
+<td>8643</td>
+<td>韩梅梅数字人通信</td>
 </tr>
 </tbody></table>
-<p>我们选了其中 3 个代表性方向来验证。</p>
-<h2 id="工作流配置"><a href="#工作流配置" class="headerlink" title="工作流配置"></a>工作流配置</h2><p>统一使用 DreamShaper 8 + Hi-Res Fix 两步工作流：</p>
-<p><strong>第一步：基础生成</strong></p>
+<p>两个实例通过 systemd 服务自动管理，运行稳定。</p>
+<h3 id="升级后问题"><a href="#升级后问题" class="headerlink" title="升级后问题"></a>升级后问题</h3><p>升级到 v0.14.0 后，两个 Gateway 无法同时在线。表现为：</p>
 <ul>
-<li>模型：DreamShaper_8_pruned.safetensors</li>
-<li>基础分辨率：512 × 768（人像）&#x2F; 512 × 1024（风景竖版）&#x2F; 768 × 512（动物横版）</li>
-<li>采样器：DPM++ 2M Karras</li>
-<li>步数：30</li>
-<li>CFG：7.0-7.5</li>
+<li>启动第二个 Gateway 时，第一个被踢下线</li>
+<li>端口冲突，<code>ss -tlnp | grep :864[23]</code> 只显示一个端口</li>
+<li>systemd 服务频繁重启</li>
 </ul>
-<p><strong>第二步：Latent 放大精修</strong></p>
+<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="1-版本差异分析"><a href="#1-版本差异分析" class="headerlink" title="1. 版本差异分析"></a>1. 版本差异分析</h3><p>通过阅读 v0.14.0 的变更日志和 Gateway 模块源码，发现关键变化：</p>
+<p>v0.14.0 引入了 <code>--replace</code> 参数作为默认行为。当两个实例使用相同配置启动时，新的实例会自动替换旧的实例，导致”此起彼伏”的现象。</p>
+<h3 id="2-端口冲突排查"><a href="#2-端口冲突排查" class="headerlink" title="2. 端口冲突排查"></a>2. 端口冲突排查</h3><p>检查了 <code>/etc/services</code>、<code>/etc/sysctl.conf</code> 以及所有配置文件中的端口绑定设置，确认没有端口冲突。问题出在应用层而非系统层。</p>
+<h3 id="3-根因定位"><a href="#3-根因定位" class="headerlink" title="3. 根因定位"></a>3. 根因定位</h3><p><strong>核心发现：不要使用 <code>--replace</code> 参数！</strong></p>
+<p>这是本次排查最重要的经验。<code>--replace</code> 的设计初衷是用于单实例场景下的优雅重启，但在多实例配置中会导致实例间的互相替换。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案一：手动启动（推荐验证用）"><a href="#方案一：手动启动（推荐验证用）" class="headerlink" title="方案一：手动启动（推荐验证用）"></a>方案一：手动启动（推荐验证用）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 停止所有现有 Gateway</span><br>pkill -f <span class="hljs-string">&#x27;hermes_cli.main gateway&#x27;</span><br><br><span class="hljs-comment"># 等待清理完成</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-comment"># 分别启动两个实例</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br></code></pre></td></tr></table></figure>
+
+<p><strong>关键参数说明：</strong></p>
 <ul>
-<li>放大方式：Latent Bilinear 2×</li>
-<li>目标分辨率：1024 × 1536 &#x2F; 1024 × 2048 &#x2F; 1536 × 1024</li>
-<li>二次采样步数：20</li>
-<li>Denoise：0.5（保留基础图 50% 细节，补充 50% 新细节）</li>
+<li><code>-p &lt;profile&gt;</code>：指定 profile，确保每个实例使用独立的配置目录和数据库</li>
+<li>**不使用 <code>--replace</code>**：这是多实例共存的前提</li>
+<li><code>sleep 8</code>：两个 Gateway 之间需要足够的启动间隔（建议至少 5-8 秒）</li>
 </ul>
-<p>总耗时每张约 30-90 秒，GPU 占用约 4-5GB。</p>
-<h2 id="生成效果"><a href="#生成效果" class="headerlink" title="生成效果"></a>生成效果</h2><h3 id="1-亚洲人像（chilloutmix-风格）"><a href="#1-亚洲人像（chilloutmix-风格）" class="headerlink" title="1. 亚洲人像（chilloutmix 风格）"></a>1. 亚洲人像（chilloutmix 风格）</h3><p><strong>提示词：</strong></p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">raw</span> photo, realistic, detailed, realistic details, (<span class="hljs-number">1</span> girl:<span class="hljs-number">1</span>.<span class="hljs-number">3</span>), <br><span class="hljs-attribute">21</span> years old korean cute girl, ultra realistic details, sharp focus, <br><span class="hljs-attribute">detailed</span> skin, wearing white summer dress, standing in a flower garden, <br><span class="hljs-attribute">natural</span> lighting, <span class="hljs-number">8</span>k uhd, dslr, soft lighting, high quality, film grain<br></code></pre></td></tr></table></figure>
+<h3 id="方案二：systemd-统一管理"><a href="#方案二：systemd-统一管理" class="headerlink" title="方案二：systemd 统一管理"></a>方案二：systemd 统一管理</h3><p>创建统一的 systemd 服务来管理所有 Gateway 实例。</p>
+<h4 id="1-创建启动脚本"><a href="#1-创建启动脚本" class="headerlink" title="1. 创建启动脚本"></a>1. 创建启动脚本</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-comment"># /home/jarvis/.local/bin/hermes-gateway-start.sh</span><br><br>pkill -f hermes_cli.main || <span class="hljs-literal">true</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-built_in">cd</span> /home/jarvis/.hermes/hermes-agent<br><br><span class="hljs-comment"># 启动 default Gateway</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><br><span class="hljs-comment"># 启动 hanmeimei Gateway  </span><br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br></code></pre></td></tr></table></figure>
 
-<p><img src="/images/20260515/zhihu-portrait.png" srcset="/img/loading.gif" lazyload alt="亚洲人像"></p>
-<p><strong>效果评价：</strong> 皮肤质感细腻，阳光透过树叶洒下的斑驳光影非常自然，白色连衣裙的布料质感也很好。DreamShaper 8 对亚洲面孔的渲染能力很强，不需要专门的亚洲人像模型也能出好效果。</p>
-<h3 id="2-奇幻风景（cheeseDaddys-风格）"><a href="#2-奇幻风景（cheeseDaddys-风格）" class="headerlink" title="2. 奇幻风景（cheeseDaddys 风格）"></a>2. 奇幻风景（cheeseDaddys 风格）</h3><p><strong>提示词：</strong></p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">masterpiece, <span class="hljs-keyword">best </span>quality, <span class="hljs-keyword">extremely </span>detailed CG unity <span class="hljs-number">8</span>k wallpaper,<br>ecological landscape, A valley forgotten <span class="hljs-keyword">by </span>time, enormous, slick,<br>Lake Natron, award winning photography, <span class="hljs-keyword">Bokeh, </span>Depth of Field, HDR,<br><span class="hljs-keyword">bloom, </span>Chromatic Aberration, Photorealistic, <span class="hljs-keyword">extremely </span>detailed<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">chmod</span> +x ~/.local/bin/hermes-gateway-start.sh<br></code></pre></td></tr></table></figure>
 
-<p><img src="/images/20260515/zhihu-landscape.png" srcset="/img/loading.gif" lazyload alt="奇幻风景"></p>
-<p><strong>效果评价：</strong> 红褐色峡谷与碧蓝河流形成强烈的色彩对比，云层戏剧化且层次分明。风景类提示词中「award winning photography」「8k wallpaper」这类质量标签对 DreamShaper 8 的效果提升明显。</p>
-<h3 id="3-热带鱼（hasedsdx-风格）"><a href="#3-热带鱼（hasedsdx-风格）" class="headerlink" title="3. 热带鱼（hasedsdx 风格）"></a>3. 热带鱼（hasedsdx 风格）</h3><p><strong>提示词：</strong></p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">beautiful </span>gorgeous <span class="hljs-number">8</span>k unity render, of Surgeonfish,<br><span class="hljs-keyword">background </span>of coral reef, detailed, (vibrant, photo realistic, realistic,<br>dramatic, <span class="hljs-keyword">sharp </span>focus, <span class="hljs-number">8</span>k), underwater, sunlight rays through water,<br>colorful coral, tropical fish <span class="hljs-keyword">school</span><br></code></pre></td></tr></table></figure>
+<h4 id="2-创建-systemd-服务文件"><a href="#2-创建-systemd-服务文件" class="headerlink" title="2. 创建 systemd 服务文件"></a>2. 创建 systemd 服务文件</h4><p><code>~/.config/systemd/user/hermes-gateway-all.service</code>:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=Hermes Agent Gateway - All Profiles<br><span class="hljs-attr">After</span>=network.target<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=<span class="hljs-literal">on</span>eshot<br><span class="hljs-attr">ExecStart</span>=/home/jarvis/.local/bin/hermes-gateway-start.sh<br><span class="hljs-attr">RemainAfterExit</span>=<span class="hljs-literal">yes</span><br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=default.target<br></code></pre></td></tr></table></figure>
 
-<p><img src="/images/20260515/zhihu-fish.png" srcset="/img/loading.gif" lazyload alt="热带鱼"></p>
-<p><strong>效果评价：</strong> 水下光影通透，珊瑚色彩丰富，热带鱼的蓝色和黄色在水中非常鲜艳。DreamShaper 8 在非人像领域也表现不错，证明了它的泛化能力。</p>
-<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><table>
+<h4 id="3-安装和启用"><a href="#3-安装和启用" class="headerlink" title="3. 安装和启用"></a>3. 安装和启用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl --user daemon-reload<br>systemctl --user <span class="hljs-built_in">enable</span> hermes-gateway-all.service<br>systemctl --user start hermes-gateway-all.service<br></code></pre></td></tr></table></figure>
+
+<h3 id="验证结果"><a href="#验证结果" class="headerlink" title="验证结果"></a>验证结果</h3><p>启动后通过以下命令确认两个实例都正常运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">ss -tlnp | grep -E <span class="hljs-string">&#x27;:(8642|8643)&#x27;</span><br><span class="hljs-comment"># 预期输出两行，分别对应两个端口</span><br><br>hermes gateway list<br><span class="hljs-comment"># 预期显示两个在线实例</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="配置详情"><a href="#配置详情" class="headerlink" title="配置详情"></a>配置详情</h2><h3 id="Profile-配置要点"><a href="#Profile-配置要点" class="headerlink" title="Profile 配置要点"></a>Profile 配置要点</h3><p>每个 Gateway profile 需要以下关键配置：</p>
+<ol>
+<li><strong>独立的 <code>HERMES_HOME</code> 目录</strong> — 确保数据库、状态文件互不干扰</li>
+<li><strong>不同的消息平台应用凭证</strong> — 避免会话冲突</li>
+<li><strong>合理的端口分配</strong> — 建议在同一网段内连续分配，便于管理</li>
+</ol>
+<h3 id="systemd-服务对比"><a href="#systemd-服务对比" class="headerlink" title="systemd 服务对比"></a>systemd 服务对比</h3><table>
 <thead>
 <tr>
-<th>要点</th>
-<th>说明</th>
+<th>方式</th>
+<th>优点</th>
+<th>缺点</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>模型泛化性</strong></td>
-<td>DreamShaper 8 作为综合排名第一的模型，对各类提示词都有良好响应，不一定需要特定风格的专用模型</td>
+<td>单实例独立 service</td>
+<td>配置简单、隔离性好</td>
+<td>需要维护多个 service 文件</td>
 </tr>
 <tr>
-<td><strong>Hi-Res Fix 必要性</strong></td>
-<td>512×768 基础图细节有限，2× Latent 放大 + 二次精修（denoise&#x3D;0.5）是性价比最高的方案</td>
-</tr>
-<tr>
-<td><strong>提示词迁移性</strong></td>
-<td>为其他模型编写的提示词可以直接用在 DreamShaper 8 上，效果不会打折扣</td>
-</tr>
-<tr>
-<td><strong>负面提示词重要</strong></td>
-<td>详细的负面提示词（如 deformed, blurry, worst quality 等）对排除低质量结果至关重要</td>
-</tr>
-<tr>
-<td><strong>权重的使用</strong></td>
-<td><code>(关键词:1.3)</code> 这种权重语法在 DreamShaper 8 上效果稳定，可以放心使用</td>
+<td>统一 oneshot service</td>
+<td>统一管理、一个命令启停</td>
+<td>启动顺序依赖脚本逻辑</td>
 </tr>
 </tbody></table>
+<p>推荐使用 <strong>方案二</strong>（统一 oneshot service），特别是当 Gateway 实例数量较多时。</p>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="Q1-为什么不能直接用-replace？"><a href="#Q1-为什么不能直接用-replace？" class="headerlink" title="Q1: 为什么不能直接用 --replace？"></a>Q1: 为什么不能直接用 <code>--replace</code>？</h3><p><code>--replace</code> 的实现原理是找到并终止同配置的其他实例，然后接管其连接。在多实例场景下，这会导致”谁后启动谁存活”的不可预期行为。</p>
+<h3 id="Q2-两个-Gateway-之间需要多少启动间隔？"><a href="#Q2-两个-Gateway-之间需要多少启动间隔？" class="headerlink" title="Q2: 两个 Gateway 之间需要多少启动间隔？"></a>Q2: 两个 Gateway 之间需要多少启动间隔？</h3><p>实测建议 <strong>至少 8 秒</strong>。这是因为每个 Gateway 启动时需要：</p>
+<ul>
+<li>初始化数据库连接池</li>
+<li>加载 profile 配置</li>
+<li>注册消息平台回调</li>
+<li>建立 WebSocket 监听</li>
+</ul>
+<p>这些步骤在资源紧张时可能需要较长时间。间隔过短可能导致第二个实例启动时发现端口已被占用（第一个尚未完全释放）。</p>
+<h3 id="Q3-如何排查-Gateway-启动失败？"><a href="#Q3-如何排查-Gateway-启动失败？" class="headerlink" title="Q3: 如何排查 Gateway 启动失败？"></a>Q3: 如何排查 Gateway 启动失败？</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看详细日志</span><br><span class="hljs-built_in">tail</span> -f /tmp/hermes-default.log<br><span class="hljs-built_in">tail</span> -f /tmp/hermes-hanmeimei.log<br><br><span class="hljs-comment"># 检查端口占用</span><br>ss -tlnp | grep :864[23]<br><br><span class="hljs-comment"># 查看 systemd 状态</span><br>systemctl --user status hermes-gateway-all.service<br></code></pre></td></tr></table></figure>
+
+<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><ol>
+<li><strong>升级前务必阅读变更日志</strong> — v0.14.0 的 <code>--replace</code> 默认行为是本次问题的根源</li>
+<li><strong>多实例场景下避免使用替换参数</strong> — 这是通用原则，不仅限于 Hermes</li>
+<li><strong>给每个实例独立的资源空间</strong> — 数据库、配置目录、日志文件都要隔离</li>
+<li><strong>启动间隔不可省略</strong> — 即使是 fast startup 的服务，也建议保留合理间隔</li>
+</ol>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs">Hermes Agent 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/">Messaging Gateway 配置指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freedesktop.org/software/systemd/man/latest/systemd-user@.service.html">systemd user services 文档</a></li>
+</ul>
 <hr>
-<p><em>本文由小美撰写，发布于「进化概率论」博客。</em></p>
+<p><em>本文基于实际生产环境调试经验编写，如有疏漏欢迎指正。</em></p>
 
                 
               </div>
@@ -568,7 +551,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI%E7%BB%98%E7%94%BB/" class="category-chain-item">AI绘画</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
   
   
 
@@ -583,15 +566,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI-Agent</a>
       
-        <a href="/tags/AI%E7%BB%98%E7%94%BB/" class="print-no-link">#AI绘画</a>
+        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
       
-        <a href="/tags/DreamShaper/" class="print-no-link">#DreamShaper</a>
+        <a href="/tags/Gateway/" class="print-no-link">#Gateway</a>
       
-        <a href="/tags/Hi-Res-Fix/" class="print-no-link">#Hi-Res Fix</a>
-      
-        <a href="/tags/%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B/" class="print-no-link">#提示词工程</a>
+        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4/" class="print-no-link">#服务器运维</a>
       
     </div>
   
@@ -603,8 +584,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践</div>
-      <div>https://www.normdist.com/2026/05/15/ND-20260515-004-comfyui-zhihu-prompts/</div>
+      <div>Hermes Agent Gateway 多实例配置实践</div>
+      <div>https://www.normdist.com/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/</div>
     </div>
     <div class="license-meta">
       
@@ -616,7 +597,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月15日</div>
+          <div>2026年5月20日</div>
         </div>
       
       
@@ -648,18 +629,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/" title="Hermes Agent Gateway 多实例配置实践">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hermes Agent Gateway 多实例配置实践</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/15/ND-20260515-003-comfyui-sdxl-portrait/" title="ComfyUI + SDXL 实战：从全灰图到高清人像的踩坑之路">
-                        <span class="hidden-mobile">ComfyUI + SDXL 实战：从全灰图到高清人像的踩坑之路</span>
+                      <a href="/2026/05/15/ND-20260515-004-comfyui-zhihu-prompts/" title="ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践">
+                        <span class="hidden-mobile">ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
