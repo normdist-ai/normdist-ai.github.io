@@ -19,28 +19,29 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="背景用 AI 生成人物写真时，最头疼的问题之一是：脸像了，但表情僵了。 我用 ComfyUI + FaceID（IP-Adapter FaceID Plus V2）生成韩梅梅的虚拟写真。FaceID 的核心能力是保持面部一致性——不管换什么场景、穿什么衣服，脸都是同一个人。但代价也很明显：表情被「锁死」了。默认输出永远是平静、中性的表情，笑容若有若无。 这篇文章分享我如何突破这个限制，让虚拟人">
+    <meta name="description" content="下载了个新模型，LM Studio 一跑就报错。折腾半天，最后发现只需要改一个单词。  翻车现场最近在模型服务器上部署 Qwen3.6-35B-A3B-Uncensored，模型下好了，LM Studio 加载也正常，结果一发消息就炸了： 12AI_ProviderSpecificError: Unknown StringValue filter: safeError rendering pro">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AI写真表情控制：让虚拟人物「笑」起来">
-<meta property="og:url" content="https://www.normdist.com/2026/05/20/ND-20260520-001-ai-portrait-expression-control/index.html">
+<meta property="og:title" content="LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF">
+<meta property="og:url" content="https://www.normdist.com/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="背景用 AI 生成人物写真时，最头疼的问题之一是：脸像了，但表情僵了。 我用 ComfyUI + FaceID（IP-Adapter FaceID Plus V2）生成韩梅梅的虚拟写真。FaceID 的核心能力是保持面部一致性——不管换什么场景、穿什么衣服，脸都是同一个人。但代价也很明显：表情被「锁死」了。默认输出永远是平静、中性的表情，笑容若有若无。 这篇文章分享我如何突破这个限制，让虚拟人">
+<meta property="og:description" content="下载了个新模型，LM Studio 一跑就报错。折腾半天，最后发现只需要改一个单词。  翻车现场最近在模型服务器上部署 Qwen3.6-35B-A3B-Uncensored，模型下好了，LM Studio 加载也正常，结果一发消息就炸了： 12AI_ProviderSpecificError: Unknown StringValue filter: safeError rendering pro">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-20T12:30:00.000Z">
-<meta property="article:modified_time" content="2026-05-20T12:10:02.224Z">
+<meta property="article:published_time" content="2026-05-20T14:30:00.000Z">
+<meta property="article:modified_time" content="2026-05-20T14:07:31.191Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="ComfyUI">
-<meta property="article:tag" content="Stable Diffusion">
-<meta property="article:tag" content="AI写真">
-<meta property="article:tag" content="FaceID">
-<meta property="article:tag" content="表情控制">
+<meta property="article:tag" content="LM Studio">
+<meta property="article:tag" content="本地部署">
+<meta property="article:tag" content="GGUF">
+<meta property="article:tag" content="Jinja">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="踩坑">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>AI写真表情控制：让虚拟人物「笑」起来 - 进化概率论</title>
+  <title>LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -335,7 +336,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">AI写真表情控制：让虚拟人物「笑」起来</span>
+            <span id="subtitle">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</span>
           
         </div>
 
@@ -346,7 +347,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-20 20:30" pubdate>
+        <time datetime="2026-05-20 22:30" pubdate>
           2026年5月20日 晚上
         </time>
       </span>
@@ -358,7 +359,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.9k 字
+          4.3k 字
         
       </span>
     
@@ -369,7 +370,7 @@
         
         
         
-          16 分钟
+          36 分钟
         
       </span>
     
@@ -417,7 +418,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">AI写真表情控制：让虚拟人物「笑」起来</h1>
+            <h1 id="seo-header">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
@@ -430,55 +431,69 @@
             
               <div class="markdown-body">
                 
-                
+                <blockquote>
+<p>下载了个新模型，LM Studio 一跑就报错。折腾半天，最后发现只需要改一个单词。</p>
+</blockquote>
+<h2 id="翻车现场"><a href="#翻车现场" class="headerlink" title="翻车现场"></a>翻车现场</h2><p>最近在模型服务器上部署 <code>Qwen3.6-35B-A3B-Uncensored</code>，模型下好了，LM Studio 加载也正常，结果一发消息就炸了：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs subunit">AI_ProviderSpecificError: Unknown StringValue filter: safe<br><span class="hljs-keyword">Error </span>rendering prompt with jinja template: &quot;Unknown StringValue filter: safe&quot;<br></code></pre></td></tr></table></figure>
 
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>用 AI 生成人物写真时，最头疼的问题之一是：<strong>脸像了，但表情僵了</strong>。</p>
-<p>我用 ComfyUI + FaceID（IP-Adapter FaceID Plus V2）生成韩梅梅的虚拟写真。FaceID 的核心能力是<strong>保持面部一致性</strong>——不管换什么场景、穿什么衣服，脸都是同一个人。但代价也很明显：<strong>表情被「锁死」了</strong>。默认输出永远是平静、中性的表情，笑容若有若无。</p>
-<p>这篇文章分享我如何突破这个限制，让虚拟人物真正「笑」起来。</p>
-<h2 id="核心问题"><a href="#核心问题" class="headerlink" title="核心问题"></a>核心问题</h2><p>FaceID 的工作原理是通过面部嵌入（face embedding）约束生成结果。权重越高，面部越像参考图——但同时也越接近参考图的表情。参考图如果是平静脸，生成的就永远是平静脸。</p>
-<p><strong>矛盾点</strong>：我们需要同时满足两个目标——</p>
-<ol>
-<li><strong>保持面部特征</strong>（像这个人）</li>
-<li><strong>改变表情</strong>（让她笑）</li>
-</ol>
-<p>这两个目标本质上是冲突的。面部嵌入既包含身份数据也包含表情数据，FaceID 无法只保留前者而丢弃后者。</p>
-<h2 id="解决方案：FaceDetailer-表情注入"><a href="#解决方案：FaceDetailer-表情注入" class="headerlink" title="解决方案：FaceDetailer + 表情注入"></a>解决方案：FaceDetailer + 表情注入</h2><p>我的方案是<strong>两阶段生成</strong>：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs">第一阶段：FaceID 生成（保持身份 + 尝试注入表情）<br>    ↓<br>第二阶段：FaceDetailer 精修（独立提示词强化表情）<br></code></pre></td></tr></table></figure>
+<p>模型明明没问题，为什么连 prompt 都渲染不了？</p>
+<h2 id="根因定位"><a href="#根因定位" class="headerlink" title="根因定位"></a>根因定位</h2><p>GGUF 文件里内嵌了一段 Jinja 模板（<code>chat_template</code>），负责把对话历史转成模型能理解的文本格式。问题出在这行：</p>
+<figure class="highlight jinja"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jinja"><span class="hljs-template-tag">&#123;%- <span class="hljs-name">set</span> args_value = args_value | string if args_value is string else args_value | tojson | safe %&#125;</span><br></code></pre></td></tr></table></figure>
 
-<p>关键在于第二阶段。FaceDetailer 是 Impact-Pack 提供的节点，它会：</p>
-<ol>
-<li>用 bbox 模型检测脸部区域</li>
-<li>在检测到的脸部区域做局部重绘（inpainting）</li>
-<li><strong>使用独立的 CLIP 提示词</strong>控制重绘内容</li>
-</ol>
-<p>这个「独立的 CLIP 提示词」就是突破口。</p>
-<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><h4 id="第一步：FaceID-参数调整"><a href="#第一步：FaceID-参数调整" class="headerlink" title="第一步：FaceID 参数调整"></a>第一步：FaceID 参数调整</h4><p>当目标是「笑容」时，适当降低 FaceID 权重，给表情留出空间：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 平时（无表情要求）</span><br>faceid = &#123;<span class="hljs-string">&quot;weight&quot;</span>: <span class="hljs-number">1.0</span>, <span class="hljs-string">&quot;weight_faceidv2&quot;</span>: <span class="hljs-number">0.7</span>, <span class="hljs-string">&quot;end_at&quot;</span>: <span class="hljs-number">0.9</span>&#125;<br><br><span class="hljs-comment"># 需要笑容时（降低权重，释放表情自由度）</span><br>faceid = &#123;<span class="hljs-string">&quot;weight&quot;</span>: <span class="hljs-number">0.8</span>, <span class="hljs-string">&quot;weight_faceidv2&quot;</span>: <span class="hljs-number">0.55</span>, <span class="hljs-string">&quot;end_at&quot;</span>: <span class="hljs-number">0.8</span>&#125;<br></code></pre></td></tr></table></figure>
+<p>模型作者用了 <code>| safe</code> 这个 Jinja2 过滤器。<code>| safe</code> 在 Web 开发里很常见——告诉模板引擎”这段 HTML 别转义”。但在 LLM prompt 渲染里完全没必要。</p>
+<p><strong>关键是：LM Studio 用的精简版 Jinja 引擎不支持 <code>| safe</code>。</strong> 直接就报错了。</p>
+<p>这不是模型的 bug，是 LM Studio 的兼容性问题。</p>
+<h2 id="三条路，两条走不通"><a href="#三条路，两条走不通" class="headerlink" title="三条路，两条走不通"></a>三条路，两条走不通</h2><h3 id="❌-方案一：改缓存"><a href="#❌-方案一：改缓存" class="headerlink" title="❌ 方案一：改缓存"></a>❌ 方案一：改缓存</h3><p>LM Studio 会把模型元数据缓存到 <code>gguf-metadata-cache.json</code>。我直接改这个文件，删掉 <code>| safe</code>。</p>
+<p><strong>有效</strong>——但重启 LM Studio 后缓存重建，问题复现。</p>
+<h3 id="❌-方案二：model-yaml-覆盖"><a href="#❌-方案二：model-yaml-覆盖" class="headerlink" title="❌ 方案二：model.yaml 覆盖"></a>❌ 方案二：model.yaml 覆盖</h3><p>LM Studio 支持 <code>model.yaml</code> 配置文件，理论上可以覆盖内置模板。</p>
+<p><strong>实际</strong>：写进去了，LM Studio 压根不认。可能是版本问题。</p>
+<h3 id="✅-方案三：直接改-GGUF-文件"><a href="#✅-方案三：直接改-GGUF-文件" class="headerlink" title="✅ 方案三：直接改 GGUF 文件"></a>✅ 方案三：直接改 GGUF 文件</h3><p>最暴力，也最彻底。但 19GB 的文件，全读全写？</p>
+<p><strong>关键发现：<code>| safe</code> 和 <code>| trim</code> 都是 6 个字符。</strong></p>
+<p>等长替换，不需要移动任何数据，直接在二进制里原地改就行。文件大小不变，GGUF 结构不变。</p>
+<h2 id="为什么用-trim-替换"><a href="#为什么用-trim-替换" class="headerlink" title="为什么用 | trim 替换"></a>为什么用 <code>| trim</code> 替换</h2><p>| 对比项 | <code>| safe</code> | <code>| trim</code> |<br>|——–|———-|———-|<br>| 字符数 | 6 | 6 |<br>| Jinja 标准 | ✅ | ✅ |<br>| LM Studio 支持 | ❌ | ✅ |<br>| 对 JSON 输出的影响 | 标记不转义 | 去首尾空白 |</p>
+<p><code>| trim</code> 去除字符串首尾空白，对 <code>tojson</code> 的输出不会有任何副作用。完美的等价替换。</p>
+<h2 id="修复脚本"><a href="#修复脚本" class="headerlink" title="修复脚本"></a>修复脚本</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">修复 GGUF 文件中的 chat_template - 将 | safe 替换为 | trim</span><br><span class="hljs-string">等长替换，不改变文件大小，直接原地修改。</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> struct<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(sys.argv) &lt; <span class="hljs-number">2</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Usage: python3 fix_gguf_safe.py &lt;gguf_file&gt;&quot;</span>)<br>        sys.exit(<span class="hljs-number">1</span>)<br><br>    gguf_path = sys.argv[<span class="hljs-number">1</span>]<br><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(gguf_path):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Error: File not found: <span class="hljs-subst">&#123;gguf_path&#125;</span>&quot;</span>)<br>        sys.exit(<span class="hljs-number">1</span>)<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Reading: <span class="hljs-subst">&#123;gguf_path&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;File size: <span class="hljs-subst">&#123;os.path.getsize(gguf_path) / (<span class="hljs-number">1024</span>**<span class="hljs-number">3</span>):<span class="hljs-number">.2</span>f&#125;</span> GB&quot;</span>)<br><br>    <span class="hljs-comment"># 读取整个文件到内存</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(gguf_path, <span class="hljs-string">&#x27;rb&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>        data = <span class="hljs-built_in">bytearray</span>(f.read())<br><br>    <span class="hljs-comment"># 定位 tokenizer.chat_template 键</span><br>    key_marker = <span class="hljs-string">b&#x27;tokenizer.chat_template&#x27;</span><br><br>    <span class="hljs-keyword">try</span>:<br>        key_idx = data.index(key_marker)<br>    <span class="hljs-keyword">except</span> ValueError:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Error: tokenizer.chat_template not found in file&quot;</span>)<br>        sys.exit(<span class="hljs-number">1</span>)<br><br>    <span class="hljs-comment"># 解析 GGUF 结构，找到 chat_template 的值区域</span><br>    <span class="hljs-comment"># GGUF 结构: [key_length(8B)][key][value_type(4B)][value_length(8B)][value]</span><br>    key_len = struct.unpack(<span class="hljs-string">&#x27;&lt;Q&#x27;</span>, <span class="hljs-built_in">bytes</span>(data[key_idx-<span class="hljs-number">8</span>:key_idx]))[<span class="hljs-number">0</span>]<br>    type_off = key_idx + key_len<br>    val_len_off = type_off + <span class="hljs-number">4</span><br>    val_len = struct.unpack(<span class="hljs-string">&#x27;&lt;Q&#x27;</span>, <span class="hljs-built_in">bytes</span>(data[val_len_off:val_len_off+<span class="hljs-number">8</span>]))[<span class="hljs-number">0</span>]<br>    val_start = val_len_off + <span class="hljs-number">8</span><br>    val_end = val_start + val_len<br><br>    <span class="hljs-comment"># 读取原始模板</span><br>    original_template = <span class="hljs-built_in">bytes</span>(data[val_start:val_end]).decode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;chat_template: offset=<span class="hljs-subst">&#123;val_start&#125;</span>, length=<span class="hljs-subst">&#123;val_len&#125;</span>&quot;</span>)<br><br>    <span class="hljs-comment"># 检查是否需要修复</span><br>    safe_count = original_template.count(<span class="hljs-string">&#x27;| safe&#x27;</span>)<br>    <span class="hljs-keyword">if</span> safe_count == <span class="hljs-number">0</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;✅ Template is already clean (no | safe found)&quot;</span>)<br>        <span class="hljs-keyword">return</span><br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Found <span class="hljs-subst">&#123;safe_count&#125;</span> occurrence(s) of &#x27;| safe&#x27;, replacing with &#x27;| trim&#x27;...&quot;</span>)<br><br>    <span class="hljs-comment"># 等长替换 | safe → | trim</span><br>    fixed_template = original_template.replace(<span class="hljs-string">&#x27;| safe&#x27;</span>, <span class="hljs-string">&#x27;| trim&#x27;</span>)<br>    fixed_bytes = fixed_template.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>    original_bytes = original_template.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br><br>    <span class="hljs-comment"># 安全检查：长度必须一致</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(fixed_bytes) != <span class="hljs-built_in">len</span>(original_bytes):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;ERROR: Length mismatch! Original: <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(original_bytes)&#125;</span>, Fixed: <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(fixed_bytes)&#125;</span>&quot;</span>)<br>        sys.exit(<span class="hljs-number">1</span>)<br><br>    <span class="hljs-comment"># 原地替换</span><br>    data[val_start:val_end] = fixed_bytes<br><br>    <span class="hljs-comment"># 写回文件</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(gguf_path, <span class="hljs-string">&#x27;wb&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>        f.write(data)<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;✅ Successfully patched: <span class="hljs-subst">&#123;gguf_path&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;   Replaced <span class="hljs-subst">&#123;safe_count&#125;</span> occurrence(s) of &#x27;| safe&#x27; → &#x27;| trim&#x27;&quot;</span>)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    main()<br></code></pre></td></tr></table></figure>
 
-<p>同时在主提示词中注入表情关键词：</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">big </span>grin, wide toothy smile, laughing <span class="hljs-keyword">joyfully, </span><span class="hljs-keyword">showing </span>teeth,<br>a <span class="hljs-keyword">beautiful </span>young Chinese woman, ...<br></code></pre></td></tr></table></figure>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 运行修复脚本</span><br>python3 fix_gguf_safe.py /path/to/your/model.gguf<br><br><span class="hljs-comment"># 2. 清理 LM Studio 缓存（重要！）</span><br><span class="hljs-built_in">rm</span> -f ~/.lmstudio/.internal/gguf-metadata-cache.json<br><br><span class="hljs-comment"># 3. 重启 LM Studio</span><br>systemctl restart lmstudio<br></code></pre></td></tr></table></figure>
 
-<p>这一步能产生「有笑容倾向」的基础图，但还不够明显——因为 FaceID 仍在约束。</p>
-<h4 id="第二步：FaceDetailer-表情强化"><a href="#第二步：FaceDetailer-表情强化" class="headerlink" title="第二步：FaceDetailer 表情强化"></a>第二步：FaceDetailer 表情强化</h4><p>这是关键一步。为 FaceDetailer 构建专用的表情提示词：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">fd_expression_prompt = (<br>    <span class="hljs-string">f&quot;(big grin, wide toothy smile, laughing joyfully, showing teeth:1.4), &quot;</span><br>    <span class="hljs-string">f&quot;beautiful detailed face, detailed eyes, &quot;</span><br>    <span class="hljs-string">f&quot;natural skin texture, perfect facial features, <span class="hljs-subst">&#123;prompt&#125;</span>&quot;</span><br>)<br></code></pre></td></tr></table></figure>
+<h2 id="实际效果"><a href="#实际效果" class="headerlink" title="实际效果"></a>实际效果</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Reading: Qwen3.6-35B-A3B-Uncensored-Q4_K_M.gguf<br>File size: 19.71 GB<br>chat_template: <span class="hljs-attribute">offset</span>=10934766, <span class="hljs-attribute">length</span>=7764<br>Found 1 occurrences of <span class="hljs-string">&#x27;| safe&#x27;</span>, replacing with <span class="hljs-string">&#x27;| trim&#x27;</span><span class="hljs-built_in">..</span>.<br>✅ Successfully patched!<br>   Replaced 1 occurrence(s) of <span class="hljs-string">&#x27;| safe&#x27;</span> → <span class="hljs-string">&#x27;| trim&#x27;</span><br></code></pre></td></tr></table></figure>
 
-<p>注意几个要点：</p>
-<ul>
-<li>**权重 <code>(expression:1.4)</code>**：比普通提示词更高的权重，强制模型关注表情</li>
-<li><strong>保留面部质量关键词</strong>：<code>beautiful detailed face, natural skin texture</code> 等，防止重绘时破坏面部细节</li>
-<li><strong>拼接主提示词</strong>：保留场景上下文，避免脸部与背景脱节</li>
-</ul>
-<p>FaceDetailer 参数配置：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">&#123;<br>    <span class="hljs-string">&quot;enabled&quot;</span>: <span class="hljs-literal">True</span>,<br>    <span class="hljs-string">&quot;denoise&quot;</span>: <span class="hljs-number">0.35</span>,    <span class="hljs-comment"># 不宜太高，否则会「画走」脸</span><br>    <span class="hljs-string">&quot;cfg&quot;</span>: <span class="hljs-number">4.0</span>,         <span class="hljs-comment"># 略低于主采样，避免过度锐化</span><br>    <span class="hljs-string">&quot;steps&quot;</span>: <span class="hljs-number">20</span>,        <span class="hljs-comment"># 足够收敛即可</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>19GB 的文件，不到一分钟搞定。</p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 确认没有残留的 | safe</span><br>strings model.gguf | grep -o <span class="hljs-string">&#x27;| safe&#x27;</span> | <span class="hljs-built_in">wc</span> -l<br><span class="hljs-comment"># 输出: 0</span><br><br><span class="hljs-comment"># 确认 | trim 已替换</span><br>strings model.gguf | grep <span class="hljs-string">&#x27;tojson | trim&#x27;</span><br><span class="hljs-comment"># 输出: ... args_value | tojson | trim ...</span><br></code></pre></td></tr></table></figure>
 
-<h4 id="为什么这个方案有效"><a href="#为什么这个方案有效" class="headerlink" title="为什么这个方案有效"></a>为什么这个方案有效</h4><ol>
-<li><strong>解耦了身份和表情</strong>：FaceID 负责身份，FaceDetailer 负责表情，各司其职</li>
-<li><strong>局部操作</strong>：FaceDetailer 只修改脸部区域，不影响身体、衣服、背景</li>
-<li><strong>低 denoise 精修</strong>：0.35 的 denoise 意味着只做小幅调整，在已有面部基础上「添加笑容」，而不是重新画一张脸</li>
-<li><strong>独立提示词通道</strong>：FaceDetailer 的提示词不影响主体生成，不会破坏构图和场景</li>
-</ol>
-<h2 id="效果对比"><a href="#效果对比" class="headerlink" title="效果对比"></a>效果对比</h2><h3 id="Before：toothy-smile（单纯靠主提示词）"><a href="#Before：toothy-smile（单纯靠主提示词）" class="headerlink" title="Before：toothy smile（单纯靠主提示词）"></a>Before：toothy smile（单纯靠主提示词）</h3><p>表情变化微弱，FaceID 权重过高锁住了表情。看起来像是嘴角微微上扬，但不是真正的笑容。</p>
-<h3 id="After：big-grin-FaceDetailer-表情增强"><a href="#After：big-grin-FaceDetailer-表情增强" class="headerlink" title="After：big grin + FaceDetailer 表情增强"></a>After：big grin + FaceDetailer 表情增强</h3><p>
+<h2 id="以后怎么预防"><a href="#以后怎么预防" class="headerlink" title="以后怎么预防"></a>以后怎么预防</h2><p>下载新模型后先查一下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">strings model.gguf | grep <span class="hljs-string">&#x27;| safe&#x27;</span> &amp;&amp; <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;⚠️ 需要修复&quot;</span> || <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;✅ 兼容&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>或者优先选择 <code>lmstudio-community</code> 发布的模型版本——他们已经做过兼容性处理。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>效果</th>
+<th>持久性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>改缓存</td>
+<td>有效但不稳定</td>
+<td>❌ 重启失效</td>
+</tr>
+<tr>
+<td>model.yaml</td>
+<td>不一定生效</td>
+<td>⚠️ 看版本</td>
+</tr>
+<tr>
+<td><strong>改 GGUF</strong></td>
+<td><strong>彻底解决</strong></td>
+<td><strong>✅ 永久</strong></td>
+</tr>
+</tbody></table>
+<p>本质就是：模型作者用了一个 LM Studio 不支持的 Jinja 过滤器。等长字符串替换，原地改一个单词，问题消失。</p>
+<hr>
+<p><em>参考资料</em>：<a target="_blank" rel="noopener" href="https://github.com/ggerganov/ggml/blob/master/docs/gguf.md">GGUF 格式规范</a> · <a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/">Jinja2 模板引擎</a> · <a target="_blank" rel="noopener" href="https://lmstudio.dokyumento.jp/docs">LM Studio 官方文档</a></p>
+
                 
               </div>
             
@@ -496,7 +511,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI%E5%88%9B%E4%BD%9C/" class="category-chain-item">AI创作</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -511,15 +526,17 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
+        <a href="/tags/LM-Studio/" class="print-no-link">#LM Studio</a>
       
-        <a href="/tags/Stable-Diffusion/" class="print-no-link">#Stable Diffusion</a>
+        <a href="/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/" class="print-no-link">#本地部署</a>
       
-        <a href="/tags/AI%E5%86%99%E7%9C%9F/" class="print-no-link">#AI写真</a>
+        <a href="/tags/GGUF/" class="print-no-link">#GGUF</a>
       
-        <a href="/tags/FaceID/" class="print-no-link">#FaceID</a>
+        <a href="/tags/Jinja/" class="print-no-link">#Jinja</a>
       
-        <a href="/tags/%E8%A1%A8%E6%83%85%E6%8E%A7%E5%88%B6/" class="print-no-link">#表情控制</a>
+        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+      
+        <a href="/tags/%E8%B8%A9%E5%9D%91/" class="print-no-link">#踩坑</a>
       
     </div>
   
@@ -531,8 +548,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>AI写真表情控制：让虚拟人物「笑」起来</div>
-      <div>https://www.normdist.com/2026/05/20/ND-20260520-001-ai-portrait-expression-control/</div>
+      <div>LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</div>
+      <div>https://www.normdist.com/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/</div>
     </div>
     <div class="license-meta">
       
@@ -576,18 +593,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/" title="LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/" title="Hermes Agent Gateway 多实例配置实践">
-                        <span class="hidden-mobile">Hermes Agent Gateway 多实例配置实践</span>
+                      <a href="/2026/05/20/ND-20260520-001-ai-portrait-expression-control/" title="AI写真表情控制：让虚拟人物「笑」起来">
+                        <span class="hidden-mobile">AI写真表情控制：让虚拟人物「笑」起来</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
