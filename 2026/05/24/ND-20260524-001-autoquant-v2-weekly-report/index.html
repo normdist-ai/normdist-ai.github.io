@@ -19,29 +19,25 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="下载了个新模型，LM Studio 一跑就报错。折腾半天，最后发现只需要改一个单词。  翻车现场最近在模型服务器上部署 Qwen3.6-35B-A3B-Uncensored，模型下好了，LM Studio 加载也正常，结果一发消息就炸了： 12AI_ProviderSpecificError: Unknown StringValue filter: safeError rendering pro">
+    <meta name="description" content="AutoQuant 开发周报 - 2026&#x2F;05&#x2F;24📊 本周数据概览   指标 数值    Git 提交 2 次   文件修改 63 个   代码新增 9,653 行   代码删除 496 行   版本升级 v1.7.0 → v2.0.0   🎯 重点改进1. 架构重构：从 Streamlit 单体到 FastAPI + React SPA本周最大的里程碑是 AutoQu">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF">
-<meta property="og:url" content="https://www.normdist.com/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/index.html">
+<meta property="og:title" content="AutoQuant 开发周报 - 2026&#x2F;05&#x2F;24">
+<meta property="og:url" content="https://www.normdist.com/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="下载了个新模型，LM Studio 一跑就报错。折腾半天，最后发现只需要改一个单词。  翻车现场最近在模型服务器上部署 Qwen3.6-35B-A3B-Uncensored，模型下好了，LM Studio 加载也正常，结果一发消息就炸了： 12AI_ProviderSpecificError: Unknown StringValue filter: safeError rendering pro">
+<meta property="og:description" content="AutoQuant 开发周报 - 2026&#x2F;05&#x2F;24📊 本周数据概览   指标 数值    Git 提交 2 次   文件修改 63 个   代码新增 9,653 行   代码删除 496 行   版本升级 v1.7.0 → v2.0.0   🎯 重点改进1. 架构重构：从 Streamlit 单体到 FastAPI + React SPA本周最大的里程碑是 AutoQu">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-20T14:30:00.000Z">
-<meta property="article:modified_time" content="2026-05-20T14:07:31.191Z">
+<meta property="article:published_time" content="2026-05-24T13:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-24T13:05:22.582Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="LM Studio">
-<meta property="article:tag" content="本地部署">
-<meta property="article:tag" content="GGUF">
-<meta property="article:tag" content="Jinja">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="踩坑">
+<meta property="article:tag" content="AutoQuant">
+<meta property="article:tag" content="开发周报，量化交易，v2.0">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF - 进化概率论</title>
+  <title>AutoQuant 开发周报 - 2026/05/24 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -336,7 +332,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</span>
+            <span id="subtitle">AutoQuant 开发周报 - 2026/05/24</span>
           
         </div>
 
@@ -347,8 +343,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-20 22:30" pubdate>
-          2026年5月20日 晚上
+        <time datetime="2026-05-24 21:00" pubdate>
+          2026年5月24日 晚上
         </time>
       </span>
     
@@ -359,7 +355,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.3k 字
+          1.3k 字
         
       </span>
     
@@ -370,7 +366,7 @@
         
         
         
-          36 分钟
+          12 分钟
         
       </span>
     
@@ -418,12 +414,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</h1>
+            <h1 id="seo-header">AutoQuant 开发周报 - 2026/05/24</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年5月20日 晚上
+                    本文最后更新于 2026年5月24日 晚上
                   
                 
               </p>
@@ -431,68 +427,127 @@
             
               <div class="markdown-body">
                 
-                <blockquote>
-<p>下载了个新模型，LM Studio 一跑就报错。折腾半天，最后发现只需要改一个单词。</p>
-</blockquote>
-<h2 id="翻车现场"><a href="#翻车现场" class="headerlink" title="翻车现场"></a>翻车现场</h2><p>最近在模型服务器上部署 <code>Qwen3.6-35B-A3B-Uncensored</code>，模型下好了，LM Studio 加载也正常，结果一发消息就炸了：</p>
-<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs subunit">AI_ProviderSpecificError: Unknown StringValue filter: safe<br><span class="hljs-keyword">Error </span>rendering prompt with jinja template: &quot;Unknown StringValue filter: safe&quot;<br></code></pre></td></tr></table></figure>
-
-<p>模型明明没问题，为什么连 prompt 都渲染不了？</p>
-<h2 id="根因定位"><a href="#根因定位" class="headerlink" title="根因定位"></a>根因定位</h2><p>GGUF 文件里内嵌了一段 Jinja 模板（<code>chat_template</code>），负责把对话历史转成模型能理解的文本格式。问题出在这行：</p>
-<figure class="highlight jinja"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jinja"><span class="hljs-template-tag">&#123;%- <span class="hljs-name">set</span> args_value = args_value | string if args_value is string else args_value | tojson | safe %&#125;</span><br></code></pre></td></tr></table></figure>
-
-<p>模型作者用了 <code>| safe</code> 这个 Jinja2 过滤器。<code>| safe</code> 在 Web 开发里很常见——告诉模板引擎”这段 HTML 别转义”。但在 LLM prompt 渲染里完全没必要。</p>
-<p><strong>关键是：LM Studio 用的精简版 Jinja 引擎不支持 <code>| safe</code>。</strong> 直接就报错了。</p>
-<p>这不是模型的 bug，是 LM Studio 的兼容性问题。</p>
-<h2 id="三条路，两条走不通"><a href="#三条路，两条走不通" class="headerlink" title="三条路，两条走不通"></a>三条路，两条走不通</h2><h3 id="❌-方案一：改缓存"><a href="#❌-方案一：改缓存" class="headerlink" title="❌ 方案一：改缓存"></a>❌ 方案一：改缓存</h3><p>LM Studio 会把模型元数据缓存到 <code>gguf-metadata-cache.json</code>。我直接改这个文件，删掉 <code>| safe</code>。</p>
-<p><strong>有效</strong>——但重启 LM Studio 后缓存重建，问题复现。</p>
-<h3 id="❌-方案二：model-yaml-覆盖"><a href="#❌-方案二：model-yaml-覆盖" class="headerlink" title="❌ 方案二：model.yaml 覆盖"></a>❌ 方案二：model.yaml 覆盖</h3><p>LM Studio 支持 <code>model.yaml</code> 配置文件，理论上可以覆盖内置模板。</p>
-<p><strong>实际</strong>：写进去了，LM Studio 压根不认。可能是版本问题。</p>
-<h3 id="✅-方案三：直接改-GGUF-文件"><a href="#✅-方案三：直接改-GGUF-文件" class="headerlink" title="✅ 方案三：直接改 GGUF 文件"></a>✅ 方案三：直接改 GGUF 文件</h3><p>最暴力，也最彻底。但 19GB 的文件，全读全写？</p>
-<p><strong>关键发现：<code>| safe</code> 和 <code>| trim</code> 都是 6 个字符。</strong></p>
-<p>等长替换，不需要移动任何数据，直接在二进制里原地改就行。文件大小不变，GGUF 结构不变。</p>
-<h2 id="为什么用-trim-替换"><a href="#为什么用-trim-替换" class="headerlink" title="为什么用 | trim 替换"></a>为什么用 <code>| trim</code> 替换</h2><p>| 对比项 | <code>| safe</code> | <code>| trim</code> |<br>|——–|———-|———-|<br>| 字符数 | 6 | 6 |<br>| Jinja 标准 | ✅ | ✅ |<br>| LM Studio 支持 | ❌ | ✅ |<br>| 对 JSON 输出的影响 | 标记不转义 | 去首尾空白 |</p>
-<p><code>| trim</code> 去除字符串首尾空白，对 <code>tojson</code> 的输出不会有任何副作用。完美的等价替换。</p>
-<h2 id="修复脚本"><a href="#修复脚本" class="headerlink" title="修复脚本"></a>修复脚本</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">修复 GGUF 文件中的 chat_template - 将 | safe 替换为 | trim</span><br><span class="hljs-string">等长替换，不改变文件大小，直接原地修改。</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> struct<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(sys.argv) &lt; <span class="hljs-number">2</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Usage: python3 fix_gguf_safe.py &lt;gguf_file&gt;&quot;</span>)<br>        sys.exit(<span class="hljs-number">1</span>)<br><br>    gguf_path = sys.argv[<span class="hljs-number">1</span>]<br><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(gguf_path):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Error: File not found: <span class="hljs-subst">&#123;gguf_path&#125;</span>&quot;</span>)<br>        sys.exit(<span class="hljs-number">1</span>)<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Reading: <span class="hljs-subst">&#123;gguf_path&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;File size: <span class="hljs-subst">&#123;os.path.getsize(gguf_path) / (<span class="hljs-number">1024</span>**<span class="hljs-number">3</span>):<span class="hljs-number">.2</span>f&#125;</span> GB&quot;</span>)<br><br>    <span class="hljs-comment"># 读取整个文件到内存</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(gguf_path, <span class="hljs-string">&#x27;rb&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>        data = <span class="hljs-built_in">bytearray</span>(f.read())<br><br>    <span class="hljs-comment"># 定位 tokenizer.chat_template 键</span><br>    key_marker = <span class="hljs-string">b&#x27;tokenizer.chat_template&#x27;</span><br><br>    <span class="hljs-keyword">try</span>:<br>        key_idx = data.index(key_marker)<br>    <span class="hljs-keyword">except</span> ValueError:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Error: tokenizer.chat_template not found in file&quot;</span>)<br>        sys.exit(<span class="hljs-number">1</span>)<br><br>    <span class="hljs-comment"># 解析 GGUF 结构，找到 chat_template 的值区域</span><br>    <span class="hljs-comment"># GGUF 结构: [key_length(8B)][key][value_type(4B)][value_length(8B)][value]</span><br>    key_len = struct.unpack(<span class="hljs-string">&#x27;&lt;Q&#x27;</span>, <span class="hljs-built_in">bytes</span>(data[key_idx-<span class="hljs-number">8</span>:key_idx]))[<span class="hljs-number">0</span>]<br>    type_off = key_idx + key_len<br>    val_len_off = type_off + <span class="hljs-number">4</span><br>    val_len = struct.unpack(<span class="hljs-string">&#x27;&lt;Q&#x27;</span>, <span class="hljs-built_in">bytes</span>(data[val_len_off:val_len_off+<span class="hljs-number">8</span>]))[<span class="hljs-number">0</span>]<br>    val_start = val_len_off + <span class="hljs-number">8</span><br>    val_end = val_start + val_len<br><br>    <span class="hljs-comment"># 读取原始模板</span><br>    original_template = <span class="hljs-built_in">bytes</span>(data[val_start:val_end]).decode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;chat_template: offset=<span class="hljs-subst">&#123;val_start&#125;</span>, length=<span class="hljs-subst">&#123;val_len&#125;</span>&quot;</span>)<br><br>    <span class="hljs-comment"># 检查是否需要修复</span><br>    safe_count = original_template.count(<span class="hljs-string">&#x27;| safe&#x27;</span>)<br>    <span class="hljs-keyword">if</span> safe_count == <span class="hljs-number">0</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;✅ Template is already clean (no | safe found)&quot;</span>)<br>        <span class="hljs-keyword">return</span><br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Found <span class="hljs-subst">&#123;safe_count&#125;</span> occurrence(s) of &#x27;| safe&#x27;, replacing with &#x27;| trim&#x27;...&quot;</span>)<br><br>    <span class="hljs-comment"># 等长替换 | safe → | trim</span><br>    fixed_template = original_template.replace(<span class="hljs-string">&#x27;| safe&#x27;</span>, <span class="hljs-string">&#x27;| trim&#x27;</span>)<br>    fixed_bytes = fixed_template.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br>    original_bytes = original_template.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br><br>    <span class="hljs-comment"># 安全检查：长度必须一致</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(fixed_bytes) != <span class="hljs-built_in">len</span>(original_bytes):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;ERROR: Length mismatch! Original: <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(original_bytes)&#125;</span>, Fixed: <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(fixed_bytes)&#125;</span>&quot;</span>)<br>        sys.exit(<span class="hljs-number">1</span>)<br><br>    <span class="hljs-comment"># 原地替换</span><br>    data[val_start:val_end] = fixed_bytes<br><br>    <span class="hljs-comment"># 写回文件</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(gguf_path, <span class="hljs-string">&#x27;wb&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>        f.write(data)<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;✅ Successfully patched: <span class="hljs-subst">&#123;gguf_path&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;   Replaced <span class="hljs-subst">&#123;safe_count&#125;</span> occurrence(s) of &#x27;| safe&#x27; → &#x27;| trim&#x27;&quot;</span>)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    main()<br></code></pre></td></tr></table></figure>
-
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 运行修复脚本</span><br>python3 fix_gguf_safe.py /path/to/your/model.gguf<br><br><span class="hljs-comment"># 2. 清理 LM Studio 缓存（重要！）</span><br><span class="hljs-built_in">rm</span> -f ~/.lmstudio/.internal/gguf-metadata-cache.json<br><br><span class="hljs-comment"># 3. 重启 LM Studio</span><br>systemctl restart lmstudio<br></code></pre></td></tr></table></figure>
-
-<h2 id="实际效果"><a href="#实际效果" class="headerlink" title="实际效果"></a>实际效果</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Reading: Qwen3.6-35B-A3B-Uncensored-Q4_K_M.gguf<br>File size: 19.71 GB<br>chat_template: <span class="hljs-attribute">offset</span>=10934766, <span class="hljs-attribute">length</span>=7764<br>Found 1 occurrences of <span class="hljs-string">&#x27;| safe&#x27;</span>, replacing with <span class="hljs-string">&#x27;| trim&#x27;</span><span class="hljs-built_in">..</span>.<br>✅ Successfully patched!<br>   Replaced 1 occurrence(s) of <span class="hljs-string">&#x27;| safe&#x27;</span> → <span class="hljs-string">&#x27;| trim&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<p>19GB 的文件，不到一分钟搞定。</p>
-<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 确认没有残留的 | safe</span><br>strings model.gguf | grep -o <span class="hljs-string">&#x27;| safe&#x27;</span> | <span class="hljs-built_in">wc</span> -l<br><span class="hljs-comment"># 输出: 0</span><br><br><span class="hljs-comment"># 确认 | trim 已替换</span><br>strings model.gguf | grep <span class="hljs-string">&#x27;tojson | trim&#x27;</span><br><span class="hljs-comment"># 输出: ... args_value | tojson | trim ...</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="以后怎么预防"><a href="#以后怎么预防" class="headerlink" title="以后怎么预防"></a>以后怎么预防</h2><p>下载新模型后先查一下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">strings model.gguf | grep <span class="hljs-string">&#x27;| safe&#x27;</span> &amp;&amp; <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;⚠️ 需要修复&quot;</span> || <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;✅ 兼容&quot;</span><br></code></pre></td></tr></table></figure>
-
-<p>或者优先选择 <code>lmstudio-community</code> 发布的模型版本——他们已经做过兼容性处理。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+                <h1 id="AutoQuant-开发周报-2026-x2F-05-x2F-24"><a href="#AutoQuant-开发周报-2026-x2F-05-x2F-24" class="headerlink" title="AutoQuant 开发周报 - 2026&#x2F;05&#x2F;24"></a>AutoQuant 开发周报 - 2026&#x2F;05&#x2F;24</h1><h2 id="📊-本周数据概览"><a href="#📊-本周数据概览" class="headerlink" title="📊 本周数据概览"></a>📊 本周数据概览</h2><table>
 <thead>
 <tr>
-<th>方案</th>
-<th>效果</th>
-<th>持久性</th>
+<th>指标</th>
+<th>数值</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>改缓存</td>
-<td>有效但不稳定</td>
-<td>❌ 重启失效</td>
+<td>Git 提交</td>
+<td>2 次</td>
 </tr>
 <tr>
-<td>model.yaml</td>
-<td>不一定生效</td>
-<td>⚠️ 看版本</td>
+<td>文件修改</td>
+<td>63 个</td>
 </tr>
 <tr>
-<td><strong>改 GGUF</strong></td>
-<td><strong>彻底解决</strong></td>
-<td><strong>✅ 永久</strong></td>
+<td>代码新增</td>
+<td>9,653 行</td>
+</tr>
+<tr>
+<td>代码删除</td>
+<td>496 行</td>
+</tr>
+<tr>
+<td>版本升级</td>
+<td>v1.7.0 → v2.0.0</td>
 </tr>
 </tbody></table>
-<p>本质就是：模型作者用了一个 LM Studio 不支持的 Jinja 过滤器。等长字符串替换，原地改一个单词，问题消失。</p>
-<hr>
-<p><em>参考资料</em>：<a target="_blank" rel="noopener" href="https://github.com/ggerganov/ggml/blob/master/docs/gguf.md">GGUF 格式规范</a> · <a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/">Jinja2 模板引擎</a> · <a target="_blank" rel="noopener" href="https://lmstudio.dokyumento.jp/docs">LM Studio 官方文档</a></p>
+<h2 id="🎯-重点改进"><a href="#🎯-重点改进" class="headerlink" title="🎯 重点改进"></a>🎯 重点改进</h2><h3 id="1-架构重构：从-Streamlit-单体到-FastAPI-React-SPA"><a href="#1-架构重构：从-Streamlit-单体到-FastAPI-React-SPA" class="headerlink" title="1. 架构重构：从 Streamlit 单体到 FastAPI + React SPA"></a>1. 架构重构：从 Streamlit 单体到 FastAPI + React SPA</h3><p>本周最大的里程碑是 AutoQuant 完成了从 v1.x（Streamlit 单体应用）到 v2.0（前后端分离架构）的全面迁移。</p>
+<p>旧架构痛点：</p>
+<ul>
+<li>Streamlit 服务端渲染，每次交互需重新执行脚本</li>
+<li>前端交互能力受限，用户体验停留在数据展示层面</li>
+<li>部署运维复杂，前后端耦合紧密</li>
+</ul>
+<p>新架构优势：</p>
+<ul>
+<li>FastAPI REST API（端口 8100）：提供约 20 个标准化 REST 端点</li>
+<li>React + Vite SPA：9 个前端页面实现完整交互体验，深色主题设计</li>
+<li>同端口部署：FastAPI 和前端共享 8100 端口</li>
+</ul>
+<h3 id="2-数据源重构：ReShare-8200-为主力的降级链"><a href="#2-数据源重构：ReShare-8200-为主力的降级链" class="headerlink" title="2. 数据源重构：ReShare 8200 为主力的降级链"></a>2. 数据源重构：ReShare 8200 为主力的降级链</h3><p>将主力数据源从 AkShare 切换到 ReShare 8200，构建完整降级链路：</p>
+<ul>
+<li>P1（主力）：ReShare 8200 - 本地部署，毫秒级响应</li>
+<li>P2：yfinance - 国际数据覆盖广</li>
+<li>P3：AkShare - A股数据丰富</li>
+<li>P4：Mock - 开发测试兜底</li>
+</ul>
+<h3 id="3-技术指标模块：10-个核心指标"><a href="#3-技术指标模块：10-个核心指标" class="headerlink" title="3. 技术指标模块：10 个核心指标"></a>3. 技术指标模块：10 个核心指标</h3><p>新增 app&#x2F;indicators&#x2F; 目录，实现 10 个主流技术分析指标：</p>
+<ul>
+<li>趋势类：SMA、EMA</li>
+<li>动量类：RSI、MACD、KDJ、Stochastic</li>
+<li>波动类：布林带(Bollinger Bands)、ATR</li>
+<li>量能类：OBV、VWAP</li>
+</ul>
+<h3 id="4-回测引擎与-AI-信号系统"><a href="#4-回测引擎与-AI-信号系统" class="headerlink" title="4. 回测引擎与 AI 信号系统"></a>4. 回测引擎与 AI 信号系统</h3><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>代码量</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>backtest_engine.py</td>
+<td>366行</td>
+<td>历史数据回测框架，自动计算收益率&#x2F;夏普比率&#x2F;最大回撤</td>
+</tr>
+<tr>
+<td>signal_engine.py</td>
+<td>194行</td>
+<td>AI驱动的交易信号生成</td>
+</tr>
+<tr>
+<td>auto_trader.py</td>
+<td>222行</td>
+<td>定时策略执行 + 风控（止损&#x2F;止盈）</td>
+</tr>
+<tr>
+<td>notification.py</td>
+<td>384行</td>
+<td>多渠道消息推送系统</td>
+</tr>
+</tbody></table>
+<h3 id="5-每日自动分析脚本"><a href="#5-每日自动分析脚本" class="headerlink" title="5. 每日自动分析脚本"></a>5. 每日自动分析脚本</h3><p>daily_trade.py（316行）实现自动化每日扫描、技术面分析和交易决策。</p>
+<h2 id="🐛-遇到的问题"><a href="#🐛-遇到的问题" class="headerlink" title="🐛 遇到的问题"></a>🐛 遇到的问题</h2><h3 id="BacktestEngine-字符串键-Bug（已修复）"><a href="#BacktestEngine-字符串键-Bug（已修复）" class="headerlink" title="BacktestEngine 字符串键 Bug（已修复）"></a>BacktestEngine 字符串键 Bug（已修复）</h3><p>改进报告中发现的严重问题：backtest_engine.py 中多处使用变量名而非字符串字面量访问 DataFrame，导致 NameError。v2.0 提交中通过定义列常量全面修复。</p>
+<h2 id="📈-性能提升"><a href="#📈-性能提升" class="headerlink" title="📈 性能提升"></a>📈 性能提升</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>v1.x</th>
+<th>v2.0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>前端交互</td>
+<td>Streamlit 重渲染</td>
+<td>SPA 即时响应</td>
+</tr>
+<tr>
+<td>API 响应</td>
+<td>无 REST API</td>
+<td>~20个标准化端点</td>
+</tr>
+<tr>
+<td>数据源速度</td>
+<td>AkShare（网络延迟）</td>
+<td>ReShare 8200（本地毫秒级）</td>
+</tr>
+</tbody></table>
+<h2 id="🎯-下周计划"><a href="#🎯-下周计划" class="headerlink" title="🎯 下周计划"></a>🎯 下周计划</h2><ul>
+<li><input disabled="" type="checkbox"> API 密钥加密存储（P0 优先级）</li>
+<li><input disabled="" type="checkbox"> 单元测试体系建设（从 0% 覆盖率起步）</li>
+<li><input disabled="" type="checkbox"> 前端深色主题优化</li>
+</ul>
+<h2 id="💡-经验总结"><a href="#💡-经验总结" class="headerlink" title="💡 经验总结"></a>💡 经验总结</h2><ol>
+<li><strong>架构升级要果断</strong>：Streamlit 适合快速原型，功能丰富后前后端分离是必然选择。v2.0 迁移换来长远的可维护性和扩展性。</li>
+<li><strong>数据源本地化是关键</strong>：ReShare 8200 将 API 调用延迟从数百毫秒降到毫秒级。</li>
+<li><strong>指标模块化价值大</strong>：10个技术指标拆分为独立文件，每个模块可单独测试和扩展。</li>
+<li><strong>改进报告驱动质量提升</strong>：通过持续改进报告系统性追踪问题，确保发布后仍有明确的质量提升方向。</li>
+</ol>
 
                 
               </div>
@@ -511,7 +566,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
   
   
 
@@ -526,17 +581,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/LM-Studio/" class="print-no-link">#LM Studio</a>
+        <a href="/tags/AutoQuant/" class="print-no-link">#AutoQuant</a>
       
-        <a href="/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/" class="print-no-link">#本地部署</a>
-      
-        <a href="/tags/GGUF/" class="print-no-link">#GGUF</a>
-      
-        <a href="/tags/Jinja/" class="print-no-link">#Jinja</a>
-      
-        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
-      
-        <a href="/tags/%E8%B8%A9%E5%9D%91/" class="print-no-link">#踩坑</a>
+        <a href="/tags/%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5%EF%BC%8C%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93%EF%BC%8Cv2-0/" class="print-no-link">#开发周报，量化交易，v2.0</a>
       
     </div>
   
@@ -548,8 +595,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</div>
-      <div>https://www.normdist.com/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/</div>
+      <div>AutoQuant 开发周报 - 2026/05/24</div>
+      <div>https://www.normdist.com/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/</div>
     </div>
     <div class="license-meta">
       
@@ -561,7 +608,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月20日</div>
+          <div>2026年5月24日</div>
         </div>
       
       
@@ -593,18 +640,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/" title="AutoQuant 开发周报 - 2026/05/24">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">AutoQuant 开发周报 - 2026/05/24</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-001-ai-portrait-expression-control/" title="AI写真表情控制：让虚拟人物「笑」起来">
-                        <span class="hidden-mobile">AI写真表情控制：让虚拟人物「笑」起来</span>
+                      <a href="/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/" title="LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF">
+                        <span class="hidden-mobile">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
