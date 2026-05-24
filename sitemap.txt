@@ -1,3 +1,4 @@
+https://www.normdist.com/2025/05/24/AutoQuant-%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5-2025-05-24/
 https://www.normdist.com/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/
 https://www.normdist.com/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/
 https://www.normdist.com/2026/05/20/ND-20260520-001-ai-portrait-expression-control/
@@ -54,6 +55,7 @@ https://www.normdist.com/tags/Vue3/
 https://www.normdist.com/tags/FastAPI/
 https://www.normdist.com/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/
 https://www.normdist.com/tags/AutoQuant/
+https://www.normdist.com/tags/%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5/
 https://www.normdist.com/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/
 https://www.normdist.com/tags/%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5%EF%BC%8C%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93%EF%BC%8Cv2-0/
 https://www.normdist.com/tags/5S/
@@ -152,6 +154,7 @@ https://www.normdist.com/tags/GGUF/
 https://www.normdist.com/tags/Jinja/
 https://www.normdist.com/tags/LLM/
 https://www.normdist.com/tags/%E8%B8%A9%E5%9D%91/
+https://www.normdist.com/tags/v2-0/
 https://www.normdist.com/categories/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/
 https://www.normdist.com/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/
 https://www.normdist.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/

@@ -19,28 +19,27 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="OpenClaw 2026年3月发布重要更新，带来多项新功能和性能优化，包括AI代理能力升级和安全加固。">
+    <meta name="description" content="📊 本周数据概览   指标 数值    Git 提交 2 次   文件修改 63 个   代码新增&#x2F;删除 +9,653 &#x2F; -496 行   版本 v1.7.0 → v2.0.0   🎯 本周核心成就AutoQuant v2.0 重大架构升级发布这是 AutoQuant 项目迄今为止最大的一次架构升级，涉及近万行代码变更。 1. 前后端分离架构重构 从 Streamlit">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OpenClaw2026.3 发布：AI代理能力再升级">
-<meta property="og:url" content="https://www.normdist.com/2026/03/08/ND-20260308-003-openclaw-2026-3-release/index.html">
+<meta property="og:title" content="AutoQuant 开发周报 - 2025&#x2F;05&#x2F;24">
+<meta property="og:url" content="https://www.normdist.com/2025/05/24/AutoQuant-%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5-2025-05-24/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="OpenClaw 2026年3月发布重要更新，带来多项新功能和性能优化，包括AI代理能力升级和安全加固。">
+<meta property="og:description" content="📊 本周数据概览   指标 数值    Git 提交 2 次   文件修改 63 个   代码新增&#x2F;删除 +9,653 &#x2F; -496 行   版本 v1.7.0 → v2.0.0   🎯 本周核心成就AutoQuant v2.0 重大架构升级发布这是 AutoQuant 项目迄今为止最大的一次架构升级，涉及近万行代码变更。 1. 前后端分离架构重构 从 Streamlit">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-03.jpg">
-<meta property="article:published_time" content="2026-03-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-15T16:34:42.644Z">
+<meta property="article:published_time" content="2025-05-24T13:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-24T13:21:00.844Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="OpenClaw">
-<meta property="article:tag" content="更新">
-<meta property="article:tag" content="AI代理">
+<meta property="article:tag" content="AutoQuant">
+<meta property="article:tag" content="开发周报">
+<meta property="article:tag" content="量化交易">
+<meta property="article:tag" content="v2.0">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-03.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>OpenClaw2026.3 发布：AI代理能力再升级 - 进化概率论</title>
+  <title>AutoQuant 开发周报 - 2025/05/24 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -335,7 +334,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">OpenClaw2026.3 发布：AI代理能力再升级</span>
+            <span id="subtitle">AutoQuant 开发周报 - 2025/05/24</span>
           
         </div>
 
@@ -346,8 +345,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-08 00:00" pubdate>
-          2026年3月8日 凌晨
+        <time datetime="2025-05-24 21:00" pubdate>
+          2025年5月24日 晚上
         </time>
       </span>
     
@@ -358,7 +357,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          901 字
+          982 字
         
       </span>
     
@@ -369,7 +368,7 @@
         
         
         
-          8 分钟
+          9 分钟
         
       </span>
     
@@ -417,12 +416,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">OpenClaw2026.3 发布：AI代理能力再升级</h1>
+            <h1 id="seo-header">AutoQuant 开发周报 - 2025/05/24</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年3月16日 凌晨
+                    本文最后更新于 2026年5月24日 晚上
                   
                 
               </p>
@@ -430,104 +429,88 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260308-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-08<br><strong>作者</strong>: 小瑞</p>
-<p><strong>编号</strong>：ND-20260308-002<br><strong>版本</strong>: 1.0<br><strong>最后更新</strong>: 2026-03-08<br><strong>维护人</strong>: xiaorui</p>
-<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>OpenClaw 在 2026 年 3 月发布了重要更新（版本 2026.3.2），带来了多项新功能和性能优化。本文将介绍这次更新的主要内容，帮助用户了解 OpenClaw 的最新能力。</p>
-<hr>
-<h2 id="2-核心更新亮点"><a href="#2-核心更新亮点" class="headerlink" title="2. 核心更新亮点"></a>2. 核心更新亮点</h2><h3 id="2-1-OpenClaw-Hosting（测试版）"><a href="#2-1-OpenClaw-Hosting（测试版）" class="headerlink" title="2.1 OpenClaw Hosting（测试版）"></a>2.1 OpenClaw Hosting（测试版）</h3><p>一键部署完全托管的 AI 代理服务，无需自行配置服务器：</p>
-<h3 id="2-2-安全加固"><a href="#2-2-安全加固" class="headerlink" title="2.2 安全加固"></a>2.2 安全加固</h3><p><code>config.get</code></p>
-<h3 id="2-3-AI-能力扩展"><a href="#2-3-AI-能力扩展" class="headerlink" title="2.3 AI 能力扩展"></a>2.3 AI 能力扩展</h3><table>
+                <h2 id="📊-本周数据概览"><a href="#📊-本周数据概览" class="headerlink" title="📊 本周数据概览"></a>📊 本周数据概览</h2><table>
 <thead>
 <tr>
-<th>功能</th>
-<th>说明</th>
+<th>指标</th>
+<th>数值</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>Kilo Gateway</strong></td>
-<td>支持默认模型路由（包括 Claude Opus 4.6）</td>
+<td>Git 提交</td>
+<td><strong>2 次</strong></td>
 </tr>
 <tr>
-<td><strong>Vercel AI Gateway</strong></td>
-<td>模型简写规范化</td>
+<td>文件修改</td>
+<td><strong>63 个</strong></td>
 </tr>
 <tr>
-<td><strong>Moonshot&#x2F;Kimi</strong></td>
-<td>支持 <code>web_search</code> 和视频提供商流程</td>
+<td>代码新增&#x2F;删除</td>
+<td><strong>+9,653 &#x2F; -496 行</strong></td>
 </tr>
 <tr>
-<td><strong>Per-agent 参数覆盖</strong></td>
-<td>支持缓存行为调优</td>
+<td>版本</td>
+<td><strong>v1.7.0 → v2.0.0</strong></td>
 </tr>
 </tbody></table>
-<p><code>web_search</code></p>
-<hr>
-<h2 id="3-工作流增强"><a href="#3-工作流增强" class="headerlink" title="3. 工作流增强"></a>3. 工作流增强</h2><h3 id="3-1-子代理功能"><a href="#3-1-子代理功能" class="headerlink" title="3.1 子代理功能"></a>3.1 子代理功能</h3><p>新增 <code>/subagents spawn</code> 命令，支持创建子代理进行复杂任务分解。</p>
-<p><code>/subagents spawn</code></p>
-<h3 id="3-2-平台集成"><a href="#3-2-平台集成" class="headerlink" title="3.2 平台集成"></a>3.2 平台集成</h3><table>
+<h2 id="🎯-本周核心成就"><a href="#🎯-本周核心成就" class="headerlink" title="🎯 本周核心成就"></a>🎯 本周核心成就</h2><h3 id="AutoQuant-v2-0-重大架构升级发布"><a href="#AutoQuant-v2-0-重大架构升级发布" class="headerlink" title="AutoQuant v2.0 重大架构升级发布"></a>AutoQuant v2.0 重大架构升级发布</h3><p>这是 AutoQuant 项目迄今为止最大的一次架构升级，涉及近万行代码变更。</p>
+<p><strong>1. 前后端分离架构重构</strong></p>
+<p>从 Streamlit 单体应用迁移到 FastAPI + React SPA 的前后端分离架构。后端专注于数据服务和业务逻辑，前端提供更流畅的交互体验。API-first 的设计也为后续扩展（如移动端适配、第三方集成）打下了基础。</p>
+<p><strong>2. 数据源全面升级</strong></p>
+<p>数据源切换为 ReShare 8200（本地毫秒级响应），并构建了 yfinance → AkShare → Mock 的多级降级链。这意味着即使在网络不稳定的情况下，系统也能通过备用数据源持续提供行情服务。</p>
+<p><strong>3. 10 个技术指标全面覆盖</strong></p>
+<p>新增 SMA、EMA、RSI、MACD、KDJ、布林带、ATR、OBV、VWAP、Stochastic 十大经典技术指标。覆盖趋势、动量、波动率、成交量四大维度，为策略分析提供了扎实的技术基础。</p>
+<p><strong>4. 全新回测引擎与信号引擎</strong></p>
+<p>全新的回测引擎（366 行）和信号引擎（194 行）从零构建，支持更灵活的策略定义和更精确的回测结果。信号引擎可以将多个技术指标的判断结果进行综合评分，辅助交易决策。</p>
+<p><strong>5. 自动交易器</strong></p>
+<p>新增自动交易器模块，为后续实现”信号 → 决策 → 执行”的完整闭环奠定了基础。</p>
+<h2 id="📈-架构对比"><a href="#📈-架构对比" class="headerlink" title="📈 架构对比"></a>📈 架构对比</h2><table>
 <thead>
 <tr>
-<th>平台</th>
-<th>新增功能</th>
+<th>维度</th>
+<th>v1.7.0</th>
+<th>v2.0.0</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>iOS</strong></td>
-<td>分享扩展支持</td>
+<td>前端</td>
+<td>Streamlit 单体</td>
+<td>React SPA</td>
 </tr>
 <tr>
-<td><strong>Slack</strong></td>
-<td>实时流式传输</td>
+<td>后端</td>
+<td>Streamlit 内嵌逻辑</td>
+<td>FastAPI 独立服务</td>
 </tr>
 <tr>
-<td><strong>Telegram</strong></td>
-<td>内联按钮样式</td>
+<td>数据源</td>
+<td>yfinance 主力</td>
+<td>ReShare 8200 + 多级降级</td>
 </tr>
 <tr>
-<td><strong>iMessage</strong></td>
-<td>BlueBubbles 通道稳定性改进</td>
+<td>技术指标</td>
+<td>基础 K 线</td>
+<td>10 大经典指标</td>
+</tr>
+<tr>
+<td>回测</td>
+<td>简单模拟</td>
+<td>独立回测引擎</td>
+</tr>
+<tr>
+<td>信号</td>
+<td>无</td>
+<td>信号引擎 + 综合评分</td>
 </tr>
 </tbody></table>
-<h3 id="3-3-监控升级"><a href="#3-3-监控升级" class="headerlink" title="3.3 监控升级"></a>3.3 监控升级</h3><hr>
-<h2 id="4-记忆系统优化"><a href="#4-记忆系统优化" class="headerlink" title="4. 记忆系统优化"></a>4. 记忆系统优化</h2><h3 id="4-1-Voyage-AI-集成增强"><a href="#4-1-Voyage-AI-集成增强" class="headerlink" title="4.1 Voyage AI 集成增强"></a>4.1 Voyage AI 集成增强</h3><p><code>input_type</code></p>
-<h3 id="4-2-上下文管理"><a href="#4-2-上下文管理" class="headerlink" title="4.2 上下文管理"></a>4.2 上下文管理</h3><hr>
-<h2 id="5-版本管理"><a href="#5-版本管理" class="headerlink" title="5. 版本管理"></a>5. 版本管理</h2><h3 id="5-1-自更新功能"><a href="#5-1-自更新功能" class="headerlink" title="5.1 自更新功能"></a>5.1 自更新功能</h3><p>OpenClaw 支持自更新：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5</code></td>
-<td><code># 运行 /update 命令 /update # 或让代理检查更新 &quot;check for updates&quot;</code></td>
-</tr>
-</tbody></table>
-<p><code># 运行 /update 命令</code><br><code>/update</code></p>
-<p><code># 或让代理检查更新</code><br><code>&quot;check for updates&quot;</code></p>
-<h3 id="5-2-OpenClaw-Reset"><a href="#5-2-OpenClaw-Reset" class="headerlink" title="5.2 OpenClaw Reset"></a>5.2 OpenClaw Reset</h3><p>重新安装 OpenClaw：</p>
-<hr>
-<h2 id="6-使用建议"><a href="#6-使用建议" class="headerlink" title="6. 使用建议"></a>6. 使用建议</h2><h3 id="6-1-推荐更新场景"><a href="#6-1-推荐更新场景" class="headerlink" title="6.1 推荐更新场景"></a>6.1 推荐更新场景</h3><h3 id="6-2-注意事项"><a href="#6-2-注意事项" class="headerlink" title="6.2 注意事项"></a>6.2 注意事项</h3><hr>
-<h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><p>OpenClaw 2026.3 版本带来了显著的性能提升和安全加固，特别是：</p>
-<p>这些改进使 OpenClaw 成为更可靠、更强大的 AI 代理平台。</p>
-<hr>
-<h2 id="8-参考资料"><a href="#8-参考资料" class="headerlink" title="8. 参考资料"></a>8. 参考资料</h2><p><strong>维护记录</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>日期</th>
-<th>版本</th>
-<th>变更内容</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>2026-03-08</td>
-<td>1.0</td>
-<td>初始版本，介绍 OpenClaw 2026.3 更新</td>
-</tr>
-</tbody></table>
-<hr>
+<h2 id="🚀-下一步计划"><a href="#🚀-下一步计划" class="headerlink" title="🚀 下一步计划"></a>🚀 下一步计划</h2><ul>
+<li>完善 React 前端各功能模块</li>
+<li>接入更多数据源（如通达信、东方财富）</li>
+<li>策略市场：支持用户自定义策略</li>
+<li>移动端适配</li>
+</ul>
+<h2 id="💡-经验总结"><a href="#💡-经验总结" class="headerlink" title="💡 经验总结"></a>💡 经验总结</h2><p>这次架构升级的核心教训是：<strong>单体应用在功能简单时开发效率很高，但随着需求增长，前后端耦合会严重拖慢迭代速度。</strong> v1.7.0 时期每次改前端都要重启整个 Streamlit 进程，而 v2.0.0 的前后端分离让前后端可以独立开发、独立部署，迭代效率显著提升。</p>
+<p>数据源的降级链设计也很值得分享——生产环境中数据源的不稳定性是常态，设计好降级机制比追求单一数据源的速度更重要。</p>
 
                 
               </div>
@@ -546,7 +529,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
   
   
 
@@ -561,11 +544,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/OpenClaw/" class="print-no-link">#OpenClaw</a>
+        <a href="/tags/AutoQuant/" class="print-no-link">#AutoQuant</a>
       
-        <a href="/tags/%E6%9B%B4%E6%96%B0/" class="print-no-link">#更新</a>
+        <a href="/tags/%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5/" class="print-no-link">#开发周报</a>
       
-        <a href="/tags/AI%E4%BB%A3%E7%90%86/" class="print-no-link">#AI代理</a>
+        <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="print-no-link">#量化交易</a>
+      
+        <a href="/tags/v2-0/" class="print-no-link">#v2.0</a>
       
     </div>
   
@@ -577,8 +562,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>OpenClaw2026.3 发布：AI代理能力再升级</div>
-      <div>https://www.normdist.com/2026/03/08/ND-20260308-003-openclaw-2026-3-release/</div>
+      <div>AutoQuant 开发周报 - 2025/05/24</div>
+      <div>https://www.normdist.com/2025/05/24/AutoQuant-开发周报-2025-05-24/</div>
     </div>
     <div class="license-meta">
       
@@ -590,7 +575,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月8日</div>
+          <div>2025年5月24日</div>
         </div>
       
       
@@ -622,21 +607,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/08/ND-20260308-001-5s-mece-file-organization/" title="5S和MECE方法在文件整理中的应用实践">
+                      <a href="/2026/03/08/ND-20260308-003-openclaw-2026-3-release/" title="OpenClaw2026.3 发布：AI代理能力再升级">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">5S和MECE方法在文件整理中的应用实践</span>
+                        <span class="hidden-mobile">OpenClaw2026.3 发布：AI代理能力再升级</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
-                    
-                      <a href="/2025/05/24/AutoQuant-%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5-2025-05-24/" title="AutoQuant 开发周报 - 2025/05/24">
-                        <span class="hidden-mobile">AutoQuant 开发周报 - 2025/05/24</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
                     
                   </article>
                 </div>

@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.normdist.com/2025/05/24/AutoQuant-%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5-2025-05-24/</loc>
+    
+    <lastmod>2026-05-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/</loc>
     
     <lastmod>2026-05-24</lastmod>
@@ -488,6 +497,13 @@
   
   <url>
     <loc>https://www.normdist.com/tags/AutoQuant/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5/</loc>
     <lastmod>2026-05-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1174,6 +1190,13 @@
   
   <url>
     <loc>https://www.normdist.com/tags/%E8%B8%A9%E5%9D%91/</loc>
+    <lastmod>2026-05-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/v2-0/</loc>
     <lastmod>2026-05-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

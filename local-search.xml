@@ -1327,5 +1327,36 @@
   
   
   
+  <entry>
+    <title>AutoQuant 开发周报 - 2025/05/24</title>
+    <link href="/2025/05/24/AutoQuant-%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5-2025-05-24/"/>
+    <url>/2025/05/24/AutoQuant-%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5-2025-05-24/</url>
+    
+    <content type="html"><![CDATA[<h2 id="📊-本周数据概览"><a href="#📊-本周数据概览" class="headerlink" title="📊 本周数据概览"></a>📊 本周数据概览</h2><table><thead><tr><th>指标</th><th>数值</th></tr></thead><tbody><tr><td>Git 提交</td><td><strong>2 次</strong></td></tr><tr><td>文件修改</td><td><strong>63 个</strong></td></tr><tr><td>代码新增&#x2F;删除</td><td><strong>+9,653 &#x2F; -496 行</strong></td></tr><tr><td>版本</td><td><strong>v1.7.0 → v2.0.0</strong></td></tr></tbody></table><h2 id="🎯-本周核心成就"><a href="#🎯-本周核心成就" class="headerlink" title="🎯 本周核心成就"></a>🎯 本周核心成就</h2><h3 id="AutoQuant-v2-0-重大架构升级发布"><a href="#AutoQuant-v2-0-重大架构升级发布" class="headerlink" title="AutoQuant v2.0 重大架构升级发布"></a>AutoQuant v2.0 重大架构升级发布</h3><p>这是 AutoQuant 项目迄今为止最大的一次架构升级，涉及近万行代码变更。</p><p><strong>1. 前后端分离架构重构</strong></p><p>从 Streamlit 单体应用迁移到 FastAPI + React SPA 的前后端分离架构。后端专注于数据服务和业务逻辑，前端提供更流畅的交互体验。API-first 的设计也为后续扩展（如移动端适配、第三方集成）打下了基础。</p><p><strong>2. 数据源全面升级</strong></p><p>数据源切换为 ReShare 8200（本地毫秒级响应），并构建了 yfinance → AkShare → Mock 的多级降级链。这意味着即使在网络不稳定的情况下，系统也能通过备用数据源持续提供行情服务。</p><p><strong>3. 10 个技术指标全面覆盖</strong></p><p>新增 SMA、EMA、RSI、MACD、KDJ、布林带、ATR、OBV、VWAP、Stochastic 十大经典技术指标。覆盖趋势、动量、波动率、成交量四大维度，为策略分析提供了扎实的技术基础。</p><p><strong>4. 全新回测引擎与信号引擎</strong></p><p>全新的回测引擎（366 行）和信号引擎（194 行）从零构建，支持更灵活的策略定义和更精确的回测结果。信号引擎可以将多个技术指标的判断结果进行综合评分，辅助交易决策。</p><p><strong>5. 自动交易器</strong></p><p>新增自动交易器模块，为后续实现”信号 → 决策 → 执行”的完整闭环奠定了基础。</p><h2 id="📈-架构对比"><a href="#📈-架构对比" class="headerlink" title="📈 架构对比"></a>📈 架构对比</h2><table><thead><tr><th>维度</th><th>v1.7.0</th><th>v2.0.0</th></tr></thead><tbody><tr><td>前端</td><td>Streamlit 单体</td><td>React SPA</td></tr><tr><td>后端</td><td>Streamlit 内嵌逻辑</td><td>FastAPI 独立服务</td></tr><tr><td>数据源</td><td>yfinance 主力</td><td>ReShare 8200 + 多级降级</td></tr><tr><td>技术指标</td><td>基础 K 线</td><td>10 大经典指标</td></tr><tr><td>回测</td><td>简单模拟</td><td>独立回测引擎</td></tr><tr><td>信号</td><td>无</td><td>信号引擎 + 综合评分</td></tr></tbody></table><h2 id="🚀-下一步计划"><a href="#🚀-下一步计划" class="headerlink" title="🚀 下一步计划"></a>🚀 下一步计划</h2><ul><li>完善 React 前端各功能模块</li><li>接入更多数据源（如通达信、东方财富）</li><li>策略市场：支持用户自定义策略</li><li>移动端适配</li></ul><h2 id="💡-经验总结"><a href="#💡-经验总结" class="headerlink" title="💡 经验总结"></a>💡 经验总结</h2><p>这次架构升级的核心教训是：<strong>单体应用在功能简单时开发效率很高，但随着需求增长，前后端耦合会严重拖慢迭代速度。</strong> v1.7.0 时期每次改前端都要重启整个 Streamlit 进程，而 v2.0.0 的前后端分离让前后端可以独立开发、独立部署，迭代效率显著提升。</p><p>数据源的降级链设计也很值得分享——生产环境中数据源的不稳定性是常态，设计好降级机制比追求单一数据源的速度更重要。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>量化交易</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>AutoQuant</tag>
+      
+      <tag>开发周报</tag>
+      
+      <tag>量化交易</tag>
+      
+      <tag>v2.0</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
   
 </search>
