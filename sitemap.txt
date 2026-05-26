@@ -1,3 +1,4 @@
+https://www.normdist.com/2026/05/27/ND-20260527-005-comfyui-gpu-config/
 https://www.normdist.com/2025/05/24/AutoQuant-%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5-2025-05-24/
 https://www.normdist.com/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/
 https://www.normdist.com/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/
