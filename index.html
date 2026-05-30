@@ -371,7 +371,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/05/30/ND-20260530-001-gpu-allocation/" target="_self">
         <div>
-          背景手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。听起来不少，但实际用起来远远不够——llama.cpp 要吃掉 ~26GB 跑大语言模型，ComfyUI 要 ~7GB 跑 Stable Diffusion 出图。 问题来了：两个显存大户怎么在同一台机器上和平共处？ 踩过的坑第一版方案：3:7 分配最初的思路是让 ComfyUI 用 GPU0，ll
+          背景手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。一开始用 LM Studio 跑大语言模型，LM Studio 默认把模型均匀摊到两张卡上。 问题很快暴露了——均匀分配意味着两张卡的剩余显存都不多。ComfyUI 出图要吃显存，Whisper 语音识别也要吃显存，但跑在哪张卡上都比较尴尬：每张卡都只剩那么一点空间，稍微大一点的任务就 OOM。 于
         </div>
       </a>
 
