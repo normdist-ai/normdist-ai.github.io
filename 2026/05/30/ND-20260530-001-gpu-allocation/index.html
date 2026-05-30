@@ -19,28 +19,28 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文分享如何使用5S方法与MECE原则进行文件整理，建立规范的文件管理体系，提高工作效率。">
+    <meta name="description" content="背景手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。听起来不少，但实际用起来远远不够——llama.cpp 要吃掉 ~26GB 跑大语言模型，ComfyUI 要 ~7GB 跑 Stable Diffusion 出图。 问题来了：两个显存大户怎么在同一台机器上和平共处？ 踩过的坑第一版方案：3:7 分配最初的思路是让 ComfyUI 用 GPU0，ll">
 <meta property="og:type" content="article">
-<meta property="og:title" content="5S和MECE方法在文件整理中的应用实践">
-<meta property="og:url" content="https://www.normdist.com/2026/03/08/ND-20260308-001-5s-mece-file-organization/index.html">
+<meta property="og:title" content="双卡 GPU 显存分配策略——让 llama.cpp 和 ComfyUI 稳定共存">
+<meta property="og:url" content="https://www.normdist.com/2026/05/30/ND-20260530-001-gpu-allocation/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="本文分享如何使用5S方法与MECE原则进行文件整理，建立规范的文件管理体系，提高工作效率。">
+<meta property="og:description" content="背景手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。听起来不少，但实际用起来远远不够——llama.cpp 要吃掉 ~26GB 跑大语言模型，ComfyUI 要 ~7GB 跑 Stable Diffusion 出图。 问题来了：两个显存大户怎么在同一台机器上和平共处？ 踩过的坑第一版方案：3:7 分配最初的思路是让 ComfyUI 用 GPU0，ll">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-01.jpg">
-<meta property="article:published_time" content="2026-03-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-15T17:04:12.155Z">
+<meta property="article:published_time" content="2026-05-30T06:22:00.000Z">
+<meta property="article:modified_time" content="2026-05-30T06:22:42.698Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="5S">
-<meta property="article:tag" content="MECE">
-<meta property="article:tag" content="文件整理">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="ComfyUI">
+<meta property="article:tag" content="llama.cpp">
+<meta property="article:tag" content="显存管理">
+<meta property="article:tag" content="多GPU">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-01.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>5S和MECE方法在文件整理中的应用实践 - 进化概率论</title>
+  <title>双卡 GPU 显存分配策略——让 llama.cpp 和 ComfyUI 稳定共存 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -335,7 +335,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">5S和MECE方法在文件整理中的应用实践</span>
+            <span id="subtitle">双卡 GPU 显存分配策略——让 llama.cpp 和 ComfyUI 稳定共存</span>
           
         </div>
 
@@ -346,8 +346,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-08 00:00" pubdate>
-          2026年3月8日 凌晨
+        <time datetime="2026-05-30 14:22" pubdate>
+          2026年5月30日 下午
         </time>
       </span>
     
@@ -358,7 +358,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.4k 字
+          1.9k 字
         
       </span>
     
@@ -369,7 +369,7 @@
         
         
         
-          21 分钟
+          16 分钟
         
       </span>
     
@@ -417,12 +417,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">5S和MECE方法在文件整理中的应用实践</h1>
+            <h1 id="seo-header">双卡 GPU 显存分配策略——让 llama.cpp 和 ComfyUI 稳定共存</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年3月16日 凌晨
+                    本文最后更新于 2026年5月30日 下午
                   
                 
               </p>
@@ -430,397 +430,50 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260308-001<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-08<br><strong>作者</strong>: 小瑞</p>
-<p><strong>编号</strong>：ND-20260308-001<br><strong>版本</strong>: 1.0<br><strong>最后更新</strong>: 2026-03-08<br><strong>维护人</strong>: xiaorui</p>
-<hr>
-<h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1. 引言"></a>1. 引言</h2><p>在今天的数字工作中，文件整理是一项基础但重要的工作。良好的文件整理习惯可以提高工作效率，减少寻找文件的时间，让工作更加有序。</p>
-<p>本文将分享我们如何使用<strong>5S方法</strong>和<strong>MECE原则</strong>来整理文件，建立规范的文件管理体系。</p>
-<hr>
-<h2 id="2-5S方法概述"><a href="#2-5S方法概述" class="headerlink" title="2. 5S方法概述"></a>2. 5S方法概述</h2><h3 id="2-1-什么是5S？"><a href="#2-1-什么是5S？" class="headerlink" title="2.1 什么是5S？"></a>2.1 什么是5S？</h3><p>5S起源于日本，是一种用于工作场所组织的管理方法。5S代表五个日语单词的首字母：</p>
-<table>
-<thead>
-<tr>
-<th>5S</th>
-<th>日语</th>
-<th>中文</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>整理</strong></td>
-<td>Seiri</td>
-<td>区分需要的和不需要的</td>
-<td></td>
-</tr>
-<tr>
-<td><strong>整顿</strong></td>
-<td>Seiton</td>
-<td>物品摆放整齐，便于取用</td>
-<td></td>
-</tr>
-<tr>
-<td><strong>清扫</strong></td>
-<td>Seiso</td>
-<td>清洁工作环境</td>
-<td></td>
-</tr>
-<tr>
-<td><strong>规范</strong></td>
-<td>Seiketsu</td>
-<td>标准化管理流程</td>
-<td></td>
-</tr>
-<tr>
-<td><strong>素养</strong></td>
-<td>Shitsuke</td>
-<td>养成良好习惯</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="2-2-5S的核心思想"><a href="#2-2-5S的核心思想" class="headerlink" title="2.2 5S的核心思想"></a>2.2 5S的核心思想</h3><ul>
-<li><strong>减少浪费</strong>：移除不需要的物品</li>
-<li><strong>提高效率</strong>：物品摆放有序，减少寻找时间</li>
-<li><strong>保持整洁</strong>：定期清理，维持良好状态</li>
-<li><strong>形成规范</strong>：建立标准，统一执行</li>
-<li><strong>养成习惯</strong>：持续改进，形成文化</li>
-</ul>
-<hr>
-<h2 id="3-MECE原则概述"><a href="#3-MECE原则概述" class="headerlink" title="3. MECE原则概述"></a>3. MECE原则概述</h2><h3 id="3-1-什么是MECE？"><a href="#3-1-什么是MECE？" class="headerlink" title="3.1 什么是MECE？"></a>3.1 什么是MECE？</h3><p>MECE（Mutually Exclusive, Collectively Exhaustive）是由芭芭拉·明托提出的金字塔原理中的一个重要原则。</p>
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。听起来不少，但实际用起来远远不够——llama.cpp 要吃掉 ~26GB 跑大语言模型，ComfyUI 要 ~7GB 跑 Stable Diffusion 出图。</p>
+<p>问题来了：<strong>两个显存大户怎么在同一台机器上和平共处？</strong></p>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><h3 id="第一版方案：3-7-分配"><a href="#第一版方案：3-7-分配" class="headerlink" title="第一版方案：3:7 分配"></a>第一版方案：3:7 分配</h3><p>最初的思路是让 ComfyUI 用 GPU0，llama.cpp 把主力放在 GPU1：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">tensor</span>-split = <span class="hljs-number">0</span>.<span class="hljs-number">3</span>,<span class="hljs-number">0</span>.<span class="hljs-number">7</span><br></code></pre></td></tr></table></figure>
+
+<p>结果翻车了。ComfyUI 不守规矩——它不仅用了 GPU0，还偷偷跑去占 GPU1。两个应用在同一张卡上抢显存，llama.cpp 的 KV Cache 一膨胀，ComfyUI 就被 OOM 杀掉。服务三天两头崩溃。</p>
+<h2 id="最终方案：两张牌解决一个问题"><a href="#最终方案：两张牌解决一个问题" class="headerlink" title="最终方案：两张牌解决一个问题"></a>最终方案：两张牌解决一个问题</h2><p>反复折腾后找到了两个关键配置：</p>
+<h3 id="第一张牌：CUDA-VISIBLE-DEVICES"><a href="#第一张牌：CUDA-VISIBLE-DEVICES" class="headerlink" title="第一张牌：CUDA_VISIBLE_DEVICES"></a>第一张牌：<code>CUDA_VISIBLE_DEVICES</code></h3><p>这是 NVIDIA 提供的环境变量，直接从操作系统层面限制应用能看到哪些 GPU。给 ComfyUI 设置 <code>CUDA_VISIBLE_DEVICES=1</code>，它就彻底看不到 GPU0 了——物理隔离，不存在抢占的可能。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># ComfyUI 的 systemd 服务</span><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=CUDA_VISIBLE_DEVICES=<span class="hljs-number">1</span><br><span class="hljs-attr">ExecStart</span>=/home/tony/comfy/ComfyUI/venv/bin/python main.py \<br>  --listen 0.0.0.0 --port 8188 --force-fp16 --cpu-vae<br></code></pre></td></tr></table></figure>
+
+<p>另外两个省钱参数也值得提一下：</p>
 <ul>
-<li><strong>Mutually Exclusive（相互独立）</strong>：分类之间没有重叠</li>
-<li><strong>Collectively Exhaustive（完全穷尽）</strong>：所有可能都被覆盖</li>
+<li><code>--force-fp16</code>：强制半精度推理，显存直接减半</li>
+<li><code>--cpu-vae</code>：VAE 编解码交给 CPU，再省 ~1GB 显存</li>
 </ul>
-<h3 id="3-2-MECE的核心思想"><a href="#3-2-MECE的核心思想" class="headerlink" title="3.2 MECE的核心思想"></a>3.2 MECE的核心思想</h3><table>
-<thead>
-<tr>
-<th>原则</th>
-<th>说明</th>
-<th>示例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>无重叠</strong></td>
-<td>每个类别之间没有交集</td>
-<td>苹果不会同时是水果和蔬菜</td>
-</tr>
-<tr>
-<td><strong>无遗漏</strong></td>
-<td>所有可能都被某个类别覆盖</td>
-<td>所有文件都属于某个分类</td>
-</tr>
-</tbody></table>
+<h3 id="第二张牌：tensor-split"><a href="#第二张牌：tensor-split" class="headerlink" title="第二张牌：tensor-split"></a>第二张牌：<code>tensor-split</code></h3><p>llama.cpp 的参数，控制模型在多 GPU 间的分配比例。设置为 <code>1.0,0.3</code>：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">GPU0</span>: <span class="hljs-number">100</span>% 分配比例 → 实际占 ~<span class="hljs-number">21</span>GB<br><span class="hljs-attribute">GPU1</span>:  <span class="hljs-number">30</span>% 分配比例 → 实际占  ~<span class="hljs-number">6</span>GB<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># llama-server 的 models.ini</span><br><span class="hljs-section">[*]</span><br><span class="hljs-attr">n-gpu-layers</span> = <span class="hljs-number">99</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">1.0</span>,<span class="hljs-number">0.3</span><br><span class="hljs-attr">main-gpu</span> = <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p><code>n-gpu-layers = 99</code> 表示把模型所有层都加载到 GPU，<code>main-gpu = 0</code> 确保主计算在 GPU0 上进行。</p>
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">┌─────────────────────────────────┐<br>│         GPU0 (<span class="hljs-number">22</span>GB)             │<br>│   <span class="hljs-keyword">llama-server </span>(<span class="hljs-number">21</span>GB)          │<br>│   · 模型权重 <span class="hljs-number">100</span>%              │<br>│   · KV <span class="hljs-keyword">Cache </span>                  │<br>│   空闲: ~<span class="hljs-number">1</span>GB                   │<br>└─────────────────────────────────┘<br><br>┌─────────────────────────────────┐<br>│         GPU1 (<span class="hljs-number">22</span>GB)             │<br>│   <span class="hljs-keyword">llama-server </span>(<span class="hljs-number">6</span>GB)           │<br>│   · 模型权重 <span class="hljs-number">30</span>%               │<br>│                                 │<br>│   ComfyUI (<span class="hljs-number">7</span>GB)                │<br>│   · SD1.<span class="hljs-number">5</span> 模型                 │<br>│   · FaceID + ControlNet        │<br>│                                 │<br>│   空闲: ~<span class="hljs-number">9</span>GB                   │<br>└─────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p>GPU1 还有 9GB 空闲，未来可以塞更多东西——比如更大的 SDXL 模型，或者再跑一个轻量级推理服务。</p>
+<h2 id="验证方法"><a href="#验证方法" class="headerlink" title="验证方法"></a>验证方法</h2><p>日常运维三板斧：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 看显存分配</span><br>nvidia-smi<br><br><span class="hljs-comment"># 看服务状态</span><br><span class="hljs-built_in">sudo</span> systemctl status llama-server<br><span class="hljs-built_in">sudo</span> systemctl status comfyui<br><br><span class="hljs-comment"># 实时监控</span><br>watch -n 1 nvidia-smi<br></code></pre></td></tr></table></figure>
+
+<h2 id="调整策略"><a href="#调整策略" class="headerlink" title="调整策略"></a>调整策略</h2><p>需求变了怎么调？改配置重启就行。</p>
+<p><strong>ComfyUI 需要更多显存</strong>（比如跑 SDXL）：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 缩减 llama.cpp 在 GPU1 的比例</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">1.0</span>,<span class="hljs-number">0.2</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>LLM 需要更大上下文</strong>（比如 512K tokens）：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">ctx-size</span> = <span class="hljs-number">524288</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">0.8</span>,<span class="hljs-number">0.4</span><br></code></pre></td></tr></table></figure>
+
+<p>注意第二种情况 ComfyUI 可能需要暂时让路，因为 GPU1 空闲空间会压缩。</p>
+<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><ol>
+<li><strong>物理隔离优于软件协调</strong>。<code>CUDA_VISIBLE_DEVICES</code> 是硬隔离，比祈祷应用自觉不越界靠谱得多。</li>
+<li><strong>先量需求再分配</strong>。用 <code>nvidia-smi</code> 记录每个应用的实际显存占用，然后留出安全余量。</li>
+<li><strong>省钱参数有用</strong>。<code>--force-fp16</code> 和 <code>--cpu-vae</code> 在 RTX 2080 Ti 上几乎不影响画质，但能省出宝贵的显存。</li>
+<li><strong>记录配置</strong>。<code>tensor-split</code> 的值调过就忘，一定要在配置文件里写注释说明为什么这么选。</li>
+</ol>
 <hr>
-<h2 id="4-我们的应用实践"><a href="#4-我们的应用实践" class="headerlink" title="4. 我们的应用实践"></a>4. 我们的应用实践</h2><h3 id="4-1-整理（Seiri）-区分文件"><a href="#4-1-整理（Seiri）-区分文件" class="headerlink" title="4.1 整理（Seiri）- 区分文件"></a>4.1 整理（Seiri）- 区分文件</h3><p><strong>问题</strong>：存在重复或无关的文件</p>
-<p><strong>我们的做法</strong>：</p>
-<ul>
-<li>检查嵌套目录（如 <code>blog/blog/</code>）</li>
-<li>识别重复文件</li>
-<li>移除不必要的文件</li>
-</ul>
-<p><strong>成果</strong>：</p>
-<ul>
-<li>清理了嵌套目录 <code>blog/blog/</code></li>
-<li>移除了冗余的虚拟环境（节省 558MB）</li>
-</ul>
-<h3 id="4-2-整顿（Seiton）-摆放有序"><a href="#4-2-整顿（Seiton）-摆放有序" class="headerlink" title="4.2 整顿（Seiton）- 摆放有序"></a>4.2 整顿（Seiton）- 摆放有序</h3><p><strong>问题</strong>：文件摆放混乱，难以查找</p>
-<p><strong>我们的做法</strong>：</p>
-<ul>
-<li>统一资源目录位置</li>
-<li>标准化文件命名规则</li>
-<li>建立目录结构规范</li>
-</ul>
-<p><strong>成果</strong>：</p>
-<ul>
-<li>资源文件统一到 <code>source/</code> 目录</li>
-<li>文件命名使用统一的分隔符（<code>_</code> 和 <code>-</code>）</li>
-</ul>
-<h3 id="4-3-清扫（Seiso）-清洁环境"><a href="#4-3-清扫（Seiso）-清洁环境" class="headerlink" title="4.3 清扫（Seiso）- 清洁环境"></a>4.3 清扫（Seiso）- 清洁环境</h3><p><strong>问题</strong>：存在过期或无用的文件</p>
-<p><strong>我们的做法</strong>：</p>
-<ul>
-<li>清理过期的日志文件</li>
-<li>删除未使用的临时文件</li>
-<li>清理冗余的备份</li>
-</ul>
-<p><strong>成果</strong>：</p>
-<ul>
-<li>清理了 3 个冗余虚拟环境</li>
-<li>清理了嵌套的博客目录</li>
-</ul>
-<h3 id="4-4-规范（Seiketsu）-标准流程"><a href="#4-4-规范（Seiketsu）-标准流程" class="headerlink" title="4.4 规范（Seiketsu）- 标准流程"></a>4.4 规范（Seiketsu）- 标准流程</h3><p><strong>问题</strong>：缺乏统一的文件管理规范</p>
-<p><strong>我们的做法</strong>：</p>
-<ul>
-<li>编写SOP（标准操作程序）</li>
-<li>建立文件命名规范</li>
-<li>制定分类标准</li>
-</ul>
-<p><strong>成果</strong>：</p>
-<ul>
-<li>创建了 3 个SOP文档</li>
-<li>建立了文件命名规则（下划线 <code>_</code> vs 减号 <code>-</code>）</li>
-</ul>
-<h3 id="4-5-素养（Shitsuke）-养成习惯"><a href="#4-5-素养（Shitsuke）-养成习惯" class="headerlink" title="4.5 素养（Shitsuke）- 养成习惯"></a>4.5 素养（Shitsuke）- 养成习惯</h3><p><strong>问题</strong>：不规范的行为重复出现</p>
-<p><strong>我们的做法</strong>：</p>
-<ul>
-<li>建立记忆规则</li>
-<li>创建检查清单</li>
-<li>持续改进优化</li>
-</ul>
-<p><strong>成果</strong>：</p>
-<ul>
-<li>创建了SOP执行规则</li>
-<li>建立了SOP索引清单</li>
-<li>每次工作前检查MEMORY.md</li>
-</ul>
-<hr>
-<h2 id="5-文件分类实践（MECE）"><a href="#5-文件分类实践（MECE）" class="headerlink" title="5. 文件分类实践（MECE）"></a>5. 文件分类实践（MECE）</h2><h3 id="5-1-分类方法"><a href="#5-1-分类方法" class="headerlink" title="5.1 分类方法"></a>5.1 分类方法</h3><p>我们使用MECE原则对文件进行分类：</p>
-<p><strong>文件类型分类</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>分类</th>
-<th>说明</th>
-<th>示例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>核心文件</strong></td>
-<td>最重要的文件</td>
-<td>SOUL.md, USER.md, AGENTS.md</td>
-</tr>
-<tr>
-<td><strong>工作文件</strong></td>
-<td>日常工作相关</td>
-<td>memory&#x2F;, scripts&#x2F;</td>
-</tr>
-<tr>
-<td><strong>技能文件</strong></td>
-<td>工具和技能</td>
-<td>skills&#x2F;, extensions&#x2F;</td>
-</tr>
-<tr>
-<td><strong>归档文件</strong></td>
-<td>历史版本</td>
-<td>memory&#x2F;archive&#x2F;</td>
-</tr>
-</tbody></table>
-<p><strong>目录结构MECE检查</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>目录</th>
-<th>包含内容</th>
-<th>不包含</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>memory/</code></td>
-<td>当天工作日志</td>
-<td>归档文件</td>
-</tr>
-<tr>
-<td><code>memory/work_instruction/</code></td>
-<td>工作指导书</td>
-<td>普通文档</td>
-</tr>
-<tr>
-<td><code>memory/rules/</code></td>
-<td>规则文件</td>
-<td>SOP文件</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="6-文件命名规范"><a href="#6-文件命名规范" class="headerlink" title="6. 文件命名规范"></a>6. 文件命名规范</h2><h3 id="6-1-命名规则"><a href="#6-1-命名规则" class="headerlink" title="6.1 命名规则"></a>6.1 命名规则</h3><p>我们建立了统一的文件命名规范：</p>
-<table>
-<thead>
-<tr>
-<th>规则</th>
-<th>说明</th>
-<th>示例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>字段分隔符 <code>_</code></strong></td>
-<td>分隔不同字段</td>
-<td><code>2026-03-08_SOP_001</code></td>
-</tr>
-<tr>
-<td><strong>连字符 <code>-</code></strong></td>
-<td>连接同一字段内的词</td>
-<td><code>hexo-blog-publish</code></td>
-</tr>
-<tr>
-<td><strong>日期格式</strong></td>
-<td>8位日期</td>
-<td><code>20260308</code></td>
-</tr>
-</tbody></table>
-<h3 id="6-2-命名示例"><a href="#6-2-命名示例" class="headerlink" title="6.2 命名示例"></a>6.2 命名示例</h3><table>
-<thead>
-<tr>
-<th>文件类型</th>
-<th>格式</th>
-<th>示例</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>SOP文件</strong></td>
-<td><code>YYYY-MM-DD_SOP_XXX_[描述].md</code></td>
-<td><code>2026-03-08_SOP_001_hexo-publish.md</code></td>
-</tr>
-<tr>
-<td><strong>规则文件</strong></td>
-<td><code>YYYY-MM-DD_Rule-[描述].md</code></td>
-<td><code>2026-03-08_Rule-SOP执行.md</code></td>
-</tr>
-<tr>
-<td><strong>日常日志</strong></td>
-<td><code>YYYY-MM-DD.md</code></td>
-<td><code>2026-03-08.md</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="7-成果总结"><a href="#7-成果总结" class="headerlink" title="7. 成果总结"></a>7. 成果总结</h2><h3 id="7-1-量化成果"><a href="#7-1-量化成果" class="headerlink" title="7.1 量化成果"></a>7.1 量化成果</h3><table>
-<thead>
-<tr>
-<th>指标</th>
-<th>改善前</th>
-<th>改善后</th>
-<th>提升</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>虚拟环境数量</strong></td>
-<td>4个</td>
-<td>1个</td>
-<td>75%减少</td>
-</tr>
-<tr>
-<td><strong>磁盘空间</strong></td>
-<td>多余558MB</td>
-<td>节省558MB</td>
-<td>100%清理</td>
-</tr>
-<tr>
-<td><strong>SOP文档</strong></td>
-<td>0个</td>
-<td>3个</td>
-<td>从无到有</td>
-</tr>
-<tr>
-<td><strong>规则文件</strong></td>
-<td>0个</td>
-<td>3个</td>
-<td>从无到有</td>
-</tr>
-</tbody></table>
-<h3 id="7-2-质量成果"><a href="#7-2-质量成果" class="headerlink" title="7.2 质量成果"></a>7.2 质量成果</h3><table>
-<thead>
-<tr>
-<th>方面</th>
-<th>改善</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>文件查找</strong></td>
-<td>从 minutes 级到 seconds 级</td>
-</tr>
-<tr>
-<td><strong>工作流程</strong></td>
-<td>从随意到标准化</td>
-</tr>
-<tr>
-<td><strong>知识传承</strong></td>
-<td>从口口相传到文档化</td>
-</tr>
-<tr>
-<td><strong>持续改进</strong></td>
-<td>从被动到主动</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="8-持续改进"><a href="#8-持续改进" class="headerlink" title="8. 持续改进"></a>8. 持续改进</h2><h3 id="8-1-下一步计划"><a href="#8-1-下一步计划" class="headerlink" title="8.1 下一步计划"></a>8.1 下一步计划</h3><table>
-<thead>
-<tr>
-<th>任务</th>
-<th>优先级</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>自动化发布</strong></td>
-<td>高</td>
-<td>使用GitHub Actions</td>
-</tr>
-<tr>
-<td><strong>定期清理</strong></td>
-<td>中</td>
-<td>每周检查冗余文件</td>
-</tr>
-<tr>
-<td><strong>文档更新</strong></td>
-<td>中</td>
-<td>保持SOP最新</td>
-</tr>
-</tbody></table>
-<h3 id="8-2-改进循环"><a href="#8-2-改进循环" class="headerlink" title="8.2 改进循环"></a>8.2 改进循环</h3><table>
-<thead>
-<tr>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3</code></td>
-</tr>
-<tr>
-<td>↑ ↓</td>
-</tr>
-<tr>
-<td>←————————————–←</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="9-总结"><a href="#9-总结" class="headerlink" title="9. 总结"></a>9. 总结</h2><p>通过5S方法和MECE原则的应用，我们成功建立了规范的文件管理体系：</p>
-<ul>
-<li>✅ <strong>整理</strong>：清理了重复和无关文件</li>
-<li>✅ <strong>整顿</strong>：建立了统一的文件摆放规范</li>
-<li>✅ <strong>清扫</strong>：清理了冗余环境，节省了空间</li>
-<li>✅ <strong>规范</strong>：建立了SOP和命名规范</li>
-<li>✅ <strong>素养</strong>：养成了按规范执行的习惯</li>
-</ul>
-<p>这些方法不仅适用于文件整理，也可以应用到工作流程优化、知识管理等其他领域。</p>
-<hr>
-<h2 id="10-参考资料"><a href="#10-参考资料" class="headerlink" title="10. 参考资料"></a>10. 参考资料</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/5S">5S方法论 - Wikipedia</a></li>
-<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/MECE_principle">MECE原则 - Wikipedia</a></li>
-<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/The_Minatour">金字塔原理 - 芭芭拉·明托</a></li>
-</ul>
-<hr>
-<p><strong>维护记录</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>日期</th>
-<th>版本</th>
-<th>变更内容</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>2026-03-08</td>
-<td>1.0</td>
-<td>初始版本，介绍5S和MECE方法在文件整理中的应用</td>
-</tr>
-</tbody></table>
-<hr>
-<p><a href="/categories/%E6%96%B9%E6%B3%95%E8%AE%BA/">方法论</a> <a href="/tags/5S/">#5S</a> <a href="/tags/MECE/">#MECE</a> <a href="/tags/%E6%96%87%E4%BB%B6%E6%95%B4%E7%90%86/">#文件整理</a> <a href="/tags/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">#经验分享</a></p>
-<p>5S和MECE方法在文件整理中的应用实践</p>
-<p><a href="https://www.normdist.com/2026/03/08/ND-20260308-001-5s-mece-file-organization/">https://www.normdist.com/2026/03/08/ND-20260308-001-5s-mece-file-organization/</a></p>
-<p>作者</p>
-<p>小瑞</p>
-<p>发布于</p>
-<p>2026年3月8日</p>
-<p>许可协议</p>
-<p><a href="/2026/03/08/ND-20260308-002-mermaid-chart-guide/" title="Mermaid 图表全攻略：哪个客户端最懂你？">Mermaid 图表全攻略：哪个客户端最懂你？ 上一篇</a> <a href="/2026/03/08/ND-20260308-003-openclaw-2026-3-release/" title="OpenClaw 2026.3 发布：AI 代理能力再升级">OpenClaw 2026.3 发布：AI 代理能力再升级 下一篇</a></p>
-<h4 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h4>
+<p>在这个 AI 应用百花齐放的时代，显存永远不够用。合理的分配策略能让有限的硬件发挥最大价值——毕竟不是谁都有 8×A100 的豪华配置。</p>
+
                 
               </div>
             
@@ -838,7 +491,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  <a href="/categories/AI%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD/" class="category-chain-item">AI基础设施</a>
   
   
 
@@ -853,11 +506,15 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/5S/" class="print-no-link">#5S</a>
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
       
-        <a href="/tags/MECE/" class="print-no-link">#MECE</a>
+        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
       
-        <a href="/tags/%E6%96%87%E4%BB%B6%E6%95%B4%E7%90%86/" class="print-no-link">#文件整理</a>
+        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
+      
+        <a href="/tags/%E6%98%BE%E5%AD%98%E7%AE%A1%E7%90%86/" class="print-no-link">#显存管理</a>
+      
+        <a href="/tags/%E5%A4%9AGPU/" class="print-no-link">#多GPU</a>
       
     </div>
   
@@ -869,8 +526,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>5S和MECE方法在文件整理中的应用实践</div>
-      <div>https://www.normdist.com/2026/03/08/ND-20260308-001-5s-mece-file-organization/</div>
+      <div>双卡 GPU 显存分配策略——让 llama.cpp 和 ComfyUI 稳定共存</div>
+      <div>https://www.normdist.com/2026/05/30/ND-20260530-001-gpu-allocation/</div>
     </div>
     <div class="license-meta">
       
@@ -882,7 +539,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月8日</div>
+          <div>2026年5月30日</div>
         </div>
       
       
@@ -914,18 +571,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/08/ND-20260308-003-openclaw-2026-3-release/" title="OpenClaw2026.3 发布：AI代理能力再升级">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">OpenClaw2026.3 发布：AI代理能力再升级</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/05/24/AutoQuant-%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5-2025-05-24/" title="AutoQuant 开发周报 - 2025/05/24">
-                        <span class="hidden-mobile">AutoQuant 开发周报 - 2025/05/24</span>
+                      <a href="/2026/05/27/ND-20260527-005-comfyui-gpu-config/" title="ComfyUI指定GPU出图配置指南">
+                        <span class="hidden-mobile">ComfyUI指定GPU出图配置指南</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
