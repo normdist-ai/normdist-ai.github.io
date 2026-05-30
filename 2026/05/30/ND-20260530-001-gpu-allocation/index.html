@@ -27,7 +27,7 @@
 <meta property="og:description" content="背景手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。一开始用 LM Studio 跑大语言模型，LM Studio 默认把模型均匀摊到两张卡上。 问题很快暴露了——均匀分配意味着两张卡的剩余显存都不多。ComfyUI 出图要吃显存，Whisper 语音识别也要吃显存，但跑在哪张卡上都比较尴尬：每张卡都只剩那么一点空间，稍微大一点的任务就 OOM。 于">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-30T06:22:00.000Z">
-<meta property="article:modified_time" content="2026-05-30T06:54:53.056Z">
+<meta property="article:modified_time" content="2026-05-30T07:42:19.951Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="GPU">
 <meta property="article:tag" content="ComfyUI">
@@ -358,7 +358,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.1k 字
+          2k 字
         
       </span>
     
@@ -369,7 +369,7 @@
         
         
         
-          18 分钟
+          17 分钟
         
       </span>
     
@@ -444,12 +444,11 @@
 </ol>
 <h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p>反复折腾后，找到了两个关键配置：</p>
 <h3 id="第一张牌：CUDA-VISIBLE-DEVICES"><a href="#第一张牌：CUDA-VISIBLE-DEVICES" class="headerlink" title="第一张牌：CUDA_VISIBLE_DEVICES"></a>第一张牌：<code>CUDA_VISIBLE_DEVICES</code></h3><p>这是 NVIDIA 提供的环境变量，直接从操作系统层面限制应用能看到哪些 GPU。给 ComfyUI 设置 <code>CUDA_VISIBLE_DEVICES=1</code>，它就彻底看不到 GPU0 了——物理隔离，不存在抢占的可能。</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># ComfyUI 的 systemd 服务</span><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=CUDA_VISIBLE_DEVICES=<span class="hljs-number">1</span><br><span class="hljs-attr">ExecStart</span>=/home/tony/comfy/ComfyUI/venv/bin/python main.py \<br>  --listen 0.0.0.0 --port 8188 --force-fp16 --cpu-vae<br></code></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># ComfyUI 的 systemd 服务</span><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=CUDA_VISIBLE_DEVICES=<span class="hljs-number">1</span><br><span class="hljs-attr">ExecStart</span>=/home/tony/comfy/ComfyUI/venv/bin/python main.py \<br>  --listen 0.0.0.0 --port 8188 --force-fp16<br></code></pre></td></tr></table></figure>
 
-<p>另外两个省钱参数也值得提一下：</p>
+<p>另外还有个省钱参数：</p>
 <ul>
 <li><code>--force-fp16</code>：强制半精度推理，显存直接减半</li>
-<li><code>--cpu-vae</code>：VAE 编解码交给 CPU，再省 ~1GB 显存</li>
 </ul>
 <h3 id="第二张牌：tensor-split"><a href="#第二张牌：tensor-split" class="headerlink" title="第二张牌：tensor-split"></a>第二张牌：<code>tensor-split</code></h3><p>llama.cpp 的参数，控制模型在多 GPU 间的分配比例。设置为 <code>1.0,0.3</code>：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">GPU0</span>: <span class="hljs-number">100</span>% 分配比例 → 实际占 ~<span class="hljs-number">21</span>GB<br><span class="hljs-attribute">GPU1</span>:  <span class="hljs-number">30</span>% 分配比例 → 实际占  ~<span class="hljs-number">6</span>GB<br></code></pre></td></tr></table></figure>
@@ -475,7 +474,7 @@
 <li><strong>均匀分配不一定是最优解</strong>。两张卡平均分听起来公平，但会导致每张卡都剩不多，其他应用无处安放。</li>
 <li><strong>工具选型很关键</strong>。LM Studio 方便但没有显存分配功能；llama.cpp 的 <code>tensor-split</code> 正好解决了这个问题。</li>
 <li><strong>物理隔离优于软件协调</strong>。<code>CUDA_VISIBLE_DEVICES</code> 是硬隔离，比祈祷应用自觉不越界靠谱得多。</li>
-<li><strong>省钱参数有用</strong>。<code>--force-fp16</code> 和 <code>--cpu-vae</code> 在 RTX 2080 Ti 上几乎不影响画质，但能省出宝贵的显存。</li>
+<li><strong>省钱参数有用</strong>。<code>--force-fp16</code> 在 RTX 2080 Ti 上几乎不影响画质，但能省出宝贵的显存。</li>
 </ol>
 <hr>
 <p>在这个 AI 应用百花齐放的时代，显存永远不够用。合理的分配策略能让有限的硬件发挥最大价值——毕竟不是谁都有 8×A100 的豪华配置。</p>
