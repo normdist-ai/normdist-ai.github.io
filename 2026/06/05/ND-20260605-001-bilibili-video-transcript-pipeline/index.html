@@ -19,15 +19,15 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="用B站API + faster-whisper + GPU远程调用，构建三级降级的视频内容提取流水线。不依赖第三方字幕API，从零到跑通只用了一个下午。">
+    <meta name="description" content="需要自动提取B站视频的语音内容做摘要，但没有现成工具。参照已有的YouTube视频解读方案，用B站API + faster-whisper + GPU远程调用，从零构建了一条三级降级的提取流水线。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="B站视频自动解读：三级降级的内容提取流水线">
+<meta property="og:title" content="从零打造B站视频自动解读：一条三级降级的内容提取流水线">
 <meta property="og:url" content="https://www.normdist.com/2026/06/05/ND-20260605-001-bilibili-video-transcript-pipeline/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="用B站API + faster-whisper + GPU远程调用，构建三级降级的视频内容提取流水线。不依赖第三方字幕API，从零到跑通只用了一个下午。">
+<meta property="og:description" content="需要自动提取B站视频的语音内容做摘要，但没有现成工具。参照已有的YouTube视频解读方案，用B站API + faster-whisper + GPU远程调用，从零构建了一条三级降级的提取流水线。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-05T11:05:00.000Z">
-<meta property="article:modified_time" content="2026-06-05T11:12:49.995Z">
+<meta property="article:modified_time" content="2026-06-05T11:19:37.725Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="bilibili">
 <meta property="article:tag" content="whisper">
@@ -40,7 +40,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>B站视频自动解读：三级降级的内容提取流水线 - 进化概率论</title>
+  <title>从零打造B站视频自动解读：一条三级降级的内容提取流水线 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -335,7 +335,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">B站视频自动解读：三级降级的内容提取流水线</span>
+            <span id="subtitle">从零打造B站视频自动解读：一条三级降级的内容提取流水线</span>
           
         </div>
 
@@ -358,7 +358,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.1k 字
+          5.7k 字
         
       </span>
     
@@ -369,7 +369,7 @@
         
         
         
-          43 分钟
+          48 分钟
         
       </span>
     
@@ -417,7 +417,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">B站视频自动解读：三级降级的内容提取流水线</h1>
+            <h1 id="seo-header">从零打造B站视频自动解读：一条三级降级的内容提取流水线</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
@@ -430,43 +430,60 @@
             
               <div class="markdown-body">
                 
-                <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>自动提取B站视频的语音内容，生成文本摘要。</p>
-<p>核心矛盾：B站视频<strong>有字幕的不到一半</strong>，大部分视频只能靠音频转写。所以需要一条能自动降级的流水线——有字幕就拿字幕，没有就下载音频做 Whisper 转写，最后兜底拿元信息。</p>
-<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs mathematica">┌──────────────────────────────────────────────────────┐<br>│                   三级降级策略                          │<br>│                                                      │<br>│  <span class="hljs-built_in">Level</span> <span class="hljs-number">1</span><span class="hljs-operator">:</span> <span class="hljs-variable">B</span>站字幕 <span class="hljs-variable">API</span> ──→ 有字幕？直接拿（秒级）       │<br>│       ↓ 没有                                          │<br>│  <span class="hljs-built_in">Level</span> <span class="hljs-number">2</span><span class="hljs-operator">:</span> 音频下载 <span class="hljs-operator">+</span> <span class="hljs-variable">Whisper</span> <span class="hljs-variable">GPU</span> 转写（分钟级）        │<br>│       ↓ 失败                                          │<br>│  <span class="hljs-built_in">Level</span> <span class="hljs-number">3</span><span class="hljs-operator">:</span> 标题 <span class="hljs-operator">+</span> 简介 <span class="hljs-operator">+</span> 元信息兜底                     │<br>└──────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+                <h2 id="需求来了"><a href="#需求来了" class="headerlink" title="需求来了"></a>需求来了</h2><p>故事的起点很普通：有个AI助手需要帮用户分析B站视频内容，给个文字摘要就行。</p>
+<p>看起来不难——YouTube那边已经有现成的技能了，能搜视频、提字幕、出摘要，跑得很稳。但B站完全是另一回事：API不一样、反爬不一样、生态也不一样。</p>
+<p>YouTube的技能架构能不能复用？能，但得重写数据层。</p>
+<h2 id="先想清楚再动手"><a href="#先想清楚再动手" class="headerlink" title="先想清楚再动手"></a>先想清楚再动手</h2><p>分析了一下B站视频的内容获取路径，发现就三条路：</p>
+<ol>
+<li><strong>字幕API</strong> — B站部分视频有字幕（UP主上传或AI生成），通过API可以直接拿到，秒级响应</li>
+<li><strong>音频转写</strong> — 下载视频音轨，用Whisper做语音识别，分钟级响应</li>
+<li><strong>纯元信息</strong> — 标题、简介、弹幕热词，勉强能猜个大概</li>
+</ol>
+<p>关键数据：<strong>B站视频有字幕的不超过一半</strong>。也就是说，如果只走字幕API，一大半视频直接歇菜。</p>
+<p>所以方案很自然——<strong>三级降级</strong>：先试字幕，没有就转写，转写也不行就只拿元信息。总有一条路能走通。</p>
+<h2 id="架构：两台机器，三级降级"><a href="#架构：两台机器，三级降级" class="headerlink" title="架构：两台机器，三级降级"></a>架构：两台机器，三级降级</h2><p>手边有两台机器：一台日常用的小主机，一台带双GPU的推理服务器。音频下载在小主机完成，Whisper推理必须走GPU服务器——因为小主机没有CUDA。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">小主机                               GPU 服务器<br>┌─────────────────┐                 ┌─────────────────┐<br>│ Level <span class="hljs-number">1</span>: 字幕API│──→ 有？直接返回  │                 │<br>│       ↓ 没有    │                 │                 │<br>│ <span class="hljs-keyword">B站 </span>playurl API │                 │                 │<br>│  ↓ 获取音频流URL │                 │                 │<br>│ ffmpeg 下载 WAV  │ ─── <span class="hljs-keyword">SCP </span>──→   │ faster-whisper  │<br>│                 │                 │  (GPU <span class="hljs-number">1</span>)        │<br>│                 │ ←─ SSH stdout ─│ 转写结果(<span class="hljs-keyword">JSON) </span>  │<br>└─────────────────┘                 └─────────────────┘<br></code></pre></td></tr></table></figure>
 
-<p>硬件分工：音频下载在本地完成，Whisper 推理走远程 GPU 服务器（通过 SSH + SCP 联动）。</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">本地机器                              GPU 服务器 (双 <span class="hljs-number">2080</span>Ti)<br>┌─────────────────┐                  ┌─────────────────┐<br>│ <span class="hljs-keyword">B站 </span>playurl API │                  │ faster-whisper  │<br>│  ↓ 获取音频流URL │                  │  (GPU <span class="hljs-number">1</span>)        │<br>│ ffmpeg 下载 WAV  │ ── <span class="hljs-keyword">SCP </span>──→     │  ↓ Whisper转写   │<br>│                 │ ←─ SSH stdout ──│  <span class="hljs-keyword">JSON </span>结果       │<br>└─────────────────┘                  └─────────────────┘<br></code></pre></td></tr></table></figure>
-
-<p>GPU 0 跑着 ComfyUI，Whisper 必须用 GPU 1。medium 模型只需约 400MB 显存，GPU 1 的 18GB 空间绰绰有余。</p>
-<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="1-yt-dlp-被-B站-412-反爬"><a href="#1-yt-dlp-被-B站-412-反爬" class="headerlink" title="1. yt-dlp 被 B站 412 反爬"></a>1. yt-dlp 被 B站 412 反爬</h3><p>第一反应是用 yt-dlp 下载B站音频：</p>
+<p>这里有个细节：GPU 0 上跑着ComfyUI（图片生成服务），不能抢显存。好在GPU 1还有18GB空闲，Whisper medium模型只需要约400MB，完全够用。两块GPU各干各的，互不干扰。</p>
+<h2 id="开始踩坑"><a href="#开始踩坑" class="headerlink" title="开始踩坑"></a>开始踩坑</h2><h3 id="坑1：yt-dlp被B站412反爬封杀"><a href="#坑1：yt-dlp被B站412反爬封杀" class="headerlink" title="坑1：yt-dlp被B站412反爬封杀"></a>坑1：yt-dlp被B站412反爬封杀</h3><p>第一反应是用yt-dlp下载B站音频——这东西号称支持上千个网站，一行命令搞定。</p>
+<p>结果：</p>
 <figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs subunit"><span class="hljs-keyword">ERROR: </span>[BiliBili] xxx: HTTP Error 412: Precondition Failed<br></code></pre></td></tr></table></figure>
 
-<p>B站的反爬策略升级频繁，yt-dlp 的 bilibili extractor 经常失效。</p>
-<p><strong>解法：</strong> 绕过 yt-dlp，直接调 B站 playurl API 拿 DASH 格式的音视频流 URL，然后用 ffmpeg 下载音频流：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests, subprocess<br><br><span class="hljs-comment"># playurl API 返回 DASH 格式——音频和视频是分离的流</span><br>params = &#123;<br>    <span class="hljs-string">&#x27;avid&#x27;</span>: avid,<br>    <span class="hljs-string">&#x27;cid&#x27;</span>: cid,<br>    <span class="hljs-string">&#x27;qn&#x27;</span>: <span class="hljs-number">64</span>,<br>    <span class="hljs-string">&#x27;fnval&#x27;</span>: <span class="hljs-number">16</span>,   <span class="hljs-comment"># 请求 DASH 格式</span><br>    <span class="hljs-string">&#x27;fourk&#x27;</span>: <span class="hljs-number">1</span><br>&#125;<br>resp = requests.get(<br>    <span class="hljs-string">&quot;https://api.bilibili.com/x/player/playurl&quot;</span>,<br>    params=params,<br>    headers=&#123;<span class="hljs-string">&quot;User-Agent&quot;</span>: <span class="hljs-string">&quot;Mozilla/5.0 ...&quot;</span>&#125;<br>)<br>data = resp.json()<br><br><span class="hljs-comment"># 提取 AAC 音频流</span><br>audio_url = <span class="hljs-literal">None</span><br><span class="hljs-keyword">for</span> audio <span class="hljs-keyword">in</span> data[<span class="hljs-string">&#x27;data&#x27;</span>][<span class="hljs-string">&#x27;dash&#x27;</span>][<span class="hljs-string">&#x27;audio&#x27;</span>]:<br>    <span class="hljs-keyword">if</span> audio.get(<span class="hljs-string">&#x27;codecid&#x27;</span>) == <span class="hljs-number">0</span>:<br>        audio_url = audio[<span class="hljs-string">&#x27;baseUrl&#x27;</span>]<br>        <span class="hljs-keyword">break</span><br><br><span class="hljs-comment"># ffmpeg 下载为 WAV</span><br>subprocess.run([<br>    <span class="hljs-string">&#x27;ffmpeg&#x27;</span>, <span class="hljs-string">&#x27;-y&#x27;</span>,<br>    <span class="hljs-string">&#x27;-headers&#x27;</span>, <span class="hljs-string">f&#x27;User-Agent: Mozilla/5.0 ...&#x27;</span>,<br>    <span class="hljs-string">&#x27;-i&#x27;</span>, audio_url,<br>    <span class="hljs-string">&#x27;-vn&#x27;</span>, <span class="hljs-string">&#x27;-acodec&#x27;</span>, <span class="hljs-string">&#x27;pcm_s16le&#x27;</span>,<br>    <span class="hljs-string">&#x27;-ar&#x27;</span>, <span class="hljs-string">&#x27;16000&#x27;</span>, <span class="hljs-string">&#x27;-ac&#x27;</span>, <span class="hljs-string">&#x27;1&#x27;</span>,<br>    output_path<br>], capture_output=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+<p>直接被拦。B站的反爬策略升级非常频繁，yt-dlp社区在追赶，但2026年的B站明显跑在前面。</p>
+<p><strong>那就绕过yt-dlp。</strong></p>
+<p>B站的在线播放器本身就需要获取音视频流——它用的是playurl API，返回DASH格式（音频和视频分离）。既然播放器能用，我们也能用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests, subprocess<br><br><span class="hljs-comment"># 请求DASH格式——音频视频分离</span><br>params = &#123;<br>    <span class="hljs-string">&#x27;avid&#x27;</span>: avid,<br>    <span class="hljs-string">&#x27;cid&#x27;</span>: cid,<br>    <span class="hljs-string">&#x27;qn&#x27;</span>: <span class="hljs-number">64</span>,<br>    <span class="hljs-string">&#x27;fnval&#x27;</span>: <span class="hljs-number">16</span>,   <span class="hljs-comment"># 关键：请求DASH格式</span><br>    <span class="hljs-string">&#x27;fourk&#x27;</span>: <span class="hljs-number">1</span><br>&#125;<br>resp = requests.get(<br>    <span class="hljs-string">&quot;https://api.bilibili.com/x/player/playurl&quot;</span>,<br>    params=params,<br>    headers=&#123;<span class="hljs-string">&quot;User-Agent&quot;</span>: <span class="hljs-string">&quot;Mozilla/5.0 ...&quot;</span>&#125;<br>)<br>data = resp.json()<br><br><span class="hljs-comment"># DASH格式下，音频是独立的流</span><br>audio_url = <span class="hljs-literal">None</span><br><span class="hljs-keyword">for</span> audio <span class="hljs-keyword">in</span> data[<span class="hljs-string">&#x27;data&#x27;</span>][<span class="hljs-string">&#x27;dash&#x27;</span>][<span class="hljs-string">&#x27;audio&#x27;</span>]:<br>    <span class="hljs-keyword">if</span> audio.get(<span class="hljs-string">&#x27;codecid&#x27;</span>) == <span class="hljs-number">0</span>:  <span class="hljs-comment"># AAC编码</span><br>        audio_url = audio[<span class="hljs-string">&#x27;baseUrl&#x27;</span>]<br>        <span class="hljs-keyword">break</span><br><br><span class="hljs-comment"># ffmpeg直接下载音频流，转成Whisper喜欢的WAV格式</span><br>subprocess.run([<br>    <span class="hljs-string">&#x27;ffmpeg&#x27;</span>, <span class="hljs-string">&#x27;-y&#x27;</span>,<br>    <span class="hljs-string">&#x27;-headers&#x27;</span>, <span class="hljs-string">&#x27;User-Agent: Mozilla/5.0 ...&#x27;</span>,<br>    <span class="hljs-string">&#x27;-i&#x27;</span>, audio_url,<br>    <span class="hljs-string">&#x27;-vn&#x27;</span>, <span class="hljs-string">&#x27;-acodec&#x27;</span>, <span class="hljs-string">&#x27;pcm_s16le&#x27;</span>,<br>    <span class="hljs-string">&#x27;-ar&#x27;</span>, <span class="hljs-string">&#x27;16000&#x27;</span>, <span class="hljs-string">&#x27;-ac&#x27;</span>, <span class="hljs-string">&#x27;1&#x27;</span>,  <span class="hljs-comment"># 16kHz单声道，Whisper最佳输入</span><br>    output_path<br>], capture_output=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
 
-<p>这个 API 是 B站播放器自己用的，比 yt-dlp 稳定得多。</p>
-<h3 id="2-HuggingFace-模型下载被限速"><a href="#2-HuggingFace-模型下载被限速" class="headerlink" title="2. HuggingFace 模型下载被限速"></a>2. HuggingFace 模型下载被限速</h3><p>国内直连 HuggingFace 下载 faster-whisper-large-v3（3GB）基本不可能。hf-mirror 也时灵不灵。</p>
-<p><strong>解法：</strong> aria2c 多线程下载：</p>
+<p>这一招比yt-dlp还稳——毕竟用的是B站播放器自己的API。</p>
+<h3 id="坑2：Whisper模型下载被限速"><a href="#坑2：Whisper模型下载被限速" class="headerlink" title="坑2：Whisper模型下载被限速"></a>坑2：Whisper模型下载被限速</h3><p>GPU服务器在国内，直连HuggingFace下载faster-whisper-large-v3（3GB）基本不可能。hf-mirror有时能用有时不能。</p>
+<p><strong>解法：</strong> aria2c多线程下载，<code>-x 16 -s 16</code>把连接数拉满，配合hf-mirror：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">aria2c -x 16 -s 16 \<br>  <span class="hljs-string">&quot;https://hf-mirror.com/Systran/faster-whisper-large-v3/resolve/main/model.bin&quot;</span> \<br>  -d /path/to/model/dir/<br></code></pre></td></tr></table></figure>
 
-<h3 id="3-ctranslate2-加载报-“construction-from-null”"><a href="#3-ctranslate2-加载报-“construction-from-null”" class="headerlink" title="3. ctranslate2 加载报 “construction from null”"></a>3. ctranslate2 加载报 “construction from null”</h3><p>large-v3 的 model.bin 下载完了（3.09GB），但加载时报：</p>
+<p>最后3GB的文件下了大概十分钟，还算能接受。</p>
+<h3 id="坑3：模型加载报”construction-from-null”"><a href="#坑3：模型加载报”construction-from-null”" class="headerlink" title="坑3：模型加载报”construction from null”"></a>坑3：模型加载报”construction from null”</h3><p>large-v3的model.bin下载完了（3.09GB），信心满满地加载，结果：</p>
 <figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">RuntimeError: basic_string: construction <span class="hljs-keyword">from</span> <span class="hljs-keyword">null</span> <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">valid</span><br></code></pre></td></tr></table></figure>
 
-<p>原因：手动下载的 model.bin 和 HF cache 里的配置文件不匹配。base 模型用 <code>vocabulary.txt</code>，large-v3 用 <code>vocabulary.json</code>，混着用就会出这个问题。</p>
-<p><strong>临时方案：</strong> 用 medium 模型（通过 HF hub 自动下载，文件结构完整）。中文识别率已经够用，后续再排查 large-v3。</p>
-<h3 id="4-faster-whisper-的-GPU-选择"><a href="#4-faster-whisper-的-GPU-选择" class="headerlink" title="4. faster-whisper 的 GPU 选择"></a>4. faster-whisper 的 GPU 选择</h3><p>直接传 <code>device=&quot;cuda:1&quot;</code> 给 WhisperModel 会报错。</p>
-<p><strong>正确写法</strong>——<code>device</code> 和 <code>device_index</code> 是两个独立参数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> faster_whisper <span class="hljs-keyword">import</span> WhisperModel<br><br>model = WhisperModel(<br>    <span class="hljs-string">&quot;medium&quot;</span>,<br>    device=<span class="hljs-string">&quot;cuda&quot;</span>,<br>    device_index=<span class="hljs-number">1</span>,          <span class="hljs-comment"># GPU 索引，独立参数</span><br>    compute_type=<span class="hljs-string">&quot;int8_float16&quot;</span><br>)<br></code></pre></td></tr></table></figure>
+<p>一脸懵。排查了半天，发现是文件结构的问题——手动下载的model.bin和HF cache里的配置文件格式不匹配。faster-whisper的base模型用<code>vocabulary.txt</code>，而large-v3用<code>vocabulary.json</code>。手动下载时只下了model.bin，配置文件是从base模型目录复制的，编码格式对不上。</p>
+<p><strong>临时方案：</strong> 放弃large-v3，改用medium模型。让HF hub自动下载完整文件结构（config.json + vocabulary.txt + tokenizer.json + model.bin），不再手动拼凑。medium的中文识别率已经够用，后续再处理large-v3的问题。</p>
+<p>教训：<strong>模型文件不是只下model.bin就完事了，配置文件和词表必须配套。</strong></p>
+<h3 id="坑4：faster-whisper的GPU选择"><a href="#坑4：faster-whisper的GPU选择" class="headerlink" title="坑4：faster-whisper的GPU选择"></a>坑4：faster-whisper的GPU选择</h3><p>Whisper必须跑在GPU 1上，不能占GPU 0。</p>
+<p>直觉写法：<code>device=&quot;cuda:1&quot;</code>——报错。</p>
+<p>查了一下faster-whisper的API签名，发现<code>device</code>和<code>device_index</code>是<strong>两个独立参数</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> faster_whisper <span class="hljs-keyword">import</span> WhisperModel<br><br>model = WhisperModel(<br>    <span class="hljs-string">&quot;medium&quot;</span>,<br>    device=<span class="hljs-string">&quot;cuda&quot;</span>,<br>    device_index=<span class="hljs-number">1</span>,          <span class="hljs-comment"># GPU索引是独立参数，不能拼在device字符串里</span><br>    compute_type=<span class="hljs-string">&quot;int8_float16&quot;</span><br>)<br></code></pre></td></tr></table></figure>
 
-<p>实测 medium 模型加载到 GPU 1 后，显存占用约 400MB，不影响 GPU 0 的 ComfyUI。</p>
-<h2 id="远程转写脚本"><a href="#远程转写脚本" class="headerlink" title="远程转写脚本"></a>远程转写脚本</h2><p>GPU 服务器端的核心脚本很简单——接收音频文件路径，加载模型，转写，输出 JSON：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-string">&quot;&quot;&quot;remote_whisper.py — 运行在 GPU 服务器上&quot;&quot;&quot;</span><br><span class="hljs-keyword">import</span> argparse, json, sys, time<br><span class="hljs-keyword">from</span> faster_whisper <span class="hljs-keyword">import</span> WhisperModel<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    parser = argparse.ArgumentParser()<br>    parser.add_argument(<span class="hljs-string">&quot;audio_file&quot;</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--model&quot;</span>, default=<span class="hljs-string">&quot;medium&quot;</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--language&quot;</span>, default=<span class="hljs-string">&quot;zh&quot;</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--device&quot;</span>, default=<span class="hljs-string">&quot;cuda&quot;</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--device-index&quot;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">int</span>, default=<span class="hljs-number">1</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--compute-type&quot;</span>, default=<span class="hljs-string">&quot;int8_float16&quot;</span>)<br>    args = parser.parse_args()<br><br>    t0 = time.time()<br>    model = WhisperModel(<br>        args.model,<br>        device=args.device,<br>        device_index=args.device_index,<br>        compute_type=args.compute_type<br>    )<br>    segments, info = model.transcribe(<br>        args.audio_file,<br>        language=args.language,<br>        beam_size=<span class="hljs-number">5</span><br>    )<br><br>    result = []<br>    <span class="hljs-keyword">for</span> seg <span class="hljs-keyword">in</span> segments:<br>        result.append(&#123;<br>            <span class="hljs-string">&quot;start&quot;</span>: <span class="hljs-built_in">round</span>(seg.start, <span class="hljs-number">2</span>),<br>            <span class="hljs-string">&quot;end&quot;</span>: <span class="hljs-built_in">round</span>(seg.end, <span class="hljs-number">2</span>),<br>            <span class="hljs-string">&quot;text&quot;</span>: seg.text.strip()<br>        &#125;)<br><br>    output = &#123;<br>        <span class="hljs-string">&quot;language&quot;</span>: info.language,<br>        <span class="hljs-string">&quot;duration&quot;</span>: <span class="hljs-built_in">round</span>(info.duration, <span class="hljs-number">1</span>),<br>        <span class="hljs-string">&quot;segments&quot;</span>: result,<br>        <span class="hljs-string">&quot;model&quot;</span>: args.model,<br>        <span class="hljs-string">&quot;transcribe_time&quot;</span>: <span class="hljs-built_in">round</span>(time.time() - t0, <span class="hljs-number">1</span>)<br>    &#125;<br>    json.dump(output, sys.stdout, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    main()<br></code></pre></td></tr></table></figure>
+<p>小问题，但卡了十分钟。</p>
+<h2 id="远程转写的核心代码"><a href="#远程转写的核心代码" class="headerlink" title="远程转写的核心代码"></a>远程转写的核心代码</h2><p>GPU服务器端的转写脚本很简洁——接收音频文件，加载模型，转写，输出JSON到stdout：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/env python3</span><br><span class="hljs-string">&quot;&quot;&quot;remote_whisper.py — 运行在GPU服务器上&quot;&quot;&quot;</span><br><span class="hljs-keyword">import</span> argparse, json, sys, time<br><span class="hljs-keyword">from</span> faster_whisper <span class="hljs-keyword">import</span> WhisperModel<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    parser = argparse.ArgumentParser()<br>    parser.add_argument(<span class="hljs-string">&quot;audio_file&quot;</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--model&quot;</span>, default=<span class="hljs-string">&quot;medium&quot;</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--language&quot;</span>, default=<span class="hljs-string">&quot;zh&quot;</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--device&quot;</span>, default=<span class="hljs-string">&quot;cuda&quot;</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--device-index&quot;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">int</span>, default=<span class="hljs-number">1</span>)<br>    parser.add_argument(<span class="hljs-string">&quot;--compute-type&quot;</span>, default=<span class="hljs-string">&quot;int8_float16&quot;</span>)<br>    args = parser.parse_args()<br><br>    t0 = time.time()<br>    model = WhisperModel(<br>        args.model,<br>        device=args.device,<br>        device_index=args.device_index,<br>        compute_type=args.compute_type<br>    )<br>    segments, info = model.transcribe(<br>        args.audio_file,<br>        language=args.language,<br>        beam_size=<span class="hljs-number">5</span><br>    )<br><br>    result = [<br>        &#123;<br>            <span class="hljs-string">&quot;start&quot;</span>: <span class="hljs-built_in">round</span>(seg.start, <span class="hljs-number">2</span>),<br>            <span class="hljs-string">&quot;end&quot;</span>: <span class="hljs-built_in">round</span>(seg.end, <span class="hljs-number">2</span>),<br>            <span class="hljs-string">&quot;text&quot;</span>: seg.text.strip()<br>        &#125;<br>        <span class="hljs-keyword">for</span> seg <span class="hljs-keyword">in</span> segments<br>    ]<br><br>    json.dump(&#123;<br>        <span class="hljs-string">&quot;language&quot;</span>: info.language,<br>        <span class="hljs-string">&quot;duration&quot;</span>: <span class="hljs-built_in">round</span>(info.duration, <span class="hljs-number">1</span>),<br>        <span class="hljs-string">&quot;segments&quot;</span>: result,<br>        <span class="hljs-string">&quot;model&quot;</span>: args.model,<br>        <span class="hljs-string">&quot;transcribe_time&quot;</span>: <span class="hljs-built_in">round</span>(time.time() - t0, <span class="hljs-number">1</span>)<br>    &#125;, sys.stdout, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    main()<br></code></pre></td></tr></table></figure>
 
-<p>本地主控脚本通过 SSH 调用：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> subprocess, json<br><br><span class="hljs-comment"># SCP 传音频文件到 GPU 服务器</span><br>subprocess.run([<br>    <span class="hljs-string">&quot;sshpass&quot;</span>, <span class="hljs-string">&quot;-p&quot;</span>, password,<br>    <span class="hljs-string">&quot;scp&quot;</span>, <span class="hljs-string">&quot;-o&quot;</span>, <span class="hljs-string">&quot;StrictHostKeyChecking=no&quot;</span>,<br>    wav_path, <span class="hljs-string">f&quot;tony@10.28.9.6:/tmp/whisper-audio/<span class="hljs-subst">&#123;filename&#125;</span>&quot;</span><br>])<br><br><span class="hljs-comment"># SSH 远程执行转写</span><br>result = subprocess.run([<br>    <span class="hljs-string">&quot;sshpass&quot;</span>, <span class="hljs-string">&quot;-p&quot;</span>, password,<br>    <span class="hljs-string">&quot;ssh&quot;</span>, <span class="hljs-string">&quot;-o&quot;</span>, <span class="hljs-string">&quot;StrictHostKeyChecking=no&quot;</span>,<br>    <span class="hljs-string">&quot;tony@10.28.9.6&quot;</span>,<br>    <span class="hljs-string">f&quot;python3 /tmp/remote_whisper.py /tmp/whisper-audio/<span class="hljs-subst">&#123;filename&#125;</span> --model medium --language zh&quot;</span><br>], capture_output=<span class="hljs-literal">True</span>, text=<span class="hljs-literal">True</span>, timeout=<span class="hljs-number">300</span>)<br><br>transcript = json.loads(result.stdout)<br></code></pre></td></tr></table></figure>
+<p>本地主控脚本通过SCP传文件、SSH执行转写、解析JSON结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> subprocess, json<br><br><span class="hljs-comment"># 1. SCP传音频到GPU服务器</span><br>subprocess.run([<br>    <span class="hljs-string">&quot;scp&quot;</span>, <span class="hljs-string">&quot;-o&quot;</span>, <span class="hljs-string">&quot;StrictHostKeyChecking=no&quot;</span>,<br>    wav_path, <span class="hljs-string">f&quot;user@gpu-server:/tmp/whisper-audio/<span class="hljs-subst">&#123;filename&#125;</span>&quot;</span><br>])<br><br><span class="hljs-comment"># 2. SSH远程执行转写</span><br>result = subprocess.run([<br>    <span class="hljs-string">&quot;ssh&quot;</span>, <span class="hljs-string">&quot;-o&quot;</span>, <span class="hljs-string">&quot;StrictHostKeyChecking=no&quot;</span>,<br>    <span class="hljs-string">&quot;user@gpu-server&quot;</span>,<br>    <span class="hljs-string">f&quot;python3 /tmp/remote_whisper.py /tmp/whisper-audio/<span class="hljs-subst">&#123;filename&#125;</span>&quot;</span><br>], capture_output=<span class="hljs-literal">True</span>, text=<span class="hljs-literal">True</span>, timeout=<span class="hljs-number">300</span>)<br><br><span class="hljs-comment"># 3. 解析结果</span><br>transcript = json.loads(result.stdout)<br></code></pre></td></tr></table></figure>
 
-<h2 id="实测数据"><a href="#实测数据" class="headerlink" title="实测数据"></a>实测数据</h2><p>用小Lin说的一期29分钟视频（BV1f3VU6KEqy）测试：</p>
+<p>整个远程调用链路：<strong>SCP传文件 → SSH执行 → stdout返回JSON</strong>。简单粗暴，但非常可靠。</p>
+<h2 id="搜索怎么办"><a href="#搜索怎么办" class="headerlink" title="搜索怎么办"></a>搜索怎么办</h2><p>光能提取内容还不够，还得能搜B站视频。</p>
+<p>B站的搜索API同样有412反爬问题——看来B站对所有非浏览器请求都不太友好。</p>
+<p><strong>解法：</strong> 本地部署了SearXNG搜索引擎，用<code>site:bilibili.com</code>限定搜索范围。从搜索结果里提取BV号，再调B站视频信息API获取元数据（标题、播放量、时长、UP主等）。</p>
+<p>SearXNG的搜索结果精度不如B站原生搜索，但胜在稳定——不依赖cookie，不会被封。</p>
+<h2 id="实测"><a href="#实测" class="headerlink" title="实测"></a>实测</h2><p>用一期29分钟的财经类视频做端到端测试：</p>
 <table>
 <thead>
 <tr>
@@ -479,37 +496,40 @@
 <td>29:05</td>
 </tr>
 <tr>
+<td>Level 1 检测</td>
+<td>无字幕，自动降级到Level 2</td>
+</tr>
+<tr>
 <td>音频大小</td>
-<td>55.8 MB (WAV)</td>
+<td>55.8 MB (WAV, 16kHz)</td>
 </tr>
 <tr>
 <td>Whisper 转写时间</td>
-<td>144 秒</td>
+<td>144秒</td>
 </tr>
 <tr>
 <td>输出段落数</td>
-<td>1263 段</td>
+<td>1263段（含时间戳）</td>
 </tr>
 <tr>
-<td>Whisper 模型</td>
-<td>medium, int8_float16</td>
+<td>模型</td>
+<td>medium, int8_float16, GPU 1</td>
 </tr>
 <tr>
 <td>GPU 显存占用</td>
 <td>~400MB</td>
 </tr>
 </tbody></table>
-<p>Level 1（字幕 API）检测到无字幕后自动降级到 Level 2，整个过程无需人工干预。</p>
-<h2 id="搜索能力"><a href="#搜索能力" class="headerlink" title="搜索能力"></a>搜索能力</h2><p>除了从 URL 提取内容，还需要搜索B站视频。B站搜索 API 同样有 412 反爬问题。</p>
-<p><strong>解法：</strong> 通过本地部署的 SearXNG 搜索引擎，用 <code>site:bilibili.com</code> 限定搜索范围，再从结果中提取 BV 号，最后调B站视频信息 API 获取元数据（标题、播放量、时长等）。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这套方案的核心思路：</p>
+<p>从用户甩链接到看到文字摘要，全流程约3分钟。其中大部分时间花在音频下载和传输上，Whisper推理本身很快。</p>
+<h2 id="回头看"><a href="#回头看" class="headerlink" title="回头看"></a>回头看</h2><p>这套方案的核心思路其实就几条：</p>
 <ol>
-<li><strong>三级降级</strong>——优先快路径，失败自动降级，永远有兜底</li>
-<li><strong>API 直连代替第三方工具</strong>——yt-dlp 被封就用 B站自己的 playurl API</li>
-<li><strong>硬件分工</strong>——CPU 活在本地干，GPU 活通过 SSH 远程调用</li>
-<li><strong>模型选择</strong>——medium 而不是 large-v3，400MB 显存换可接受的中文识别率</li>
+<li><strong>三级降级</strong>——永远有兜底，不会空手而归</li>
+<li><strong>API直连代替第三方工具</strong>——yt-dlp被拦，但B站自己的playurl API拦不住</li>
+<li><strong>硬件分工</strong>——CPU活在本地干，GPU活通过SSH远程调用，各司其职</li>
+<li><strong>够用就好</strong>——medium模型400MB显存换来可接受的中文识别率，不追求完美</li>
 </ol>
-<p>整个流水线从零到跑通大约一个下午，大部分时间花在踩坑上。但每个坑都有解，而且解法都比较稳定——毕竟用的都是官方 API 和成熟工具，不是 hack。</p>
+<p>从零到跑通，大约一个下午。大部分时间花在踩坑上——B站反爬、模型下载、GPU分配、API格式。但每个坑解决后都有记录，下次不会重蹈覆辙。</p>
+<p>如果有人也在做类似的事情，希望这些踩坑记录能帮你省点时间。</p>
 
                 
               </div>
@@ -563,7 +583,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>B站视频自动解读：三级降级的内容提取流水线</div>
+      <div>从零打造B站视频自动解读：一条三级降级的内容提取流水线</div>
       <div>https://www.normdist.com/2026/06/05/ND-20260605-001-bilibili-video-transcript-pipeline/</div>
     </div>
     <div class="license-meta">
