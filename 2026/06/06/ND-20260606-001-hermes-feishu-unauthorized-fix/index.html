@@ -27,7 +27,7 @@
 <meta property="og:description" content="韩梅梅（Hermes 子代理）通过飞书对话时报 Unauthorized user，从日志追踪到根因并修复的完整过程。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-06T14:47:00.000Z">
-<meta property="article:modified_time" content="2026-06-06T14:47:30.492Z">
+<meta property="article:modified_time" content="2026-06-06T14:52:29.746Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="Hermes">
 <meta property="article:tag" content="飞书">
@@ -357,7 +357,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.1k 字
+          2k 字
         
       </span>
     
@@ -368,7 +368,7 @@
         
         
         
-          18 分钟
+          17 分钟
         
       </span>
     
@@ -448,7 +448,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">tail</span> -50 ~/.hermes/profiles/hanmeimei/logs/gateway.log<br></code></pre></td></tr></table></figure>
 
 <p>发现关键线索：</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">INFO</span> gateway.platforms.feishu: [Feishu] Inbound dm message received: <span class="hljs-built_in">..</span>. <span class="hljs-attribute">sender</span>=user:ou_e0aca100d8e9c4092861527a44f40c89 <span class="hljs-attribute">text</span>=<span class="hljs-string">&#x27;嘿&#x27;</span><br><span class="hljs-built_in">WARNING</span> gateway.run: Unauthorized user: 6e9334g5 (张晶) on feishu<br></code></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">INFO</span> gateway.platforms.feishu: [Feishu] Inbound dm message received: <span class="hljs-built_in">..</span>. <span class="hljs-attribute">sender</span>=user:ou_xxxx... <span class="hljs-attribute">text</span>=<span class="hljs-string">&#x27;嘿&#x27;</span><br><span class="hljs-built_in">WARNING</span> gateway.run: Unauthorized user: &lt;user_id&gt; on feishu<br></code></pre></td></tr></table></figure>
 
 <p><strong>消息确实收到了</strong>，但被鉴权系统拒绝了！</p>
 <h3 id="第三步：分析根因"><a href="#第三步：分析根因" class="headerlink" title="第三步：分析根因"></a>第三步：分析根因</h3><p>日志中有一个有趣的矛盾：</p>
@@ -461,17 +461,17 @@
 </thead>
 <tbody><tr>
 <td>Inbound 消息的 sender</td>
-<td><code>ou_e0aca100d8e9c4092861527a44f40c89</code>（open_id 格式）</td>
+<td><code>ou_xxxx...</code>（open_id 格式）</td>
 </tr>
 <tr>
 <td>Unauthorized 报告的用户</td>
-<td><code>6e9334g5</code>（user_id 格式）</td>
+<td><code>xxxx</code>（user_id 格式）</td>
 </tr>
 </tbody></table>
 <p>再看韩梅梅的 <code>.env</code> 配置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">FEISHU_ALLOWED_USERS=ou_e0aca100d8e9c4092861527a44f40c89<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">FEISHU_ALLOWED_USERS=ou_xxxx...<br></code></pre></td></tr></table></figure>
 
-<p>配置用的是 <strong>open_id</strong>（<code>ou_</code> 开头），但鉴权系统内部将 open_id 映射成了 <strong>user_id</strong>（<code>6e9334g5</code>），然后拿 user_id 去跟 open_id 格式的白名单比对 — 当然匹配不上。</p>
+<p>配置用的是 <strong>open_id</strong>（<code>ou_</code> 开头），但鉴权系统内部将 open_id 映射成了 <strong>user_id</strong>（短字符串），然后拿 user_id 去跟 open_id 格式的白名单比对 — 当然匹配不上。</p>
 <p>这就是根因：<strong>飞书存在两套用户标识体系（open_id 和 user_id），韩梅梅的飞书 App 在鉴权环节使用的是 user_id，但白名单配的是 open_id。</strong></p>
 <h2 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案"></a>修复方案</h2><p>最直接的修复：在韩梅梅的 <code>.env</code> 中开启 <code>FEISHU_ALLOW_ALL_USERS</code>：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;FEISHU_ALLOW_ALL_USERS=true&#x27;</span> &gt;&gt; ~/.hermes/profiles/hanmeimei/.env<br></code></pre></td></tr></table></figure>
@@ -505,12 +505,12 @@
 <tbody><tr>
 <td>open_id</td>
 <td><code>ou_</code> 开头的长字符串</td>
-<td><code>ou_e0aca100d8e9c4092861527a44f40c89</code></td>
+<td><code>ou_xxxx...</code></td>
 </tr>
 <tr>
 <td>user_id</td>
 <td>短字符串</td>
-<td><code>6e9334g5</code></td>
+<td><code>abcd1234</code></td>
 </tr>
 </tbody></table>
 <p>不同场景下飞书 API 返回的 ID 类型可能不同。在配置白名单时，如果不确定实际使用的 ID 类型，建议直接用 <code>FEISHU_ALLOW_ALL_USERS=true</code> 或同时配置两种格式的 ID。</p>
