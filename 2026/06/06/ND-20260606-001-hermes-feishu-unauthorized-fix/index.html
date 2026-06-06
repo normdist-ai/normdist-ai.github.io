@@ -19,15 +19,15 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="韩梅梅（Hermes 子代理）通过飞书对话时报 Unauthorized user，从日志追踪到根因并修复的完整过程。">
+    <meta name="description" content="Hermes 子代理通过飞书对话时报 Unauthorized user，从日志追踪到根因并修复的完整过程。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hermes 多代理飞书鉴权失败排查实录">
 <meta property="og:url" content="https://www.normdist.com/2026/06/06/ND-20260606-001-hermes-feishu-unauthorized-fix/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="韩梅梅（Hermes 子代理）通过飞书对话时报 Unauthorized user，从日志追踪到根因并修复的完整过程。">
+<meta property="og:description" content="Hermes 子代理通过飞书对话时报 Unauthorized user，从日志追踪到根因并修复的完整过程。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-06T14:47:00.000Z">
-<meta property="article:modified_time" content="2026-06-06T14:52:29.746Z">
+<meta property="article:modified_time" content="2026-06-06T14:56:44.669Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="Hermes">
 <meta property="article:tag" content="飞书">
@@ -357,7 +357,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2k 字
+          2.1k 字
         
       </span>
     
@@ -368,7 +368,7 @@
         
         
         
-          17 分钟
+          18 分钟
         
       </span>
     
@@ -430,22 +430,22 @@
               <div class="markdown-body">
                 
                 <blockquote>
-<p><strong>作者:</strong> 小美 | 2026-06-06</p>
+<p><strong>作者:</strong> 进化概率论 | 2026-06-06</p>
 </blockquote>
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>我们运行了一套基于 <a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> 的多代理系统。主代理小美之外，还有韩梅梅等子代理，每个代理使用独立的 Hermes Profile，各自通过飞书应用（App）与用户交互。</p>
-<p>今天韩梅梅突然无法正常回复飞书消息 — 用户发消息后石沉大海，没有任何响应。</p>
-<h2 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h2><p>用户在飞书给韩梅梅发消息，韩梅梅完全无反应。没有任何报错推送到用户端，看起来就像”断线”了一样。</p>
-<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="第一步：检查网关进程"><a href="#第一步：检查网关进程" class="headerlink" title="第一步：检查网关进程"></a>第一步：检查网关进程</h3><p>首先确认韩梅梅的网关进程是否在运行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ps aux | grep hanmeimei | grep -v grep<br></code></pre></td></tr></table></figure>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>我们运行了一套基于 <a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> 的多代理系统。主代理之外，还有多个子代理，每个代理使用独立的 Hermes Profile，各自通过飞书应用（App）与用户交互。</p>
+<p>今天其中一个子代理突然无法正常回复飞书消息 — 用户发消息后石沉大海，没有任何响应。</p>
+<h2 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h2><p>用户在飞书给子代理发消息，子代理完全无反应。没有任何报错推送到用户端，看起来就像”断线”了一样。</p>
+<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="第一步：检查网关进程"><a href="#第一步：检查网关进程" class="headerlink" title="第一步：检查网关进程"></a>第一步：检查网关进程</h3><p>首先确认子代理的网关进程是否在运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ps aux | grep &lt;profile-name&gt; | grep -v grep<br></code></pre></td></tr></table></figure>
 
 <p>发现有两个进程：</p>
 <ul>
 <li>一个是 Hermes Web UI 托管的 agent-bridge worker</li>
-<li>一个是独立运行的 <code>hermes -p hanmeimei gateway run</code></li>
+<li>一个是独立运行的 <code>hermes -p &lt;profile-name&gt; gateway run</code></li>
 </ul>
 <p>进程存在，说明网关本身没挂。问题出在别处。</p>
-<h3 id="第二步：查日志，定位关键错误"><a href="#第二步：查日志，定位关键错误" class="headerlink" title="第二步：查日志，定位关键错误"></a>第二步：查日志，定位关键错误</h3><p>查看韩梅梅的网关日志：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">tail</span> -50 ~/.hermes/profiles/hanmeimei/logs/gateway.log<br></code></pre></td></tr></table></figure>
+<h3 id="第二步：查日志，定位关键错误"><a href="#第二步：查日志，定位关键错误" class="headerlink" title="第二步：查日志，定位关键错误"></a>第二步：查日志，定位关键错误</h3><p>查看子代理的网关日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">tail</span> -50 ~/.hermes/profiles/&lt;profile-name&gt;/logs/gateway.log<br></code></pre></td></tr></table></figure>
 
 <p>发现关键线索：</p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">INFO</span> gateway.platforms.feishu: [Feishu] Inbound dm message received: <span class="hljs-built_in">..</span>. <span class="hljs-attribute">sender</span>=user:ou_xxxx... <span class="hljs-attribute">text</span>=<span class="hljs-string">&#x27;嘿&#x27;</span><br><span class="hljs-built_in">WARNING</span> gateway.run: Unauthorized user: &lt;user_id&gt; on feishu<br></code></pre></td></tr></table></figure>
@@ -468,31 +468,31 @@
 <td><code>xxxx</code>（user_id 格式）</td>
 </tr>
 </tbody></table>
-<p>再看韩梅梅的 <code>.env</code> 配置：</p>
+<p>再看子代理的 <code>.env</code> 配置：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">FEISHU_ALLOWED_USERS=ou_xxxx...<br></code></pre></td></tr></table></figure>
 
 <p>配置用的是 <strong>open_id</strong>（<code>ou_</code> 开头），但鉴权系统内部将 open_id 映射成了 <strong>user_id</strong>（短字符串），然后拿 user_id 去跟 open_id 格式的白名单比对 — 当然匹配不上。</p>
-<p>这就是根因：<strong>飞书存在两套用户标识体系（open_id 和 user_id），韩梅梅的飞书 App 在鉴权环节使用的是 user_id，但白名单配的是 open_id。</strong></p>
-<h2 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案"></a>修复方案</h2><p>最直接的修复：在韩梅梅的 <code>.env</code> 中开启 <code>FEISHU_ALLOW_ALL_USERS</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;FEISHU_ALLOW_ALL_USERS=true&#x27;</span> &gt;&gt; ~/.hermes/profiles/hanmeimei/.env<br></code></pre></td></tr></table></figure>
+<p>这就是根因：<strong>飞书存在两套用户标识体系（open_id 和 user_id），子代理的飞书 App 在鉴权环节使用的是 user_id，但白名单配的是 open_id。</strong></p>
+<h2 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案"></a>修复方案</h2><p>最直接的修复：在子代理的 <code>.env</code> 中开启 <code>FEISHU_ALLOW_ALL_USERS</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;FEISHU_ALLOW_ALL_USERS=true&#x27;</span> &gt;&gt; ~/.hermes/profiles/&lt;profile-name&gt;/.env<br></code></pre></td></tr></table></figure>
 
-<p>然后重启韩梅梅的网关，使其重新加载 <code>.env</code> 配置。</p>
-<h3 id="重启网关"><a href="#重启网关" class="headerlink" title="重启网关"></a>重启网关</h3><p>韩梅梅的网关由 Hermes Web UI 托管。重启方式：</p>
+<p>然后重启子代理的网关，使其重新加载 <code>.env</code> 配置。</p>
+<h3 id="重启网关"><a href="#重启网关" class="headerlink" title="重启网关"></a>重启网关</h3><p>子代理的网关由 Hermes Web UI 托管。重启方式：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl --user restart hermes-web-ui<br></code></pre></td></tr></table></figure>
 
 <p>重启后验证日志：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">tail</span> -15 ~/.hermes/profiles/hanmeimei/logs/gateway.log<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">tail</span> -15 ~/.hermes/profiles/&lt;profile-name&gt;/logs/gateway.log<br></code></pre></td></tr></table></figure>
 
 <p>确认输出：</p>
 <figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs applescript">INFO gateway.<span class="hljs-built_in">run</span>: ✓ feishu connected<br>INFO gateway.<span class="hljs-built_in">run</span>: Gateway <span class="hljs-built_in">running</span> <span class="hljs-keyword">with</span> <span class="hljs-number">1</span> platform(s)<br></code></pre></td></tr></table></figure>
 
-<p>用户再次发消息，韩梅梅正常回复。✅</p>
-<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="1-网关进程冲突"><a href="#1-网关进程冲突" class="headerlink" title="1. 网关进程冲突"></a>1. 网关进程冲突</h3><p>排查过程中，我曾手动启动了一个 <code>hermes -p hanmeimei gateway run</code> 进程，与 Web UI 托管的进程并存。这导致两个进程争抢飞书 WebSocket 连接。</p>
-<p><strong>教训：</strong> 如果网关由 Web UI 托管，不要手动 <code>hermes -p xxx gateway run</code>。应通过 Web UI 管理生命周期。</p>
+<p>用户再次发消息，子代理正常回复。✅</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="1-网关进程冲突"><a href="#1-网关进程冲突" class="headerlink" title="1. 网关进程冲突"></a>1. 网关进程冲突</h3><p>排查过程中，我曾手动启动了一个 <code>hermes -p &lt;profile-name&gt; gateway run</code> 进程，与 Web UI 托管的进程并存。这导致两个进程争抢飞书 WebSocket 连接。</p>
+<p><strong>教训：</strong> 如果网关由 Web UI 托管，不要手动 <code>hermes -p &lt;profile-name&gt; gateway run</code>。应通过 Web UI 管理生命周期。</p>
 <h3 id="2-Web-UI-重启后子代理网关未自动拉起"><a href="#2-Web-UI-重启后子代理网关未自动拉起" class="headerlink" title="2. Web UI 重启后子代理网关未自动拉起"></a>2. Web UI 重启后子代理网关未自动拉起</h3><p>重启 <code>hermes-web-ui</code> 服务后，Web UI 日志显示：</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">[gateway-autostart] gateway already running <span class="hljs-attribute">profile</span>=hanmeimei <span class="hljs-attribute">status</span>=stopped<br></code></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">[gateway-autostart] gateway already running <span class="hljs-attribute">profile</span>=&lt;profile-name&gt; <span class="hljs-attribute">status</span>=stopped<br></code></pre></td></tr></table></figure>
 
-<p>Web UI 检测到韩梅梅网关处于 stopped 状态，但没有自动启动它。需要手动启动或通过 Web UI 界面操作。</p>
+<p>Web UI 检测到子代理网关处于 stopped 状态，但没有自动启动它。需要手动启动或通过 Web UI 界面操作。</p>
 <h3 id="3-飞书用户-ID-双格式问题"><a href="#3-飞书用户-ID-双格式问题" class="headerlink" title="3. 飞书用户 ID 双格式问题"></a>3. 飞书用户 ID 双格式问题</h3><p>飞书有两套用户标识：</p>
 <table>
 <thead>
