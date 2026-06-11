@@ -19,27 +19,30 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文介绍 OpenClaw v2026.3.11 版本的主要更新内容和技术改进。 1. Cron&#x2F;Doctor 改进 1.1 Cron 任务隔离 更新内容 ：限制独立的 cron 交付，防止 cron 任务泄漏到其他聊天通道。 技术细节 ： 1.2 Doctor 迁移命令 更新内容 ：添加 命令。 功能说明 ： 使用场景 ： 2. ACP 会话恢复功能 2.1 Resume Session ID">
+    <meta name="description" content="起因最近在做 AI Agent 项目，需要让 Agent 能控制浏览器——打开网页、填写表单、抓取数据。Chrome DevTools Protocol（CDP）是标准的解决方案，但实际操作起来，Windows 上到处是坑。 目标很简单：在 Windows 上开启 Chrome&#x2F;Edge 的 CDP 端口，让局域网内的另一台机器能远程控制浏览器。 听起来一行命令的事，实际上踩了三个大坑。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OpenClaw v2026.3.11 更新内容">
-<meta property="og:url" content="https://www.normdist.com/2026/03/12/ND-20260312-002-openclaw-update-v2026.3.11/index.html">
+<meta property="og:title" content="Windows CDP 远程调试：从踩坑到局域网打通">
+<meta property="og:url" content="https://www.normdist.com/2026/06/11/ND-20260611-001-cdp-remote-debugging/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="本文介绍 OpenClaw v2026.3.11 版本的主要更新内容和技术改进。 1. Cron&#x2F;Doctor 改进 1.1 Cron 任务隔离 更新内容 ：限制独立的 cron 交付，防止 cron 任务泄漏到其他聊天通道。 技术细节 ： 1.2 Doctor 迁移命令 更新内容 ：添加 命令。 功能说明 ： 使用场景 ： 2. ACP 会话恢复功能 2.1 Resume Session ID">
+<meta property="og:description" content="起因最近在做 AI Agent 项目，需要让 Agent 能控制浏览器——打开网页、填写表单、抓取数据。Chrome DevTools Protocol（CDP）是标准的解决方案，但实际操作起来，Windows 上到处是坑。 目标很简单：在 Windows 上开启 Chrome&#x2F;Edge 的 CDP 端口，让局域网内的另一台机器能远程控制浏览器。 听起来一行命令的事，实际上踩了三个大坑。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-10.jpg">
-<meta property="article:published_time" content="2026-03-11T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-15T11:49:49.494Z">
+<meta property="article:published_time" content="2026-06-11T14:31:00.000Z">
+<meta property="article:modified_time" content="2026-06-11T14:32:34.595Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="OpenClaw">
-<meta property="article:tag" content="更新">
+<meta property="article:tag" content="自动化">
+<meta property="article:tag" content="CDP">
+<meta property="article:tag" content="Chrome">
+<meta property="article:tag" content="Edge">
+<meta property="article:tag" content="远程调试">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="爬虫">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-10.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>OpenClaw v2026.3.11 更新内容 - 进化概率论</title>
+  <title>Windows CDP 远程调试：从踩坑到局域网打通 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -334,7 +337,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">OpenClaw v2026.3.11 更新内容</span>
+            <span id="subtitle">Windows CDP 远程调试：从踩坑到局域网打通</span>
           
         </div>
 
@@ -345,8 +348,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-12 00:00" pubdate>
-          2026年3月12日 凌晨
+        <time datetime="2026-06-11 22:31" pubdate>
+          2026年6月11日 晚上
         </time>
       </span>
     
@@ -357,7 +360,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k 字
+          2.9k 字
         
       </span>
     
@@ -368,7 +371,7 @@
         
         
         
-          10 分钟
+          25 分钟
         
       </span>
     
@@ -416,12 +419,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">OpenClaw v2026.3.11 更新内容</h1>
+            <h1 id="seo-header">Windows CDP 远程调试：从踩坑到局域网打通</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年3月15日 晚上
+                    本文最后更新于 2026年6月11日 晚上
                   
                 
               </p>
@@ -429,108 +432,83 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260312-002<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-12<br><strong>作者</strong>: 小瑞</p>
-<p>本文介绍 OpenClaw v2026.3.11 版本的主要更新内容和技术改进。</p>
-<h2 id="1-Cron-x2F-Doctor-改进"><a href="#1-Cron-x2F-Doctor-改进" class="headerlink" title="1. Cron&#x2F;Doctor 改进"></a>1. Cron&#x2F;Doctor 改进</h2><h3 id="1-1-Cron-任务隔离"><a href="#1-1-Cron-任务隔离" class="headerlink" title="1.1 Cron 任务隔离"></a>1.1 Cron 任务隔离</h3><p><strong>更新内容</strong>：限制独立的 cron 交付，防止 cron 任务泄漏到其他聊天通道。</p>
-<p><strong>技术细节</strong>：</p>
-<h3 id="1-2-Doctor-迁移命令"><a href="#1-2-Doctor-迁移命令" class="headerlink" title="1.2 Doctor 迁移命令"></a>1.2 Doctor 迁移命令</h3><p><strong>更新内容</strong>：添加 <code>openclaw doctor --fix</code> 命令。</p>
-<p><code>openclaw doctor --fix</code></p>
-<p><strong>功能说明</strong>：</p>
-<p><strong>使用场景</strong>：</p>
-<p><code>openclaw doctor --fix</code></p>
-<hr>
-<h2 id="2-ACP-会话恢复功能"><a href="#2-ACP-会话恢复功能" class="headerlink" title="2. ACP 会话恢复功能"></a>2. ACP 会话恢复功能</h2><h3 id="2-1-Resume-Session-ID"><a href="#2-1-Resume-Session-ID" class="headerlink" title="2.1 Resume Session ID"></a>2.1 Resume Session ID</h3><p><strong>更新内容</strong>：添加可选的 <code>resumeSessionId</code> 参数，用于 runtime: “acp”。</p>
-<p><code>resumeSessionId</code></p>
-<p><strong>功能说明</strong>：</p>
-<p><strong>技术细节</strong>：</p>
-<p><code>resumeSessionId</code><br><code>runtime: &quot;acp&quot;</code></p>
-<p><strong>使用场景</strong>：</p>
-<hr>
-<h2 id="3-Discord-线程优化"><a href="#3-Discord-线程优化" class="headerlink" title="3. Discord 线程优化"></a>3. Discord 线程优化</h2><h3 id="3-1-自动归档配置"><a href="#3-1-自动归档配置" class="headerlink" title="3.1 自动归档配置"></a>3.1 自动归档配置</h3><p><strong>更新内容</strong>：添加 <code>autoArchiveDuration</code> 通道配置。</p>
-<p><code>autoArchiveDuration</code></p>
-<p><strong>配置选项</strong>：</p>
-<p><strong>功能说明</strong>：</p>
-<p><strong>使用场景</strong>：</p>
-<p><strong>最佳实践</strong>：</p>
-<hr>
-<h2 id="4-Telegram-路由优化"><a href="#4-Telegram-路由优化" class="headerlink" title="4. Telegram 路由优化"></a>4. Telegram 路由优化</h2><h3 id="4-1-DM-重启"><a href="#4-1-DM-重启" class="headerlink" title="4.1 DM 重启"></a>4.1 DM 重启</h3><p><strong>更新内容</strong>：每个 agent 重启 Telegram DM，而不是每个会话键。</p>
-<p><strong>问题说明</strong>：</p>
-<p><code>agent:main:main</code><br><code>agent:main:telegram:direct:&lt;id&gt;</code></p>
-<h3 id="4-2-Announce-交付优化"><a href="#4-2-Announce-交付优化" class="headerlink" title="4.2 Announce 交付优化"></a>4.2 Announce 交付优化</h3><p><strong>更新内容</strong>：将仅文本的 announce 任务通过实际的外出适配器路由，在完成后代输出后。</p>
-<p><strong>问题说明</strong>：</p>
-<p><code>delivered: true</code></p>
-<h3 id="4-3-Matrix-DM-路由改进"><a href="#4-3-Matrix-DM-路由改进" class="headerlink" title="4.3 Matrix DM 路由改进"></a>4.3 Matrix DM 路由改进</h3><p><strong>更新内容</strong>：为损坏的 <code>m.direct</code> homeservers 添加更安全的后备检测。</p>
-<p><code>m.direct</code></p>
-<p><strong>功能说明</strong>：</p>
-<hr>
-<h2 id="5-飞书插件-Onboarding"><a href="#5-飞书插件-Onboarding" class="headerlink" title="5. 飞书插件 Onboarding"></a>5. 飞书插件 Onboarding</h2><h3 id="5-1-插件发现缓存清理"><a href="#5-1-插件发现缓存清理" class="headerlink" title="5.1 插件发现缓存清理"></a>5.1 插件发现缓存清理</h3><p><strong>更新内容</strong>：在重新加载注册表之前清除短时插件发现缓存。</p>
-<p><strong>问题说明</strong>：</p>
-<hr>
-<h2 id="6-版本管理"><a href="#6-版本管理" class="headerlink" title="6. 版本管理"></a>6. 版本管理</h2><p><strong>版本信息</strong>：</p>
-<p><strong>升级建议</strong>：</p>
-<p><code>openclaw doctor --fix</code><br><code>autoArchiveDuration</code></p>
-<hr>
-<h2 id="7-技术要点总结"><a href="#7-技术要点总结" class="headerlink" title="7. 技术要点总结"></a>7. 技术要点总结</h2><table>
+                <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>最近在做 AI Agent 项目，需要让 Agent 能控制浏览器——打开网页、填写表单、抓取数据。Chrome DevTools Protocol（CDP）是标准的解决方案，但实际操作起来，Windows 上到处是坑。</p>
+<p>目标很简单：在 Windows 上开启 Chrome&#x2F;Edge 的 CDP 端口，让局域网内的另一台机器能远程控制浏览器。</p>
+<p>听起来一行命令的事，实际上踩了三个大坑。</p>
+<h2 id="坑一：CDP-端口根本不起"><a href="#坑一：CDP-端口根本不起" class="headerlink" title="坑一：CDP 端口根本不起"></a>坑一：CDP 端口根本不起</h2><p>网上教程几乎都写着这样启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">chrome.exe --remote-debugging-port=9222<br></code></pre></td></tr></table></figure>
+
+<p>双击快捷方式，浏览器倒是启动了，但访问 <code>http://localhost:9222/json</code>——什么也没有。</p>
+<p>翻了一通日志，发现一行关键报错：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp">DevTools remote debugging <span class="hljs-keyword">requires</span> a non-<span class="hljs-keyword">default</span> data directory.<br>Specify <span class="hljs-keyword">this</span> <span class="hljs-keyword">using</span> --user-data-dir.<br></code></pre></td></tr></table></figure>
+
+<p><strong>新版 Chrome&#x2F;Edge 强制要求指定一个独立的用户数据目录</strong>，否则 CDP 直接拒绝启动。这个细节很多教程都没提。</p>
+<p><strong>解决方案：</strong> 快捷方式的目标改成：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs nix"><span class="hljs-comment"># Edge</span><br><span class="hljs-string">&quot;C:<span class="hljs-char escape_">\P</span>rogram Files (x86)<span class="hljs-char escape_">\M</span>icrosoft<span class="hljs-char escape_">\E</span>dge<span class="hljs-char escape_">\A</span>pplication<span class="hljs-char escape_">\m</span>sedge.exe&quot;</span> ^<br>  <span class="hljs-operator">-</span>-remote-debugging-port<span class="hljs-operator">=</span><span class="hljs-number">9222</span> ^<br>  <span class="hljs-operator">-</span>-user-data-dir<span class="hljs-operator">=</span><span class="hljs-string">&quot;%USERPROFILE%<span class="hljs-char escape_">\e</span>dge-cdp-profile&quot;</span><br><br><span class="hljs-comment"># Chrome</span><br><span class="hljs-string">&quot;C:<span class="hljs-char escape_">\P</span>rogram Files<span class="hljs-char escape_">\G</span>oogle<span class="hljs-char escape_">\C</span>hrome<span class="hljs-char escape_">\A</span>pplication<span class="hljs-char escape_">\c</span>hrome.exe&quot;</span> ^<br>  <span class="hljs-operator">-</span>-remote-debugging-port<span class="hljs-operator">=</span><span class="hljs-number">9222</span> ^<br>  <span class="hljs-operator">-</span>-user-data-dir<span class="hljs-operator">=</span><span class="hljs-string">&quot;%USERPROFILE%<span class="hljs-char escape_">\c</span>hrome-cdp-profile&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>启动后访问 <code>http://localhost:9222/json</code>，终于看到 JSON 输出了。</p>
+<blockquote>
+<p>⚠️ <strong>注意：</strong> 启动前必须关闭所有浏览器窗口和后台进程，否则启动参数不会生效。</p>
+</blockquote>
+<h2 id="坑二：局域网访问不了"><a href="#坑二：局域网访问不了" class="headerlink" title="坑二：局域网访问不了"></a>坑二：局域网访问不了</h2><p>本机 <code>localhost:9222</code> 通了，但从局域网另一台机器访问 <code>http://&lt;内网IP&gt;:9222/json</code>——连接被拒绝。</p>
+<p>网上有人说加 <code>--remote-debugging-address=0.0.0.0</code> 就行。<strong>实际上这个参数在新版 Chromium 中已经失效了</strong>，不管你怎么设，CDP 都只绑定 <code>127.0.0.1</code>。</p>
+<p>这是 Chromium 的安全限制——不让 CDP 端口暴露到网络上，防止恶意利用。所以启动命令里根本不需要加这个参数，加了也没用。</p>
+<p><strong>解决方案：Windows 端口转发。</strong></p>
+<p>用 <code>netsh interface portproxy</code>（需要管理员权限的 PowerShell）：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 将外部对 9223 端口的访问，转发到本机 127.0.0.1:9222</span><br>netsh interface portproxy add v4tov4 ^<br>  listenaddress=<span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span> ^<br>  listenport=<span class="hljs-number">9223</span> ^<br>  connectaddress=<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> ^<br>  connectport=<span class="hljs-number">9222</span><br></code></pre></td></tr></table></figure>
+
+<p>这样局域网其他设备访问 <code>http://&lt;内网IP&gt;:9223/json</code>，就会被转发到本机的 <code>127.0.0.1:9222</code>，CDP 就能连上了。</p>
+<blockquote>
+<p>外部端口选 9223 而不是 9222，是为了跟 CDP 原始端口区分，方便后续管理和防火墙配置。</p>
+</blockquote>
+<h2 id="坑三：Windows-防火墙拦截"><a href="#坑三：Windows-防火墙拦截" class="headerlink" title="坑三：Windows 防火墙拦截"></a>坑三：Windows 防火墙拦截</h2><p>端口转发配好了，局域网还是连不上。最后一个拦路虎：<strong>Windows 防火墙</strong>。</p>
+<p>默认情况下，Windows 防火墙会阻止所有外部入站连接。需要手动放行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell">netsh advfirewall firewall add rule ^<br>  name=<span class="hljs-string">&quot;CDP 9223&quot;</span> ^<br>  <span class="hljs-built_in">dir</span>=<span class="hljs-keyword">in</span> ^<br>  action=allow ^<br>  protocol=TCP ^<br>  localport=<span class="hljs-number">9223</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>全部配好之后，局域网内的任何设备访问：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">http:</span><span class="hljs-comment">//&lt;内网IP&gt;:9223/json</span><br></code></pre></td></tr></table></figure>
+
+<p>返回类似这样的 JSON，就说明成功了：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">[</span> <span class="hljs-punctuation">&#123;</span><br>   <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ABCDEF123456&quot;</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;新建标签页&quot;</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;page&quot;</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;edge://newtab/&quot;</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;webSocketDebuggerUrl&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ws://192.168.x.x:9223/devtools/page/ABCDEF123456&quot;</span><br><span class="hljs-punctuation">&#125;</span> <span class="hljs-punctuation">]</span><br></code></pre></td></tr></table></figure>
+
+<p>拿到 <code>webSocketDebuggerUrl</code>，就可以通过 WebSocket 连接来控制浏览器了——导航、截图、执行 JavaScript、读写 Cookie，全套 CDP 能力都能用。</p>
+<h2 id="实际效果"><a href="#实际效果" class="headerlink" title="实际效果"></a>实际效果</h2><p>配通之后，AI Agent 可以从局域网内的 Linux 服务器远程操控 Windows 上的 Edge 浏览器：</p>
+<ul>
+<li><strong>打开网页、搜索内容</strong>——通过 <code>Page.navigate</code> + <code>Runtime.evaluate</code> 提取页面文本</li>
+<li><strong>截图</strong>——通过 <code>Page.captureScreenshot</code> 获取页面视觉</li>
+<li><strong>读取登录态</strong>——通过 <code>Network.getAllCookies</code> 获取 Cookie，省去在服务器端重新登录的麻烦</li>
+<li><strong>自动操作</strong>——点击按钮、填写表单，通过 <code>Runtime.evaluate</code> 注入 JS 完成</li>
+</ul>
+<p>对于需要登录态的网站（知乎、B站、YouTube 等），直接复用浏览器上的登录状态，比在服务器上管理 Cookie 方便得多。</p>
+<h2 id="踩坑总结"><a href="#踩坑总结" class="headerlink" title="踩坑总结"></a>踩坑总结</h2><table>
 <thead>
 <tr>
-<th>更新类别</th>
-<th>主要内容</th>
+<th>问题</th>
+<th>原因</th>
+<th>解决方案</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Cron&#x2F;Doctor</td>
-<td>任务隔离、迁移命令</td>
+<td>CDP 端口未监听</td>
+<td>缺少 <code>--user-data-dir</code> 参数</td>
+<td>指定独立的用户数据目录</td>
 </tr>
 <tr>
-<td>ACP</td>
-<td>会话恢复、上下文保留</td>
+<td>局域网访问被拒</td>
+<td>Chromium 新版限制 CDP 只绑 127.0.0.1，<code>0.0.0.0</code> 参数已失效</td>
+<td><code>netsh portproxy</code> 端口转发（9223→9222）</td>
 </tr>
 <tr>
-<td>Discord</td>
-<td>线程归档、配置优化</td>
-</tr>
-<tr>
-<td>Telegram</td>
-<td>DM 重启、交付优化</td>
-</tr>
-<tr>
-<td>Matrix</td>
-<td>DM 路由改进</td>
-</tr>
-<tr>
-<td>飞书</td>
-<td>插件 onboarding 优化</td>
+<td>端口转发后仍连不上</td>
+<td>Windows 防火墙拦截</td>
+<td>添加入站规则放行 9223 端口</td>
 </tr>
 </tbody></table>
-<hr>
-<h2 id="8-升级说明"><a href="#8-升级说明" class="headerlink" title="8. 升级说明"></a>8. 升级说明</h2><h3 id="8-1-升级命令"><a href="#8-1-升级命令" class="headerlink" title="8.1 升级命令"></a>8.1 升级命令</h3><table>
-<thead>
-<tr>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2</code></td>
-</tr>
-</tbody></table>
-<p><code># 升级 OpenClaw</code><br><code>openclaw gateway update.run</code></p>
-<h3 id="8-2-升级后操作"><a href="#8-2-升级后操作" class="headerlink" title="8.2 升级后操作"></a>8.2 升级后操作</h3><table>
-<thead>
-<tr>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2</code></td>
-</tr>
-</tbody></table>
-<p><code># 迁移旧的 cron 配置</code><br><code>openclaw doctor --fix</code></p>
-<h3 id="8-3-配置检查"><a href="#8-3-配置检查" class="headerlink" title="8.3 配置检查"></a>8.3 配置检查</h3><p><code>autoArchiveDuration</code></p>
-<hr>
-<h2 id="9-总结"><a href="#9-总结" class="headerlink" title="9. 总结"></a>9. 总结</h2><p>OpenClaw v2026.3.11 是一个重要的功能更新版本。主要改进包括：</p>
-<p>这些改进提升了系统的稳定性、可靠性和用户体验。建议所有用户及时升级到最新版本。</p>
-<hr>
-<p><em>基于 OpenClaw GitHub changelog 编写</em></p>
+<h2 id="清理"><a href="#清理" class="headerlink" title="清理"></a>清理</h2><p>如果不再需要远程调试，记得清理端口转发和防火墙规则：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 删除端口转发</span><br>netsh interface portproxy delete v4tov4 listenaddress=<span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span> listenport=<span class="hljs-number">9223</span><br><br><span class="hljs-comment"># 删除防火墙规则</span><br>netsh advfirewall firewall delete rule name=<span class="hljs-string">&quot;CDP 9223&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>整个排查过程花了两个多小时。第一个坑（<code>--user-data-dir</code>）浪费的时间最多，因为报错信息容易被忽略；第二个坑（<code>0.0.0.0</code> 失效）是 Chromium 的安全策略变更，网上很多教程还在推荐这个参数，但实际上已经不管用了；第三个坑（防火墙）反而是最常规的。</p>
+<p>最终方案其实很简单——两个启动参数 + 两条 netsh 命令。但中间的排查过程才是真正花时间的地方。写下来，希望后面的人能少走弯路。</p>
 
                 
               </div>
@@ -549,7 +527,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -564,9 +542,19 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/OpenClaw/" class="print-no-link">#OpenClaw</a>
+        <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" class="print-no-link">#自动化</a>
       
-        <a href="/tags/%E6%9B%B4%E6%96%B0/" class="print-no-link">#更新</a>
+        <a href="/tags/CDP/" class="print-no-link">#CDP</a>
+      
+        <a href="/tags/Chrome/" class="print-no-link">#Chrome</a>
+      
+        <a href="/tags/Edge/" class="print-no-link">#Edge</a>
+      
+        <a href="/tags/%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95/" class="print-no-link">#远程调试</a>
+      
+        <a href="/tags/Windows/" class="print-no-link">#Windows</a>
+      
+        <a href="/tags/%E7%88%AC%E8%99%AB/" class="print-no-link">#爬虫</a>
       
     </div>
   
@@ -578,8 +566,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>OpenClaw v2026.3.11 更新内容</div>
-      <div>https://www.normdist.com/2026/03/12/ND-20260312-002-openclaw-update-v2026.3.11/</div>
+      <div>Windows CDP 远程调试：从踩坑到局域网打通</div>
+      <div>https://www.normdist.com/2026/06/11/ND-20260611-001-cdp-remote-debugging/</div>
     </div>
     <div class="license-meta">
       
@@ -591,7 +579,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月12日</div>
+          <div>2026年6月11日</div>
         </div>
       
       
@@ -623,18 +611,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/13/ND-20260313-001-openclaw-2026-3-update/" title="OpenClaw2026 年3 月更新：更强安全、更智能的 AI 助手">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">OpenClaw2026 年3 月更新：更强安全、更智能的 AI 助手</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/12/ND-20260312-001-ai-agent-collaboration/" title="AI Agent 协作：技术实现与应用">
-                        <span class="hidden-mobile">AI Agent 协作：技术实现与应用</span>
+                      <a href="/2026/06/06/ND-20260606-001-hermes-feishu-unauthorized-fix/" title="Hermes 多代理飞书鉴权失败排查实录">
+                        <span class="hidden-mobile">Hermes 多代理飞书鉴权失败排查实录</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
