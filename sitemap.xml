@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.normdist.com/2026/06/20/ND-20260620-003-nvidia-gpu-power-limit-persistence/</loc>
+    
+    <lastmod>2026-06-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/2026/06/20/ND-20260620-002-hindsight-config-pitfalls/</loc>
     
     <lastmod>2026-06-20</lastmod>
@@ -551,27 +560,6 @@
 
   
   <url>
-    <loc>https://www.normdist.com/tags/AutoQuant/</loc>
-    <lastmod>2026-06-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5/</loc>
-    <lastmod>2026-06-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/</loc>
-    <lastmod>2026-06-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://www.normdist.com/tags/Web%E5%BC%80%E5%8F%91/</loc>
     <lastmod>2026-06-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -607,6 +595,27 @@
   </url>
   
   <url>
+    <loc>https://www.normdist.com/tags/AutoQuant/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/tags/v2-0/</loc>
     <lastmod>2026-06-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -635,27 +644,6 @@
   </url>
   
   <url>
-    <loc>https://www.normdist.com/tags/%E5%8D%9A%E5%AE%A2/</loc>
-    <lastmod>2026-06-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/Hexo/</loc>
-    <lastmod>2026-06-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.normdist.com/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</loc>
-    <lastmod>2026-06-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://www.normdist.com/tags/OpenClaw/</loc>
     <lastmod>2026-06-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -671,6 +659,27 @@
   
   <url>
     <loc>https://www.normdist.com/tags/AI%E4%BB%A3%E7%90%86/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E5%8D%9A%E5%AE%A2/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/Hexo/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/</loc>
     <lastmod>2026-06-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1502,17 +1511,31 @@
     <priority>0.2</priority>
   </url>
   
-
-  
   <url>
-    <loc>https://www.normdist.com/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/</loc>
+    <loc>https://www.normdist.com/tags/%E5%8A%9F%E8%80%97%E7%AE%A1%E7%90%86/</loc>
     <lastmod>2026-06-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
+    <loc>https://www.normdist.com/tags/RTX-2080-Ti/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+
+  
+  <url>
     <loc>https://www.normdist.com/categories/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/</loc>
     <lastmod>2026-06-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
