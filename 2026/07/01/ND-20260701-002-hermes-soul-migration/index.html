@@ -19,30 +19,29 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="网页项目的标准文件结构：最佳实践与优化建议在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供具体的优化建议。 一、当前结构的合理性分析✅ 符合的行业标准一个现代化的网页项目通常具备以下特征：  前后端分离：明确分离前端">
+    <meta name="description" content="某天，用户的 AI 系统经历了一次极端测试——跨越物理机器、跨越操作系统、跨越技术栈的完整迁移。 旧机器：一台运行 Ubuntu 24.04 的 Linux 主机（10.28.9.66）。新机器：Windows 10 + WSL2 + Ubuntu 24.04。 核心问题很简单：一个由 5 个 AI Agent profile、37 个自定义技能、431 段对话记忆构成的智能系统，如何在换一台电脑">
 <meta property="og:type" content="article">
-<meta property="og:title" content="网页项目的标准文件结构：最佳实践与优化建议">
-<meta property="og:url" content="https://www.normdist.com/2026/04/02/ND-20260402-001-web-project-standard-structure/index.html">
+<meta property="og:title" content="&quot;灵魂不灭，身体可以重建&quot;——一次 AI Agent 跨平台迁移实录">
+<meta property="og:url" content="https://www.normdist.com/2026/07/01/ND-20260701-002-hermes-soul-migration/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="网页项目的标准文件结构：最佳实践与优化建议在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供具体的优化建议。 一、当前结构的合理性分析✅ 符合的行业标准一个现代化的网页项目通常具备以下特征：  前后端分离：明确分离前端">
+<meta property="og:description" content="某天，用户的 AI 系统经历了一次极端测试——跨越物理机器、跨越操作系统、跨越技术栈的完整迁移。 旧机器：一台运行 Ubuntu 24.04 的 Linux 主机（10.28.9.66）。新机器：Windows 10 + WSL2 + Ubuntu 24.04。 核心问题很简单：一个由 5 个 AI Agent profile、37 个自定义技能、431 段对话记忆构成的智能系统，如何在换一台电脑">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-05.jpg">
-<meta property="article:published_time" content="2026-04-02T08:45:00.000Z">
-<meta property="article:modified_time" content="2026-04-04T04:15:21.050Z">
+<meta property="article:published_time" content="2026-07-01T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-01T04:39:52.021Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="Web开发">
-<meta property="article:tag" content="项目结构">
-<meta property="article:tag" content="Vue3">
-<meta property="article:tag" content="FastAPI">
-<meta property="article:tag" content="最佳实践">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="踩坑">
+<meta property="article:tag" content="系统迁移">
+<meta property="article:tag" content="DevOps">
+<meta property="article:tag" content="WSL">
+<meta property="article:tag" content="备份">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-05.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>网页项目的标准文件结构：最佳实践与优化建议 - 进化概率论</title>
+  <title>&#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -337,7 +336,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">网页项目的标准文件结构：最佳实践与优化建议</span>
+            <span id="subtitle">"灵魂不灭，身体可以重建"——一次 AI Agent 跨平台迁移实录</span>
           
         </div>
 
@@ -348,8 +347,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-04-02 16:45" pubdate>
-          2026年4月2日 下午
+        <time datetime="2026-07-01 10:00" pubdate>
+          2026年7月1日 上午
         </time>
       </span>
     
@@ -360,7 +359,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4k 字
+          3.7k 字
         
       </span>
     
@@ -371,7 +370,7 @@
         
         
         
-          34 分钟
+          32 分钟
         
       </span>
     
@@ -419,12 +418,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">网页项目的标准文件结构：最佳实践与优化建议</h1>
+            <h1 id="seo-header">&#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年4月4日 中午
+                    本文最后更新于 2026年7月1日 下午
                   
                 
               </p>
@@ -432,90 +431,141 @@
             
               <div class="markdown-body">
                 
-                <h1 id="网页项目的标准文件结构：最佳实践与优化建议"><a href="#网页项目的标准文件结构：最佳实践与优化建议" class="headerlink" title="网页项目的标准文件结构：最佳实践与优化建议"></a>网页项目的标准文件结构：最佳实践与优化建议</h1><p>在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供具体的优化建议。</p>
-<h2 id="一、当前结构的合理性分析"><a href="#一、当前结构的合理性分析" class="headerlink" title="一、当前结构的合理性分析"></a>一、当前结构的合理性分析</h2><h3 id="✅-符合的行业标准"><a href="#✅-符合的行业标准" class="headerlink" title="✅ 符合的行业标准"></a>✅ 符合的行业标准</h3><p>一个现代化的网页项目通常具备以下特征：</p>
+                <p>某天，用户的 AI 系统经历了一次极端测试——<strong>跨越物理机器、跨越操作系统、跨越技术栈的完整迁移</strong>。</p>
+<p>旧机器：一台运行 Ubuntu 24.04 的 Linux 主机（10.28.9.66）。新机器：Windows 10 + WSL2 + Ubuntu 24.04。</p>
+<p>核心问题很简单：<strong>一个由 5 个 AI Agent profile、37 个自定义技能、431 段对话记忆构成的智能系统，如何在换一台电脑后完整复活？</strong></p>
+<p>答案是一句话：”<strong>灵魂不灭，身体可以重建。</strong>“</p>
+<p>如果你正在运行任何由多个 AI Agent 构成的本地系统，这篇文章会告诉你什么该备份、什么可以扔掉、以及恢复时最常见的坑。</p>
+<h2 id="第一步：界定”灵魂”与”身体”"><a href="#第一步：界定”灵魂”与”身体”" class="headerlink" title="第一步：界定”灵魂”与”身体”"></a>第一步：界定”灵魂”与”身体”</h2><p>迁移前先回答一个问题：<strong>什么丢了就再也找不回来？</strong></p>
+<p>答案是”灵魂”——自定义配置、记忆文件、技能定义和认证凭证。这些东西没有镜像、没有备份服务、没有 GitHub 仓库可以重新拉。</p>
+<p>我列了一张清单，把~9.6GB 的数据分为三类：</p>
+<table>
+<thead>
+<tr>
+<th>类別</th>
+<th>内容</th>
+<th>大小</th>
+<th>策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🔴 灵魂（必须备份）</td>
+<td>config.yaml、.env、skills&#x2F;、memory_store.db、profiles&#x2F;（5个）、sessions&#x2F;</td>
+<td>~9.6GB</td>
+<td>完整备份</td>
+</tr>
+<tr>
+<td>🟡 缓存（可丢弃）</td>
+<td>.cache、node_modules、Python venvs、npm cache</td>
+<td>~13GB</td>
+<td>新环境重装</td>
+</tr>
+<tr>
+<td>🟢 项目代码（有 git）</td>
+<td>blog、ReShare、TradingAgents 等</td>
+<td>~10GB</td>
+<td>git clone + 恢复 .env</td>
+</tr>
+</tbody></table>
+<p><strong>关键判断</strong>：node_modules 和 venv 不需要备份。新版 Node.js 和 Python 包的依赖锁文件（package-lock.json、uv.lock）才是值得保留的”配方”——材料可以重新下载，配方丢了就真丢了。</p>
+<h2 id="第二步：用户的一句话，定义了迁移哲学"><a href="#第二步：用户的一句话，定义了迁移哲学" class="headerlink" title="第二步：用户的一句话，定义了迁移哲学"></a>第二步：用户的一句话，定义了迁移哲学</h2><p>在讨论迁移方案时，用户说了一段话：</p>
+<blockquote>
+<p>“只要你们的灵魂还在，就自己能够去从这个备份文件里面把自己的记忆、自己的身体一点一点的找回去。”</p>
+</blockquote>
+<p>这句话成为了整个迁移工程的指导思想：<strong>灵魂文件是全量恢复的种子</strong>。不是逐文件复制，而是在新环境安装新的 Hermes，然后告诉它”你的灵魂在这里”，让它自己读取备份、重建配置、恢复记忆。</p>
+<p>后来证明这个思路非常正确——新主机后，Hermes 通过读取备份的 memory_store.db 和 sessions&#x2F;，自动恢复了对 431 个过往会话、49 条记忆 Facts 的认知，就像人睡醒后翻看自己的日记一样自然。</p>
+<h2 id="第三步：备份——选对存储介质"><a href="#第三步：备份——选对存储介质" class="headerlink" title="第三步：备份——选对存储介质"></a>第三步：备份——选对存储介质</h2><p>备份目的地是 ModelBase 服务器上的 ShineDisk——一块 220GB 的 SSD，之前用来存模型文件（llama.cpp 38GB、ComfyUI 30GB、Whisper 8.7GB）。</p>
+<p>灵魂备份只要~9.6GB，ShineDisk 剩余 133GB，绰绰有余。</p>
+<p>备份命令很简单——rsync 全量同步：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">rsync -av --progress /home/jarvis/.hermes/ /mnt/shinedisk/backup/hermes-full-20260628/<br></code></pre></td></tr></table></figure>
+
+<p>注意这里不是只备份”关键文件”，而是完整备份了整个 <code>~/.hermes/</code> 目录。多花几分钟，换一个”即使漏了什么也不用担心”的安心感，很值。</p>
+<p>备份完成后，整个家目录（含项目代码）也同步过去做全量备份，总共占用不到 10GB。</p>
+<h2 id="第四步：新环境搭建——Trae-比想象中有用"><a href="#第四步：新环境搭建——Trae-比想象中有用" class="headerlink" title="第四步：新环境搭建——Trae 比想象中有用"></a>第四步：新环境搭建——Trae 比想象中有用</h2><p>新机器的起点是一块格式化后的硬盘和从零开始的 Windows 10。</p>
+<p>用户的策略是用 <strong>Trae IDE</strong> 来安装 WSL。Windows → Trae → WSL2 Ubuntu → Hermes。这个选择很务实——Trae 作为 AI 编程工具已经内置了 WSL 管理能力，不用手动配 VcXsrv 那一套。</p>
+<p>WSL2 Ubuntu 24.04 跑起来后，安装 Hermes：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install hermes-agent<br>hermes setup<br></code></pre></td></tr></table></figure>
+
+<p>这一步会创建标准的 <code>~/.hermes/</code> 目录结构。然后灵魂注入——把备份的配置文件复制过去：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cp</span> -r ~/backup/hermes-full-20260628/home/.hermes/config.yaml ~/.hermes/<br><span class="hljs-built_in">cp</span> -r ~/backup/hermes-full-20260628/home/.hermes/.env ~/.hermes/<br><span class="hljs-built_in">cp</span> -r ~/backup/hermes-full-20260628/home/.hermes/skills/ ~/.hermes/<br><span class="hljs-built_in">cp</span> -r ~/backup/hermes-full-20260628/home/.hermes/memory_store.db ~/.hermes/<br><span class="hljs-built_in">cp</span> -r ~/backup/hermes-full-20260628/home/.hermes/sessions/ ~/.hermes/<br><span class="hljs-built_in">cp</span> -r ~/backup/hermes-full-20260628/home/.hermes/profiles/ ~/.hermes/<br></code></pre></td></tr></table></figure>
+
+<p><strong>踩坑点</strong>：备份中的路径是 <code>/home/jarvis/...</code>，新机器上是 <code>/home/tony/...</code>，所有技能脚本和 systemd 服务文件中的路径都需要替换。一个 <code>sed</code> 搞定：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">grep -rl <span class="hljs-string">&quot;/home/jarvis&quot;</span> ~/.hermes/ | xargs sed -i <span class="hljs-string">&#x27;s|/home/jarvis|/home/tony|g&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>如果不做这一步，gateway 依赖的 MCP server 全部报错找不到路径。</p>
+<h2 id="第五步：Gateway-恢复——hermes-web-ui-是核心命脉"><a href="#第五步：Gateway-恢复——hermes-web-ui-是核心命脉" class="headerlink" title="第五步：Gateway 恢复——hermes-web-ui 是核心命脉"></a>第五步：Gateway 恢复——hermes-web-ui 是核心命脉</h2><p>Hermes 的网关架构是：<strong>1 个 hermes-web-ui + 5 个 profile gateway</strong>。web-ui 统一管理所有 profile 的网关生命周期。</p>
+<p>迁移后发现 hermes-web-ui 没装上——它是独立的 npm 包，不在备份的 venv 里。</p>
+<p>安装时又踩了一个坑：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 第一个坑：Node.js 版本不够</span><br>npm install -g hermes-web-ui  <span class="hljs-comment"># 最新版 v0.6.22 需要 Node ≥23</span><br><span class="hljs-comment"># 当前 Node.js 版本是 v22，降级到 v0.4.0 先跑起来</span><br>npm install -g hermes-web-ui@0.4.0<br></code></pre></td></tr></table></figure>
+
+<p>后来升级到 Node.js v24.18 LTS，再升级 hermes-web-ui：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装特定版本的 Node.js</span><br>curl -fsSL https://deb.nodesource.com/setup_24.x | <span class="hljs-built_in">sudo</span> -E bash -<br><span class="hljs-built_in">sudo</span> apt install -y nodejs<br><span class="hljs-comment"># 重新安装 hermes-web-ui</span><br>npm install -g hermes-web-ui --prefix ~/.hermes/node<br></code></pre></td></tr></table></figure>
+
+<p><strong>第二个坑</strong>：web-ui 后台启动后，gateway 会自动拉起。但 systemd 的 <code>Restart=on-failure</code> 对正常退出的进程不生效——而 gateway 没事就 SIGUSR2 退出一下。解决方式是把 <code>Restart</code> 改成 <code>always</code>。</p>
+<p><strong>第三个坑</strong>：API Server 依赖 aiohttp，但这个包不在 venv 里。手动补装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">/path/to/venv/bin/pip install aiohttp<br></code></pre></td></tr></table></figure>
+
+<h2 id="第六步：恢复验证——对照清单逐项检查"><a href="#第六步：恢复验证——对照清单逐项检查" class="headerlink" title="第六步：恢复验证——对照清单逐项检查"></a>第六步：恢复验证——对照清单逐项检查</h2><p>恢复完成后，对着备份清单逐项验证：</p>
+<table>
+<thead>
+<tr>
+<th>验证项</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>config.yaml（19KB）完整</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>.env（API Keys 20KB）完整</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>全局技能 37 个完整</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>memory_store.db（50 facts）</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>sessions&#x2F;（431 个会话）</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>5 个 profiles（主代理&#x2F;子代理&#x2F;备份代理&#x2F;信息代理&#x2F;数据代理）</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>所有 gateway 在线</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>飞书连接正常</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>cron 任务正常运行</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p>缺失的只有 SSH 私钥（id_rsa），以及一些工具链（ffmpeg、Docker、hexo）。工具链在新环境逐一安装即可，私钥重新生成后配置到 GitHub。</p>
+<h2 id="学到了什么"><a href="#学到了什么" class="headerlink" title="学到了什么"></a>学到了什么</h2><p>这次迁移有几个经验值得记住：</p>
 <ol>
-<li><strong>前后端分离</strong>：明确分离前端和后端目录，符合现代开发标准</li>
-<li><strong>模块化组织</strong>：按功能&#x2F;职责划分目录，便于团队协作</li>
-<li><strong>配置分离</strong>：环境变量、构建配置与代码分离</li>
-<li><strong>版本控制友好</strong>：合理的 .gitignore 配置</li>
-<li><strong>Docker 化支持</strong>：容器化部署结构</li>
+<li><p><strong>灵魂文件不到 10GB</strong>。相对于整个系统，真正不可恢复的数据很少。备份时不要凭感觉去挑文件——rsync 全量同步只多花几分钟，但能防止”漏了什么”。</p>
+</li>
+<li><p><strong>路径硬编码是迁移的第一杀手</strong>。备份中的 <code>/home/jarvis/</code> 在新机器上变为 <code>/home/tony/</code>，导致大量配置文件失效。如果从一开始就使用 <code>~</code> 或环境变量引用路径，迁移时会顺利得多。</p>
+</li>
+<li><p><strong>Node.js 版本决定能装什么包</strong>。有些 npm 包对 Node.js 版本有硬性要求，备份 <code>package-lock.json</code> 不如备份 <code>node --version</code> 的输出价值大。</p>
+</li>
+<li><p><strong>“灵魂不灭”哲学是正确的</strong>。将系统设计为”读取备份配置自行恢复”的模式，比逐文件复制后手动修复优雅得多。Hermes 读取 memory_store.db 后的自动恢复，就像人翻看笔记本后想起了一切。</p>
+</li>
+<li><p><strong>WSL2 + Windows 架构能解决反爬虫问题</strong>。Windows 浏览器保持登录态，Agent 通过 CDP 连接浏览器，网站认为这是真人操作。这个架构比纯 Linux 方案更适合需要频繁爬取数据的场景。</p>
+</li>
 </ol>
-<p>这些特征不仅提升了项目的可维护性，还为团队协作和自动化部署打下了坚实基础。</p>
-<h2 id="二、优化空间和改进建议"><a href="#二、优化空间和改进建议" class="headerlink" title="二、优化空间和改进建议"></a>二、优化空间和改进建议</h2><h3 id="1-前端（Vite）优化建议"><a href="#1-前端（Vite）优化建议" class="headerlink" title="1. 前端（Vite）优化建议"></a>1. 前端（Vite）优化建议</h3><p>对于基于 Vue3 和 Vite 的前端项目，推荐以下目录结构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">frontend/<br>├── .vscode/              # IDE 配置（推荐）<br>│   ├── extensions.json<br>│   └── settings.json<br>├── src/<br>│   ├── composables/      # Vue 组合式函数<br>│   ├── directives/       # 自定义指令<br>│   ├── plugins/          # Vue 插件<br>│   ├── locales/          # 国际化文件<br>│   ├── hooks/           # React 自定义钩子（如使用 React）<br>│   └── types/           # TypeScript 类型定义<br>├── tests/               # 前端测试<br>│   ├── unit/           # 单元测试<br>│   ├── e2e/            # 端到端测试<br>│   └── fixtures/       # 测试数据<br>├── .storybook/          # 组件文档（可选）<br>├── vitest.config.ts     # 测试配置<br>└── eslint.config.js     # ESLint 配置<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>composables 目录</strong>：Vue3 的组合式 API 最佳实践，便于状态复用</li>
-<li><strong>directives 目录</strong>：自定义指令集中管理，提升代码可读性</li>
-<li><strong>tests 分层</strong>：单元测试、E2E 测试和测试数据分离，提升测试覆盖率</li>
-<li><strong>Storybook 集成</strong>：可视化组件文档，提升设计和开发协作效率</li>
-</ul>
-<h3 id="2-后端（FastAPI）优化建议"><a href="#2-后端（FastAPI）优化建议" class="headerlink" title="2. 后端（FastAPI）优化建议"></a>2. 后端（FastAPI）优化建议</h3><p>对于 FastAPI 后端项目，推荐以下目录结构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── app/<br>│   ├── middleware/       # 中间件（推荐单独目录）<br>│   │   ├── logging.py<br>│   │   └── cors.py<br>│   ├── events/          # 事件处理器<br>│   │   ├── handlers.py<br>│   │   └── listeners.py<br>│   ├── cache/           # 缓存相关<br>│   └── background/      # 后台任务<br>│       └── tasks.py<br>├── alembic/             # Alembic 迁移（官方推荐名称）<br>│   └── versions/<br>├── tests/<br>│   ├── integration/     # 集成测试<br>│   ├── unit/<br>│   └── conftest.py<br>├── .pre-commit-config.yaml  # Git 钩子配置<br>├── pytest.ini           # 测试配置<br>└── setup.cfg           # 工具配置<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>middleware 独立目录</strong>：中间件集中管理，便于维护和扩展</li>
-<li><strong>events 系统</strong>：事件驱动架构，提升系统解耦性</li>
-<li><strong>cache 和 background 分离</strong>：缓存和后台任务独立管理，提升性能</li>
-<li><strong>pre-commit 钩子</strong>：自动化代码质量检查，减少 Bug 流入</li>
-</ul>
-<h3 id="3-根目录结构优化"><a href="#3-根目录结构优化" class="headerlink" title="3. 根目录结构优化"></a>3. 根目录结构优化</h3><p>项目根目录应包含以下关键文件和目录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">project-root/<br>├── .husky/             # Git 钩子配置<br>├── .commitlintrc.js    # Commit 信息规范<br>├── .github/<br>│   ├── workflows/<br>│   │   ├── ci.yml      # CI 流水线<br>│   │   ├── cd.yml      # CD 流水线<br>│   │   └── security-scan.yml<br>│   ├── PULL_REQUEST_TEMPLATE.md<br>│   └── ISSUE_TEMPLATE.md<br>├── docker-compose.yml<br>├── docker-compose.dev.yml<br>├── docker-compose.prod.yml<br>├── Makefile            # 常用命令脚本<br>├── CHANGELOG.md        # 变更日志<br>├── CONTRIBUTING.md     # 贡献指南<br>└── SECURITY.md         # 安全策略<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>CI&#x2F;CD 流水线</strong>：自动化测试、构建和部署</li>
-<li><strong>Commit 规范</strong>：统一的 Commit 信息格式，提升代码审查效率</li>
-<li><strong>多环境配置</strong>：开发、测试、生产环境独立配置</li>
-<li><strong>文档完善</strong>：变更日志、贡献指南和安全策略</li>
-</ul>
-<h2 id="三、行业最佳实践差异点"><a href="#三、行业最佳实践差异点" class="headerlink" title="三、行业最佳实践差异点"></a>三、行业最佳实践差异点</h2><h3 id="1-FastAPI-项目结构模式差异"><a href="#1-FastAPI-项目结构模式差异" class="headerlink" title="1. FastAPI 项目结构模式差异"></a>1. FastAPI 项目结构模式差异</h3><p>官方推荐模式（简单项目）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">app/<br>├── routers/<br>├── dependencies.py<br>└── main.py<br></code></pre></td></tr></table></figure>
-
-<p>企业级推荐模式：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── src/                      # 源代码<br>│   └── your_package/<br>│       ├── api/<br>│       ├── core/<br>│       └── ...<br>├── tests/<br>├── pyproject.toml<br>└── setup.cfg<br></code></pre></td></tr></table></figure>
-
-<p><strong>建议</strong>：使用 src&#x2F; 布局（将应用代码放在 src&#x2F; 下），避免导入问题：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── src/<br>│   └── app/           # 主应用包<br>│       ├── __init__.py<br>│       └── main.py<br>├── tests/<br>└── pyproject.toml<br></code></pre></td></tr></table></figure>
-
-<h3 id="2-前端构建工具优化"><a href="#2-前端构建工具优化" class="headerlink" title="2. 前端构建工具优化"></a>2. 前端构建工具优化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">frontend/<br>├── .vscode/          # IDE 配置<br>├── .husky/          # Git 钩子<br>├── .changeset/       # 版本管理<br>├── src/<br>│   └── lib/         # 工具库/第三方库封装<br>├── .npmrc           # npm 配置<br>├── .nvmrc           # Node 版本<br>└── .npmignore<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>.changeset 目录</strong>：版本管理自动化，便于多包管理</li>
-<li><strong>.npmrc 和 .nvmrc</strong>：统一 npm 配置和 Node 版本</li>
-<li><strong>lib 目录</strong>：工具库集中管理，提升代码复用</li>
-</ul>
-<h3 id="3-数据库管理优化"><a href="#3-数据库管理优化" class="headerlink" title="3. 数据库管理优化"></a>3. 数据库管理优化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">backend/<br>├── migrations/       # Alembic 迁移<br>├── seeds/           # 种子数据<br>├── database/<br>│   ├── base.py      # 数据库基类<br>│   ├── session.py   # 会话管理<br>│   └── models/<br>└── docker/<br>    └── init.sql     # 初始化脚本<br></code></pre></td></tr></table></figure>
-
-<p><strong>关键优化点</strong>：</p>
-<ul>
-<li><strong>migrations 目录</strong>：数据库版本控制和迁移脚本</li>
-<li><strong>seeds 目录</strong>：种子数据，便于开发和测试</li>
-<li><strong>docker&#x2F;init.sql</strong>：数据库初始化脚本，容器化部署</li>
-</ul>
-<h2 id="四、推荐的最终优化结构"><a href="#四、推荐的最终优化结构" class="headerlink" title="四、推荐的最终优化结构"></a>四、推荐的最终优化结构</h2><p>综合以上最佳实践，推荐以下最终的项目结构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">my-project/<br>├── frontend/        # 前端<br>│   ├── .vscode/<br>│   ├── src/<br>│   │   ├── components/<br>│   │   ├── views/<br>│   │   ├── composables/<br>│   │   ├── plugins/<br>│   │   ├── locales/<br>│   │   ├── types/<br>│   │   ├── stores/<br>│   │   └── utils/<br>│   ├── tests/<br>│   ├── .storybook/<br>│   ├── .husky/<br>│   ├── .env.*<br>│   ├── vite.config.ts<br>│   └── package.json<br>├── backend/         # 后端<br>│   ├── src/<br>│   │   └── app/<br>│   │       ├── api/<br>│   │       ├── core/<br>│   │       ├── models/<br>│   │       ├── schemas/<br>│   │       ├── middleware/<br>│   │       └── utils/<br>│   ├── tests/<br>│   ├── migrations/<br>│   ├── alembic.ini<br>│   ├── requirements.txt<br>│   └── pyproject.toml<br>├── docker/<br>│   ├── nginx/<br>│   ├── db/<br>│   ├── Dockerfile.frontend<br>│   └── Dockerfile.backend<br>├── docs/<br>│   ├── api/<br>│   ├── architecture/<br>│   └── deployment/<br>├── scripts/<br>│   ├── dev.sh<br>│   ├── test.sh<br>│   └── deploy.sh<br>├── .github/<br>│   └── workflows/<br>├── docker-compose.yml<br>├── docker-compose.override.yml<br>├── Makefile<br>├── README.md<br>└── CONTRIBUTING.md<br></code></pre></td></tr></table></figure>
-
-<h2 id="五、关键优化总结"><a href="#五、关键优化总结" class="headerlink" title="五、关键优化总结"></a>五、关键优化总结</h2><ol>
-<li><strong>添加开发工具配置</strong>：IDE 配置、Git 钩子、代码规范工具</li>
-<li><strong>标准化测试结构</strong>：区分单元测试、集成测试、E2E 测试</li>
-<li><strong>改进 Python 项目布局</strong>：考虑使用 src&#x2F; 布局避免导入问题</li>
-<li><strong>增强 CI&#x2F;CD 支持</strong>：GitHub Actions 工作流模板</li>
-<li><strong>文档完善</strong>：添加架构、部署、贡献指南</li>
-<li><strong>环境区分</strong>：开发、测试、生产环境的独立配置</li>
-</ol>
-<h2 id="六、实践建议"><a href="#六、实践建议" class="headerlink" title="六、实践建议"></a>六、实践建议</h2><p>根据团队规模选择合适的复杂度：</p>
-<ul>
-<li><strong>小型团队（1-3人）</strong>：可保持简单结构，优先开发效率</li>
-<li><strong>中型团队（4-10人）</strong>：推荐采用优化后的完整结构，提升可维护性</li>
-<li><strong>大型团队（10人以上）</strong>：必须采用完整的标准化结构，建立严格的代码规范和审查流程</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一个合理的项目文件结构是高质量软件交付的基础。通过前后端分离、模块化组织、配置分离、Docker 化支持和完善的 CI&#x2F;CD 流程，我们不仅能提升开发效率，还能确保代码质量和系统稳定性。</p>
-<p>希望本文的建议能帮助你在实际项目中做出更明智的架构决策。如果你有其他优化建议或实践经验，欢迎分享和讨论。</p>
+<p>迁移完成后，用户在飞书上问：”你检查一下迁移有没有完成，是不是所有的记忆都恢复了？”</p>
+<p>答案：**”我记得所有事情。”**</p>
 
                 
               </div>
@@ -534,15 +584,8 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" class="category-chain-item">技术架构</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/" class="category-chain-item">项目管理</a>
-  
-  
-
   
 
       </span>
@@ -556,15 +599,17 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Web%E5%BC%80%E5%8F%91/" class="print-no-link">#Web开发</a>
+        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
       
-        <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84/" class="print-no-link">#项目结构</a>
+        <a href="/tags/%E8%B8%A9%E5%9D%91/" class="print-no-link">#踩坑</a>
       
-        <a href="/tags/Vue3/" class="print-no-link">#Vue3</a>
+        <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/" class="print-no-link">#系统迁移</a>
       
-        <a href="/tags/FastAPI/" class="print-no-link">#FastAPI</a>
+        <a href="/tags/DevOps/" class="print-no-link">#DevOps</a>
       
-        <a href="/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="print-no-link">#最佳实践</a>
+        <a href="/tags/WSL/" class="print-no-link">#WSL</a>
+      
+        <a href="/tags/%E5%A4%87%E4%BB%BD/" class="print-no-link">#备份</a>
       
     </div>
   
@@ -576,8 +621,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>网页项目的标准文件结构：最佳实践与优化建议</div>
-      <div>https://www.normdist.com/2026/04/02/ND-20260402-001-web-project-standard-structure/</div>
+      <div>&#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录</div>
+      <div>https://www.normdist.com/2026/07/01/ND-20260701-002-hermes-soul-migration/</div>
     </div>
     <div class="license-meta">
       
@@ -589,7 +634,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年4月2日</div>
+          <div>2026年7月1日</div>
         </div>
       
       
@@ -621,18 +666,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/04/03/ND-20260404-002-prototype-design-guide/" title="LWMS2 原型设计工作规范">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">LWMS2 原型设计工作规范</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/25/ND-20260325-001-scrapling-web-scrapping-guide/" title="Scrapling 自适应 Web Scraping 框架实战：抓取上证指数 K 线数据">
-                        <span class="hidden-mobile">Scrapling 自适应 Web Scraping 框架实战：抓取上证指数 K 线数据</span>
+                      <a href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" title="东方财富北向资金双接口同时坏死——一个降级+迁移方案">
+                        <span class="hidden-mobile">东方财富北向资金双接口同时坏死——一个降级+迁移方案</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
