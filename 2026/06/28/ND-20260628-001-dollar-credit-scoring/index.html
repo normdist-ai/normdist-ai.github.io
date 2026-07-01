@@ -1,0 +1,1113 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="量化系统里有一类判断特别难做：**”美元到底强不强”**。它不像技术指标有现成公式，而是散落在收益率曲线、汇率、黄金储备、利差这些维度里，最终在交易员脑子里合成一个模糊的”感觉”。 本文记录一个量化项目里把这种感觉压缩成一个 0–100 分数的过程：五个公开指标、三个免费数据源、一套线性加权评分。重点不在结论（结论明天就会变），而在怎么把一个主观的宏观判断，拆成可回测、可复现、可解释的数字。  一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 5 个公开指标量化&quot;美元信用健康度&quot;——一套可复用的宏观打分系统">
+<meta property="og:url" content="https://www.normdist.com/2026/06/28/ND-20260628-001-dollar-credit-scoring/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="量化系统里有一类判断特别难做：**”美元到底强不强”**。它不像技术指标有现成公式，而是散落在收益率曲线、汇率、黄金储备、利差这些维度里，最终在交易员脑子里合成一个模糊的”感觉”。 本文记录一个量化项目里把这种感觉压缩成一个 0–100 分数的过程：五个公开指标、三个免费数据源、一套线性加权评分。重点不在结论（结论明天就会变），而在怎么把一个主观的宏观判断，拆成可回测、可复现、可解释的数字。  一">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-27T19:47:05.000Z">
+<meta property="article:modified_time" content="2026-06-27T19:48:50.043Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="量化交易">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="akshare">
+<meta property="article:tag" content="宏观分析">
+<meta property="article:tag" content="美元信用">
+<meta property="article:tag" content="评分模型">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>用 5 个公开指标量化&#34;美元信用健康度&#34;——一套可复用的宏观打分系统 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">用 5 个公开指标量化"美元信用健康度"——一套可复用的宏观打分系统</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-06-28 03:47" pubdate>
+          2026年6月28日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          65 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">用 5 个公开指标量化&#34;美元信用健康度&#34;——一套可复用的宏观打分系统</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年6月28日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>量化系统里有一类判断特别难做：**”美元到底强不强”**。它不像技术指标有现成公式，而是散落在收益率曲线、汇率、黄金储备、利差这些维度里，最终在交易员脑子里合成一个模糊的”感觉”。</p>
+<p>本文记录一个量化项目里把这种感觉<strong>压缩成一个 0–100 分数</strong>的过程：五个公开指标、三个免费数据源、一套线性加权评分。重点不在结论（结论明天就会变），而在<strong>怎么把一个主观的宏观判断，拆成可回测、可复现、可解释的数字</strong>。</p>
+<hr>
+<h2 id="一、问题：宏观判断的”不可证伪”困境"><a href="#一、问题：宏观判断的”不可证伪”困境" class="headerlink" title="一、问题：宏观判断的”不可证伪”困境"></a>一、问题：宏观判断的”不可证伪”困境</h2><p>一个典型的量化策略每天要回答一堆问题：现在该不该加杠杆？黄金该不该配？A 股该不该避险？这些问题的答案，往往都挂在同一个上游变量上——<strong>美元信用的强弱</strong>。</p>
+<p>但”美元强不强”是个糟糕的输入：</p>
+<ul>
+<li>它不可证伪。今天说”偏弱”、明天说”还行”，没有任何锚点。</li>
+<li>它无法回测。回测引擎要的是一个<strong>确定性的时间序列</strong>，而不是一段自然语言。</li>
+<li>它依赖人。换个分析师，结论就变，策略也就跟着漂移。</li>
+</ul>
+<p>所以项目的目标很明确：<strong>把”美元信用健康度”变成一个每天自动产出、可追溯公式、可调权重的数字。</strong> 下游策略（黄金配置、A 股仓位、美元资产对冲）都读这一个数。</p>
+<hr>
+<h2 id="二、设计：五个维度怎么选"><a href="#二、设计：五个维度怎么选" class="headerlink" title="二、设计：五个维度怎么选"></a>二、设计：五个维度怎么选</h2><p>美元信用强弱本质是一个<strong>多维信号</strong>，没有任何单一指标能完整描述它。这里把它拆成五个相对正交的维度，每个维度都映射到 0–100（100 &#x3D; 信用强健，0 &#x3D; 信用崩溃），最后加权求和：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>含义</th>
+<th>直觉</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>收益率水平</strong> (yield_level)</td>
+<td>10Y 美债收益率</td>
+<td>收益率越高，融资成本越高，信用越承压</td>
+</tr>
+<tr>
+<td><strong>收益率曲线形态</strong> (yield_curve)</td>
+<td>10Y − 2Y 利差</td>
+<td>倒挂 &#x3D; 衰退信号，信用承压</td>
+</tr>
+<tr>
+<td><strong>美元汇率趋势</strong> (fx_trend)</td>
+<td>USD&#x2F;CNY 20 日变动</td>
+<td>美元走弱，信用承压</td>
+</tr>
+<tr>
+<td><strong>去美元化信号</strong> (dedollarization)</td>
+<td>中国黄金储备同比</td>
+<td>黄金加速增持，去美元化压力上升</td>
+</tr>
+<tr>
+<td><strong>中美利差</strong> (cn_us_spread)</td>
+<td>中美 10Y 国债利差</td>
+<td>利差倒挂影响资金流向</td>
+</tr>
+</tbody></table>
+<p>为什么是这五个、而不是别的？有三条选择原则：</p>
+<ol>
+<li><strong>数据公开且免费</strong>。全都来自 akshare 这种公开财经数据库，不依赖付费终端。可复现、可审计。</li>
+<li><strong>维度尽量正交</strong>。收益率水平、曲线形态、汇率、储备、跨国利差——分别从利率、汇率、官方储备、跨境资本四个角度切入，避免五个指标其实都在量同一件事。</li>
+<li><strong>可解释</strong>。每个维度都能讲出”为什么这个数变大代表美元信用变弱”，而不是堆一个黑箱回归。</li>
+</ol>
+<hr>
+<h2 id="三、评分公式：线性映射-截断"><a href="#三、评分公式：线性映射-截断" class="headerlink" title="三、评分公式：线性映射 + 截断"></a>三、评分公式：线性映射 + 截断</h2><p>每个维度的核心都是一个<strong>线性映射到 0–100</strong>，再用 <code>max(0, min(100, x))</code> 截断。这是有意为之的简单设计——任何超过 100 或低于 0 的极端值都被压平，避免单一维度因为离群点而主导总分。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 五个维度的评分公式（均线性映射到 0-100，再截断）</span><br>yield_score   = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">min</span>(<span class="hljs-number">100</span>, <span class="hljs-number">100</span> - yield_10y * <span class="hljs-number">20</span>))      <span class="hljs-comment"># 收益率越高越扣分</span><br>curve_score   = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">min</span>(<span class="hljs-number">100</span>, <span class="hljs-number">50</span> + spread_10y_2y * <span class="hljs-number">30</span>))   <span class="hljs-comment"># 利差倒挂则低于50</span><br>fx_score      = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">min</span>(<span class="hljs-number">100</span>, <span class="hljs-number">50</span> - fx_change_20d * <span class="hljs-number">10</span>))   <span class="hljs-comment"># 美元走弱则低于50</span><br>dedollar_score= <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">min</span>(<span class="hljs-number">100</span>, <span class="hljs-number">100</span> - gold_yoy * <span class="hljs-number">0.5</span>))      <span class="hljs-comment"># 黄金增持越快越扣分</span><br>spread_score  = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">min</span>(<span class="hljs-number">100</span>, <span class="hljs-number">50</span> - cn_us_spread * <span class="hljs-number">20</span>))    <span class="hljs-comment"># 中美利差倒挂则高分</span><br><br><span class="hljs-comment"># 加权求和</span><br>total_score = (yield_score * <span class="hljs-number">0.25</span> + curve_score * <span class="hljs-number">0.20</span> +<br>               fx_score * <span class="hljs-number">0.20</span> + dedollar_score * <span class="hljs-number">0.20</span> +<br>               spread_score * <span class="hljs-number">0.15</span>)<br>total_score = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">min</span>(<span class="hljs-number">100</span>, total_score))<br></code></pre></td></tr></table></figure>
+
+<p>几个设计细节值得说明：</p>
+<ul>
+<li><strong>基准线设在 50</strong>。<code>curve_score</code>、<code>fx_score</code>、<code>spread_score</code> 都以 50 为中性基准——利差为 0 给 50 分，正常向上偏移。这比”全维度都从 0 起算”更符合直觉：不倒挂、汇率稳定的常态本就该接近 50，而不是接近 0。</li>
+<li><strong>权重反映重要性，但不贪大</strong>。收益率水平给了最高权重 0.25（融资成本最直接），曲线和汇率各 0.20，去美元化 0.20，中美利差最低 0.15。权重本身就是可调旋钮，逻辑随时间漂移时直接改一行。</li>
+<li><strong>系数是经验值，不是拟合出来的</strong>。比如 <code>yield_10y * 20</code> 意味着 5% 的 10Y 收益率就把这一维扣到 0。这种系数来自对历史区间的观察，<strong>不依赖任何机器学习拟合</strong>——刻意保持可解释，避免过拟合。</li>
+</ul>
+<p>这种”线性 + 截断”的朴素方式，换来的是一个<strong>没有任何隐藏自由度的打分器</strong>：调任何一个系数，你能立刻预判总分往哪边走。</p>
+<hr>
+<h2 id="四、数据层：三个公开数据源"><a href="#四、数据层：三个公开数据源" class="headerlink" title="四、数据层：三个公开数据源"></a>四、数据层：三个公开数据源</h2><p>整个评分只用三个数据接口，都走 akshare：</p>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>akshare 接口</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>美债收益率曲线</td>
+<td><code>bond_zh_us_rate()</code></td>
+<td>2Y&#x2F;5Y&#x2F;10Y&#x2F;30Y 美债 + 中国 10Y</td>
+</tr>
+<tr>
+<td>USD&#x2F;CNY 汇率</td>
+<td><code>currency_boc_sina(symbol=&quot;美元&quot;)</code></td>
+<td>央行中间价 + 20 日变动</td>
+</tr>
+<tr>
+<td>中国黄金&#x2F;外汇储备</td>
+<td><code>macro_china_fx_gold()</code></td>
+<td>储备绝对值 + 同比</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">fetch_bond_yields</span>():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;  [数据] 获取美债收益率曲线...&quot;</span>, file=sys.stderr)<br>    old_stdout = sys.stdout<br>    sys.stdout = sys.stderr          <span class="hljs-comment"># ⭐ 关键：把库的噪声重定向到 stderr</span><br>    <span class="hljs-keyword">try</span>:<br>        df = ak.bond_zh_us_rate()<br>    <span class="hljs-keyword">finally</span>:<br>        sys.stdout = old_stdout      <span class="hljs-comment"># 恢复，保证后续 print 走 stdout</span><br>    time.sleep(API_DELAY)            <span class="hljs-comment"># 限速，避免被封</span><br>    <span class="hljs-keyword">if</span> df <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> df.empty:<br>        <span class="hljs-keyword">return</span> pd.DataFrame()<br>    df.columns = [<span class="hljs-built_in">str</span>(c).strip() <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> df.columns]<br>    <span class="hljs-keyword">return</span> df<br></code></pre></td></tr></table></figure>
+
+<p>每个数据获取函数都用 <code>try/except</code> 包住，<strong>任何一路数据失败都返回空 DataFrame 而不是抛异常</strong>——下游有降级处理。<code>API_DELAY = 2</code> 秒的间隔是经验值，akshare 的东财接口对高频访问很敏感。</p>
+<hr>
+<h2 id="五、工程细节：那些不写不知道的小坑"><a href="#五、工程细节：那些不写不知道的小坑" class="headerlink" title="五、工程细节：那些不写不知道的小坑"></a>五、工程细节：那些不写不知道的小坑</h2><h3 id="1-stdout-→-stderr-重定向"><a href="#1-stdout-→-stderr-重定向" class="headerlink" title="1. stdout → stderr 重定向"></a>1. stdout → stderr 重定向</h3><p>上面代码里有一行容易被忽略：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">sys.stdout = sys.stderr<br><span class="hljs-keyword">try</span>:<br>    df = ak.bond_zh_us_rate()<br><span class="hljs-keyword">finally</span>:<br>    sys.stdout = old_stdout<br></code></pre></td></tr></table></figure>
+
+<p><strong>为什么这么做？</strong> akshare 内部会用 <code>tqdm</code> 打进度条，而且部分版本直接 <code>print</code> 调试信息到 <strong>stdout</strong>。如果这个脚本的 stdout 要被上游当成结构化输出（比如直接管道给 <code>json.loads</code>），那些进度条会污染输出、直接解析失败。</p>
+<p>把库的噪声重定向到 stderr、业务输出留在 stdout，是<strong>让脚本既能给人看（stderr 进度条）、又能给机器读（stdout 纯 JSON）</strong>的关键。这种”双通道”输出习惯在数据流水线里非常有用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 所有进度/调试 → stderr（人类看）</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;  [数据] 获取美债收益率曲线...&quot;</span>, file=sys.stderr)<br><br><span class="hljs-comment"># 唯一的结构化结果 → stdout（机器读）</span><br><span class="hljs-keyword">if</span> args.json:<br>    <span class="hljs-built_in">print</span>(json.dumps(result, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>))<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-防御式嵌套访问"><a href="#2-防御式嵌套访问" class="headerlink" title="2. 防御式嵌套访问"></a>2. 防御式嵌套访问</h3><p>工作流会把每个脚本的 JSON 输出汇总成一个大盘看板。但上游脚本可能因为数据缺失而只输出部分字段，直接 <code>data[&quot;metrics&quot;][&quot;us_yield_10y&quot;]</code> 一旦任一层缺失就抛 <code>KeyError</code>，整个看板生成崩溃。于是有一个 <code>safe_get</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">safe_get</span>(<span class="hljs-params">data, *keys, default=<span class="hljs-string">&quot;N/A&quot;</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;安全地嵌套访问 dict，任一层缺失就返回默认值&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(data, <span class="hljs-built_in">dict</span>):<br>        <span class="hljs-keyword">return</span> default<br>    <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> keys:<br>        v = data.get(k, default)<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(v, <span class="hljs-built_in">dict</span>):<br>            data = v<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">return</span> v <span class="hljs-keyword">if</span> v != default <span class="hljs-keyword">else</span> default<br>    <span class="hljs-keyword">return</span> default<br></code></pre></td></tr></table></figure>
+
+<p>这样 <code>safe_get(dollar_credit, &quot;metrics&quot;, &quot;us_yield_10y&quot;, default=&quot;?&quot;)</code> 永远不会炸。<strong>看板的健壮性不应该依赖每个子脚本都完美输出</strong>——用防御式访问把”上游坏了”降级成”这一格显示 N&#x2F;A”，而不是整个看板白屏。</p>
+<h3 id="3-优雅降级"><a href="#3-优雅降级" class="headerlink" title="3. 优雅降级"></a>3. 优雅降级</h3><p>当核心数据（美债收益率）完全拿不到时，脚本不会崩溃，而是输出一个明确的”数据不足”结构：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">build_empty_result</span>(<span class="hljs-params">today_str</span>):<br>    <span class="hljs-keyword">return</span> &#123;<br>        <span class="hljs-string">&quot;module&quot;</span>: <span class="hljs-string">&quot;② 美元信用跟踪&quot;</span>,<br>        <span class="hljs-string">&quot;date&quot;</span>: today_str,<br>        <span class="hljs-string">&quot;dollar_credit_score&quot;</span>: <span class="hljs-number">0</span>,<br>        <span class="hljs-string">&quot;credit_level&quot;</span>: <span class="hljs-string">&quot;moderate&quot;</span>,<br>        <span class="hljs-string">&quot;credit_label&quot;</span>: <span class="hljs-string">&quot;中等压力&quot;</span>,<br>        <span class="hljs-string">&quot;interpretation&quot;</span>: <span class="hljs-string">&quot;数据不足，无法生成评估。&quot;</span>,<br>        <span class="hljs-comment"># ... 其余字段留空</span><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>这保证了<strong>即使数据源当天挂掉，下游流水线拿到的也是一个合法的 JSON</strong>，而不是一个异常或空文件。对一个每天定时跑、上游偶发不稳的系统，这个设计把”数据源故障”从”致命错误”降级为”今天的某个维度缺失”。</p>
+<hr>
+<h2 id="六、集成：一函数一脚本，工作流编排"><a href="#六、集成：一函数一脚本，工作流编排" class="headerlink" title="六、集成：一函数一脚本，工作流编排"></a>六、集成：一函数一脚本，工作流编排</h2><p>这个评分模块不是孤立的，它是一个<strong>十模块宏观周期工作流的第 10 步</strong>。整个工作流遵循一条很朴素的组织原则：</p>
+<blockquote>
+<p><strong>一个功能一个脚本，每个脚本独立产出 JSON；一个工作流脚本负责串联、收集、汇总。</strong></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">SCRIPT_ORDER = [<br>    (<span class="hljs-string">&quot;1/10&quot;</span>,  <span class="hljs-string">&quot;朱格拉周期&quot;</span>,   <span class="hljs-string">&quot;juglar_tracker.py&quot;</span>),<br>    (<span class="hljs-string">&quot;2/10&quot;</span>,  <span class="hljs-string">&quot;基钦周期&quot;</span>,     <span class="hljs-string">&quot;kitchin_tracker.py&quot;</span>),<br>    (<span class="hljs-string">&quot;3/10&quot;</span>,  <span class="hljs-string">&quot;库兹涅茨周期&quot;</span>, <span class="hljs-string">&quot;kuznets_tracker.py&quot;</span>),<br>    (<span class="hljs-string">&quot;4/10&quot;</span>,  <span class="hljs-string">&quot;多周期共振&quot;</span>,   <span class="hljs-string">&quot;resonance_engine.py&quot;</span>),   <span class="hljs-comment"># 依赖 1-3</span><br>    (<span class="hljs-string">&quot;5/10&quot;</span>,  <span class="hljs-string">&quot;资产配置矩阵&quot;</span>, <span class="hljs-string">&quot;quadrant_allocator.py&quot;</span>),<br>    (<span class="hljs-string">&quot;6/10&quot;</span>,  <span class="hljs-string">&quot;地缘风险&quot;</span>,     <span class="hljs-string">&quot;geopolitical_risk_tracker.py&quot;</span>),<br>    (<span class="hljs-string">&quot;7/10&quot;</span>,  <span class="hljs-string">&quot;黑天鹅检测&quot;</span>,   <span class="hljs-string">&quot;black_swan_detector.py&quot;</span>),<br>    (<span class="hljs-string">&quot;8/10&quot;</span>,  <span class="hljs-string">&quot;反身性检测&quot;</span>,   <span class="hljs-string">&quot;reflexivity_detector.py&quot;</span>),<br>    (<span class="hljs-string">&quot;9/10&quot;</span>,  <span class="hljs-string">&quot;动态再平衡&quot;</span>,   <span class="hljs-string">&quot;rebalance_trigger.py&quot;</span>),  <span class="hljs-comment"># 依赖以上全部</span><br>    (<span class="hljs-string">&quot;10/10&quot;</span>, <span class="hljs-string">&quot;美元信用跟踪&quot;</span>, <span class="hljs-string">&quot;dollar_credit_tracker.py&quot;</span>),<br>]<br></code></pre></td></tr></table></figure>
+
+<p>工作流编排器做的事很轻：在容器里依次 <code>docker exec</code> 跑每个脚本、<code>docker exec cat</code> 读回各自写的 JSON、汇总成一个大盘看板、再 <code>docker cp</code> 同步到宿主机和容器（供下游策略读取）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">docker_exec</span>(<span class="hljs-params">script_name, timeout=<span class="hljs-number">40</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;在工作台容器内运行单个周期脚本&quot;&quot;&quot;</span><br>    script_path = os.path.join(SCRIPTS_DIR, script_name)<br>    result = subprocess.run(<br>        [<span class="hljs-string">&quot;docker&quot;</span>, <span class="hljs-string">&quot;exec&quot;</span>, <span class="hljs-string">&quot;workbench&quot;</span>, <span class="hljs-string">&quot;python3&quot;</span>, script_path],<br>        capture_output=<span class="hljs-literal">True</span>, text=<span class="hljs-literal">True</span>, timeout=timeout,<br>    )<br>    <span class="hljs-keyword">return</span> result<br><br><span class="hljs-keyword">for</span> prefix, name, script <span class="hljs-keyword">in</span> SCRIPT_ORDER:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[<span class="hljs-subst">&#123;prefix&#125;</span>] <span class="hljs-subst">&#123;name&#125;</span>...&quot;</span>, end=<span class="hljs-string">&quot; &quot;</span>, flush=<span class="hljs-literal">True</span>)<br>    start = time.time()<br>    result = docker_exec(script)<br>    elapsed = time.time() - start<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;OK (<span class="hljs-subst">&#123;elapsed:<span class="hljs-number">.1</span>f&#125;</span>s)&quot;</span> <span class="hljs-keyword">if</span> result.returncode == <span class="hljs-number">0</span><br>          <span class="hljs-keyword">else</span> <span class="hljs-string">f&quot;FAILED (exit=<span class="hljs-subst">&#123;result.returncode&#125;</span>)&quot;</span>)<br>    <span class="hljs-comment"># 读取该脚本的 JSON 输出...</span><br></code></pre></td></tr></table></figure>
+
+<p>这种结构的好处：</p>
+<ul>
+<li><strong>可独立调试</strong>。任何一个 tracker 都能单独 <code>python3 juglar_tracker.py --json</code> 跑起来看输出，不用拉起整套工作流。</li>
+<li><strong>故障隔离</strong>。某个脚本失败，编排器记一行 <code>FAILED</code>，照样收集其余脚本的结果，看板那一格显示 <code>&#123;&quot;error&quot;: &quot;...&quot;&#125;</code>。不会因为一个数据源挂了，整天的宏观判断全停。</li>
+<li><strong>可扩展</strong>。要加一个新维度（比如”商品&#x2F;美元负相关性”），写一个新脚本 + 在 <code>SCRIPT_ORDER</code> 里加一行，工作流编排器一行都不用改。</li>
+</ul>
+<hr>
+<h2 id="七、实跑结果：56-1-分意味着什么"><a href="#七、实跑结果：56-1-分意味着什么" class="headerlink" title="七、实跑结果：56.1 分意味着什么"></a>七、实跑结果：56.1 分意味着什么</h2><p>这是某次实跑的真实输出（数据截至跑批当日）：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>分数</th>
+<th>原始指标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>收益率水平</td>
+<td><strong>12.4</strong></td>
+<td>10Y &#x3D; 4.38%（高位，重扣）</td>
+</tr>
+<tr>
+<td>曲线形态</td>
+<td>59.3</td>
+<td>10Y−2Y &#x3D; +0.31%（正常）</td>
+</tr>
+<tr>
+<td>汇率趋势</td>
+<td>51.1</td>
+<td>USD&#x2F;CNY 20日 −0.11%（微贬）</td>
+</tr>
+<tr>
+<td>去美元化</td>
+<td>79.6</td>
+<td>黄金储备同比 +40.8%（大幅增持）</td>
+</tr>
+<tr>
+<td>中美利差</td>
+<td>100</td>
+<td>中美 10Y 利差 −2.65%（深度倒挂）</td>
+</tr>
+<tr>
+<td><strong>综合</strong></td>
+<td><strong>56.1 &#x2F; 中等压力</strong></td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>总分 **56.1，定性为”中等压力”**（40–60 区间）。</p>
+<p>光看这个总分意义不大，<strong>价值在于五个子分数的对比</strong>，它能讲出一个比”美元偏弱”具体得多的故事：</p>
+<ol>
+<li><strong>拉低总分的主因是收益率水平（12.4）和去美元化（79.6）</strong>。前者说明美债融资成本处于历史高位区间，后者说明全球第二大经济体在持续增持黄金、分散美元敞口——两者都直接侵蚀美元的信用基础。</li>
+<li><strong>但曲线没倒挂（59.3）、汇率也只是微贬（51.1）</strong>，说明市场尚未进入”衰退+抛售”的极端组合，所以是”中等压力”而不是”承压”或”危机”。</li>
+<li><strong>中美利差那维拿了满分 100</strong>，反映的是深度倒挂（美国利率远高于中国）。这一维满分反而值得警惕：它说明资金有强烈动机留在高息的美元资产里，但同时也意味着美元的高息是”硬撑”出来的，一旦降息周期开启，这一维会快速回落。</li>
+</ol>
+<p>这种<strong>子分数解读</strong>，才是这个打分系统相对一句”美元偏弱”的真正增量。</p>
+<p>最后，模型还输出三句话的资产含义，供下游策略直接消费：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-attr">&quot;asset_implications&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;gold&quot;</span><span class="hljs-punctuation">:</span>      <span class="hljs-string">&quot;利好黄金（美元信用承压）&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;a_shares&quot;</span><span class="hljs-punctuation">:</span>  <span class="hljs-string">&quot;中性偏多（人民币资产相对吸引力上升）&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;usd_assets&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;偏空（美元走弱风险）&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>注意这个映射是<strong>基于总分的简单阈值判断</strong>（&lt; 60 就利好黄金、偏空美元），不是预测。它的作用是给下游一个<strong>确定性的、可回测的开关</strong>，而不是替交易员做决定。</p>
+<hr>
+<h2 id="八、复盘：这套模型的边界"><a href="#八、复盘：这套模型的边界" class="headerlink" title="八、复盘：这套模型的边界"></a>八、复盘：这套模型的边界</h2><p>诚实地说，这套打分有几个明显局限：</p>
+<ul>
+<li><strong>系数是拍脑袋的经验值</strong>。<code>yield_10y * 20</code>、<code>gold_yoy * 0.5</code> 这些系数来自对历史区间的观察，但没有经过严格的回测优化。好处是可解释、不会过拟合；坏处是可能系统性高估或低估某个维度的权重。</li>
+<li>**五个维度未必真”正交”**。比如收益率水平和中美利差都含 10Y 美债收益率，存在信息重叠。要更严格，应该先做相关性分析、必要时降维。</li>
+<li><strong>去美元化信号用”黄金储备同比”做代理</strong>，是个粗粒度近似。真正的去美元化还包括央行购债、本币结算协议等，但那些数据要么不公开、要么频率太低。</li>
+<li><strong>线性映射 + 截断会压平极端值</strong>。比如收益率超过 5% 后这一维就归零，区分度丢失。对于”非常规”时期（如收益率急速飙升），模型的敏感度不足。</li>
+</ul>
+<p>下一步可改进的方向：把系数从经验值改成基于历史分位数的动态映射（收益率处于过去 5 年的什么分位）、引入更多去美元化代理指标、对五个维度做正交化预处理。</p>
+<p>但核心思路是不变的：<strong>把宏观判断从”感觉”变成”分数”，从”不可证伪”变成”可回测”，从”依赖人”变成”可追溯公式”。</strong> 哪怕这个分数不够精确，它也比一段自然语言的判断要有用得多——因为它能进入回测、能定阈值、能在偏离时报警。</p>
+<hr>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这套”美元信用健康度打分”记录了把一个主观宏观判断工程化的全过程：</p>
+<ul>
+<li><strong>领域建模</strong>：美元信用拆成五个相对正交的维度，每个映射到 0–100。</li>
+<li><strong>评分设计</strong>：线性映射 + 截断 + 加权，刻意保持可解释、零隐藏自由度。</li>
+<li><strong>数据层</strong>：三个免费公开源，每路失败可降级，限速防封。</li>
+<li><strong>工程实践</strong>：stdout&#x2F;stderr 双通道输出、防御式嵌套访问、优雅降级、一函数一脚本的模块化编排。</li>
+<li><strong>集成</strong>：作为十模块宏观工作流的一环，输出 JSON 供下游策略消费。</li>
+</ul>
+<p>它不是一套预测模型，而是一个<strong>把判断标准固化下来</strong>的工具。当你说”美元信用承压”时，背后能立刻指出是哪一维、扣了多少分、原始指标是多少——这才是量化系统该有的样子。</p>
+<blockquote>
+<p>一句话：<strong>能被拆成五个分数的宏观判断，永远比一段形容词更值得信任。</strong></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="print-no-link">#量化交易</a>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+        <a href="/tags/akshare/" class="print-no-link">#akshare</a>
+      
+        <a href="/tags/%E5%AE%8F%E8%A7%82%E5%88%86%E6%9E%90/" class="print-no-link">#宏观分析</a>
+      
+        <a href="/tags/%E7%BE%8E%E5%85%83%E4%BF%A1%E7%94%A8/" class="print-no-link">#美元信用</a>
+      
+        <a href="/tags/%E8%AF%84%E5%88%86%E6%A8%A1%E5%9E%8B/" class="print-no-link">#评分模型</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>用 5 个公开指标量化&#34;美元信用健康度&#34;——一套可复用的宏观打分系统</div>
+      <div>https://www.normdist.com/2026/06/28/ND-20260628-001-dollar-credit-scoring/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年6月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" title="东方财富北向资金双接口同时坏死——一个降级+迁移方案">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">东方财富北向资金双接口同时坏死——一个降级+迁移方案</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/06/27/ND-20260627-001-agent-execution-channel/" title="「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复">
+                        <span class="hidden-mobile">「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
