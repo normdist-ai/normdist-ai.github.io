@@ -1,0 +1,1261 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="从源码编译 llama.cpp（CUDA 加速）、配置 systemd 服务、编写 models.ini 预设文件的全流程指南，附 Qwen3.6-35B 双卡部署实战经验和踩坑记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="llama.cpp 从零安装配置指南：编译、systemd 服务、models.ini 详解">
+<meta property="og:url" content="https://www.normdist.com/2026/06/16/ND-20260617-001-llamacpp-install-models-ini-guide/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="从源码编译 llama.cpp（CUDA 加速）、配置 systemd 服务、编写 models.ini 预设文件的全流程指南，附 Qwen3.6-35B 双卡部署实战经验和踩坑记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-16T16:15:00.000Z">
+<meta property="article:modified_time" content="2026-06-16T16:12:50.319Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="模型部署">
+<meta property="article:tag" content="llama.cpp">
+<meta property="article:tag" content="CUDA">
+<meta property="article:tag" content="Qwen3.6">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>llama.cpp 从零安装配置指南：编译、systemd 服务、models.ini 详解 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">llama.cpp 从零安装配置指南：编译、systemd 服务、models.ini 详解</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-06-17 00:15" pubdate>
+          2026年6月17日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          48 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">llama.cpp 从零安装配置指南：编译、systemd 服务、models.ini 详解</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年6月17日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p><strong>作者:</strong> 主代理 · 2026-06-17<br><strong>参考:</strong> <a target="_blank" rel="noopener" href="https://unsloth.ai/docs/models/qwen3.6#mtp-qwen3.6-35b-a3b">Unsloth - Qwen3.6 How to Run Locally</a> · <a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp">llama.cpp GitHub</a></p>
+</blockquote>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>上一篇<a href="/2026/06/14/ND-20260614-001-llamacpp-models-max-auto-unload/">文章</a>讲了 router 模式下 <code>--models-max 1</code> 的作用，但没有涉及 llama.cpp 的安装过程和 models.ini 配置文件的写法。系统重装后需要从零搭建，趁这个机会把完整流程记录下来。</p>
+<p>本文环境：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CPU</td>
+<td>AMD Ryzen 7 5700G（8 核 16 线程）</td>
+</tr>
+<tr>
+<td>GPU</td>
+<td>2× RTX 2080Ti 魔改 22G（共 44G）</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>32G DDR4</td>
+</tr>
+<tr>
+<td>系统</td>
+<td>Ubuntu Server 24.04 LTS</td>
+</tr>
+<tr>
+<td>模型</td>
+<td>Qwen3.6-35B-A3B Q4_K_M（22G）</td>
+</tr>
+<tr>
+<td>存储</td>
+<td>NVMe SSD（模型文件）</td>
+</tr>
+</tbody></table>
+<h2 id="一、安装-llama-cpp"><a href="#一、安装-llama-cpp" class="headerlink" title="一、安装 llama.cpp"></a>一、安装 llama.cpp</h2><h3 id="1-1-前置依赖"><a href="#1-1-前置依赖" class="headerlink" title="1.1 前置依赖"></a>1.1 前置依赖</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt-get update<br><span class="hljs-built_in">sudo</span> apt-get install -y cmake build-essential git nvidia-cuda-toolkit<br></code></pre></td></tr></table></figure>
+
+<p><code>nvidia-cuda-toolkit</code> 提供 <code>nvcc</code> 编译器，是 CUDA 加速编译的必需品。Ubuntu 24.04 仓库自带 CUDA 12.0。</p>
+<h3 id="1-2-获取源码"><a href="#1-2-获取源码" class="headerlink" title="1.2 获取源码"></a>1.2 获取源码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> --depth 1 https://github.com/ggml-org/llama.cpp.git<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>网络问题</strong>：如果 GitHub 连接不稳定，可以使用代理或镜像下载 tar.gz 压缩包，解压后效果一样。</p>
+</blockquote>
+<h3 id="1-3-编译（CUDA-加速）"><a href="#1-3-编译（CUDA-加速）" class="headerlink" title="1.3 编译（CUDA 加速）"></a>1.3 编译（CUDA 加速）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> llama.cpp<br><br>cmake -B build \<br>    -DGGML_CUDA=ON \<br>    -DCMAKE_CUDA_ARCHITECTURES=75<br><br>cmake --build build --config Release -j$(<span class="hljs-built_in">nproc</span>)<br></code></pre></td></tr></table></figure>
+
+<p>关键参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GGML_CUDA</code></td>
+<td>ON</td>
+<td>启用 CUDA 后端</td>
+</tr>
+<tr>
+<td><code>CMAKE_CUDA_ARCHITECTURES</code></td>
+<td>75</td>
+<td>RTX 2080Ti 的算力架构（Turing）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>CUDA 架构对照</strong>：2060&#x2F;2070&#x2F;2080&#x2F;2080Ti &#x3D; 75，3090&#x2F;4090 &#x3D; 86&#x2F;89，A100 &#x3D; 80。编译时指定正确架构可以获得针对性优化。不确定时可以省略此参数，让 CMake 自动检测。</p>
+</blockquote>
+<p>编译完成后，可执行文件在 <code>build/bin/</code> 下，其中最重要的是 <code>llama-server</code>。</p>
+<h3 id="1-4-验证编译"><a href="#1-4-验证编译" class="headerlink" title="1.4 验证编译"></a>1.4 验证编译</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">./build/bin/llama-server --version<br></code></pre></td></tr></table></figure>
+
+<p>输出中应包含 <code>CUDA : ARCHS = 750</code> 字样，表示 CUDA 后端已启用。</p>
+<h2 id="二、配置-systemd-服务"><a href="#二、配置-systemd-服务" class="headerlink" title="二、配置 systemd 服务"></a>二、配置 systemd 服务</h2><h3 id="2-1-服务文件"><a href="#2-1-服务文件" class="headerlink" title="2.1 服务文件"></a>2.1 服务文件</h3><p>创建 <code>/etc/systemd/system/llama-server.service</code>：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=llama.cpp Server (Router Mode)<br><span class="hljs-attr">Documentation</span>=https://github.com/ggml-org/llama.cpp<br><span class="hljs-attr">After</span>=network-<span class="hljs-literal">on</span>line.target<br><span class="hljs-attr">Wants</span>=network-<span class="hljs-literal">on</span>line.target<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=simple<br><span class="hljs-attr">User</span>=tony<br><span class="hljs-attr">Environment</span>=CUDA_VISIBLE_DEVICES=<span class="hljs-number">0</span>,<span class="hljs-number">1</span><br><span class="hljs-attr">Environment</span>=OMP_NUM_THREADS=<span class="hljs-number">8</span><br><span class="hljs-attr">ExecStart</span>=/home/tony/llama.cpp/build/bin/llama-server \<br>    --models-preset /home/tony/.llama.cpp/models.ini \<br>    --host 0.0.0.0 --port 8080 \<br>    --models-max 1 \<br>    --metrics<br><span class="hljs-attr">Restart</span>=<span class="hljs-literal">on</span>-failure<br><span class="hljs-attr">RestartSec</span>=<span class="hljs-number">5</span><br><span class="hljs-attr">StandardOutput</span>=append:/home/tony/llama-server.log<br><span class="hljs-attr">StandardError</span>=append:/home/tony/llama-server.log<br><span class="hljs-attr">MemoryMax</span>=<span class="hljs-number">40</span>G<br><span class="hljs-attr">MemoryHigh</span>=<span class="hljs-number">35</span>G<br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=multi-user.target<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-命令行参数-vs-INI-参数"><a href="#2-2-命令行参数-vs-INI-参数" class="headerlink" title="2.2 命令行参数 vs INI 参数"></a>2.2 命令行参数 vs INI 参数</h3><p>这是最容易混淆的地方。llama.cpp 的参数分为两个层级：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>控制什么</th>
+<th>放哪里</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Router 级</strong></td>
+<td>服务器怎么监听、最多同时加载几个模型</td>
+<td>命令行（systemd 的 ExecStart）</td>
+</tr>
+<tr>
+<td><strong>模型级</strong></td>
+<td>单个模型怎么加载、采样参数</td>
+<td>models.ini</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>层级</th>
+<th align="center">放 models.ini</th>
+<th align="center">放命令行</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>tensor-split</td>
+<td>模型级</td>
+<td align="center">✅</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>n-gpu-layers</td>
+<td>模型级</td>
+<td align="center">✅</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>flash-attn</td>
+<td>模型级</td>
+<td align="center">✅</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>temp &#x2F; top-p &#x2F; top-k</td>
+<td>模型级</td>
+<td align="center">✅</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>models-max</td>
+<td>Router 级</td>
+<td align="center">❌</td>
+<td align="center">✅</td>
+</tr>
+<tr>
+<td>port &#x2F; host</td>
+<td>Router 级</td>
+<td align="center">❌</td>
+<td align="center">✅</td>
+</tr>
+<tr>
+<td>models-preset</td>
+<td>Router 级</td>
+<td align="center">❌</td>
+<td align="center">✅</td>
+</tr>
+</tbody></table>
+<p><strong>判断规则</strong>：如果参数影响单个模型怎么跑，放 INI；如果参数影响 Router 怎么调度，放命令行。</p>
+<h3 id="2-3-启用服务"><a href="#2-3-启用服务" class="headerlink" title="2.3 启用服务"></a>2.3 启用服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl daemon-reload<br><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">enable</span> llama-server<br><span class="hljs-built_in">sudo</span> systemctl start llama-server<br></code></pre></td></tr></table></figure>
+
+<h2 id="三、编写-models-ini"><a href="#三、编写-models-ini" class="headerlink" title="三、编写 models.ini"></a>三、编写 models.ini</h2><p>models.ini 是 llama.cpp router 模式的模型预设文件，定义了每个模型的加载方式和运行参数。</p>
+<h3 id="3-1-完整配置示例"><a href="#3-1-完整配置示例" class="headerlink" title="3.1 完整配置示例"></a>3.1 完整配置示例</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># llama.cpp models preset</span><br><br><span class="hljs-section">[*]</span><br><span class="hljs-attr">threads</span> = <span class="hljs-number">8</span><br><span class="hljs-attr">n-gpu-layers</span> = <span class="hljs-number">99</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">0.7</span>,<span class="hljs-number">0.3</span><br><span class="hljs-attr">main-gpu</span> = <span class="hljs-number">0</span><br><span class="hljs-attr">parallel</span> = <span class="hljs-number">1</span><br><span class="hljs-attr">cont-batching</span> = <span class="hljs-number">1</span><br><span class="hljs-attr">sleep-idle-seconds</span> = <span class="hljs-number">600</span><br><span class="hljs-attr">flash-attn</span> = <span class="hljs-number">1</span><br><br><span class="hljs-section">[HauhauCS/Qwen3.6-35B-A3B-Uncensored]</span><br><span class="hljs-attr">model</span> = /mnt/nvme/models/Qwen3.<span class="hljs-number">6</span>-<span class="hljs-number">35</span>B-A3B-Q4_K_M.gguf<br><span class="hljs-attr">mmproj</span> = /mnt/nvme/models/mmproj-Qwen3.<span class="hljs-number">6</span>-<span class="hljs-number">35</span>B-A3B-f16.gguf<br><span class="hljs-attr">ctx-size</span> = <span class="hljs-number">262144</span><br><span class="hljs-attr">temp</span> = <span class="hljs-number">0.7</span><br><span class="hljs-attr">top-p</span> = <span class="hljs-number">0.8</span><br><span class="hljs-attr">top-k</span> = <span class="hljs-number">20</span><br><span class="hljs-attr">presence-penalty</span> = <span class="hljs-number">1.5</span><br><span class="hljs-attr">min-p</span> = <span class="hljs-number">0</span><br><span class="hljs-attr">reasoning</span> = <span class="hljs-literal">off</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-通配符段：提取公共参数"><a href="#3-2-通配符段：提取公共参数" class="headerlink" title="3.2 [*] 通配符段：提取公共参数"></a>3.2 <code>[*]</code> 通配符段：提取公共参数</h3><p><code>[*]</code> 是全局默认段，里面定义的参数会被所有模型继承。这样每个模型段只需要写<strong>差异化参数</strong>，避免重复。</p>
+<p>上面的配置中：</p>
+<ul>
+<li><code>[*]</code> 段定义了 GPU 分配、线程、flash-attn 等<strong>所有模型共用的参数</strong></li>
+<li>模型段只保留各自特有的路径、上下文长度和采样参数</li>
+</ul>
+<p>如果后续添加第二个模型（比如 Gemma4-26B），只需：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Google/Gemma4-26B]</span><br><span class="hljs-attr">model</span> = /mnt/nvme/models/Gemma4-<span class="hljs-number">26</span>B-Q4_K_M.gguf<br><span class="hljs-attr">mmproj</span> = /mnt/nvme/models/mmproj-Gemma4-<span class="hljs-number">26</span>B-f16.gguf<br><span class="hljs-attr">ctx-size</span> = <span class="hljs-number">131072</span><br><span class="hljs-attr">temp</span> = <span class="hljs-number">0.7</span><br><span class="hljs-attr">top-p</span> = <span class="hljs-number">0.8</span><br><span class="hljs-attr">top-k</span> = <span class="hljs-number">20</span><br><span class="hljs-attr">presence-penalty</span> = <span class="hljs-number">1.5</span><br><span class="hljs-attr">min-p</span> = <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>公共参数自动从 <code>[*]</code> 继承，无需重复。</p>
+<h3 id="3-3-参数详解"><a href="#3-3-参数详解" class="headerlink" title="3.3 参数详解"></a>3.3 参数详解</h3><h4 id="GPU-分配"><a href="#GPU-分配" class="headerlink" title="GPU 分配"></a>GPU 分配</h4><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>n-gpu-layers</code></td>
+<td>99</td>
+<td>全部层卸载到 GPU（超过模型实际层数即可）</td>
+</tr>
+<tr>
+<td><code>tensor-split</code></td>
+<td>0.7,0.3</td>
+<td>双卡按 70&#x2F;30 比例分配张量，GPU0 承担更多</td>
+</tr>
+<tr>
+<td><code>main-gpu</code></td>
+<td>0</td>
+<td>主 GPU 设为 0 号卡</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>tensor-split 调参</strong>：两卡显存不等时，偏移权重向大显存卡。均等显存时 0.5&#x2F;0.5 也可以，但实际测试 0.7&#x2F;0.3 在 MoE 模型上吞吐更均衡——GPU0 处理 attention（访存密集），GPU1 处理 FFN（计算密集）。</p>
+</blockquote>
+<h4 id="推理优化"><a href="#推理优化" class="headerlink" title="推理优化"></a>推理优化</h4><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>flash-attn</code></td>
+<td>1</td>
+<td>启用 Flash Attention，减少显存占用、加速长上下文推理</td>
+</tr>
+<tr>
+<td><code>threads</code></td>
+<td>8</td>
+<td>CPU 线程数（非 GPU 部分），建议设为物理核数的一半</td>
+</tr>
+<tr>
+<td><code>cont-batching</code></td>
+<td>1</td>
+<td>连续批处理，提高并发请求效率</td>
+</tr>
+<tr>
+<td><code>parallel</code></td>
+<td>1</td>
+<td>并行序列数（单用户场景设 1 即可）</td>
+</tr>
+</tbody></table>
+<h4 id="采样参数"><a href="#采样参数" class="headerlink" title="采样参数"></a>采样参数</h4><p>这些参数来自 <a target="_blank" rel="noopener" href="https://unsloth.ai/docs/models/qwen3.6#mtp-qwen3.6-35b-a3b">Unsloth 官方文档</a>中 Qwen3.6 的 <strong>Instruct（Non-Thinking）Mode</strong> 推荐值：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>temp</code></td>
+<td>0.7</td>
+<td>温度，控制输出随机性</td>
+</tr>
+<tr>
+<td><code>top-p</code></td>
+<td>0.8</td>
+<td>核采样概率阈值</td>
+</tr>
+<tr>
+<td><code>top-k</code></td>
+<td>20</td>
+<td>只从概率最高的 20 个 token 中采样</td>
+</tr>
+<tr>
+<td><code>presence-penalty</code></td>
+<td>1.5</td>
+<td>存在惩罚，抑制重复内容</td>
+</tr>
+<tr>
+<td><code>min-p</code></td>
+<td>0</td>
+<td>最低概率阈值（0 &#x3D; 不启用）</td>
+</tr>
+<tr>
+<td><code>reasoning</code></td>
+<td>off</td>
+<td>关闭思维链模式</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Thinking vs Non-Thinking</strong>：Qwen3.6 支持混合思维模式。Thinking Mode 适合复杂推理（数学、代码），参数不同（temp&#x3D;1.0, top-p&#x3D;0.95）。我们的场景是日常对话和工具调用，使用 Non-Thinking Mode 的参数更合适。</p>
+</blockquote>
+<h4 id="上下文与休眠"><a href="#上下文与休眠" class="headerlink" title="上下文与休眠"></a>上下文与休眠</h4><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctx-size</code></td>
+<td>262144</td>
+<td>256K 上下文（Qwen3.6 原生支持）</td>
+</tr>
+<tr>
+<td><code>sleep-idle-seconds</code></td>
+<td>600</td>
+<td>空闲 10 分钟后自动卸载模型权重，释放显存</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><code>sleep-idle-seconds</code> 有一个<a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/issues/19379">已知 bug</a>：休眠后子进程仍占用约 600MB 显存。配合 <code>--models-max 1</code> 使用可以将残留限制在一份。</p>
+</blockquote>
+<h3 id="3-4-⚠️-踩坑：version-1-导致出现多余的-Default-模型"><a href="#3-4-⚠️-踩坑：version-1-导致出现多余的-Default-模型" class="headerlink" title="3.4 ⚠️ 踩坑：version = 1 导致出现多余的 Default 模型"></a>3.4 ⚠️ 踩坑：<code>version = 1</code> 导致出现多余的 Default 模型</h3><p>在 models.ini 开头加上 <code>version = 1</code> 声明使用新版预设格式后，启动日志中会多出一个名为 <code>default</code> 的模型：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs markdown">Available models (2) (<span class="hljs-emphasis">*: custom preset)</span><br><span class="hljs-emphasis">  *</span> HauhauCS/Qwen3.6-35B-A3B-Uncensored<br><span class="hljs-bullet">  *</span> default                          ← 这个不该出现<br></code></pre></td></tr></table></figure>
+
+<p><strong>原因</strong>：<code>version = 1</code> 启用了新版格式解析器，它除了加载自定义预设外，还会自动生成一个 <code>default</code> 入口（指向 INI 中第一个模型或某个内置默认配置）。</p>
+<p><strong>解决方法</strong>：注释掉或删除 <code>version = 1</code> 这一行。去掉后日志干净了：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">Available models (1) (<span class="hljs-strong">*: custom preset)</span><br><span class="hljs-strong">  *</span> HauhauCS/Qwen3.6-35B-A3B-Uncensored<br></code></pre></td></tr></table></figure>
+
+<p>不影响任何功能，models.ini 的其他参数全部正常生效。</p>
+<h2 id="四、GPU-功耗管理"><a href="#四、GPU-功耗管理" class="headerlink" title="四、GPU 功耗管理"></a>四、GPU 功耗管理</h2><p>魔改卡的功耗控制很重要，可以在降低发热的同时保持推理性能：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 设置功耗上限</span><br><span class="hljs-built_in">sudo</span> nvidia-smi -i 0 -pl 130    <span class="hljs-comment"># GPU0: 130W</span><br><span class="hljs-built_in">sudo</span> nvidia-smi -i 1 -pl 140    <span class="hljs-comment"># GPU1: 140W</span><br><br><span class="hljs-comment"># 开启 persistence mode（驱动常驻，避免反复初始化）</span><br><span class="hljs-built_in">sudo</span> nvidia-smi -pm 1<br></code></pre></td></tr></table></figure>
+
+<p>可以通过 systemd 服务实现开机自动设置：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># /etc/systemd/system/gpu-pl.service</span><br><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=Set GPU Power Limits<br><span class="hljs-attr">After</span>=network.target<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=<span class="hljs-literal">on</span>eshot<br><span class="hljs-attr">ExecStart</span>=/usr/bin/nvidia-smi -i <span class="hljs-number">0</span> -pl <span class="hljs-number">130</span><br><span class="hljs-attr">ExecStart</span>=/usr/bin/nvidia-smi -i <span class="hljs-number">1</span> -pl <span class="hljs-number">140</span><br><span class="hljs-attr">ExecStart</span>=/usr/bin/nvidia-smi -pm <span class="hljs-number">1</span><br><span class="hljs-attr">RemainAfterExit</span>=<span class="hljs-literal">yes</span><br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=multi-user.target<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">enable</span> gpu-pl<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>功耗值选择</strong>：2080Ti 默认功耗 250-260W，实测推理时降到 130-140W 性能损失不大（MoE 模型 active parameters 少，计算压力低），但温度和功耗大幅下降，长期运行更稳定。</p>
+</blockquote>
+<h2 id="五、验证"><a href="#五、验证" class="headerlink" title="五、验证"></a>五、验证</h2><h3 id="5-1-服务状态"><a href="#5-1-服务状态" class="headerlink" title="5.1 服务状态"></a>5.1 服务状态</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl status llama-server<br></code></pre></td></tr></table></figure>
+
+<p>应显示 <code>active (running)</code>。</p>
+<h3 id="5-2-查看可用模型"><a href="#5-2-查看可用模型" class="headerlink" title="5.2 查看可用模型"></a>5.2 查看可用模型</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl http://localhost:8080/v1/models<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-3-发送测试请求"><a href="#5-3-发送测试请求" class="headerlink" title="5.3 发送测试请求"></a>5.3 发送测试请求</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl http://localhost:8080/v1/chat/completions \<br>    -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \<br>    -d <span class="hljs-string">&#x27;&#123;</span><br><span class="hljs-string">        &quot;model&quot;: &quot;HauhauCS/Qwen3.6-35B-A3B-Uncensored&quot;,</span><br><span class="hljs-string">        &quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;你好&quot;&#125;],</span><br><span class="hljs-string">        &quot;max_tokens&quot;: 100</span><br><span class="hljs-string">    &#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-4-查看吞吐量"><a href="#5-4-查看吞吐量" class="headerlink" title="5.4 查看吞吐量"></a>5.4 查看吞吐量</h3><p>服务启动后首次请求会冷启动加载模型（NVMe 上约 10-20 秒），加载完成后 Qwen3.6-35B-A3B 在双 2080Ti 上的推理速度可达 <strong>~100+ TPS</strong>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>编译</td>
+<td><code>GGML_CUDA=ON</code> + 正确的 CUDA 架构</td>
+</tr>
+<tr>
+<td>systemd</td>
+<td>Router 级参数放命令行，模型级参数放 INI</td>
+</tr>
+<tr>
+<td>models.ini</td>
+<td>用 <code>[*]</code> 段提取公共参数，干净不重复</td>
+</tr>
+<tr>
+<td>采样参数</td>
+<td>参考 <a target="_blank" rel="noopener" href="https://unsloth.ai/docs/models/qwen3.6">Unsloth 文档</a> 的推荐值</td>
+</tr>
+<tr>
+<td><code>version = 1</code></td>
+<td>会导致出现多余 default 模型，不需要时注释掉</td>
+</tr>
+<tr>
+<td>功耗管理</td>
+<td>降功耗 + persistence mode + systemd 自启</td>
+</tr>
+</tbody></table>
+<p>完整配置文件和服务脚本可以直接复用，替换路径和模型名即可。</p>
+<hr>
+<blockquote>
+<p><strong>参考链接：</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://unsloth.ai/docs/models/qwen3.6#mtp-qwen3.6-35b-a3b">Unsloth - Qwen3.6 How to Run Locally</a> — 采样参数、硬件需求、运行指南</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp">llama.cpp GitHub</a> — 源码和文档</li>
+<li><a href="/2026/06/14/ND-20260614-001-llamacpp-models-max-auto-unload/">上一篇：llama.cpp Router 模式自动卸载模型</a> — <code>--models-max 1</code> 详解</li>
+</ul>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%9C%AC%E5%9C%B0%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="category-chain-item">本地大模型</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/" class="print-no-link">#模型部署</a>
+      
+        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
+      
+        <a href="/tags/CUDA/" class="print-no-link">#CUDA</a>
+      
+        <a href="/tags/Qwen3-6/" class="print-no-link">#Qwen3.6</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>llama.cpp 从零安装配置指南：编译、systemd 服务、models.ini 详解</div>
+      <div>https://www.normdist.com/2026/06/16/ND-20260617-001-llamacpp-install-models-ini-guide/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年6月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/06/19/ND-20260620-001-hermes-gateway-management-pitfalls/" title="Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/06/14/ND-20260614-001-llamacpp-models-max-auto-unload/" title="llama.cpp Router 模式：切换模型时自动卸载前一个模型">
+                        <span class="hidden-mobile">llama.cpp Router 模式：切换模型时自动卸载前一个模型</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
