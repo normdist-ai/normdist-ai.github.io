@@ -19,28 +19,29 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="贪吃蛇游戏项目试运行报告，记录多Agent协作开发过程及遇到的问题与解决方案。">
+    <meta name="description" content="AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型背景：一个 Linux Agent 想操作 Windows一个运行在 Linux 服务器上的 AI Agent，已经能通过 CDP（Chrome DevTools Protocol）远程操控 Windows 上的 Edge 浏览器。现在需求升级了——不只是浏览器，还要控制整个 Windows 操作系统：文件">
 <meta property="og:type" content="article">
-<meta property="og:title" content="贪吃蛇项目试运行报告">
-<meta property="og:url" content="https://www.normdist.com/2026/03/14/ND-20260314-003-snake-project-report/index.html">
+<meta property="og:title" content="AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型">
+<meta property="og:url" content="https://www.normdist.com/2026/07/04/ND-20260704-001-windows-remote-control-architecture/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="贪吃蛇游戏项目试运行报告，记录多Agent协作开发过程及遇到的问题与解决方案。">
+<meta property="og:description" content="AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型背景：一个 Linux Agent 想操作 Windows一个运行在 Linux 服务器上的 AI Agent，已经能通过 CDP（Chrome DevTools Protocol）远程操控 Windows 上的 Edge 浏览器。现在需求升级了——不只是浏览器，还要控制整个 Windows 操作系统：文件">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-programmer.jpg">
-<meta property="article:published_time" content="2026-03-13T17:40:00.000Z">
-<meta property="article:modified_time" content="2026-03-15T16:36:49.443Z">
+<meta property="article:published_time" content="2026-07-03T19:50:00.000Z">
+<meta property="article:modified_time" content="2026-07-03T19:47:32.209Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="多Agent协作">
-<meta property="article:tag" content="OpenClaw">
-<meta property="article:tag" content="贪吃蛇">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="SSH">
+<meta property="article:tag" content="远程控制">
+<meta property="article:tag" content="UFO-Agent">
+<meta property="article:tag" content="UIAutomation">
+<meta property="article:tag" content="架构选型">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-programmer.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>贪吃蛇项目试运行报告 - 进化概率论</title>
+  <title>AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -335,7 +336,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">贪吃蛇项目试运行报告</span>
+            <span id="subtitle">AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型</span>
           
         </div>
 
@@ -346,8 +347,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-14 01:40" pubdate>
-          2026年3月14日 凌晨
+        <time datetime="2026-07-04 03:50" pubdate>
+          2026年7月4日 凌晨
         </time>
       </span>
     
@@ -358,7 +359,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          603 字
+          3.5k 字
         
       </span>
     
@@ -369,7 +370,7 @@
         
         
         
-          6 分钟
+          30 分钟
         
       </span>
     
@@ -417,12 +418,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">贪吃蛇项目试运行报告</h1>
+            <h1 id="seo-header">AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年3月16日 凌晨
+                    本文最后更新于 2026年7月4日 凌晨
                   
                 
               </p>
@@ -430,117 +431,174 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260314-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-14<br><strong>作者</strong>: 小瑞</p>
-<h2 id="一、项目概述"><a href="#一、项目概述" class="headerlink" title="一、项目概述"></a>一、项目概述</h2><table>
+                <h1 id="AI-Agent-如何远程控制-Windows：SSH-MCP-CDP-三层方案选型"><a href="#AI-Agent-如何远程控制-Windows：SSH-MCP-CDP-三层方案选型" class="headerlink" title="AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型"></a>AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型</h1><h2 id="背景：一个-Linux-Agent-想操作-Windows"><a href="#背景：一个-Linux-Agent-想操作-Windows" class="headerlink" title="背景：一个 Linux Agent 想操作 Windows"></a>背景：一个 Linux Agent 想操作 Windows</h2><p>一个运行在 Linux 服务器上的 AI Agent，已经能通过 CDP（Chrome DevTools Protocol）远程操控 Windows 上的 Edge 浏览器。现在需求升级了——不只是浏览器，还要控制<strong>整个 Windows 操作系统</strong>：文件管理、应用启动、系统设置、桌面 GUI 交互。</p>
+<p>核心约束很明确：<strong>所有方案必须从 Linux 远程控制 Windows</strong>，不能在 Windows 上跑 Agent 主进程。</p>
+<p>这是一个典型的”跨 OS 远程控制”架构选型问题。本文记录了完整的调研过程和最终决策。</p>
+<h2 id="候选方案全景扫描"><a href="#候选方案全景扫描" class="headerlink" title="候选方案全景扫描"></a>候选方案全景扫描</h2><p>市面上能做”AI 控制 GUI”的方案不少，但加上”从 Linux 远程控制 Windows”这个约束后，可选范围迅速收窄。以下是逐一评估。</p>
+<h3 id="方案一：Microsoft-UFO-Agent（UI-Automation-原生方案）"><a href="#方案一：Microsoft-UFO-Agent（UI-Automation-原生方案）" class="headerlink" title="方案一：Microsoft UFO-Agent（UI Automation 原生方案）"></a>方案一：Microsoft UFO-Agent（UI Automation 原生方案）</h3><p><a target="_blank" rel="noopener" href="https://github.com/microsoft/UFO">UFO-Agent</a> 是微软官方出品的 Windows GUI 自动化 Agent，MIT 开源。</p>
+<p><strong>架构亮点</strong>：UFO 不依赖截图和视觉模型，而是直接调用 Windows 内置的 <strong>UI Automation (UIA) API</strong>——这是 Windows 的无障碍接口（Accessibility API）。通过 UIA 树获取应用程序的 UI 元素结构（按钮、菜单、输入框），再通过 UIA 直接操作这些元素。</p>
+<p>双 Agent 架构：</p>
+<ul>
+<li><strong>AppAgent</strong>：分析用户意图，从已安装应用中选择合适的工具</li>
+<li><strong>ActAgent</strong>：在选定应用内部执行具体操作（点击、输入、滚动）</li>
+</ul>
+<p><strong>远程控制评估</strong>：</p>
+<p>UFO 支持 RESTful API 模式，可以在 Windows 上作为 HTTP 服务运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Windows 侧部署</span><br>pip install ufo-agent<br>python -m ufo.restful_api --host 0.0.0.0 --port 8000<br><br><span class="hljs-comment"># Linux 侧调用</span><br>curl -X POST http://&lt;windows-ip&gt;:8000/api/task \<br>  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \<br>  -d <span class="hljs-string">&#x27;&#123;&quot;task&quot;: &quot;打开文件管理器，在D盘创建一个名为test的文件夹&quot;&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<table>
 <thead>
 <tr>
-<th>项目</th>
-<th>内容</th>
+<th>维度</th>
+<th>评估</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>项目名称</td>
-<td>贪吃蛇游戏</td>
+<td>可行性</td>
+<td>✅ 高度可行（HTTP Bridge）</td>
 </tr>
 <tr>
-<td>开发时间</td>
-<td>2026-03-13 ~ 2026-03-14</td>
+<td>延迟</td>
+<td>低（局域网 &lt;50ms，LLM 调用 2-5s&#x2F;步）</td>
 </tr>
 <tr>
-<td>团队成员</td>
-<td>小瑞（总经理）、韩梅梅（产品经理）、李雷（项目经理）、吉姆（开发工程师）、波利（项目助理）</td>
+<td>精确度</td>
+<td>⭐⭐⭐⭐⭐（原生 UIA，元素级定位）</td>
 </tr>
 <tr>
-<td>技术栈</td>
-<td>HTML5 Canvas + JavaScript</td>
+<td>依赖</td>
+<td>需 GPT-4o API Key</td>
+</tr>
+<tr>
+<td>成熟度</td>
+<td><strong>8&#x2F;10</strong></td>
 </tr>
 </tbody></table>
-<h2 id="二、遇到的问题及解决方案"><a href="#二、遇到的问题及解决方案" class="headerlink" title="二、遇到的问题及解决方案"></a>二、遇到的问题及解决方案</h2><table>
+<p><strong>优势</strong>：精确度极高（远超截图方案），微软官方维护，文档完善。<br><strong>劣势</strong>：强依赖 GPT 模型 API，仅支持 Windows。</p>
+<h3 id="方案二：OmniParser-v2（视觉解析中间件）"><a href="#方案二：OmniParser-v2（视觉解析中间件）" class="headerlink" title="方案二：OmniParser v2（视觉解析中间件）"></a>方案二：OmniParser v2（视觉解析中间件）</h3><p><a target="_blank" rel="noopener" href="https://github.com/microsoft/OmniParser">OmniParser</a> 同样来自微软，但定位不同——它不是完整的 Agent，而是<strong>屏幕解析中间件</strong>：把截图转换为结构化的 UI 元素描述。</p>
+<p>工作链路：截图 → YOLOv8 图标检测 + OCR 文本识别 → 元素聚合 + 坐标映射 → 结构化 JSON → 交给任意 LLM 决策。</p>
+<p><strong>关键定位</strong>：OmniParser 是任何视觉 Agent 的「眼睛」，但不是完整方案。需要自行组装”截图采集 → OmniParser 解析 → LLM 决策 → 输入注入”的完整链路。</p>
+<p>纯视觉方案的好处是<strong>跨平台</strong>，但劣势是需要自己搭建完整的基础设施，且截图精度不如 UIA。</p>
+<p>成熟度：<strong>7&#x2F;10</strong>（作为组件优秀，作为方案需大量集成工作）。</p>
+<h3 id="方案三：Anthropic-Computer-Use"><a href="#方案三：Anthropic-Computer-Use" class="headerlink" title="方案三：Anthropic Computer Use"></a>方案三：Anthropic Computer Use</h3><p>Claude 的 Computer Use 通过”反复截图 → 分析 → 输出操作指令 → 执行 → 再截图验证”的循环驱动。</p>
+<p>问题在于：<strong>官方参考实现是 Linux Docker 容器</strong>，不原生支持 Windows 桌面控制。要适配 Windows，需要自建 VNC 桥接或截图+执行服务。</p>
+<table>
 <thead>
 <tr>
-<th>#</th>
-<th>问题</th>
-<th>解决方案</th>
-<th>状态</th>
+<th>维度</th>
+<th>评估</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>1</td>
-<td>文件命名规范不统一</td>
-<td>简化编号格式</td>
-<td>✅</td>
+<td>延迟</td>
+<td>高（10-20s&#x2F;步）</td>
 </tr>
 <tr>
-<td>2</td>
-<td>代理技能权限为空</td>
-<td>配置35个技能权限</td>
-<td>✅</td>
+<td>精确度</td>
+<td>⭐⭐⭐（截图不如 UIA）</td>
 </tr>
 <tr>
-<td>3</td>
-<td>nginx无法访问用户目录</td>
-<td>复制文件到&#x2F;var&#x2F;www&#x2F;html&#x2F;</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>4</td>
-<td>中文文件名乱码</td>
-<td>添加charset utf-8</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>5</td>
-<td>browser-use未安装</td>
-<td>安装Python包</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>6</td>
-<td>任务可能无限期等待</td>
-<td>新增超时管理规范</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>7</td>
-<td>线上访问404</td>
-<td>同步文件到正确目录</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>8</td>
-<td>结束页未显示长度</td>
-<td>添加finalLength字段</td>
-<td>✅</td>
+<td>工程量</td>
+<td>大量自建基础设施</td>
 </tr>
 </tbody></table>
-<h2 id="三、良好经验"><a href="#三、良好经验" class="headerlink" title="三、良好经验"></a>三、良好经验</h2><ol>
-<li>项目文件统一路径：<code>/home/jarvis/Documents/projects/openclaw/[项目名]</code></li>
-<li>消息模板规范：发件人、收件人、唯一消息ID</li>
-<li>任务超时机制：简单30分钟、中等2小时、复杂4小时</li>
-<li>文档分类管理：SOP&#x2F;WI&#x2F;QP&#x2F;STD&#x2F;FR</li>
+<p>适合需要 Claude 高级推理能力的复杂场景，但对大多数 Windows 操作来说”杀鸡用牛刀”。</p>
+<h3 id="方案四：OpenAI-Operator-x2F-CUA"><a href="#方案四：OpenAI-Operator-x2F-CUA" class="headerlink" title="方案四：OpenAI Operator &#x2F; CUA"></a>方案四：OpenAI Operator &#x2F; CUA</h3><p>OpenAI 的 CUA 在<strong>云端虚拟环境</strong>中操作，不是控制用户本地的 Windows。对”远程控制本地 Windows 桌面”这一需求基本不适用。排除。</p>
+<h3 id="方案五：其他开源项目"><a href="#方案五：其他开源项目" class="headerlink" title="方案五：其他开源项目"></a>方案五：其他开源项目</h3><ul>
+<li><strong>UI-TARS</strong>（字节跳动）：端到端视觉 GUI Agent，开源模型可本地部署，平台无关。模型能力强但工程化需自建。<strong>6&#x2F;10</strong></li>
+<li><strong>OS-Copilot &#x2F; FRIDAY</strong>：学术研究项目，主要面向 Linux&#x2F;macOS。<strong>5&#x2F;10</strong></li>
+<li><strong>OpenAdapt</strong>：RPA 录制回放 + LLM，早期项目。<strong>4&#x2F;10</strong></li>
+<li><strong>Self-Operating Computer</strong>：概念验证级别。<strong>4&#x2F;10</strong></li>
+</ul>
+<h2 id="核心对比：五种远程控制通道"><a href="#核心对比：五种远程控制通道" class="headerlink" title="核心对比：五种远程控制通道"></a>核心对比：五种远程控制通道</h2><p>把视角从”用哪个 Agent”切换到”用什么远程通道”，对比更清晰：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>通道</th>
+<th>延迟&#x2F;步</th>
+<th>精确度</th>
+<th>复杂度</th>
+<th>安全性</th>
+<th align="center">综合评分</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A. UFO HTTP API</strong></td>
+<td>REST&#x2F;HTTP</td>
+<td>3-5s</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>★★☆</td>
+<td>★★★☆</td>
+<td align="center"><strong>9</strong></td>
+</tr>
+<tr>
+<td>B. SSH + PowerShell</td>
+<td>SSH</td>
+<td>1-3s</td>
+<td>⭐⭐⭐⭐</td>
+<td>★★★☆</td>
+<td>★★★★</td>
+<td align="center"><strong>7</strong></td>
+</tr>
+<tr>
+<td>C. VNC + 视觉 Agent</td>
+<td>VNC</td>
+<td>8-20s</td>
+<td>⭐⭐⭐</td>
+<td>★★★★</td>
+<td>★★☆</td>
+<td align="center"><strong>5</strong></td>
+</tr>
+<tr>
+<td>D. 自建截图+执行 HTTP</td>
+<td>HTTP</td>
+<td>5-10s</td>
+<td>⭐⭐⭐</td>
+<td>★★★★★</td>
+<td>★★★☆</td>
+<td align="center"><strong>5</strong></td>
+</tr>
+<tr>
+<td>E. RDP + 工具链</td>
+<td>RDP</td>
+<td>8-15s</td>
+<td>⭐⭐⭐</td>
+<td>★★★★★</td>
+<td>★★★☆</td>
+<td align="center"><strong>4</strong></td>
+</tr>
+</tbody></table>
+<h2 id="最终决策：分层控制策略"><a href="#最终决策：分层控制策略" class="headerlink" title="最终决策：分层控制策略"></a>最终决策：分层控制策略</h2><p>单一方案无法覆盖所有场景。最终采用了<strong>分层策略</strong>——按操作复杂度选择不同通道：</p>
+<figure class="highlight nestedtext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext"><span class="hljs-attribute">Layer 3</span><span class="hljs-punctuation">:</span> <span class="hljs-string">复杂 GUI 交互（操作 Excel、配置系统设置）</span><br>   <span class="hljs-attribute">────▶ UFO Agent (HTTP API) — UIA 精确操作</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">Layer 2</span><span class="hljs-punctuation">:</span> <span class="hljs-string">简单 GUI 操作（启动程序、窗口管理）</span><br>   <span class="hljs-attribute">────▶ SSH + PowerShell (Start-Process 等)</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">Layer 1</span><span class="hljs-punctuation">:</span> <span class="hljs-string">命令行/脚本操作（文件管理、系统查询）</span><br>   <span class="hljs-attribute">────▶ SSH + PowerShell + 原生命令</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">Layer 0</span><span class="hljs-punctuation">:</span> <span class="hljs-string">浏览器操作（已有能力）</span><br>   ────▶ CDP (Chrome DevTools Protocol)<br></code></pre></td></tr></table></figure>
+
+<p><strong>为什么分层而不是全用 UFO？</strong></p>
+<ul>
+<li>SSH 方案<strong>零成本、立即可用</strong>（Windows 自带 OpenSSH Server，只需在可选功能中开启），适合 80% 的命令行操作</li>
+<li>UFO 需要 GPT API Key 和 Python 环境部署，但 GUI 交互场景精度最高</li>
+<li>CDP 浏览器控制已就绪，无需重复建设</li>
+</ul>
+<p><strong>落地路线</strong>：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs subunit">Phase 1 (1<span class="hljs-string">-2</span>天): SSH 基础通道<br>├── Windows 启用 OpenSSH Server<br>├── 配置 SSH 密钥认证<br>├── 验证文件操作、进程管理<br><br>Phase 2 (3<span class="hljs-string">-5</span>天): UFO Agent 集成<br>├── Windows 安装 UFO + GPT<span class="hljs-string">-4</span>o 配置<br>├── 启动 REST API 服务<br>├── 验证 GUI 自动化<br><br>Phase 3 (1<span class="hljs-string">-2</span>周): 统一抽象层<br>├── SSH + UFO + CDP 自动路由<br>├── 错误恢复 + 操作审计<br></code></pre></td></tr></table></figure>
+
+<h2 id="选型决策树"><a href="#选型决策树" class="headerlink" title="选型决策树"></a>选型决策树</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs ruby">                 需要控制 <span class="hljs-title class_">Windows</span>？<br>               ┌──── 是 ────┐<br>               ▼            ▼<br>         需要<span class="hljs-variable constant_">GUI</span>交互?    仅命令行操作?<br>             │              │<br>             ▼              ▼<br>       ┌─────────┐    <span class="hljs-variable constant_">SSH</span> + <span class="hljs-title class_">PowerShell</span><br>       │ 预算充足<span class="hljs-string">?│</span>    (零成本，立即可用)<br>       │(<span class="hljs-variable constant_">GPT</span> <span class="hljs-variable constant_">API</span>)│<br>       └────┬────┘<br>     ┌──────┴──────┐<br>     ▼             ▼<br>  是(<span class="hljs-variable constant_">GPT</span>)       否(本地模型)<br>     │             │<br>     ▼             ▼<br>┌─────────┐   ┌─────────────┐<br>│ <span class="hljs-variable constant_">UFO</span>     │   │ <span class="hljs-variable constant_">UI</span>-<span class="hljs-variable constant_">TARS</span> +   │<br>│ <span class="hljs-title class_">Agent</span>   │   │ 自建截图/   │<br>│ (<span class="hljs-variable constant_">HTTP</span>)  │   │ 执行桥接    │<br>└─────────┘   └─────────────┘<br></code></pre></td></tr></table></figure>
+
+<h2 id="五条核心结论"><a href="#五条核心结论" class="headerlink" title="五条核心结论"></a>五条核心结论</h2><ol>
+<li><p><strong>UFO Agent 是 Windows GUI 控制的最佳选择</strong>：微软官方、MIT 开源、原生 UIA 精确度远超截图方案、提供 HTTP API 可被 Linux 远程调用。</p>
+</li>
+<li><p><strong>分层策略优于单一方案</strong>：SSH 处理命令行（快、稳、免费），UFO 处理 GUI（精确但需 API 费用），CDP 处理浏览器（已有）。</p>
+</li>
+<li><p><strong>OmniParser 是有价值的补充</strong>：当 UIA 无法识别非标准 UI（Canvas 渲染、游戏内界面）时，视觉方案作为兜底。</p>
+</li>
+<li><p><strong>Anthropic&#x2F;OpenAI 方案不推荐作为主力</strong>：均为截图+视觉方案，延迟高、精度不如 UIA、需大量自建基础设施。</p>
+</li>
+<li><p><strong>SSH 方案立即可落地</strong>：仅需在 Windows 上启用 OpenSSH Server，今天就能验证文件操作和系统管理能力。</p>
+</li>
 </ol>
-<h2 id="四、试运行结论"><a href="#四、试运行结论" class="headerlink" title="四、试运行结论"></a>四、试运行结论</h2><table>
-<thead>
-<tr>
-<th>指标</th>
-<th>结果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>P0功能完成率</td>
-<td>8&#x2F;8 (100%)</td>
-</tr>
-<tr>
-<td>代码质量</td>
-<td>通过</td>
-</tr>
-<tr>
-<td>线上可访问</td>
-<td>✅</td>
-</tr>
-</tbody></table>
 <hr>
-<p><strong>团队协作模式</strong>：基于OpenClaw平台的多Agent协作</p>
+<blockquote>
+<p>当一个 AI Agent 需要跨操作系统工作时，正确的做法不是寻找一个”万能方案”，而是为每类操作选择最合适的通道，再用统一抽象层串联起来。分层，才是远程控制的正确打开方式。</p>
+</blockquote>
 
                 
               </div>
@@ -559,8 +617,15 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" class="category-chain-item">项目总结</a>
+  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
   
+  
+    <span>></span>
+    
+  <a href="/categories/AI-Agent/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/" class="category-chain-item">系统架构</a>
+  
+  
+
   
 
       </span>
@@ -574,11 +639,17 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%A4%9AAgent%E5%8D%8F%E4%BD%9C/" class="print-no-link">#多Agent协作</a>
+        <a href="/tags/Windows/" class="print-no-link">#Windows</a>
       
-        <a href="/tags/OpenClaw/" class="print-no-link">#OpenClaw</a>
+        <a href="/tags/SSH/" class="print-no-link">#SSH</a>
       
-        <a href="/tags/%E8%B4%AA%E5%90%83%E8%9B%87/" class="print-no-link">#贪吃蛇</a>
+        <a href="/tags/%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6/" class="print-no-link">#远程控制</a>
+      
+        <a href="/tags/UFO-Agent/" class="print-no-link">#UFO-Agent</a>
+      
+        <a href="/tags/UIAutomation/" class="print-no-link">#UIAutomation</a>
+      
+        <a href="/tags/%E6%9E%B6%E6%9E%84%E9%80%89%E5%9E%8B/" class="print-no-link">#架构选型</a>
       
     </div>
   
@@ -590,8 +661,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>贪吃蛇项目试运行报告</div>
-      <div>https://www.normdist.com/2026/03/14/ND-20260314-003-snake-project-report/</div>
+      <div>AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型</div>
+      <div>https://www.normdist.com/2026/07/04/ND-20260704-001-windows-remote-control-architecture/</div>
     </div>
     <div class="license-meta">
       
@@ -603,7 +674,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月14日</div>
+          <div>2026年7月4日</div>
         </div>
       
       
@@ -635,18 +706,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/14/ND-20260314-002-DualGPU-Ollama-Deployment/" title="Ubuntu 双显卡部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速完整指南">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Ubuntu 双显卡部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速完整指南</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/13/ND-20260313-001-openclaw-2026-3-update/" title="OpenClaw2026 年3 月更新：更强安全、更智能的 AI 助手">
-                        <span class="hidden-mobile">OpenClaw2026 年3 月更新：更强安全、更智能的 AI 助手</span>
+                      <a href="/2026/07/03/ND-20260703-001-api-positions-60x-speedup/" title="一个 60 倍的接口提速：两层隐藏 Bug 如何让 API 延迟从 10 秒降到 0.16 秒">
+                        <span class="hidden-mobile">一个 60 倍的接口提速：两层隐藏 Bug 如何让 API 延迟从 10 秒降到 0.16 秒</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
