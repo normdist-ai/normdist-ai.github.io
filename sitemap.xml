@@ -11,6 +11,15 @@
   </url>
   
   <url>
+    <loc>https://www.normdist.com/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/</loc>
+    
+    <lastmod>2026-07-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/</loc>
     
     <lastmod>2026-07-03</lastmod>
@@ -668,7 +677,35 @@
 
   
   <url>
+    <loc>https://www.normdist.com/tags/Karpathy/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/AI%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1902,6 +1939,13 @@
 
   
   <url>
+    <loc>https://www.normdist.com/categories/%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://www.normdist.com/categories/AI-Agent/</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -1910,6 +1954,13 @@
   
   <url>
     <loc>https://www.normdist.com/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.normdist.com/categories/%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/%E6%96%B9%E6%B3%95%E8%AE%BA/</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

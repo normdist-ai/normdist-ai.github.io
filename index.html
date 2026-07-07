@@ -363,6 +363,82 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/" target="_self">
+          Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/" target="_self">
+        <div>
+          Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression背景量化交易系统的数据源是硬编码在代码里的——ReShare、yfinance、akshare 三个数据源的开关和地址散落在多个文件中。想临时关闭某个数据源？得翻代码改逻辑。 需求很简单：把数据源配置提取到统一配置文件，通过 config 字典控制每个数据源的 enabled 状态和 base_url。 但”简单需求”
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-04 04:20" pubdate>
+              2026-07-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/" class="category-chain-item">编程实践</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/%E6%96%B9%E6%B3%95%E8%AE%BA/" class="category-chain-item">方法论</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Karpathy/">#Karpathy</a>
+            
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/">#代码重构</a>
+            
+              <a href="/tags/AI%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B/">#AI辅助编程</a>
+            
+              <a href="/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">#最佳实践</a>
+            
+              <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/">#方法论</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
           量化系统 Docker→裸跑迁移：一份踩坑笔记
         </a>
@@ -1002,73 +1078,6 @@
               <a href="/tags/Cron/">#Cron</a>
             
               <a href="/tags/%E8%87%AA%E4%B8%BB%E7%B3%BB%E7%BB%9F/">#自主系统</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" target="_self">
-          试了三个 TTS 引擎，总算让 AI 助手开口说话了
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" target="_self">
-        <div>
-          给 AI 助手装上”嘴巴”，听起来简单——调个 TTS API 不就行了？实际上，我们要的是：中文自然度够高、能自托管（不走云 API）、跑在自己的 GPU 服务器上、还能同时给多个 AI agent 共享使用。 折腾了三天，试了三个引擎，踩了若干坑，最后用 Qwen3-TTS 跑通了从模型到飞书语音消息的完整链路。 要解决什么问题我们有一套基于 Hermes Agent 搭建的多 agent 系
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-06-26 09:00" pubdate>
-              2026-06-26
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" class="category-chain-item">项目总结</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
-            
-              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
-            
-              <a href="/tags/TTS/">#TTS</a>
-            
-              <a href="/tags/Qwen3-TTS/">#Qwen3-TTS</a>
             
           </div>
         
