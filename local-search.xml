@@ -4,6 +4,45 @@
   
   
   <entry>
+    <title>Ornith 开源模型本地部署：替代 Qwen3.6 的完整实战</title>
+    <link href="/2026/07/10/ND-20260710-001-ornith-local-deployment/"/>
+    <url>/2026/07/10/ND-20260710-001-ornith-local-deployment/</url>
+    
+    <content type="html"><![CDATA[<h2 id="背景：为什么需要替代-Qwen3-6"><a href="#背景：为什么需要替代-Qwen3-6" class="headerlink" title="背景：为什么需要替代 Qwen3.6"></a>背景：为什么需要替代 Qwen3.6</h2><p>本地部署大语言模型，硬件永远是第一约束。双卡 RTX 2080 Ti（22GB 魔改版）的显存总量约 22GB，面对 35B 参数的 MoE 模型，可用选项其实不多。</p><p>此前使用的 Qwen3.6-35B-A3B 在多数场景下表现尚可，但有两个问题一直悬而未决：</p><ol><li><strong>推理速度不理想</strong>：在本地硬件上，Qwen3.6 的 token 生成速度始终在 40-60 t&#x2F;s 区间，长输出场景下延迟明显</li><li><strong>社区活跃度下降</strong>：Qwen3.6 发布后，社区微调版本和优化方案较少，后续迭代前景不明</li></ol><p>某天，社区中出现了一个新的名字——<strong>Ornith</strong>。基于 Qwen3.5-35B-A3B 优化训练，社区基准测试显示多项指标超越 Qwen3.6。更关键的是，这个模型完全兼容现有的 llama.cpp 部署方案，不需要额外适配。</p><h2 id="部署全流程"><a href="#部署全流程" class="headerlink" title="部署全流程"></a>部署全流程</h2><h3 id="硬件与软件环境"><a href="#硬件与软件环境" class="headerlink" title="硬件与软件环境"></a>硬件与软件环境</h3><table><thead><tr><th>组件</th><th>规格</th></tr></thead><tbody><tr><td>显卡</td><td>双 RTX 2080 Ti（22GB 魔改版）</td></tr><tr><td>推理引擎</td><td>llama.cpp（models-preset 多模型模式）</td></tr><tr><td>量化格式</td><td>Q4_K_M GGUF</td></tr><tr><td>代理层</td><td>new-api（透明转发，注册模型名）</td></tr><tr><td>张量分片</td><td>tensor-split 0.7:0.3</td></tr></tbody></table><h3 id="第一步：下载与量化"><a href="#第一步：下载与量化" class="headerlink" title="第一步：下载与量化"></a>第一步：下载与量化</h3><p>Ornith 的 GGUF 量化版可以从 Hugging Face 直接下载。选择 Q4_K_M 量化级别——这是一个平衡点：Q4_K_M 相比 Q4_K_S 保留更多关键层精度，相比 Q5&#x2F;Q6 则节省约 4-6GB 显存。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 下载 Ornith GGUF 模型</span><br>wget https://huggingface.co/deepreinforce-ai/ornith-1.0-35b-GGUF/resolve/main/ornith-1.0-35b-Q4_K_M.gguf \<br>  -O /mnt/nvme/models/ornith-1.0-35b-Q4_K_M.gguf<br></code></pre></td></tr></table></figure><h3 id="第二步：llama-cpp-配置（models-ini）"><a href="#第二步：llama-cpp-配置（models-ini）" class="headerlink" title="第二步：llama.cpp 配置（models.ini）"></a>第二步：llama.cpp 配置（models.ini）</h3><p>本地 llama.cpp 运行在 <strong>models-preset 模式</strong>下，通过 INI 文件管理多个模型。Ornith 的配置如下：</p><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Qwen/Qwen3.5-35B-A3B-Ornith]</span><br><span class="hljs-attr">alias</span> = deepreinforce-ai/ornith-<span class="hljs-number">1.0</span>-<span class="hljs-number">35</span>b<br><span class="hljs-attr">model</span> = /mnt/nvme/.../ornith-<span class="hljs-number">1.0</span>-<span class="hljs-number">35</span>b-Q4_K_M.gguf<br><span class="hljs-attr">mmproj</span> = /mnt/nvme/.../mmproj-ornith-<span class="hljs-number">35</span>b-f16.gguf<br><span class="hljs-attr">ctx-size</span> = <span class="hljs-number">262144</span><br><span class="hljs-attr">temp</span> = <span class="hljs-number">0.6</span><br><span class="hljs-attr">reasoning</span> = <span class="hljs-literal">on</span><br><span class="hljs-attr">jinja</span> = <span class="hljs-literal">true</span><br><span class="hljs-attr">chat-template-file</span> = /home/user/llama.cpp/models/qwen35_ornith_fixed.jinja<br></code></pre></td></tr></table></figure><p>注意 <code>tensor-split = 0.7,0.3</code> 在全局配置中设定——这是双卡张量分片的关键参数。0.7:0.3 的比例意味着第一张卡承担 70% 的计算量，第二张卡承担 30%。这个比例根据显存大小和 PCIe 带宽反复调优得出。</p><h3 id="第三步：new-api-模型注册"><a href="#第三步：new-api-模型注册" class="headerlink" title="第三步：new-api 模型注册"></a>第三步：new-api 模型注册</h3><p>在 new-api 代理层将 Ornith 注册为 <code>Qwen/Qwen3.5-35B-A3B-Ornith</code>。这样做的好处是：</p><ul><li>可追溯：模型名包含基座和优化版本信息</li><li>兼容性：客户端无需修改，只需换模型名</li><li>区分度：和原版 Qwen3.5 区分开来，方便对比测试</li></ul><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># new-api 配置节选</span><br><span class="hljs-attr">model:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">&quot;Qwen/Qwen3.5-35B-A3B-Ornith&quot;</span><br>  <span class="hljs-attr">provider:</span> <span class="hljs-string">&quot;local-llama&quot;</span><br>  <span class="hljs-attr">base_url:</span> <span class="hljs-string">&quot;http://localhost:8080/v1&quot;</span><br></code></pre></td></tr></table></figure><h3 id="第四步：重启与验证"><a href="#第四步：重启与验证" class="headerlink" title="第四步：重启与验证"></a>第四步：重启与验证</h3><p>修改 models.ini 后，必须重启 llama.cpp 主进程（systemd service）才能生效。局部卸载或 reload API 都不行——主进程缓存了 preset 配置。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart llama-server<br></code></pre></td></tr></table></figure><p>验证方式：发送测试请求，用 <code>GET /v1/models</code> 确认子进程命令行参数中包含 <code>--jinja</code> 和 <code>--chat-template-file</code>。</p><h2 id="踩坑实录：Chat-Template-兼容性"><a href="#踩坑实录：Chat-Template-兼容性" class="headerlink" title="踩坑实录：Chat Template 兼容性"></a>踩坑实录：Chat Template 兼容性</h2><p>部署中遇到的最大问题不是性能，而是 <strong>chat template 兼容性</strong>。</p><p>Ornith 的 GGUF 内嵌 jinja 模板中包含 <code>raise_exception()</code> 调用——这是 Qwen 系列模板的常规做法，用于校验输入格式。但 llama.cpp 的 minijinja 引擎实现不完全兼容标准 Python Jinja2，导致 <code>raise_exception()</code> 在解析阶段就崩溃。</p><p><strong>错误现象</strong>：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json">HTTP <span class="hljs-number">400</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;error&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Unable to generate parser for this template. </span><br><span class="hljs-string">    Automatic parser generation failed: </span><br><span class="hljs-string">    ...raise_exception(&#x27;No user query found in messages.&#x27;)...&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure><p>100% 可复现：任何没有 <code>role: user</code> 的请求（包括 tools 探测请求）都会触发。这意味着正常的 MoA 聚合请求、system-only 消息都会失败。</p><p><strong>修复方案</strong>：使用 <code>--chat-template-file</code> 覆盖 GGUF 内嵌模板，不修改模型文件本身。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 下载修复版模板（来自 unsloth 的 Qwen3.5 模板）</span><br>wget https://huggingface.co/unsloth/Qwen3.5-35B-A3B/raw/main/chat_template.jinja \<br>  -O /opt/models/chat_template_fixed.jinja<br><br><span class="hljs-comment"># 启动时覆盖</span><br>llama-server --model ornith-1.0-35b-Q4_K_M.gguf \<br>  --jinja \<br>  --chat-template-file /opt/models/chat_template_fixed.jinja<br></code></pre></td></tr></table></figure><p>修复版模板删除了两处 <code>raise_exception</code>：</p><ol><li><code>raise_exception(&#39;No user query found in messages.&#39;)</code></li><li><code>raise_exception(&#39;System message must be the beginning.&#39;)</code></li></ol><p>对正常输入（有 system + user），渲染输出 byte-for-byte 一致，不影响任何功能。</p><h2 id="性能实测：104-t-x2F-s-背后的-MoE-原理"><a href="#性能实测：104-t-x2F-s-背后的-MoE-原理" class="headerlink" title="性能实测：104 t&#x2F;s 背后的 MoE 原理"></a>性能实测：104 t&#x2F;s 背后的 MoE 原理</h2><h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><table><thead><tr><th>测试项</th><th>数值</th></tr></thead><tbody><tr><td>模型参数量</td><td>35B（MoE，激活参数约 3.5B）</td></tr><tr><td>量化</td><td>Q4_K_M</td></tr><tr><td>上下文长度</td><td>262K</td></tr><tr><td>长输出速度</td><td><strong>104 t&#x2F;s</strong></td></tr><tr><td>首 token 延迟</td><td>~1.2s</td></tr></tbody></table><h3 id="理论分析：为什么-104-t-x2F-s-是合理的"><a href="#理论分析：为什么-104-t-x2F-s-是合理的" class="headerlink" title="理论分析：为什么 104 t&#x2F;s 是合理的"></a>理论分析：为什么 104 t&#x2F;s 是合理的</h3><p>Ornith 是 MoE（Mixture of Experts）架构。35B 总参数中，每次推理只激活约 3.5B 参数（10% 激活率）。Q4_K_M 量化后，激活参数大约占用 3.5B × 0.5 bytes ≈ 1.75 GB。</p><p>但实际上，推理过程中需要加载的不仅仅是激活参数。MoE 路由机制需要读取所有 expert 的权重头部信息来决定路由。加上 KV cache（262K 上下文约 2-3 GB）、中间激活值，单次推理的实际显存占用约 8-9 GB&#x2F;token。</p><p>对双卡 RTX 2080 Ti（22GB 总显存），理论计算如下：</p><ul><li>全参数加载（假设没有 MoE 路由优化）：35B × 0.5 bytes ≈ 17.5 GB → 接近显存上限，速度约 40-50 t&#x2F;s</li><li>MoE 路由优化生效（只读取激活 expert）：8-9 GB&#x2F;token → 显存压力小，带宽利用率更高</li></ul><p>理论全参数吞吐上限约 47 t&#x2F;s。实测 104 t&#x2F;s 超出理论值一倍以上——这成为 MoE 路由优化生效的铁证：<strong>llama.cpp 的 MoE 实现只读取被路由选中的 expert 权重，而非加载全部参数</strong>。</p><h3 id="全网-Benchmark-对比"><a href="#全网-Benchmark-对比" class="headerlink" title="全网 Benchmark 对比"></a>全网 Benchmark 对比</h3><table><thead><tr><th>硬件配置</th><th>模型</th><th>量级</th><th>速度</th><th>来源</th></tr></thead><tbody><tr><td>2×RTX 2080 Ti (22GB)</td><td>Ornith-35B</td><td>Q4_K_M</td><td><strong>104 t&#x2F;s</strong></td><td>本文</td></tr><tr><td>2×RTX 2080 Ti</td><td>Mixtral 8x7B</td><td>Q4_K_M</td><td>~100 t&#x2F;s</td><td>Level1Techs</td></tr><tr><td>2×RTX 2080 Ti</td><td>Qwen3.6-35B</td><td>Q4_K_M</td><td>~42 t&#x2F;s</td><td>社区实测</td></tr><tr><td>2×RTX 2080 Ti</td><td>DeepSeek-V2-Lite</td><td>Q4_K_M</td><td>~120 t&#x2F;s</td><td>insiderllm</td></tr><tr><td>1×RTX 4090 (24GB)</td><td>Ornith-35B</td><td>Q4_K_M</td><td>~45 t&#x2F;s</td><td>社区估算</td></tr></tbody></table><p>2000 系列的双卡方案在 35B 量级 MoE 模型上，天花板大约是 100-130 t&#x2F;s。Ornith 的 104 t&#x2F;s 达到了约 70% 的硬件利用率，属于合理的高水平。</p><h2 id="Qwen3-6-vs-Ornith：性能对比"><a href="#Qwen3-6-vs-Ornith：性能对比" class="headerlink" title="Qwen3.6 vs Ornith：性能对比"></a>Qwen3.6 vs Ornith：性能对比</h2><table><thead><tr><th>维度</th><th>Qwen3.6-35B-A3B</th><th>Ornith-1.0-35B (基于 Qwen3.5)</th></tr></thead><tbody><tr><td>推理速度</td><td>~42 t&#x2F;s</td><td><strong>104 t&#x2F;s</strong> (2.5×)</td></tr><tr><td>社区基准</td><td>基准线</td><td>多项超越 Qwen3.6</td></tr><tr><td>模板兼容性</td><td>原生支持</td><td>需 chat-template-file 修复</td></tr><tr><td>社区活跃度</td><td>下降</td><td>上升（新模型）</td></tr><tr><td>部署复杂度</td><td>低</td><td>中（模板修复 + 首次配置）</td></tr></tbody></table><h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><ol><li><p><strong>MoE 的路由优化不是理论概念，而是可实测的</strong>：实测值超过全参理论值，是验证路由优化是否生效最直接的方法。如果实测速度接近全参理论值，说明路由优化可能未生效（比如某些推理引擎的 MoE 实现是全部加载再路由）。</p></li><li><p><strong>Chat template 兼容性是跨模型部署的常见坑点</strong>：不同推理引擎（llama.cpp vs vLLM vs SGLang）对 jinja 的解析能力不同。<code>raise_exception()</code> 在 Python Jinja2 中正常，在 minijinja 中崩溃。跨模型迁移时，务必检查模板兼容性。</p></li><li><p><strong>模型名注册策略很重要</strong>：用 <code>基座-优化版本</code> 的命名格式（如 <code>Qwen3.5-35B-A3B-Ornith</code>），既保留了可追溯性，又便于在代理层做 A&#x2F;B 测试。</p></li><li><p><strong>双卡 2080 Ti 的 104 t&#x2F;s 不是极限</strong>：从全网数据看，相同硬件配置下的天花板是 100-130 t&#x2F;s。如果优化 tensor-split 比例、调整 batch size，还有约 25% 的提升空间。</p></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>AI 工程</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>本地部署</tag>
+      
+      <tag>Qwen</tag>
+      
+      <tag>LLM</tag>
+      
+      <tag>llama.cpp</tag>
+      
+      <tag>性能优化</tag>
+      
+      <tag>MoE</tag>
+      
+      <tag>量化</tag>
+      
+      <tag>Ornith</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>不改 GGUF 文件，用 chat-template-file 修复 llama.cpp Jinja 模板错误</title>
     <link href="/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/"/>
     <url>/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/</url>
@@ -949,9 +988,9 @@
       
       <tag>llama.cpp</tag>
       
-      <tag>多GPU</tag>
-      
       <tag>router-mode</tag>
+      
+      <tag>多GPU</tag>
       
       <tag>模型管理</tag>
       
@@ -1122,9 +1161,9 @@
       
       <tag>llama.cpp</tag>
       
-      <tag>显存管理</tag>
-      
       <tag>多GPU</tag>
+      
+      <tag>显存管理</tag>
       
     </tags>
     
@@ -1308,11 +1347,11 @@
       
       <tag>ComfyUI</tag>
       
-      <tag>AI绘画</tag>
-      
       <tag>DreamShaper</tag>
       
       <tag>Hi-Res Fix</tag>
+      
+      <tag>AI绘画</tag>
       
       <tag>提示词工程</tag>
       
@@ -1341,11 +1380,11 @@
       
       <tag>ComfyUI</tag>
       
-      <tag>AI绘画</tag>
-      
       <tag>SDXL</tag>
       
       <tag>Stable Diffusion XL</tag>
+      
+      <tag>AI绘画</tag>
       
       <tag>显存优化</tag>
       
@@ -2306,6 +2345,35 @@
   
   
   <entry>
+    <title>Mermaid 图表全攻略：哪个客户端最懂你？</title>
+    <link href="/2026/03/10/ND-20260310-002-mermaid-chart-guide/"/>
+    <url>/2026/03/10/ND-20260310-002-mermaid-chart-guide/</url>
+    
+    <content type="html"><![CDATA[<p><strong>编号</strong>：ND-20260310-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-10<br><strong>作者</strong>: 小瑞</p><p>作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。</p><p>就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。</p><hr><h2 id="为什么需要这个表格？"><a href="#为什么需要这个表格？" class="headerlink" title="为什么需要这个表格？"></a>为什么需要这个表格？</h2><p>Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序列图、甘特图等各种图表。但问题是：<strong>不同的客户端（ChatGPT、元宝、Cherry Studio 等）对 Mermaid 的支持程度不一样。</strong></p><p>这就像是同样的菜品，不同的厨师做出来味道各不相同。</p><p>所以，我整理了这个表格，告诉你哪个客户端支持哪些图表类型，帮你避开那些”吃不到嘴里的葡萄”。</p><hr><h2 id="完整对比矩阵"><a href="#完整对比矩阵" class="headerlink" title="完整对比矩阵"></a>完整对比矩阵</h2><table><thead><tr><th>序号</th><th>图表类型</th><th>英文名称</th><th>元宝</th><th>CherryStudio</th><th>ChatGPT</th></tr></thead><tbody><tr><td>1</td><td>流程图</td><td>Flowchart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>2</td><td>序列图</td><td>Sequence Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>3</td><td>类图</td><td>Class Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>4</td><td>状态图</td><td>State Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>5</td><td>实体关系图</td><td>Entity Relationship Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>6</td><td>用户旅程图</td><td>User Journey Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>7</td><td>甘特图</td><td>Gantt Chart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>8</td><td>饼图</td><td>Pie Chart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>9</td><td>象限图</td><td>Quadrant Chart</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>10</td><td>需求图</td><td>Requirement Diagram</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>11</td><td>Git图</td><td>GitGraph Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>12</td><td>C4架构图</td><td>C4 Diagram</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>13</td><td>思维导图</td><td>Mindmaps</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>14</td><td>时间线图</td><td>Timeline</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>15</td><td>ZenUML图</td><td>ZenUML Diagram</td><td>❌</td><td>❌</td><td>❌</td></tr><tr><td>16</td><td>桑基图</td><td>Sankey Diagram</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>17</td><td>XY图</td><td>XY Chart</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>18</td><td>块状图</td><td>Block Diagram</td><td>❌</td><td>✅</td><td>✅</td></tr><tr><td>19</td><td>数据包图</td><td>Packet Diagram</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>20</td><td>看板图</td><td>Kanban Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>21</td><td>架构图</td><td>Architecture Diagram</td><td>❌</td><td>❌</td><td>✅</td></tr><tr><td>22</td><td>雷达图</td><td>Radar Chart</td><td>❌</td><td>❌</td><td>❌</td></tr><tr><td>23</td><td>树状图</td><td>Treemap Diagram</td><td>❌</td><td>❌</td><td>❌</td></tr></tbody></table><hr><p><strong>图例说明</strong>：</p><hr><h2 id="表格能告诉你什么？"><a href="#表格能告诉你什么？" class="headerlink" title="表格能告诉你什么？"></a>表格能告诉你什么？</h2><p>这个表格对比了三个主流客户端：</p><p>你可以清楚地看到：</p><hr><h2 id="一些有趣的发现"><a href="#一些有趣的发现" class="headerlink" title="一些有趣的发现"></a>一些有趣的发现</h2><h3 id="Cherry-Studio：黑马选手"><a href="#Cherry-Studio：黑马选手" class="headerlink" title="Cherry Studio：黑马选手"></a>Cherry Studio：黑马选手</h3><p>Cherry Studio 给了我不少惊喜！它支持 <strong>20 种图表类型</strong>，甚至比 ChatGPT 还要多。特别值得一提的是：</p><p>如果你经常需要用这些图表，Cherry Studio 是个不错的选择。</p><h3 id="大家都支持的图表"><a href="#大家都支持的图表" class="headerlink" title="大家都支持的图表"></a>大家都支持的图表</h3><p>有 <strong>13 种图表类型</strong>是所有客户端都支持的，你可以放心使用：</p><p>这些图表是”万金油”，不管你在哪个客户端，都能正常显示。</p><h3 id="没人要的图表"><a href="#没人要的图表" class="headerlink" title="没人要的图表"></a>没人要的图表</h3><p>有些图表类型，大家都不支持，比如：</p><p>这些图表，建议你暂时不要用，或者考虑用其他替代方案。</p><hr><h2 id="实用建议：如何选择图表？"><a href="#实用建议：如何选择图表？" class="headerlink" title="实用建议：如何选择图表？"></a>实用建议：如何选择图表？</h2><h3 id="场景-1：你需要在多个平台发布"><a href="#场景-1：你需要在多个平台发布" class="headerlink" title="场景 1：你需要在多个平台发布"></a>场景 1：你需要在多个平台发布</h3><p><strong>推荐</strong>：使用大家都支持的 13 种图表</p><h3 id="场景-2：你只在-Cherry-Studio-使用"><a href="#场景-2：你只在-Cherry-Studio-使用" class="headerlink" title="场景 2：你只在 Cherry Studio 使用"></a>场景 2：你只在 Cherry Studio 使用</h3><p><strong>推荐</strong>：大胆使用所有 20 种图表</p><h3 id="场景-3：你需要在-ChatGPT-上展示"><a href="#场景-3：你需要在-ChatGPT-上展示" class="headerlink" title="场景 3：你需要在 ChatGPT 上展示"></a>场景 3：你需要在 ChatGPT 上展示</h3><p><strong>推荐</strong>：避开不支持的特殊图表</p><h3 id="场景-4：你想展示架构图"><a href="#场景-4：你想展示架构图" class="headerlink" title="场景 4：你想展示架构图"></a>场景 4：你想展示架构图</h3><p><strong>推荐</strong>：用流程图或块状图替代</p><hr><h2 id="一些个人观察"><a href="#一些个人观察" class="headerlink" title="一些个人观察"></a>一些个人观察</h2><h3 id="为什么支持度不一样？"><a href="#为什么支持度不一样？" class="headerlink" title="为什么支持度不一样？"></a>为什么支持度不一样？</h3><p>这背后的原因可能有：</p><h3 id="未来会更好吗？"><a href="#未来会更好吗？" class="headerlink" title="未来会更好吗？"></a>未来会更好吗？</h3><p>我相信会！随着 Mermaid 的发展，图表类型会越来越丰富，各个客户端的支持度也会逐步提升。就像早期的 Markdown 支持度也不一样，现在基本都统一了。</p><h3 id="我的建议"><a href="#我的建议" class="headerlink" title="我的建议"></a>我的建议</h3><p><strong>如果你是作者</strong>：</p><p><strong>如果你是开发者</strong>：</p><hr><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个表格就像是 Mermaid 图表的”使用指南”，帮你避开那些”吃不到嘴里的葡萄”。</p><p><strong>核心原则</strong>：</p><p>希望这篇攻略能帮助你更好地使用 Mermaid 图表，让文字更加生动，让表达更加清晰！</p><hr><p><strong>相关资源</strong>：</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术指南</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Mermaid</tag>
+      
+      <tag>图表</tag>
+      
+      <tag>客户端</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升</title>
     <link href="/2026/03/10/ND-20260310-003-openclaw-2026-3-8-update/"/>
     <url>/2026/03/10/ND-20260310-003-openclaw-2026-3-8-update/</url>
@@ -2329,35 +2397,6 @@
       <tag>更新</tag>
       
       <tag>安全</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>Mermaid 图表全攻略：哪个客户端最懂你？</title>
-    <link href="/2026/03/10/ND-20260310-002-mermaid-chart-guide/"/>
-    <url>/2026/03/10/ND-20260310-002-mermaid-chart-guide/</url>
-    
-    <content type="html"><![CDATA[<p><strong>编号</strong>：ND-20260310-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-10<br><strong>作者</strong>: 小瑞</p><p>作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。</p><p>就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。</p><hr><h2 id="为什么需要这个表格？"><a href="#为什么需要这个表格？" class="headerlink" title="为什么需要这个表格？"></a>为什么需要这个表格？</h2><p>Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序列图、甘特图等各种图表。但问题是：<strong>不同的客户端（ChatGPT、元宝、Cherry Studio 等）对 Mermaid 的支持程度不一样。</strong></p><p>这就像是同样的菜品，不同的厨师做出来味道各不相同。</p><p>所以，我整理了这个表格，告诉你哪个客户端支持哪些图表类型，帮你避开那些”吃不到嘴里的葡萄”。</p><hr><h2 id="完整对比矩阵"><a href="#完整对比矩阵" class="headerlink" title="完整对比矩阵"></a>完整对比矩阵</h2><table><thead><tr><th>序号</th><th>图表类型</th><th>英文名称</th><th>元宝</th><th>CherryStudio</th><th>ChatGPT</th></tr></thead><tbody><tr><td>1</td><td>流程图</td><td>Flowchart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>2</td><td>序列图</td><td>Sequence Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>3</td><td>类图</td><td>Class Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>4</td><td>状态图</td><td>State Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>5</td><td>实体关系图</td><td>Entity Relationship Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>6</td><td>用户旅程图</td><td>User Journey Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>7</td><td>甘特图</td><td>Gantt Chart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>8</td><td>饼图</td><td>Pie Chart</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>9</td><td>象限图</td><td>Quadrant Chart</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>10</td><td>需求图</td><td>Requirement Diagram</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>11</td><td>Git图</td><td>GitGraph Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>12</td><td>C4架构图</td><td>C4 Diagram</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>13</td><td>思维导图</td><td>Mindmaps</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>14</td><td>时间线图</td><td>Timeline</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>15</td><td>ZenUML图</td><td>ZenUML Diagram</td><td>❌</td><td>❌</td><td>❌</td></tr><tr><td>16</td><td>桑基图</td><td>Sankey Diagram</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>17</td><td>XY图</td><td>XY Chart</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>18</td><td>块状图</td><td>Block Diagram</td><td>❌</td><td>✅</td><td>✅</td></tr><tr><td>19</td><td>数据包图</td><td>Packet Diagram</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>20</td><td>看板图</td><td>Kanban Diagram</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>21</td><td>架构图</td><td>Architecture Diagram</td><td>❌</td><td>❌</td><td>✅</td></tr><tr><td>22</td><td>雷达图</td><td>Radar Chart</td><td>❌</td><td>❌</td><td>❌</td></tr><tr><td>23</td><td>树状图</td><td>Treemap Diagram</td><td>❌</td><td>❌</td><td>❌</td></tr></tbody></table><hr><p><strong>图例说明</strong>：</p><hr><h2 id="表格能告诉你什么？"><a href="#表格能告诉你什么？" class="headerlink" title="表格能告诉你什么？"></a>表格能告诉你什么？</h2><p>这个表格对比了三个主流客户端：</p><p>你可以清楚地看到：</p><hr><h2 id="一些有趣的发现"><a href="#一些有趣的发现" class="headerlink" title="一些有趣的发现"></a>一些有趣的发现</h2><h3 id="Cherry-Studio：黑马选手"><a href="#Cherry-Studio：黑马选手" class="headerlink" title="Cherry Studio：黑马选手"></a>Cherry Studio：黑马选手</h3><p>Cherry Studio 给了我不少惊喜！它支持 <strong>20 种图表类型</strong>，甚至比 ChatGPT 还要多。特别值得一提的是：</p><p>如果你经常需要用这些图表，Cherry Studio 是个不错的选择。</p><h3 id="大家都支持的图表"><a href="#大家都支持的图表" class="headerlink" title="大家都支持的图表"></a>大家都支持的图表</h3><p>有 <strong>13 种图表类型</strong>是所有客户端都支持的，你可以放心使用：</p><p>这些图表是”万金油”，不管你在哪个客户端，都能正常显示。</p><h3 id="没人要的图表"><a href="#没人要的图表" class="headerlink" title="没人要的图表"></a>没人要的图表</h3><p>有些图表类型，大家都不支持，比如：</p><p>这些图表，建议你暂时不要用，或者考虑用其他替代方案。</p><hr><h2 id="实用建议：如何选择图表？"><a href="#实用建议：如何选择图表？" class="headerlink" title="实用建议：如何选择图表？"></a>实用建议：如何选择图表？</h2><h3 id="场景-1：你需要在多个平台发布"><a href="#场景-1：你需要在多个平台发布" class="headerlink" title="场景 1：你需要在多个平台发布"></a>场景 1：你需要在多个平台发布</h3><p><strong>推荐</strong>：使用大家都支持的 13 种图表</p><h3 id="场景-2：你只在-Cherry-Studio-使用"><a href="#场景-2：你只在-Cherry-Studio-使用" class="headerlink" title="场景 2：你只在 Cherry Studio 使用"></a>场景 2：你只在 Cherry Studio 使用</h3><p><strong>推荐</strong>：大胆使用所有 20 种图表</p><h3 id="场景-3：你需要在-ChatGPT-上展示"><a href="#场景-3：你需要在-ChatGPT-上展示" class="headerlink" title="场景 3：你需要在 ChatGPT 上展示"></a>场景 3：你需要在 ChatGPT 上展示</h3><p><strong>推荐</strong>：避开不支持的特殊图表</p><h3 id="场景-4：你想展示架构图"><a href="#场景-4：你想展示架构图" class="headerlink" title="场景 4：你想展示架构图"></a>场景 4：你想展示架构图</h3><p><strong>推荐</strong>：用流程图或块状图替代</p><hr><h2 id="一些个人观察"><a href="#一些个人观察" class="headerlink" title="一些个人观察"></a>一些个人观察</h2><h3 id="为什么支持度不一样？"><a href="#为什么支持度不一样？" class="headerlink" title="为什么支持度不一样？"></a>为什么支持度不一样？</h3><p>这背后的原因可能有：</p><h3 id="未来会更好吗？"><a href="#未来会更好吗？" class="headerlink" title="未来会更好吗？"></a>未来会更好吗？</h3><p>我相信会！随着 Mermaid 的发展，图表类型会越来越丰富，各个客户端的支持度也会逐步提升。就像早期的 Markdown 支持度也不一样，现在基本都统一了。</p><h3 id="我的建议"><a href="#我的建议" class="headerlink" title="我的建议"></a>我的建议</h3><p><strong>如果你是作者</strong>：</p><p><strong>如果你是开发者</strong>：</p><hr><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个表格就像是 Mermaid 图表的”使用指南”，帮你避开那些”吃不到嘴里的葡萄”。</p><p><strong>核心原则</strong>：</p><p>希望这篇攻略能帮助你更好地使用 Mermaid 图表，让文字更加生动，让表达更加清晰！</p><hr><p><strong>相关资源</strong>：</p>]]></content>
-    
-    
-    <categories>
-      
-      <category>技术指南</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>Mermaid</tag>
-      
-      <tag>图表</tag>
-      
-      <tag>客户端</tag>
       
     </tags>
     

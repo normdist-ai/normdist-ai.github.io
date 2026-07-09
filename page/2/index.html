@@ -363,6 +363,82 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/08/ND-20260704-004-karpathy-four-principles-refactor/" target="_self">
+          Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/08/ND-20260704-004-karpathy-four-principles-refactor/" target="_self">
+        <div>
+          Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression背景量化交易系统的数据源是硬编码在代码里的——ReShare、yfinance、akshare 三个数据源的开关和地址散落在多个文件中。想临时关闭某个数据源？得翻代码改逻辑。 需求很简单：把数据源配置提取到统一配置文件，通过 config 字典控制每个数据源的 enabled 状态和 base_url。 但”简单需求”
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-08 03:47" pubdate>
+              2026-07-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/" class="category-chain-item">编程实践</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/%E6%96%B9%E6%B3%95%E8%AE%BA/" class="category-chain-item">方法论</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">#最佳实践</a>
+            
+              <a href="/tags/Karpathy/">#Karpathy</a>
+            
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/">#代码重构</a>
+            
+              <a href="/tags/AI%E8%BE%85%E5%8A%A9%E7%BC%96%E7%A8%8B/">#AI辅助编程</a>
+            
+              <a href="/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/">#方法论</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/07/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
           量化系统 Docker→裸跑迁移：一份踩坑笔记
         </a>
@@ -1009,75 +1085,6 @@
               <a href="/tags/%E7%BE%8E%E5%85%83%E4%BF%A1%E7%94%A8/">#美元信用</a>
             
               <a href="/tags/%E8%AF%84%E5%88%86%E6%A8%A1%E5%9E%8B/">#评分模型</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/06/27/ND-20260627-001-agent-execution-channel/" target="_self">
-          「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/27/ND-20260627-001-agent-execution-channel/" target="_self">
-        <div>
-          当一个任务连续五天出现在计划表里，却从未被执行过——问题不在于”忘了”，而在于它根本没有到达执行层的通道。  一个 0% 的执行率某套自主 AI Agent 系统每天凌晨会执行一轮 PDCA 反省。Plan 环节产出次日的任务清单——数据管道排查、技能补丁、接口修复、方案设计。清单写进日记文件，结构清晰，优先级明确，看起来一切正常。 但翻开连续五天的执行数据，一个规律浮出水面：    日期 非
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-06-27 04:00" pubdate>
-              2026-06-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/PDCA/">#PDCA</a>
-            
-              <a href="/tags/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/">#任务调度</a>
-            
-              <a href="/tags/Cron/">#Cron</a>
-            
-              <a href="/tags/%E8%87%AA%E4%B8%BB%E7%B3%BB%E7%BB%9F/">#自主系统</a>
             
           </div>
         
