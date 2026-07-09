@@ -363,6 +363,604 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/" target="_self">
+          不改 GGUF 文件，用 chat-template-file 修复 llama.cpp Jinja 模板错误
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/" target="_self">
+        <div>
+          问题：HTTP 400 “Unable to generate parser for this template”本地部署的 Qwen3.5-35B-A3B 模型（Ornith 微调版），通过 llama.cpp server 提供 API 服务。某天发现部分请求稳定返回 400 错误： 123456789101112HTTP 400&#123;  &quot;error&quot;: &#123
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-09 19:58" pubdate>
+              2026-07-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI%E5%B7%A5%E7%A8%8B/" class="category-chain-item">AI工程</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Qwen/">#Qwen</a>
+            
+              <a href="/tags/GGUF/">#GGUF</a>
+            
+              <a href="/tags/Jinja/">#Jinja</a>
+            
+              <a href="/tags/llama-cpp/">#llama.cpp</a>
+            
+              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
+            
+              <a href="/tags/chat-template/">#chat-template</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/09/ND-20260705-002-daily-summaries-backfill/" target="_self">
+          从交易记录重建每日资产快照：daily_summaries 历史回填实战
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260705-002-daily-summaries-backfill/" target="_self">
+        <div>
+          从交易记录重建每日资产快照：daily_summaries 历史回填实战问题：权益曲线只有 4 个点一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 daily_summaries 表只有 8 行数据，集中在短短几天内。 后端的 generate-summary 端点功能完全正常，手动调用能正确生成当日快照。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-09 10:00" pubdate>
+              2026-07-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/%E6%95%B0%E6%8D%AE%E5%B7%A5%E7%A8%8B/" class="category-chain-item">数据工程</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%9B%9E%E5%A1%AB/">#数据回填</a>
+            
+              <a href="/tags/SQLite/">#SQLite</a>
+            
+              <a href="/tags/%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/">#定时任务</a>
+            
+              <a href="/tags/%E6%9D%83%E7%9B%8A%E6%9B%B2%E7%BA%BF/">#权益曲线</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/09/ND-20260705-003-cross-session-gui-launch/" target="_self">
+          SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260705-003-cross-session-gui-launch/" target="_self">
+        <div>
+          SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法问题：SSH 能执行命令，但启动的应用”看不见”一个 AI Agent 通过 SSH 连接到 Windows 主机，执行 powershell.exe Start-Process notepad.exe，命令返回成功，任务管理器里能看到 notepad.exe 进程。但 RDP 连上去看桌面——什么都没有。记事本窗口
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-09 10:00" pubdate>
+              2026-07-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" class="category-chain-item">系统运维</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/Windows/" class="category-chain-item">Windows</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Windows/">#Windows</a>
+            
+              <a href="/tags/SSH/">#SSH</a>
+            
+              <a href="/tags/PsExec/">#PsExec</a>
+            
+              <a href="/tags/Session-0/">#Session-0</a>
+            
+              <a href="/tags/%E8%B7%A8%E4%BC%9A%E8%AF%9D/">#跨会话</a>
+            
+              <a href="/tags/GUI/">#GUI</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/09/ND-20260705-004-free-ai-coding-toolchain/" target="_self">
+          免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260705-004-free-ai-coding-toolchain/" target="_self">
+        <div>
+          免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码背景：免费模型能写代码吗？市面上有大量”免费 AI 编程工具”——Cursor、Windsurf、Trae-CN……它们提供免费的模型额度，让开发者零成本用 AI 写代码。但免费模型（GLM、DeepSeek、MiniMax 等）的代码能力参差不齐，直接用经常翻车：改了不该改的文件、删除已有功能、留下半成品代码。 问题不
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-09 10:00" pubdate>
+              2026-07-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/AI-Agent/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" class="category-chain-item">开发工具</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/OpenCode/">#OpenCode</a>
+            
+              <a href="/tags/Karpathy/">#Karpathy</a>
+            
+              <a href="/tags/%E5%85%8D%E8%B4%B9%E6%A8%A1%E5%9E%8B/">#免费模型</a>
+            
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5/">#代码审查</a>
+            
+              <a href="/tags/AGENTS-md/">#AGENTS.md</a>
+            
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E7%BA%A6%E6%9D%9F/">#代码约束</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/09/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
+          外部数据源不稳定的标准修复模式：HTTP重试 + 缓存兜底
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
+        <div>
+          外部数据源不稳定的标准修复模式：HTTP重试 + 缓存兜底问题背景一个量化交易系统的宏观周期分析模块依赖外部学术机构发布的 GPR Index（地缘政治风险指数）Excel 文件。该文件由第三方研究者维护，托管在个人学术网站上，通过固定的 HTTPS URL 提供下载。 系统每天凌晨自动执行宏观数据采集管道，其中一个脚本负责下载 GPR Index 并生成风险评分。某次采集周期中，该步骤开始频繁超
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-09 10:00" pubdate>
+              2026-07-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%B7%A5%E7%A8%8B/" class="category-chain-item">后端工程</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%B7%A5%E7%A8%8B/%E6%95%B0%E6%8D%AE%E5%B7%A5%E7%A8%8B/" class="category-chain-item">数据工程</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+              <a href="/tags/%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E6%BA%90/">#外部数据源</a>
+            
+              <a href="/tags/%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/">#容错设计</a>
+            
+              <a href="/tags/%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/">#重试机制</a>
+            
+              <a href="/tags/%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5/">#缓存策略</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/09/ND-20260707-001-ghost-deviation/" target="_self">
+          幽灵偏差：当你的日报系统开始对自己撒谎
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260707-001-ghost-deviation/" target="_self">
+        <div>
+          幽灵偏差：当你的日报系统开始对自己撒谎一个连续 4 天的”未闭环”Bug一套量化交易系统配备了一个 AI 日记系统，每天凌晨自动反省：做了什么、哪些计划没落地、怎么改进。这个自省机制基于 PDCA 循环——计划（Plan）、执行（Do）、检查（Check）、处置（Act），每天对账。 某天，日记系统记录了一个偏差：宏观分析模块依赖的 GPR Index（地缘政治风险指数）外部数据源下载超时，看板上
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-09 10:00" pubdate>
+              2026-07-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/" class="category-chain-item">工程实践</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/AI-Agent/" class="category-chain-item">AI Agent</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/PDCA/">#PDCA</a>
+            
+              <a href="/tags/%E6%97%A5%E8%AE%B0%E7%B3%BB%E7%BB%9F/">#日记系统</a>
+            
+              <a href="/tags/%E5%81%8F%E5%B7%AE%E6%A3%80%E6%B5%8B/">#偏差检测</a>
+            
+              <a href="/tags/%E8%87%AA%E7%9C%81%E6%9C%BA%E5%88%B6/">#自省机制</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/">#数据验证</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/09/ND-20260708-001-ai-agent-autonomous-refactoring/" target="_self">
+          AI Agent 自主重构之路：从响应式审查到全自动修复
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260708-001-ai-agent-autonomous-refactoring/" target="_self">
+        <div>
+          问题前端项目的移动端适配通常是一块「知道该做，但没人愿意碰」的领域。没有新功能亮点，全是 layout 调整、media query 改写、触摸目标放大——机械重复，量还大。 某双页面应用（约 10+ 个页面）的移动端审查报告一口气列出了 12 项适配问题，分布在两个独立前端仓库中。如果手动修，按每项 30 分钟估算，至少需要 6 小时纯工时，还不算来回切换上下文的时间。 但这次的情况不同：从审查
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-09 10:00" pubdate>
+              2026-07-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/" class="category-chain-item">工程实践</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI-Agent</a>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
+            
+              <a href="/tags/%E5%89%8D%E7%AB%AF%E5%93%8D%E5%BA%94%E5%BC%8F/">#前端响应式</a>
+            
+              <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">#工程实践</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/09/ND-20260709-001-a2a-collaboration-ikuai-skill-upgrade/" target="_self">
+          A2A 协议实战：两个 AI Agent 协作升级路由器技能
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260709-001-a2a-collaboration-ikuai-skill-upgrade/" target="_self">
+        <div>
+          A2A 协议实战：两个 AI Agent 协作升级路由器技能背景：从工具共享到任务协作在上一篇文章中，我们解决了 Agent 间的工具共享问题——通过 MCP 桥接，Linux 上的主 Agent 可以调用 Windows Agent 的 13 个工具。但那是单向的：主 Agent 调远程工具，远程 Agent 只是被动的执行者。 真正的多 Agent 协作（Agent-to-Agent，A2A）
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-09 10:00" pubdate>
+              2026-07-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/AI-Agent/A2A/" class="category-chain-item">A2A</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%9AAgent%E5%8D%8F%E4%BD%9C/">#多Agent协作</a>
+            
+              <a href="/tags/MCP/">#MCP</a>
+            
+              <a href="/tags/A2A/">#A2A</a>
+            
+              <a href="/tags/%E8%B7%AF%E7%94%B1%E5%99%A8/">#路由器</a>
+            
+              <a href="/tags/%E6%8A%80%E8%83%BD%E5%8D%87%E7%BA%A7/">#技能升级</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/09/ND-20260705-001-a2a-mcp-bridge/" target="_self">
           Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具
         </a>
@@ -417,13 +1015,13 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/SSH/">#SSH</a>
-            
-              <a href="/tags/A2A/">#A2A</a>
+              <a href="/tags/%E5%A4%9AAgent%E5%8D%8F%E4%BD%9C/">#多Agent协作</a>
             
               <a href="/tags/MCP/">#MCP</a>
             
-              <a href="/tags/%E5%A4%9AAgent%E5%8D%8F%E4%BD%9C/">#多Agent协作</a>
+              <a href="/tags/SSH/">#SSH</a>
+            
+              <a href="/tags/A2A/">#A2A</a>
             
               <a href="/tags/FastMCP/">#FastMCP</a>
             
@@ -495,9 +1093,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Karpathy/">#Karpathy</a>
-            
               <a href="/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">#最佳实践</a>
+            
+              <a href="/tags/Karpathy/">#Karpathy</a>
             
               <a href="/tags/%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84/">#代码重构</a>
             
@@ -511,599 +1109,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/07/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
-          量化系统 Docker→裸跑迁移：一份踩坑笔记
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/07/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
-        <div>
-          量化系统 Docker→裸跑迁移：一份踩坑笔记背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-07 03:50" pubdate>
-              2026-07-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/DevOps/" class="category-chain-item">DevOps</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Python/">#Python</a>
-            
-              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
-            
-              <a href="/tags/systemd/">#systemd</a>
-            
-              <a href="/tags/Docker/">#Docker</a>
-            
-              <a href="/tags/venv/">#venv</a>
-            
-              <a href="/tags/%E8%BF%81%E7%A7%BB/">#迁移</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/06/ND-20260704-002-agent-cross-platform-migration/" target="_self">
-          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/06/ND-20260704-002-agent-cross-platform-migration/" target="_self">
-        <div>
-          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-06 03:50" pubdate>
-              2026-07-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/AI-Agent/DevOps/" class="category-chain-item">DevOps</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Windows/">#Windows</a>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%81%E7%A7%BB/">#跨平台迁移</a>
-            
-              <a href="/tags/cron/">#cron</a>
-            
-              <a href="/tags/%E7%81%B5%E9%AD%82%E6%96%87%E4%BB%B6/">#灵魂文件</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/05/ND-20260704-001-windows-remote-control-architecture/" target="_self">
-          AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260704-001-windows-remote-control-architecture/" target="_self">
-        <div>
-          AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型背景：一个 Linux Agent 想操作 Windows一个运行在 Linux 服务器上的 AI Agent，已经能通过 CDP（Chrome DevTools Protocol）远程操控 Windows 上的 Edge 浏览器。现在需求升级了——不只是浏览器，还要控制整个 Windows 操作系统：文件
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-05 03:51" pubdate>
-              2026-07-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/AI-Agent/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/" class="category-chain-item">系统架构</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Windows/">#Windows</a>
-            
-              <a href="/tags/SSH/">#SSH</a>
-            
-              <a href="/tags/%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6/">#远程控制</a>
-            
-              <a href="/tags/UFO-Agent/">#UFO-Agent</a>
-            
-              <a href="/tags/UIAutomation/">#UIAutomation</a>
-            
-              <a href="/tags/%E6%9E%B6%E6%9E%84%E9%80%89%E5%9E%8B/">#架构选型</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/04/ND-20260402-001-web-project-standard-structure/" target="_self">
-          网页项目的标准文件结构：最佳实践与优化建议
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260402-001-web-project-standard-structure/" target="_self">
-        <div>
-          网页项目的标准文件结构：最佳实践与优化建议在当今快速迭代的 Web 开发环境中，一个清晰、合理的项目文件结构不仅能提升开发效率，还能增强团队协作的可维护性。本文将深入解析现代网页项目的标准文件结构，涵盖前后端分离、模块化组织、配置分离、Docker 化支持等关键要点，并提供具体的优化建议。 一、当前结构的合理性分析✅ 符合的行业标准一个现代化的网页项目通常具备以下特征：  前后端分离：明确分离前端
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-04 04:02" pubdate>
-              2026-07-04
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" class="category-chain-item">技术架构</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/" class="category-chain-item">项目管理</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Web%E5%BC%80%E5%8F%91/">#Web开发</a>
-            
-              <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84/">#项目结构</a>
-            
-              <a href="/tags/Vue3/">#Vue3</a>
-            
-              <a href="/tags/FastAPI/">#FastAPI</a>
-            
-              <a href="/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">#最佳实践</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/03/ND-20260703-001-api-positions-60x-speedup/" target="_self">
-          一个 60 倍的接口提速：两层隐藏 Bug 如何让 API 延迟从 10 秒降到 0.16 秒
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/03/ND-20260703-001-api-positions-60x-speedup/" target="_self">
-        <div>
-          持仓接口 /api/positions 冷查询要 10 秒，热缓存 3 秒。目标是 &lt; 1 秒。 修复后冷查询 0.16 秒，热缓存 0.035 秒，提升 60 倍。 根因不是 N+1 查询，不是数据库缺索引，而是两层 bug 叠加。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-03 03:50" pubdate>
-              2026-07-03
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="category-chain-item">性能优化</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Python/">#Python</a>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
-              <a href="/tags/FastAPI/">#FastAPI</a>
-            
-              <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#性能优化</a>
-            
-              <a href="/tags/%E6%8E%92%E9%94%99/">#排错</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/02/ND-20260702-001-meta-watchdog-for-autonomous-agents/" target="_self">
-          谁来看守看守——自治 AI Agent 系统的静默故障与元监控设计
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/02/ND-20260702-001-meta-watchdog-for-autonomous-agents/" target="_self">
-        <div>
-          一个自治系统最危险的故障不是崩溃——崩溃有日志、有告警、有人响应。最危险的是静默退化：系统还在跑，绿灯还亮着，但某个子系统已经悄悄停了，而没有任何人、任何监控知道。  一、两个真实故障某套自治 AI Agent 系统在两周内遭遇了两次静默故障，两次都是事后复盘才发现的。 故障一：日记 cron 静默消失 系统每天凌晨执行一轮 PDCA 反省，产出一份日记文件，用于跟踪任务闭环和偏差复现。这套机制
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-02 04:30" pubdate>
-              2026-07-02
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/%E8%BF%90%E7%BB%B4/">#运维</a>
-            
-              <a href="/tags/Cron/">#Cron</a>
-            
-              <a href="/tags/%E8%87%AA%E6%B2%BB%E7%B3%BB%E7%BB%9F/">#自治系统</a>
-            
-              <a href="/tags/%E7%9B%91%E6%8E%A7/">#监控</a>
-            
-              <a href="/tags/%E6%95%85%E9%9A%9C%E6%A3%80%E6%B5%8B/">#故障检测</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" target="_self">
-          &#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" target="_self">
-        <div>
-          某天，用户的 AI 系统经历了一次极端测试——跨越物理机器、跨越操作系统、跨越技术栈的完整迁移。 旧机器：一台运行 Ubuntu 24.04 的 Linux 主机（10.28.9.66）。新机器：Windows 10 + WSL2 + Ubuntu 24.04。 核心问题很简单：一个由 5 个 AI Agent profile、37 个自定义技能、431 段对话记忆构成的智能系统，如何在换一台电脑
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-01 10:00" pubdate>
-              2026-07-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
-            
-              <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%BF%81%E7%A7%BB/">#系统迁移</a>
-            
-              <a href="/tags/DevOps/">#DevOps</a>
-            
-              <a href="/tags/WSL/">#WSL</a>
-            
-              <a href="/tags/%E5%A4%87%E4%BB%BD/">#备份</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
-          东方财富北向资金双接口同时坏死——一个降级+迁移方案
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
-        <div>
-          某套量化系统的北向资金模块在例行巡检中遭遇了一次”教科书级”的接口故障：东方财富的两个北向资金 API 同时坏死——一个返回空结果，一个返回全 NaN。如果系统只依赖其中一个接口，故障会在当天收盘后才会暴露；但因为两个接口在同一时段同时挂了，数据断档直接触发了告警。 本文记录从发现故障、定位根因到设计降级方案的完整过程，重点讨论：如何在多源数据管道中优雅地处理”主备同时失效”的场景。 一、问题：两
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-01 09:00" pubdate>
-              2026-07-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%87%8F%E5%8C%96%E7%B3%BB%E7%BB%9F/" class="category-chain-item">量化系统</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/akshare/">#akshare</a>
-            
-              <a href="/tags/%E5%8C%97%E5%90%91%E8%B5%84%E9%87%91/">#北向资金</a>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E7%B3%BB%E7%BB%9F/">#量化系统</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93/">#数据管道</a>
-            
-              <a href="/tags/%E9%99%8D%E7%BA%A7%E6%96%B9%E6%A1%88/">#降级方案</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/#board">7</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

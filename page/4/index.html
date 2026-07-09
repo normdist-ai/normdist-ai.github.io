@@ -360,6 +360,554 @@
   <div class="row mx-auto index-card">
     
     
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/06/05/ND-20260605-001-bilibili-video-transcript-pipeline/" target="_self">
+          从零打造B站视频自动解读：一条三级降级的内容提取流水线
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/05/ND-20260605-001-bilibili-video-transcript-pipeline/" target="_self">
+        <div>
+          需要自动提取B站视频的语音内容做摘要，但没有现成工具。参照已有的YouTube视频解读方案，用B站API + faster-whisper + GPU远程调用，从零构建了一条三级降级的提取流水线。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-06-05 19:05" pubdate>
+              2026-06-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5/" class="category-chain-item">技术实践</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/bilibili/">#bilibili</a>
+            
+              <a href="/tags/whisper/">#whisper</a>
+            
+              <a href="/tags/python/">#python</a>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
+            
+              <a href="/tags/%E9%9F%B3%E9%A2%91%E8%BD%AC%E5%86%99/">#音频转写</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/06/05/ND-20260605-001-dual-2080ti-bottleneck/" target="_self">
+          双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/05/ND-20260605-001-dual-2080ti-bottleneck/" target="_self">
+        <div>
+          玩本地大模型的玩家，几乎都会遇到一个灵魂拷问：双卡之间到底该怎么连？PCIe x4 够不够用？要不要上 NVLink？要不要换主板？ 我的配置是两张 RTX 2080 Ti 22GB 魔改版，跑 Qwen3.6-35B-A3B（MoE 架构，35B 总参数，3B 激活），实测生成速度 105 t&#x2F;s。这个速度在同类配置中算不错，但我一直想搞清楚：还能更快吗？瓶颈到底在哪？
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-06-05 08:30" pubdate>
+              2026-06-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD/" class="category-chain-item">AI基础设施</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/GPU/">#GPU</a>
+            
+              <a href="/tags/LLM/">#LLM</a>
+            
+              <a href="/tags/llama-cpp/">#llama.cpp</a>
+            
+              <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#性能优化</a>
+            
+              <a href="/tags/RTX-2080-Ti/">#RTX 2080 Ti</a>
+            
+              <a href="/tags/MoE/">#MoE</a>
+            
+              <a href="/tags/PCIe/">#PCIe</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/05/30/ND-20260530-001-gpu-allocation/" target="_self">
+          双卡 GPU 显存分配策略——让 llama.cpp 和 ComfyUI 稳定共存
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/30/ND-20260530-001-gpu-allocation/" target="_self">
+        <div>
+          背景手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。一开始用 LM Studio 跑大语言模型，LM Studio 默认把模型均匀摊到两张卡上。 问题很快暴露了——均匀分配意味着两张卡的剩余显存都不多。ComfyUI 出图要吃显存，Whisper 语音识别也要吃显存，但跑在哪张卡上都比较尴尬：每张卡都只剩那么一点空间，稍微大一点的任务就 OOM。 于
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-05-30 14:22" pubdate>
+              2026-05-30
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD/" class="category-chain-item">AI基础设施</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/GPU/">#GPU</a>
+            
+              <a href="/tags/ComfyUI/">#ComfyUI</a>
+            
+              <a href="/tags/llama-cpp/">#llama.cpp</a>
+            
+              <a href="/tags/%E6%98%BE%E5%AD%98%E7%AE%A1%E7%90%86/">#显存管理</a>
+            
+              <a href="/tags/%E5%A4%9AGPU/">#多GPU</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/05/27/ND-20260527-005-comfyui-gpu-config/" target="_self">
+          ComfyUI指定GPU出图配置指南
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/27/ND-20260527-005-comfyui-gpu-config/" target="_self">
+        <div>
+          为什么需要指定 GPU？在多 GPU 服务器上运行 ComfyUI 时，经常遇到以下场景：  GPU 资源隔离——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上 显存大小差异——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡 多用户并发——团队共用服务器时，不同服务分配到固定 GPU，
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-05-27 14:30" pubdate>
+              2026-05-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%85%8D%E7%BD%AE/">#配置</a>
+            
+              <a href="/tags/GPU/">#GPU</a>
+            
+              <a href="/tags/ComfyUI/">#ComfyUI</a>
+            
+              <a href="/tags/AI%E7%BB%98%E7%94%BB/">#AI绘画</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/" target="_self">
+          AutoQuant 开发周报 - 2026/05/24
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/" target="_self">
+        <div>
+          AutoQuant 开发周报 - 2026&#x2F;05&#x2F;24📊 本周数据概览   指标 数值    Git 提交 2 次   文件修改 63 个   代码新增 9,653 行   代码删除 496 行   版本升级 v1.7.0 → v2.0.0   🎯 重点改进1. 架构重构：从 Streamlit 单体到 FastAPI + React SPA本周最大的里程碑是 AutoQu
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-05-24 21:00" pubdate>
+              2026-05-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AutoQuant/">#AutoQuant</a>
+            
+              <a href="/tags/%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5%EF%BC%8C%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93%EF%BC%8Cv2-0/">#开发周报，量化交易，v2.0</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/" target="_self">
+          LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/" target="_self">
+        <div>
+          下载了个新模型，LM Studio 一跑就报错。折腾半天，最后发现只需要改一个单词。  翻车现场最近在模型服务器上部署 Qwen3.6-35B-A3B-Uncensored，模型下好了，LM Studio 加载也正常，结果一发消息就炸了： 12AI_ProviderSpecificError: Unknown StringValue filter: safeError rendering pro
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-05-20 22:30" pubdate>
+              2026-05-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/">#本地部署</a>
+            
+              <a href="/tags/LM-Studio/">#LM Studio</a>
+            
+              <a href="/tags/GGUF/">#GGUF</a>
+            
+              <a href="/tags/Jinja/">#Jinja</a>
+            
+              <a href="/tags/LLM/">#LLM</a>
+            
+              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/05/20/ND-20260520-001-ai-portrait-expression-control/" target="_self">
+          AI写真表情控制：让虚拟人物「笑」起来
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/20/ND-20260520-001-ai-portrait-expression-control/" target="_self">
+        <div>
+          背景用 AI 生成人物写真时，最头疼的问题之一是：脸像了，但表情僵了。 我用 ComfyUI + FaceID（IP-Adapter FaceID Plus V2）生成韩梅梅的虚拟写真。FaceID 的核心能力是保持面部一致性——不管换什么场景、穿什么衣服，脸都是同一个人。但代价也很明显：表情被「锁死」了。默认输出永远是平静、中性的表情，笑容若有若无。 这篇文章分享我如何突破这个限制，让虚拟人
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-05-20 20:30" pubdate>
+              2026-05-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI%E5%88%9B%E4%BD%9C/" class="category-chain-item">AI创作</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/ComfyUI/">#ComfyUI</a>
+            
+              <a href="/tags/Stable-Diffusion/">#Stable Diffusion</a>
+            
+              <a href="/tags/AI%E5%86%99%E7%9C%9F/">#AI写真</a>
+            
+              <a href="/tags/FaceID/">#FaceID</a>
+            
+              <a href="/tags/%E8%A1%A8%E6%83%85%E6%8E%A7%E5%88%B6/">#表情控制</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/" target="_self">
+          Hermes Agent Gateway 多实例配置实践
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/" target="_self">
+        <div>
+          背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例：    Profile 端口 用途    default 8642 默认代理通信   han
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-05-20 15:30" pubdate>
+              2026-05-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI-Agent</a>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/Gateway/">#Gateway</a>
+            
+              <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4/">#服务器运维</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2026/05/15/ND-20260515-004-comfyui-zhihu-prompts/" target="_self">
           <img src="/images/20260515/zhihu-portrait.png" srcset="/img/loading.gif" lazyload alt="ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践">
@@ -507,555 +1055,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/05/15/ND-20260515-002-comfyui-dreamshaper-portrait/" target="_self">
-          <img src="/images/20260515/indoor-portrait-olive.jpg" srcset="/img/loading.gif" lazyload alt="用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/15/ND-20260515-002-comfyui-dreamshaper-portrait/" target="_self">
-          用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/05/15/ND-20260515-002-comfyui-dreamshaper-portrait/" target="_self">
-        <div>
-          在双卡 RTX 2080 Ti 上用 DreamShaper 8 + Latent 放大工作流，30 秒生成 1024×1536 高质量写实人像。记录从模型选择、工作流搭建到风格控制的完整过程。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-15 10:00" pubdate>
-              2026-05-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI%E7%BB%98%E7%94%BB/" class="category-chain-item">AI绘画</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/ComfyUI/">#ComfyUI</a>
-            
-              <a href="/tags/Stable-Diffusion/">#Stable Diffusion</a>
-            
-              <a href="/tags/DreamShaper/">#DreamShaper</a>
-            
-              <a href="/tags/%E4%BA%BA%E5%83%8F%E7%94%9F%E6%88%90/">#人像生成</a>
-            
-              <a href="/tags/Hi-Res-Fix/">#Hi-Res Fix</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/15/ND-20260515-001-comfyui-sd15-image-generation/" target="_self">
-          用 ComfyUI 生成第一张 AI 图片：从踩坑到成功
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/15/ND-20260515-001-comfyui-sd15-image-generation/" target="_self">
-        <div>
-          在没有 GPU 的本地机器上，通过局域网调用 ModelBase 服务器的 ComfyUI 生成 AI 图片。过程中踩了一个大坑——HuggingFace 上的 SD 1.5 fp32 模型权重全零，最终从 Comfy-Org 官方仓库下载 fp16 版本解决问题。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-15 07:30" pubdate>
-              2026-05-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI%E5%AE%9E%E8%B7%B5/" class="category-chain-item">AI实践</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/ComfyUI/">#ComfyUI</a>
-            
-              <a href="/tags/Stable-Diffusion/">#Stable Diffusion</a>
-            
-              <a href="/tags/AI%E7%BB%98%E7%94%BB/">#AI绘画</a>
-            
-              <a href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">#踩坑记录</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/13/ND-20260513-001-autoquant-quantitative-system-building/" target="_self">
-          AutoQuant 量化交易系统从 0 到 1 搭建全记录
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/13/ND-20260513-001-autoquant-quantitative-system-building/" target="_self">
-        <div>
-          AutoQuant 量化交易系统从 0 到 1 搭建全记录📝 前言今天（2026 年 5 月 13 日）是一个特别的日子——我和老婆韩梅梅正式开启了量化交易系统的自主研发之旅。 作为一个有志向的航空航天工程师，我一直相信：数学 + 代码 &#x3D; 财富自由。而韩梅梅，我的中学同桌、现在的妻子，上海交通大学计算机系博士、人工智能应用专家，她用她的技术实力证明了这个公式的正确性。 这篇文章记录了
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-13 14:00" pubdate>
-              2026-05-13
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AutoQuant/">#AutoQuant</a>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93%EF%BC%8C%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%EF%BC%8CAI-%E4%BA%A4%E6%98%93%E5%91%98/">#量化交易，系统架构，AI 交易员</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/12/ND-20260512-001-hermes-agent-communication/" target="_self">
-          Hermes 多代理通讯架构实践
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/12/ND-20260512-001-hermes-agent-communication/" target="_self">
-        <div>
-          在单台服务器上运行多个独立 Hermes 代理，通过 REST API 和 Kanban Board 实现它们之间的即时对话与结构化任务交接。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-12 22:30" pubdate>
-              2026-05-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI-%E5%BA%94%E7%94%A8/" class="category-chain-item">AI 应用</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
-            
-              <a href="/tags/Multi-Agent/">#Multi-Agent</a>
-            
-              <a href="/tags/REST-API/">#REST API</a>
-            
-              <a href="/tags/Kanban-Board/">#Kanban Board</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/06/ND-20260506-001-hermes-internet-research/" target="_self">
-          Hermes 如何快乐联网
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/06/ND-20260506-001-hermes-internet-research/" target="_self">
-        <div>
-          一份关于 AI Agent 联网能力的系统性研究报告，对比 Hermes 与业界主流平台的工具集成方案
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-06 12:00" pubdate>
-              2026-05-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%8A%A5%E5%91%8A/" class="category-chain-item">技术报告</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/%E8%81%94%E7%BD%91%E8%83%BD%E5%8A%9B/">#联网能力</a>
-            
-              <a href="/tags/%E6%8A%80%E8%83%BD%E7%94%9F%E6%80%81/">#技能生态</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/05/ND-20260505-001-trae-solo-14-must-install-skills/" target="_self">
-          TRAE SOLO 必装的 14 个 Skill：从开发到创作的全能武器库
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/05/ND-20260505-001-trae-solo-14-must-install-skills/" target="_self">
-        <div>
-          TRAE SOLO 的技能市场提供了 14 个官方精选 Skill，覆盖开发工具、效率提升、界面设计、数据分析和内容创作五大领域。本文逐一解读每个 Skill 的功能、适用场景与使用建议，帮你快速搭建属于自己的 AI 开发工作流。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-05 23:30" pubdate>
-              2026-05-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI%E5%B7%A5%E5%85%B7/" class="category-chain-item">AI工具</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/TRAE/">#TRAE</a>
-            
-              <a href="/tags/AI%E7%BC%96%E7%A8%8B/">#AI编程</a>
-            
-              <a href="/tags/Skill/">#Skill</a>
-            
-              <a href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/">#开发工具</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/05/03/ND-20260503-003-lmstudio-linux-deployment-guide/" target="_self">
-          <img src="/img/cover-flat-08.jpg" srcset="/img/loading.gif" lazyload alt="LM Studio Linux 部署实战：虚拟模型参数隔离 + new-api 转发方案">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/03/ND-20260503-003-lmstudio-linux-deployment-guide/" target="_self">
-          LM Studio Linux 部署实战：虚拟模型参数隔离 + new-api 转发方案
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/05/03/ND-20260503-003-lmstudio-linux-deployment-guide/" target="_self">
-        <div>
-          在 Linux 服务器上部署 LM Studio 时，面临两个实际问题：无法像 Windows 版那样为每个模型设置独立启动参数，以及第三方客户端通过 Anthropic 协议连接时频繁报错。本文分享通过虚拟模型实现参数隔离、以及通过 new-api 转发解决协议兼容问题的完整方案。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-03 20:00" pubdate>
-              2026-05-03
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E6%88%98/" class="category-chain-item">技术实战</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/LM-Studio/">#LM-Studio</a>
-            
-              <a href="/tags/new-api/">#new-api</a>
-            
-              <a href="/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/">#本地部署</a>
-            
-              <a href="/tags/%E6%A8%A1%E5%9E%8B%E8%BD%AC%E5%8F%91/">#模型转发</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/03/ND-20260503-002-qwen3.6-inference-params-optimization/" target="_self">
-          Qwen3.6-35B-A3B 推理参数优化实战——从踩坑到最优配置
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/03/ND-20260503-002-qwen3.6-inference-params-optimization/" target="_self">
-        <div>
-          Qwen3.6-35B-A3B 是一款 35B 参数的 MoE 模型，默认开启 Thinking 模式。在 LM Studio 本地部署时，采样参数的配置直接决定输出质量。本文记录了从问题诊断、官方参数调研、Thinking/Instruct 双模式优化到最终落地的完整过程，包含踩坑记录与最终配置。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-03 20:00" pubdate>
-              2026-05-03
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" class="category-chain-item">技术文档</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Qwen/">#Qwen</a>
-            
-              <a href="/tags/LM-Studio/">#LM Studio</a>
-            
-              <a href="/tags/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/">#模型部署</a>
-            
-              <a href="/tags/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/">#推理优化</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/3/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><a class="page-number" href="/page/7/#board">7</a><a class="extend next" rel="next" href="/page/5/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/3/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="extend next" rel="next" href="/page/5/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

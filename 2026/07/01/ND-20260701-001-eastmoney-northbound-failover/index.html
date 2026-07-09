@@ -27,7 +27,7 @@
 <meta property="og:description" content="某套量化系统的北向资金模块在例行巡检中遭遇了一次”教科书级”的接口故障：东方财富的两个北向资金 API 同时坏死——一个返回空结果，一个返回全 NaN。如果系统只依赖其中一个接口，故障会在当天收盘后才会暴露；但因为两个接口在同一时段同时挂了，数据断档直接触发了告警。 本文记录从发现故障、定位根因到设计降级方案的完整过程，重点讨论：如何在多源数据管道中优雅地处理”主备同时失效”的场景。 一、问题：两">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-07-01T01:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-01T04:20:17.231Z">
+<meta property="article:modified_time" content="2026-07-09T10:06:57.022Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="akshare">
 <meta property="article:tag" content="北向资金">
@@ -422,7 +422,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月1日 中午
+                    本文最后更新于 2026年7月9日 晚上
                   
                 
               </p>

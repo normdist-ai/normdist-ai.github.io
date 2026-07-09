@@ -1,0 +1,1106 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="从交易记录重建每日资产快照：daily_summaries 历史回填实战问题：权益曲线只有 4 个点一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 daily_summaries 表只有 8 行数据，集中在短短几天内。 后端的 generate-summary 端点功能完全正常，手动调用能正确生成当日快照。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从交易记录重建每日资产快照：daily_summaries 历史回填实战">
+<meta property="og:url" content="https://www.normdist.com/2026/07/09/ND-20260705-002-daily-summaries-backfill/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="从交易记录重建每日资产快照：daily_summaries 历史回填实战问题：权益曲线只有 4 个点一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 daily_summaries 表只有 8 行数据，集中在短短几天内。 后端的 generate-summary 端点功能完全正常，手动调用能正确生成当日快照。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-09T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-09T10:06:57.024Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="数据回填">
+<meta property="article:tag" content="SQLite">
+<meta property="article:tag" content="定时任务">
+<meta property="article:tag" content="权益曲线">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>从交易记录重建每日资产快照：daily_summaries 历史回填实战 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">从交易记录重建每日资产快照：daily_summaries 历史回填实战</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-09 10:00" pubdate>
+          2026年7月9日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          40 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">从交易记录重建每日资产快照：daily_summaries 历史回填实战</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月9日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="从交易记录重建每日资产快照：daily-summaries-历史回填实战"><a href="#从交易记录重建每日资产快照：daily-summaries-历史回填实战" class="headerlink" title="从交易记录重建每日资产快照：daily_summaries 历史回填实战"></a>从交易记录重建每日资产快照：daily_summaries 历史回填实战</h1><h2 id="问题：权益曲线只有-4-个点"><a href="#问题：权益曲线只有-4-个点" class="headerlink" title="问题：权益曲线只有 4 个点"></a>问题：权益曲线只有 4 个点</h2><p>一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 <code>daily_summaries</code> 表只有 8 行数据，集中在短短几天内。</p>
+<p>后端的 <code>generate-summary</code> 端点功能完全正常，手动调用能正确生成当日快照。问题是：<strong>从来没有定时任务调用它。</strong> 功能存在，但不运转。</p>
+<p>这是一个典型的”数据可见性”问题：系统有能力生产数据，但缺少自动化的”数据生产调度”，导致数据积压、曲线断层、用户看到的 Dashboard 残缺不全。</p>
+<h2 id="现状分析"><a href="#现状分析" class="headerlink" title="现状分析"></a>现状分析</h2><h3 id="数据缺口"><a href="#数据缺口" class="headerlink" title="数据缺口"></a>数据缺口</h3><table>
+<thead>
+<tr>
+<th>账户</th>
+<th>类型</th>
+<th>创建日期</th>
+<th>初始资金</th>
+<th>daily_summaries 覆盖</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>实盘 broker</td>
+<td>06-03</td>
+<td>100,000</td>
+<td>06-12 ~ 06-17（仅 5 天）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>实盘 broker</td>
+<td>06-05</td>
+<td>106,150</td>
+<td>无</td>
+</tr>
+<tr>
+<td>3</td>
+<td>实盘 broker</td>
+<td>06-12</td>
+<td>10,000</td>
+<td>无</td>
+</tr>
+<tr>
+<td>4</td>
+<td>模拟 simulated</td>
+<td>06-22</td>
+<td>100,000</td>
+<td>无</td>
+</tr>
+<tr>
+<td>5</td>
+<td>模拟 simulated</td>
+<td>06-22</td>
+<td>100,000</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<p>5 个账户，从 6 月初到 7 月初整整一个月，只有账户 1 有零星几天的快照。缺失 06-18 到 07-04 的全部数据。</p>
+<h3 id="可用数据源"><a href="#可用数据源" class="headerlink" title="可用数据源"></a>可用数据源</h3><p>好消息是，交易记录（trades 表）是完整的。每一笔买入卖出都有记录：股票代码、方向、数量、价格、时间戳。另外，ReShare 行情服务（localhost:8200）有完整的 A 股历史价格数据。</p>
+<p>有了交易记录 + 历史价格，理论上可以<strong>重建任意一天的持仓快照</strong>——只需要重放所有交易到目标日期，算出当天的持仓和现金，再乘以收盘价，就得到当日总资产。</p>
+<h2 id="回填方案"><a href="#回填方案" class="headerlink" title="回填方案"></a>回填方案</h2><h3 id="核心逻辑：交易重放-历史定价"><a href="#核心逻辑：交易重放-历史定价" class="headerlink" title="核心逻辑：交易重放 + 历史定价"></a>核心逻辑：交易重放 + 历史定价</h3><p>对每个账户的每个历史交易日，执行以下计算：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 重建持仓：遍历截至该日的所有交易，重放出当天的持仓状态<br><span class="hljs-bullet">2.</span> 获取收盘价：对每个持仓股票，从 ReShare 取当日收盘价<br><span class="hljs-bullet">3.</span> 计算总资产：<br>   position<span class="hljs-emphasis">_value = Σ(quantity × close_</span>price)<br>   total<span class="hljs-emphasis">_assets = cash + position_</span>value<br><span class="hljs-bullet">4.</span> 计算日收益率：<br>   daily<span class="hljs-emphasis">_return = (total_</span>assets - prev<span class="hljs-emphasis">_total_</span>assets) / prev<span class="hljs-emphasis">_total_</span>assets<br><span class="hljs-bullet">5.</span> 写入 daily<span class="hljs-emphasis">_summaries 表</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="关键函数"><a href="#关键函数" class="headerlink" title="关键函数"></a>关键函数</h3><p><strong>持仓重建</strong>——最核心的逻辑。遍历交易记录到目标日期，按买入&#x2F;卖出更新持仓：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">rebuild_positions_at_date</span>(<span class="hljs-params">trades, target_date</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;返回 &#123;stock_code: &#123;&quot;quantity&quot;: int, &quot;avg_cost&quot;: float&#125;&#125; 到 target_date 为止的持仓&quot;&quot;&quot;</span><br>    positions = &#123;&#125;<br>    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> trades:<br>        <span class="hljs-keyword">if</span> t[<span class="hljs-string">&quot;timestamp&quot;</span>].date() &gt; target_date:<br>            <span class="hljs-keyword">continue</span><br>        code = t[<span class="hljs-string">&quot;stock_code&quot;</span>]<br>        <span class="hljs-keyword">if</span> code <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> positions:<br>            positions[code] = &#123;<span class="hljs-string">&quot;quantity&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&quot;avg_cost&quot;</span>: <span class="hljs-number">0.0</span>&#125;<br>        pos = positions[code]<br>        <span class="hljs-keyword">if</span> t[<span class="hljs-string">&quot;direction&quot;</span>] == <span class="hljs-string">&quot;buy&quot;</span>:<br>            new_qty = pos[<span class="hljs-string">&quot;quantity&quot;</span>] + t[<span class="hljs-string">&quot;quantity&quot;</span>]<br>            <span class="hljs-keyword">if</span> new_qty &gt; <span class="hljs-number">0</span>:<br>                <span class="hljs-comment"># 加权平均成本</span><br>                pos[<span class="hljs-string">&quot;avg_cost&quot;</span>] = (<br>                    pos[<span class="hljs-string">&quot;quantity&quot;</span>] * pos[<span class="hljs-string">&quot;avg_cost&quot;</span>] + t[<span class="hljs-string">&quot;quantity&quot;</span>] * t[<span class="hljs-string">&quot;price&quot;</span>]<br>                ) / new_qty<br>            pos[<span class="hljs-string">&quot;quantity&quot;</span>] = new_qty<br>        <span class="hljs-keyword">elif</span> t[<span class="hljs-string">&quot;direction&quot;</span>] == <span class="hljs-string">&quot;sell&quot;</span>:<br>            pos[<span class="hljs-string">&quot;quantity&quot;</span>] -= t[<span class="hljs-string">&quot;quantity&quot;</span>]<br>            <span class="hljs-keyword">if</span> pos[<span class="hljs-string">&quot;quantity&quot;</span>] &lt;= <span class="hljs-number">0</span>:<br>                pos[<span class="hljs-string">&quot;quantity&quot;</span>] = <span class="hljs-number">0</span><br>                pos[<span class="hljs-string">&quot;avg_cost&quot;</span>] = <span class="hljs-number">0.0</span><br>    <span class="hljs-comment"># 过滤掉已清仓的</span><br>    <span class="hljs-keyword">return</span> &#123;k: v <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> positions.items() <span class="hljs-keyword">if</span> v[<span class="hljs-string">&quot;quantity&quot;</span>] &gt; <span class="hljs-number">0</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>现金重建</strong>——从初始资金开始，按交易正向计算：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">compute_cash_at_date</span>(<span class="hljs-params">trades, target_date, initial_balance</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;从初始资金开始，重放到 target_date 的现金余额&quot;&quot;&quot;</span><br>    cash = initial_balance<br>    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> trades:<br>        <span class="hljs-keyword">if</span> t[<span class="hljs-string">&quot;timestamp&quot;</span>].date() &gt; target_date:<br>            <span class="hljs-keyword">break</span><br>        <span class="hljs-keyword">if</span> t[<span class="hljs-string">&quot;direction&quot;</span>] == <span class="hljs-string">&quot;buy&quot;</span>:<br>            cash -= t[<span class="hljs-string">&quot;quantity&quot;</span>] * t[<span class="hljs-string">&quot;price&quot;</span>]<br>        <span class="hljs-keyword">elif</span> t[<span class="hljs-string">&quot;direction&quot;</span>] == <span class="hljs-string">&quot;sell&quot;</span>:<br>            cash += t[<span class="hljs-string">&quot;quantity&quot;</span>] * t[<span class="hljs-string">&quot;price&quot;</span>]<br>    <span class="hljs-keyword">return</span> cash<br></code></pre></td></tr></table></figure>
+
+<p><strong>历史定价</strong>——调用 ReShare 行情服务：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_close_price</span>(<span class="hljs-params">stock_code, date_str</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;获取某股票某日收盘价&quot;&quot;&quot;</span><br>    <span class="hljs-comment"># 600 开头 → .SH，其余 → .SZ</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;.&quot;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> stock_code:<br>        symbol = <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;stock_code&#125;</span>.SH&quot;</span> <span class="hljs-keyword">if</span> stock_code.startswith(<span class="hljs-string">&quot;6&quot;</span>) <span class="hljs-keyword">else</span> <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;stock_code&#125;</span>.SZ&quot;</span><br>    <span class="hljs-keyword">else</span>:<br>        symbol = stock_code<br>    resp = requests.get(<br>        <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;RESHARE_URL&#125;</span>/history/get&quot;</span>,<br>        params=&#123;<span class="hljs-string">&quot;symbol&quot;</span>: symbol, <span class="hljs-string">&quot;start_date&quot;</span>: date_str.replace(<span class="hljs-string">&quot;-&quot;</span>, <span class="hljs-string">&quot;&quot;</span>),<br>                <span class="hljs-string">&quot;end_date&quot;</span>: date_str.replace(<span class="hljs-string">&quot;-&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)&#125;,<br>        timeout=<span class="hljs-number">10</span>,<br>    )<br>    data = resp.json().get(<span class="hljs-string">&quot;data&quot;</span>, [])<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">float</span>(data[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;close&quot;</span>]) <span class="hljs-keyword">if</span> data <span class="hljs-keyword">else</span> <span class="hljs-literal">None</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="容错设计"><a href="#容错设计" class="headerlink" title="容错设计"></a>容错设计</h3><p>历史回填不可能一次跑完不报错。ReShare 某天某股可能缺数据，网络可能超时。处理策略：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 价格获取失败的 fallback：用持仓成本代替（不崩溃）</span><br>close = get_close_price(code, date_str)<br><span class="hljs-keyword">if</span> close <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>    close = positions[code][<span class="hljs-string">&quot;avg_cost&quot;</span>]  <span class="hljs-comment"># 用成本价兜底</span><br></code></pre></td></tr></table></figure>
+
+<p>这个 fallback 不完美（成本价 ≠ 市价），但保证了脚本不中断。缺失的价格用成本近似，总比没有数据强。</p>
+<h2 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /home/tony/investment/autoquant &amp;&amp; venv/bin/python scripts/backfill_daily_summaries.py<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>账户</th>
+<th>回填前</th>
+<th>回填后</th>
+<th>日期范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1（主账户）</td>
+<td>5 行</td>
+<td>23 行</td>
+<td>06-03 ~ 07-04</td>
+</tr>
+<tr>
+<td>2（中信建投）</td>
+<td>0 行</td>
+<td>21 行</td>
+<td>06-05 ~ 07-04</td>
+</tr>
+<tr>
+<td>3（平安证券）</td>
+<td>0 行</td>
+<td>16 行</td>
+<td>06-12 ~ 07-04</td>
+</tr>
+<tr>
+<td>4（ETF轮动）</td>
+<td>0 行</td>
+<td>9 行</td>
+<td>06-22 ~ 07-04</td>
+</tr>
+<tr>
+<td>5（网格交易）</td>
+<td>0 行</td>
+<td>9 行</td>
+<td>06-22 ~ 07-04</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>8 行</strong></td>
+<td><strong>78 行</strong></td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>equity curve 从 4 个点提升到 17 个点——Dashboard 终于能画出一条像样的曲线了。</p>
+<h2 id="从一次性回填到持续运转"><a href="#从一次性回填到持续运转" class="headerlink" title="从一次性回填到持续运转"></a>从一次性回填到持续运转</h2><p>回填解决了历史缺口，但如果不解决”为什么没有定时调用”的问题，数据又会从明天开始断档。</p>
+<h3 id="定时快照的部署"><a href="#定时快照的部署" class="headerlink" title="定时快照的部署"></a>定时快照的部署</h3><p>最初设计用 systemd timer，每个交易日 15:30 触发：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># aq-daily-summary.timer</span><br><span class="hljs-section">[Timer]</span><br><span class="hljs-attr">OnCalendar</span>=Mon..Fri <span class="hljs-number">15</span>:<span class="hljs-number">30</span>:<span class="hljs-number">00</span><br><span class="hljs-attr">Persistent</span>=<span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<p>但目标机器上 <code>sudo</code> 权限受限，无法注册系统级 systemd timer。退而求其次，改用用户级 crontab：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># crontab -e</span><br>30 15 * * 1-5 curl -s -X POST http://localhost:8100/api/dashboard/generate-summary<br></code></pre></td></tr></table></figure>
+
+<p>一行 crontab，每天收盘后自动调用已有的 <code>generate-summary</code> 端点。不写新代码，复用已有 API。</p>
+<h3 id="为什么-crontab-而不是-systemd"><a href="#为什么-crontab-而不是-systemd" class="headerlink" title="为什么 crontab 而不是 systemd"></a>为什么 crontab 而不是 systemd</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>systemd timer</th>
+<th>crontab</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>需要 sudo</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>Persistent=true</code>（错过的补执行）</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>日志集成</td>
+<td>journald</td>
+<td>邮件&#x2F;stdout 重定向</td>
+</tr>
+<tr>
+<td>部署门槛</td>
+<td>中（需写 service+timer 两个文件）</td>
+<td>低（一行搞定）</td>
+</tr>
+</tbody></table>
+<p>在这个场景下，systemd 的 <code>Persistent</code> 补执行能力是唯一优势，但快照是”每天收盘后生成当日”——如果 15:30 机器关了，第二天补执行也没有意义（收盘价已经更新了，但中途的持仓可能已经变了）。所以 crontab 足够。</p>
+<h2 id="教训：功能存在-≠-功能运转"><a href="#教训：功能存在-≠-功能运转" class="headerlink" title="教训：功能存在 ≠ 功能运转"></a>教训：功能存在 ≠ 功能运转</h2><p>这次回填最大的教训不是技术上的，而是认知上的：</p>
+<p><code>generate-summary</code> 端点一直在那里，功能完全正常。手动 curl 一下就能生成快照。但<strong>没有人定时调用它</strong>，所以数据不增长，Dashboard 是残缺的。</p>
+<p>这不是 bug，是<strong>运维断层</strong>——开发写了功能，但没有把”谁来调用、什么时候调用、调用失败怎么办”这个闭环接上。</p>
+<p>更广泛地说，任何有”数据生产”能力的系统，都需要回答三个问题：</p>
+<ol>
+<li><strong>谁触发</strong>——定时任务？事件回调？用户手动？</li>
+<li><strong>多久一次</strong>——实时？每日？按需？</li>
+<li><strong>失败怎么办</strong>——重试？告警？降级？</li>
+</ol>
+<p>这三个问题没有答案的功能，本质上就是”僵尸端点”——活着，但不产出。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>方法</th>
+<th>产出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>历史回填</td>
+<td>交易重放 + ReShare 定价</td>
+<td>8 行 → 78 行</td>
+</tr>
+<tr>
+<td>持续快照</td>
+<td>crontab 每日 15:30 调用 generate-summary</td>
+<td>数据不再断档</td>
+</tr>
+<tr>
+<td>容错</td>
+<td>价格缺失用成本价 fallback</td>
+<td>脚本不中断</td>
+</tr>
+</tbody></table>
+<p>168 行 Python 脚本，解决了 equity curve 数据断层问题。技术不复杂——交易重放是标准会计逻辑，历史定价是 API 调用。真正有价值的是<strong>识别出”功能存在但不运转”这个隐蔽问题</strong>，然后补上定时调度的闭环。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/%E6%95%B0%E6%8D%AE%E5%B7%A5%E7%A8%8B/" class="category-chain-item">数据工程</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%9B%9E%E5%A1%AB/" class="print-no-link">#数据回填</a>
+      
+        <a href="/tags/SQLite/" class="print-no-link">#SQLite</a>
+      
+        <a href="/tags/%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" class="print-no-link">#定时任务</a>
+      
+        <a href="/tags/%E6%9D%83%E7%9B%8A%E6%9B%B2%E7%BA%BF/" class="print-no-link">#权益曲线</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>从交易记录重建每日资产快照：daily_summaries 历史回填实战</div>
+      <div>https://www.normdist.com/2026/07/09/ND-20260705-002-daily-summaries-backfill/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/" title="不改 GGUF 文件，用 chat-template-file 修复 llama.cpp Jinja 模板错误">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">不改 GGUF 文件，用 chat-template-file 修复 llama.cpp Jinja 模板错误</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/09/ND-20260705-003-cross-session-gui-launch/" title="SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法">
+                        <span class="hidden-mobile">SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
