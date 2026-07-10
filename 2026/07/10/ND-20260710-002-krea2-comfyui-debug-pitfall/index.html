@@ -26,8 +26,13 @@
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="前言：为什么要折腾 Krea2Krea2 是 Krea.ai 发布的 12B 参数 DiT 模型，基于 flow-matching 架构，支持 1K 到 2K 分辨率。在图像质量上，它直接对标 Midjourney 和 DALL·E 3 级别的商用模型。更关键的是，它是开源的。 但开源不意味着开箱即用。在双 RTX 2080 Ti（22GB 魔改版）上部署 Krea2 Turbo，我遇到了整整六层">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.normdist.com/images/krea2-mouse.png">
+<meta property="og:image" content="https://www.normdist.com/images/krea2-portrait.png">
+<meta property="og:image" content="https://www.normdist.com/images/krea2-convertible.png">
+<meta property="og:image" content="https://www.normdist.com/images/krea2-sword-duel.png">
+<meta property="og:image" content="https://www.normdist.com/images/krea2-girl-portrait.png">
 <meta property="article:published_time" content="2026-07-10T08:30:00.000Z">
-<meta property="article:modified_time" content="2026-07-10T07:08:50.167Z">
+<meta property="article:modified_time" content="2026-07-10T07:31:01.910Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="ComfyUI">
 <meta property="article:tag" content="踩坑记录">
@@ -37,6 +42,7 @@
 <meta property="article:tag" content="AI 图像生成">
 <meta property="article:tag" content="DiT">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.normdist.com/images/krea2-mouse.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -360,7 +366,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          8.9k 字
+          9.2k 字
         
       </span>
     
@@ -371,7 +377,7 @@
         
         
         
-          75 分钟
+          77 分钟
         
       </span>
     
@@ -518,27 +524,21 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">aria2c -c -x 4 -s 4 -d /mnt/nvme/ComfyUI/models/upscale_models/ \<br>  -o 4x-UltraSharp.pth \<br>  <span class="hljs-string">&quot;https://hf-mirror.com/lokCX/4x-Ultrasharp/resolve/main/4x-UltraSharp.pth&quot;</span><br></code></pre></td></tr></table></figure>
 
 <h2 id="出图效果验证"><a href="#出图效果验证" class="headerlink" title="出图效果验证"></a>出图效果验证</h2><p>修复后的效果对比（同一 prompt、同一 seed）：</p>
-<p><strong>Prompt：A tiny russet-brown harvest mouse clings to a slender branch, macro photography, shallow depth of field, green bokeh background</strong></p>
-<table>
-<thead>
-<tr>
-<th>版本</th>
-<th>结果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>修复前（FP8 CLIP + cfg&#x3D;0.0）</td>
-<td>出动漫少女侧脸，prompt 遵循度 0&#x2F;10</td>
-</tr>
-<tr>
-<td>修复后（BF16 CLIP + cfg&#x3D;1.0）</td>
-<td>✅ 棕色皮毛、粉红鼻子、大眼、细小爪子抓树枝、绿叶 bokeh，10&#x2F;10 遵循度，画质 9&#x2F;10</td>
-</tr>
-</tbody></table>
-<p><strong>Prompt：A close-up portrait of a young East Asian woman with straight black hair, wearing a crisp white shirt and navy blue tie, surrounded by white lilies against a rich red background</strong></p>
-<p>修复后：✅ 10&#x2F;10 遵循度，画质 9&#x2F;10。衬衫、领带、百合花、红色背景全部正确呈现。</p>
-<p><strong>Prompt：Two young women dueling with swords atop a bamboo forest canopy, one in golden yellow robes and one in flowing white robes</strong></p>
-<p>修复后（Q4 + 4x-UltraSharp 超分）：✅ 9.5&#x2F;10，黄衣白衣女子、竹林比剑、剑刃碰撞光效，面部清晰锐利。</p>
+<h3 id="案例一：田鼠微距"><a href="#案例一：田鼠微距" class="headerlink" title="案例一：田鼠微距"></a>案例一：田鼠微距</h3><p><strong>Prompt：A tiny russet-brown harvest mouse clings to a slender branch, macro photography, shallow depth of field, green bokeh background</strong></p>
+<p>修复前（FP8 CLIP + cfg&#x3D;0.0）→ 出动漫少女侧脸，prompt 遵循度 0&#x2F;10<br>修复后（BF16 CLIP + cfg&#x3D;1.0）→ 棕色皮毛、粉红鼻子、大眼、细小爪子、绿叶 bokeh，10&#x2F;10</p>
+<p><img src="/images/krea2-mouse.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="案例二：东亚女性肖像"><a href="#案例二：东亚女性肖像" class="headerlink" title="案例二：东亚女性肖像"></a>案例二：东亚女性肖像</h3><p><strong>Prompt：A close-up portrait of a young East Asian woman with straight black hair, wearing a crisp white shirt and navy blue tie, surrounded by white lilies against a rich red background</strong></p>
+<p>修复后 → 10&#x2F;10 遵循度，画质 9&#x2F;10。衬衫、领带、百合花、红色背景全部正确呈现。</p>
+<p><img src="/images/krea2-portrait.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="案例三：敞篷车沿海公路"><a href="#案例三：敞篷车沿海公路" class="headerlink" title="案例三：敞篷车沿海公路"></a>案例三：敞篷车沿海公路</h3><p><strong>Prompt：stylized digital painting of a dark convertible on a winding coastal road, ocean cliffs, golden hour, birds in flight</strong></p>
+<p>修复后 → 8&#x2F;10 遵循度，画质 9&#x2F;10。深蓝敞篷车、弯曲悬崖路、海岸线、金辉光线。</p>
+<p><img src="/images/krea2-convertible.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="案例四：竹林双女比剑（放大输出）"><a href="#案例四：竹林双女比剑（放大输出）" class="headerlink" title="案例四：竹林双女比剑（放大输出）"></a>案例四：竹林双女比剑（放大输出）</h3><p><strong>Prompt：Two young women dueling with swords atop a bamboo forest canopy, one in golden yellow robes and one in flowing white robes</strong></p>
+<p>Q4_0 GGUF 生成 768×512 → 4x-UltraSharp 超分 → 1536×1024，画质 9.5&#x2F;10，面部清晰锐利。</p>
+<p><img src="/images/krea2-sword-duel.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="案例五：白衣女子惊鸿一瞥"><a href="#案例五：白衣女子惊鸿一瞥" class="headerlink" title="案例五：白衣女子惊鸿一瞥"></a>案例五：白衣女子惊鸿一瞥</h3><p><strong>Prompt：白衣女子手持宝剑，惊鸿一瞥</strong></p>
+<p>竖版半身特写 512×768 → 超分 1024×1536，66 秒。</p>
+<p><img src="/images/krea2-girl-portrait.png" srcset="/img/loading.gif" lazyload></p>
 <h2 id="六层踩坑实录"><a href="#六层踩坑实录" class="headerlink" title="六层踩坑实录"></a>六层踩坑实录</h2><h3 id="第一层：全黑图-—-Wan21-Latent-维度"><a href="#第一层：全黑图-—-Wan21-Latent-维度" class="headerlink" title="第一层：全黑图 — Wan21 Latent 维度"></a>第一层：全黑图 — Wan21 Latent 维度</h3><p><strong>现象</strong>：Krea2 工作流提交后，ComfyUI 显示”Prompt executed”，但输出是全黑图，文件仅 4.3KB。</p>
 <p><strong>排查</strong>：Krea2 使用 <code>latent_formats.Wan21</code>，期望 5D latent <code>(B, C, T, H, W)</code>。但默认的 <code>EmptyLatentImage</code> 节点生成 4D latent <code>(B, C, H, W)</code>，WanVAE 解码时维度越界 → NaN → 全黑。</p>
 <p><strong>修复</strong>：将 <code>EmptyLatentImage</code> 替换为 <code>EmptyHunyuanLatentVideo(width=1024, height=1024, length=1)</code>，生成 5D latent 且 T&#x3D;1（单帧图像）。</p>
