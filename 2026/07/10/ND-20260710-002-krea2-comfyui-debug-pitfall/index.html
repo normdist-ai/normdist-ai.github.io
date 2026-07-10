@@ -1,0 +1,1122 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言：为什么要折腾 Krea2Krea2 是 Krea.ai 发布的 12B 参数 DiT 模型，基于 flow-matching 架构，支持 1K 到 2K 分辨率。在图像质量上，它直接对标 Midjourney 和 DALL·E 3 级别的商用模型。更关键的是，它是开源的。 但开源不意味着开箱即用。在双 RTX 2080 Ti（22GB 魔改版）上部署 Krea2 Turbo，我遇到了整整六层">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复">
+<meta property="og:url" content="https://www.normdist.com/2026/07/10/ND-20260710-002-krea2-comfyui-debug-pitfall/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="前言：为什么要折腾 Krea2Krea2 是 Krea.ai 发布的 12B 参数 DiT 模型，基于 flow-matching 架构，支持 1K 到 2K 分辨率。在图像质量上，它直接对标 Midjourney 和 DALL·E 3 级别的商用模型。更关键的是，它是开源的。 但开源不意味着开箱即用。在双 RTX 2080 Ti（22GB 魔改版）上部署 Krea2 Turbo，我遇到了整整六层">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-10T08:30:00.000Z">
+<meta property="article:modified_time" content="2026-07-10T06:50:13.393Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="ComfyUI">
+<meta property="article:tag" content="踩坑记录">
+<meta property="article:tag" content="Krea2">
+<meta property="article:tag" content="2080 Ti">
+<meta property="article:tag" content="Turing">
+<meta property="article:tag" content="AI 图像生成">
+<meta property="article:tag" content="DiT">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-10 16:30" pubdate>
+          2026年7月10日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          66 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月10日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言：为什么要折腾-Krea2"><a href="#前言：为什么要折腾-Krea2" class="headerlink" title="前言：为什么要折腾 Krea2"></a>前言：为什么要折腾 Krea2</h2><p>Krea2 是 <a target="_blank" rel="noopener" href="https://krea.ai/">Krea.ai</a> 发布的 12B 参数 DiT 模型，基于 flow-matching 架构，支持 1K 到 2K 分辨率。在图像质量上，它直接对标 Midjourney 和 DALL·E 3 级别的商用模型。更关键的是，它是开源的。</p>
+<p>但开源不意味着开箱即用。在双 RTX 2080 Ti（22GB 魔改版）上部署 Krea2 Turbo，我遇到了整整六层问题，每一层都是独立的坑，少了任何一个都出不了正常图。</p>
+<p>这篇文章记录完整调试链，希望能帮到同样在旧卡上折腾 Krea2 的人。</p>
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>规格</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>显卡</td>
+<td>双 RTX 2080 Ti（22GB 魔改版），GPU1 跑 ComfyUI</td>
+</tr>
+<tr>
+<td>推理</td>
+<td>ComfyUI v0.27.1（源码部署）</td>
+</tr>
+<tr>
+<td>显存</td>
+<td>22GB，可支撑 Q4_0 GGUF（7.8GB）+ BF16 CLIP（8.3GB）</td>
+</tr>
+<tr>
+<td>模型</td>
+<td>Krea2 Turbo 12B DiT，GGUF 量化版</td>
+</tr>
+<tr>
+<td>超分</td>
+<td>4x-UltraSharp（人脸清晰）</td>
+</tr>
+<tr>
+<td>代理</td>
+<td><a href="http://10.28.9.93:7893（下载用）">http://10.28.9.93:7893（下载用）</a></td>
+</tr>
+</tbody></table>
+<h2 id="六层踩坑实录"><a href="#六层踩坑实录" class="headerlink" title="六层踩坑实录"></a>六层踩坑实录</h2><h3 id="第一层：全黑图-—-Wan21-Latent-维度"><a href="#第一层：全黑图-—-Wan21-Latent-维度" class="headerlink" title="第一层：全黑图 — Wan21 Latent 维度"></a>第一层：全黑图 — Wan21 Latent 维度</h3><p><strong>现象</strong>：Krea2 工作流提交后，ComfyUI 显示”Prompt executed”，但输出是全黑图，文件仅 4.3KB。</p>
+<p><strong>排查</strong>：Krea2 使用 <code>latent_formats.Wan21</code>，期望 5D latent <code>(B, C, T, H, W)</code>。但默认的 <code>EmptyLatentImage</code> 节点生成 4D latent <code>(B, C, H, W)</code>，WanVAE 解码时维度越界 → NaN → 全黑。</p>
+<p><strong>修复</strong>：将 <code>EmptyLatentImage</code> 替换为 <code>EmptyHunyuanLatentVideo(width=1024, height=1024, length=1)</code>，生成 5D latent 且 T&#x3D;1（单帧图像）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ 错误</span><br><span class="hljs-string">&quot;latent&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;EmptyLatentImage&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;width&quot;</span>: <span class="hljs-number">1024</span>, <span class="hljs-string">&quot;height&quot;</span>: <span class="hljs-number">1024</span>&#125;&#125;<br><br><span class="hljs-comment"># ✅ 正确</span><br><span class="hljs-string">&quot;latent&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;EmptyHunyuanLatentVideo&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;width&quot;</span>: <span class="hljs-number">1024</span>, <span class="hljs-string">&quot;height&quot;</span>: <span class="hljs-number">1024</span>, <span class="hljs-string">&quot;length&quot;</span>: <span class="hljs-number">1</span>&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="第二层：全黑图-—-Turing-fp16-NaN"><a href="#第二层：全黑图-—-Turing-fp16-NaN" class="headerlink" title="第二层：全黑图 — Turing fp16 NaN"></a>第二层：全黑图 — Turing fp16 NaN</h3><p><strong>现象</strong>：5D latent 修复后，仍然全黑。</p>
+<p><strong>排查</strong>：检查 ComfyUI 日志，关键输出：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">model weight dtype torch.<span class="hljs-built_in">float</span>32, manual <span class="hljs-keyword">cast</span>: torch.<span class="hljs-built_in">float</span>16<br></code></pre></td></tr></table></figure>
+
+<p>2080 Ti（Turing 架构，compute 7.5）<strong>没有原生 bf16 计算单元</strong>。ComfyUI 检测到 bf16 不可用，自动降级到 fp16 计算。但 Krea2 是 FLUX type 的 flow-matching 模型，部分中间计算精度要求高，fp16 溢出 → NaN。</p>
+<p><strong>修复</strong>：加 <code>--fp32-unet --fp32-vae</code> 启动参数，强制所有计算在 fp32 精度下进行。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># systemd service 配置</span><br><span class="hljs-attr">ExecStart</span>=/mnt/nvme/ComfyUI/venv/bin/python3 main.py \<br>    --listen 0.0.0.0 --port 8188 \<br>    --fp32-unet --fp32-vae<br></code></pre></td></tr></table></figure>
+
+<p>修复后日志会显示 <code>manual cast: None</code>，说明 fp32 模式生效。</p>
+<h3 id="第三层：Glitch-Art-—-CLIPLoaderGGUF-用错了"><a href="#第三层：Glitch-Art-—-CLIPLoaderGGUF-用错了" class="headerlink" title="第三层：Glitch Art — CLIPLoaderGGUF 用错了"></a>第三层：Glitch Art — CLIPLoaderGGUF 用错了</h3><p><strong>现象</strong>：终于不是黑图了！但输出是彩色色块组成的 glitch art，完全不像正常图像。</p>
+<p><strong>排查</strong>：第一反应是 GGUF 量化精度不够。但即使是 Q5_1（5-bit 量化，10GB 模型）也出 glitch art。问题不在 DiT 模型，而在 CLIP 加载器。</p>
+<p>我用的是 <code>CLIPLoaderGGUF</code> 加载 <code>qwen3vl_4b_fp8_scaled.safetensors</code>（safetensors 格式，不是 GGUF 格式）。<code>CLIPLoaderGGUF</code> 内部使用 GGMLOps 算子处理权重，对 safetensors 格式的 FP8 权重，GGMLOps 做了错误的精度转换，文本编码完全损坏。</p>
+<p><strong>修复</strong>：用原生 <code>CLIPLoader</code>（非 <code>CLIPLoaderGGUF</code>）加载 CLIP 模型，<code>type=&quot;krea2&quot;</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ 错误 — CLIPLoaderGGUF 用 GGMLOps 损坏 safetensors 权重</span><br><span class="hljs-string">&quot;clip_loader&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;CLIPLoaderGGUF&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;...&#125;&#125;<br><br><span class="hljs-comment"># ✅ 正确 — 原生 CLIPLoader</span><br><span class="hljs-string">&quot;clip_loader&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;CLIPLoader&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;clip_name&quot;</span>: <span class="hljs-string">&quot;qwen3vl_4b_bf16.safetensors&quot;</span>,<br>    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;krea2&quot;</span><br>&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="第四层：Glitch-Art-—-FP8-DiT-在-Turing-上不可用"><a href="#第四层：Glitch-Art-—-FP8-DiT-在-Turing-上不可用" class="headerlink" title="第四层：Glitch Art — FP8 DiT 在 Turing 上不可用"></a>第四层：Glitch Art — FP8 DiT 在 Turing 上不可用</h3><p><strong>现象</strong>：CLIPLoader 修复后，Q5_1 GGUF 正常出图了。但 FP8 safetensors 格式的 DiT 模型仍然出 glitch art。</p>
+<p><strong>排查</strong>：检查 ComfyUI 日志：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">Native ops: <span class="hljs-built_in">int8</span>_tensorwise<br>Emulated ops: mxfp8, nvfp4, <span class="hljs-built_in">float</span>8_e4m3fn, <span class="hljs-built_in">float</span>8_e5m2<br></code></pre></td></tr></table></figure>
+
+<p>Turing 架构<strong>没有原生 FP8 计算单元</strong>。FP8 DiT 模型（12.5GB）被 CPU 模拟执行，精度严重损失 → glitch art。</p>
+<p><strong>修复</strong>：Turing 上只能用 GGUF 量化版 DiT（走 int8_tensorwise 原生路径）。FP8 safetensors 仅 Ampere+ 架构可用。</p>
+<table>
+<thead>
+<tr>
+<th>模型格式</th>
+<th>Turing 兼容</th>
+<th>原生路径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FP8 safetensors</td>
+<td>❌ glitch art</td>
+<td>emulated ops</td>
+</tr>
+<tr>
+<td>Q4_0 GGUF (7.8GB)</td>
+<td>✅ 正常</td>
+<td>int8_tensorwise</td>
+</tr>
+<tr>
+<td>Q5_1 GGUF (10.2GB)</td>
+<td>✅ 正常</td>
+<td>int8_tensorwise</td>
+</tr>
+</tbody></table>
+<h3 id="第五层：Prompt-不听从-—-FP8-CLIP-的隐藏问题"><a href="#第五层：Prompt-不听从-—-FP8-CLIP-的隐藏问题" class="headerlink" title="第五层：Prompt 不听从 — FP8 CLIP 的隐藏问题"></a>第五层：Prompt 不听从 — FP8 CLIP 的隐藏问题</h3><p><strong>现象</strong>：Q5_1 GGUF + 原生 CLIPLoader 出图了，画质 9&#x2F;10，但 prompt 完全不遵循——输入”a tiny harvest mouse”，输出动漫少女侧脸；输入”dark convertible on coastal road”，输出双持剑女战士。</p>
+<p><strong>排查</strong>：CLIP 用的是 <code>qwen3vl_4b_fp8_scaled.safetensors</code>（FP8 版，5.2GB）。和 FP8 DiT 同理，FP8 CLIP 在 Turing 上也被模拟执行，文本编码语义损坏——编码器输出的 embedding 向量看起来正常（维度正确），但语义信息已经丢失了。</p>
+<p><strong>修复</strong>：下载 BF16 版 CLIP <code>qwen3vl_4b_bf16.safetensors</code>（8.3GB），替换 FP8 版。BF16 在 Turing 上自动降级到 float16 原生路径（<code>dtype: torch.float16</code>），编码正确。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 下载 BF16 版 CLIP</span><br>python3 -c <span class="hljs-string">&quot;</span><br><span class="hljs-string">from huggingface_hub import hf_hub_download</span><br><span class="hljs-string">hf_hub_download(&#x27;Comfy-Org/Krea-2&#x27;, &#x27;text_encoders/qwen3vl_4b_bf16.safetensors&#x27;,</span><br><span class="hljs-string">    local_dir=&#x27;/mnt/nvme/ComfyUI/models/text_encoders/&#x27;)</span><br><span class="hljs-string">&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="第六层：完美图但内容全错-—-cfg-x3D-0-0-的陷阱"><a href="#第六层：完美图但内容全错-—-cfg-x3D-0-0-的陷阱" class="headerlink" title="第六层：完美图但内容全错 — cfg&#x3D;0.0 的陷阱"></a>第六层：完美图但内容全错 — cfg&#x3D;0.0 的陷阱</h3><p><strong>现象</strong>：BF16 CLIP 换好后，prompt 终于被遵循了！但有一张图让我困惑很久——prompt 是”a fox walking in the snow”，出来的图是南方村庄街景，画质 9&#x2F;10 但完全没狐狸没雪。</p>
+<p><strong>排查</strong>：问题在 CFG 参数。ComfyUI 的 CFG 公式是：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">pred</span> = unconditional + cfg × (conditional - unconditional)<br></code></pre></td></tr></table></figure>
+
+<p>当 <code>cfg=0.0</code> 时：<code>pred = unconditional</code>，正面 prompt 零权重，只用 negative prompt（空字符串）生成。</p>
+<p>而官方 Krea2 代码库的公式是：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">pred</span> = conditional + cfg × (unconditional - conditional)<br></code></pre></td></tr></table></figure>
+
+<p>当 <code>cfg=0.0</code> 时：<code>pred = conditional</code>，才是”无 CFG 加权，直接用条件预测”的语义。</p>
+<p><strong>两套公式下，cfg&#x3D;0.0 的意思完全不同！</strong></p>
+<table>
+<thead>
+<tr>
+<th>公式</th>
+<th>cfg&#x3D;0.0 的含义</th>
+<th>ComfyUI 等价</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>官方：<code>cond + cfg × (uncond - cond)</code></td>
+<td>只用条件预测</td>
+<td>cfg&#x3D;1.0</td>
+</tr>
+<tr>
+<td>ComfyUI：<code>uncond + cfg × (cond - uncond)</code></td>
+<td>只用无条件预测</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p><strong>修复</strong>：ComfyUI 中使用 <code>cfg=1.0</code> 来对应官方 <code>--cfg 0.0</code> 的语义。修复后，prompt 遵循度从 0&#x2F;10 直接跳到 10&#x2F;10。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ cfg=0.0 → 只用 unconditional → 图漂亮但内容完全随机</span><br><span class="hljs-string">&quot;ksample&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;KSampler&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;cfg&quot;</span>: <span class="hljs-number">0.0</span>, ...&#125;&#125;<br><br><span class="hljs-comment"># ✅ cfg=1.0 → 只用 conditional → 正确 text-to-image</span><br><span class="hljs-string">&quot;ksample&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;KSampler&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;cfg&quot;</span>: <span class="hljs-number">1.0</span>, ...&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="修复后的效果对比"><a href="#修复后的效果对比" class="headerlink" title="修复后的效果对比"></a>修复后的效果对比</h2><p>修复前（cfg&#x3D;0.0 + FP8 CLIP）：</p>
+<blockquote>
+<p>输入：A tiny russet-brown harvest mouse clings to a slender branch<br>输出：🖼️ 动漫少女侧脸（0&#x2F;10 遵循度）</p>
+</blockquote>
+<p>修复后（cfg&#x3D;1.0 + BF16 CLIP）：</p>
+<blockquote>
+<p>输入：同上<br>输出：🖼️ 棕色皮毛、粉红鼻子、大眼、细小爪子抓树枝、绿叶 bokeh（10&#x2F;10 遵循度）</p>
+</blockquote>
+<h2 id="最终工作流配置"><a href="#最终工作流配置" class="headerlink" title="最终工作流配置"></a>最终工作流配置</h2><p>经过六层调试，最终在 2080 Ti 上跑通的配置如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python">workflow = &#123;<br>    <span class="hljs-string">&quot;loader&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;UnetLoaderGGUF&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;unet_name&quot;</span>: <span class="hljs-string">&quot;krea2_turbo_bf16-Q4_0.gguf&quot;</span>&#125;&#125;,<br>    <span class="hljs-string">&quot;clip&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;CLIPLoader&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;clip_name&quot;</span>: <span class="hljs-string">&quot;qwen3vl_4b_bf16.safetensors&quot;</span>, <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;krea2&quot;</span>&#125;&#125;,<br>    <span class="hljs-string">&quot;vae&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;VAELoader&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;vae_name&quot;</span>: <span class="hljs-string">&quot;qwen_image_vae.safetensors&quot;</span>&#125;&#125;,<br>    <span class="hljs-string">&quot;pos&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;CLIPTextEncode&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;&lt;prompt&gt;&quot;</span>, <span class="hljs-string">&quot;clip&quot;</span>: [<span class="hljs-string">&quot;clip&quot;</span>, <span class="hljs-number">0</span>]&#125;&#125;,<br>    <span class="hljs-string">&quot;neg&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;CLIPTextEncode&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;clip&quot;</span>: [<span class="hljs-string">&quot;clip&quot;</span>, <span class="hljs-number">0</span>]&#125;&#125;,<br>    <span class="hljs-string">&quot;latent&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;EmptyHunyuanLatentVideo&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;width&quot;</span>: <span class="hljs-number">768</span>, <span class="hljs-string">&quot;height&quot;</span>: <span class="hljs-number">512</span>, <span class="hljs-string">&quot;length&quot;</span>: <span class="hljs-number">1</span>&#125;&#125;,<br>    <span class="hljs-string">&quot;ksample&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;KSampler&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<br>        <span class="hljs-string">&quot;seed&quot;</span>: <span class="hljs-number">42</span>, <span class="hljs-string">&quot;steps&quot;</span>: <span class="hljs-number">8</span>, <span class="hljs-string">&quot;cfg&quot;</span>: <span class="hljs-number">1.0</span>,<br>        <span class="hljs-string">&quot;sampler_name&quot;</span>: <span class="hljs-string">&quot;euler&quot;</span>, <span class="hljs-string">&quot;scheduler&quot;</span>: <span class="hljs-string">&quot;simple&quot;</span>, <span class="hljs-string">&quot;denoise&quot;</span>: <span class="hljs-number">1.0</span>,<br>        <span class="hljs-string">&quot;model&quot;</span>: [<span class="hljs-string">&quot;loader&quot;</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;positive&quot;</span>: [<span class="hljs-string">&quot;pos&quot;</span>, <span class="hljs-number">0</span>],<br>        <span class="hljs-string">&quot;negative&quot;</span>: [<span class="hljs-string">&quot;neg&quot;</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;latent_image&quot;</span>: [<span class="hljs-string">&quot;latent&quot;</span>, <span class="hljs-number">0</span>]<br>    &#125;&#125;,<br>    <span class="hljs-string">&quot;decode&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;VAEDecode&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;samples&quot;</span>: [<span class="hljs-string">&quot;ksample&quot;</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;vae&quot;</span>: [<span class="hljs-string">&quot;vae&quot;</span>, <span class="hljs-number">0</span>]&#125;&#125;,<br>    <span class="hljs-string">&quot;upscale_model&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;UpscaleModelLoader&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;model_name&quot;</span>: <span class="hljs-string">&quot;4x-UltraSharp.pth&quot;</span>&#125;&#125;,<br>    <span class="hljs-string">&quot;upscale&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;ImageUpscaleWithModel&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;upscale_model&quot;</span>: [<span class="hljs-string">&quot;upscale_model&quot;</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;image&quot;</span>: [<span class="hljs-string">&quot;decode&quot;</span>, <span class="hljs-number">0</span>]&#125;&#125;,<br>    <span class="hljs-string">&quot;resize&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;ImageScale&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;image&quot;</span>: [<span class="hljs-string">&quot;upscale&quot;</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;width&quot;</span>: <span class="hljs-number">1536</span>, <span class="hljs-string">&quot;height&quot;</span>: <span class="hljs-number">1024</span>, <span class="hljs-string">&quot;upscale_method&quot;</span>: <span class="hljs-string">&quot;lanczos&quot;</span>, <span class="hljs-string">&quot;crop&quot;</span>: <span class="hljs-string">&quot;center&quot;</span>&#125;&#125;,<br>    <span class="hljs-string">&quot;save&quot;</span>: &#123;<span class="hljs-string">&quot;class_type&quot;</span>: <span class="hljs-string">&quot;SaveImage&quot;</span>, <span class="hljs-string">&quot;inputs&quot;</span>: &#123;<span class="hljs-string">&quot;images&quot;</span>: [<span class="hljs-string">&quot;resize&quot;</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&quot;filename_prefix&quot;</span>: <span class="hljs-string">&quot;krea2_out&quot;</span>&#125;&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="可选配置对比"><a href="#可选配置对比" class="headerlink" title="可选配置对比"></a>可选配置对比</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>模型</th>
+<th>尺寸</th>
+<th>耗时</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>快速预览</td>
+<td>Q4_0</td>
+<td>512×512</td>
+<td>~47s</td>
+</tr>
+<tr>
+<td>日常出图</td>
+<td>Q4_0</td>
+<td>768×512</td>
+<td>~61s</td>
+</tr>
+<tr>
+<td>超分输出</td>
+<td>Q4_0 + 4x-UltraSharp</td>
+<td>1536×1024</td>
+<td>~61s</td>
+</tr>
+<tr>
+<td>最高质量</td>
+<td>Q5_1</td>
+<td>1024×1024</td>
+<td>~150s</td>
+</tr>
+</tbody></table>
+<h2 id="踩坑总结"><a href="#踩坑总结" class="headerlink" title="踩坑总结"></a>踩坑总结</h2><table>
+<thead>
+<tr>
+<th>层</th>
+<th>问题</th>
+<th>根本原因</th>
+<th>修复</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>全黑图</td>
+<td>Wan21 需 5D latent，EmptyLatentImage 给 4D</td>
+<td>用 EmptyHunyuanLatentVideo</td>
+</tr>
+<tr>
+<td>2</td>
+<td>全黑图</td>
+<td>Turing 无原生 bf16，fp16 溢出 NaN</td>
+<td><code>--fp32-unet --fp32-vae</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>glitch art</td>
+<td>CLIPLoaderGGUF 用 GGMLOps 损坏权重</td>
+<td>用原生 CLIPLoader</td>
+</tr>
+<tr>
+<td>4</td>
+<td>glitch art</td>
+<td>FP8 DiT 在 Turing 上被模拟执行</td>
+<td>用 GGUF Q4&#x2F;Q5（int8 原生）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>prompt 不听从</td>
+<td>FP8 CLIP 在 Turing 上被模拟，编码损坏</td>
+<td>用 BF16 CLIP（float16 原生）</td>
+</tr>
+<tr>
+<td>6</td>
+<td>内容全错</td>
+<td>cfg&#x3D;0.0 在 ComfyUI 公式中 &#x3D; 只用 unconditional</td>
+<td>cfg&#x3D;1.0</td>
+</tr>
+</tbody></table>
+<h3 id="诊断口诀"><a href="#诊断口诀" class="headerlink" title="诊断口诀"></a>诊断口诀</h3><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs arcade">查日志 <span class="hljs-string">`model weight dtype torch.float32, manual cast: Y`</span><br>Y 不是 <span class="hljs-built_in">None</span> → 精度降级 → 可能溢出<br><br>查日志 <span class="hljs-string">`Native ops / Emulated ops`</span><br>有 emulated ops → Turing 不支持的精度 → 换量化格式<br><br>出图漂亮但内容不对 → 检查 cfg 参数<br>出图是色块 → 检查 <span class="hljs-built_in">CLIP</span> 加载器<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI-%E5%B7%A5%E7%A8%8B/" class="category-chain-item">AI 工程</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
+      
+        <a href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" class="print-no-link">#踩坑记录</a>
+      
+        <a href="/tags/Krea2/" class="print-no-link">#Krea2</a>
+      
+        <a href="/tags/2080-Ti/" class="print-no-link">#2080 Ti</a>
+      
+        <a href="/tags/Turing/" class="print-no-link">#Turing</a>
+      
+        <a href="/tags/AI-%E5%9B%BE%E5%83%8F%E7%94%9F%E6%88%90/" class="print-no-link">#AI 图像生成</a>
+      
+        <a href="/tags/DiT/" class="print-no-link">#DiT</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复</div>
+      <div>https://www.normdist.com/2026/07/10/ND-20260710-002-krea2-comfyui-debug-pitfall/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/10/ND-20260710-001-ornith-local-deployment/" title="Ornith 开源模型本地部署：替代 Qwen3.6 的完整实战">
+                        <span class="hidden-mobile">Ornith 开源模型本地部署：替代 Qwen3.6 的完整实战</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
