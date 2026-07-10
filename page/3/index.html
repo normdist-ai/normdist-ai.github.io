@@ -363,6 +363,75 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
+          东方财富北向资金双接口同时坏死——一个降级+迁移方案
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
+        <div>
+          某套量化系统的北向资金模块在例行巡检中遭遇了一次”教科书级”的接口故障：东方财富的两个北向资金 API 同时坏死——一个返回空结果，一个返回全 NaN。如果系统只依赖其中一个接口，故障会在当天收盘后才会暴露；但因为两个接口在同一时段同时挂了，数据断档直接触发了告警。 本文记录从发现故障、定位根因到设计降级方案的完整过程，重点讨论：如何在多源数据管道中优雅地处理”主备同时失效”的场景。 一、问题：两
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-01 09:00" pubdate>
+              2026-07-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E7%B3%BB%E7%BB%9F/" class="category-chain-item">量化系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/akshare/">#akshare</a>
+            
+              <a href="/tags/%E5%8C%97%E5%90%91%E8%B5%84%E9%87%91/">#北向资金</a>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E7%B3%BB%E7%BB%9F/">#量化系统</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93/">#数据管道</a>
+            
+              <a href="/tags/%E9%99%8D%E7%BA%A7%E6%96%B9%E6%A1%88/">#降级方案</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/06/28/ND-20260628-001-dollar-credit-scoring/" target="_self">
           用 5 个公开指标量化&#34;美元信用健康度&#34;——一套可复用的宏观打分系统
         </a>
@@ -976,78 +1045,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/06/14/ND-20260614-001-llamacpp-models-max-auto-unload/" target="_self">
-          llama.cpp Router 模式：切换模型时自动卸载前一个模型
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/14/ND-20260614-001-llamacpp-models-max-auto-unload/" target="_self">
-        <div>
-          llama.cpp router 模式切换模型时不自动卸载前一个模型？一个参数解决：--models-max 1
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-06-14 23:40" pubdate>
-              2026-06-14
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%9C%AC%E5%9C%B0%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="category-chain-item">本地大模型</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/llama-cpp/">#llama.cpp</a>
-            
-              <a href="/tags/%E5%A4%9AGPU/">#多GPU</a>
-            
-              <a href="/tags/router-mode/">#router-mode</a>
-            
-              <a href="/tags/%E6%A8%A1%E5%9E%8B%E7%AE%A1%E7%90%86/">#模型管理</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/#board">9</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
