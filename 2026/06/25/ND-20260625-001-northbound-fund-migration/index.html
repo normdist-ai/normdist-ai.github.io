@@ -19,21 +19,16 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="背景突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。 排查后发现东方财富的数据接口发生了更迭：    原接口 状态 问题    stock_hsgt_individual_em(symbol&#x3D;&quot;北上&quot;) ❌ 完全坏死 返回 NoneType 错误   stock_hsgt_hist_em(symbol&#x3D;&quot;沪股通">
+    <meta name="description" content="背景突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。 排查后发现东方财富的数据接口发生了更迭： 原接口状态问题 stock_hsgt_individual_em(symbol&#x3D;&quot;北上&quot;)❌ 完全坏死返回 NoneType 错误 stock_hsgt_hist_em(symbol&#x3D;&quot;沪股通&quot;)⚠️ 结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="东方财富北向资金接口迁移实战">
 <meta property="og:url" content="https://www.normdist.com/2026/06/25/ND-20260625-001-northbound-fund-migration/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="背景突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。 排查后发现东方财富的数据接口发生了更迭：    原接口 状态 问题    stock_hsgt_individual_em(symbol&#x3D;&quot;北上&quot;) ❌ 完全坏死 返回 NoneType 错误   stock_hsgt_hist_em(symbol&#x3D;&quot;沪股通">
+<meta property="og:description" content="背景突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。 排查后发现东方财富的数据接口发生了更迭： 原接口状态问题 stock_hsgt_individual_em(symbol&#x3D;&quot;北上&quot;)❌ 完全坏死返回 NoneType 错误 stock_hsgt_hist_em(symbol&#x3D;&quot;沪股通&quot;)⚠️ 结构">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-25T00:30:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:06:57.021Z">
+<meta property="article:published_time" content="2026-06-25T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:08:53.442Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="python">
-<meta property="article:tag" content="akshare">
-<meta property="article:tag" content="量化">
-<meta property="article:tag" content="数据源">
-<meta property="article:tag" content="北向资金">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -91,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -346,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-25 08:30" pubdate>
-          2026年6月25日 早上
+        <time datetime="2026-06-25 10:00" pubdate>
+          2026年6月25日 上午
         </time>
       </span>
     
@@ -358,7 +353,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.5k 字
+          2.7k 字
         
       </span>
     
@@ -369,7 +364,7 @@
         
         
         
-          21 分钟
+          23 分钟
         
       </span>
     
@@ -422,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -432,85 +427,60 @@
                 
                 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。</p>
 <p>排查后发现东方财富的数据接口发生了更迭：</p>
-<table>
-<thead>
-<tr>
-<th>原接口</th>
-<th>状态</th>
-<th>问题</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>stock_hsgt_individual_em(symbol=&quot;北上&quot;)</code></td>
-<td>❌ 完全坏死</td>
-<td>返回 NoneType 错误</td>
-</tr>
-<tr>
-<td><code>stock_hsgt_hist_em(symbol=&quot;沪股通&quot;)</code></td>
-<td>⚠️ 结构在但数据空</td>
-<td>6月起成交净买额全 NaN</td>
-</tr>
-</tbody></table>
+<p>原接口<br>状态<br>问题</p>
+<p><code>stock_hsgt_individual_em(symbol=&quot;北上&quot;)</code><br>❌ 完全坏死<br>返回 NoneType 错误</p>
+<p><code>stock_hsgt_hist_em(symbol=&quot;沪股通&quot;)</code><br>⚠️ 结构在但数据空<br>6月起成交净买额全 NaN</p>
 <p>两个接口同时坏死，说明不是临时故障，而是数据源端的接口迁移。</p>
 <h2 id="数据源架构"><a href="#数据源架构" class="headerlink" title="数据源架构"></a>数据源架构</h2><p>整个量化系统使用四层降级数据获取链：</p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">ReShare</span> <span class="hljs-number">8200</span>（自建数据服务）→ yfinance → AkShare → Mock<br></code></pre></td></tr></table></figure>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><br><span class="hljs-attribute">1</span><br><br><span class="hljs-attribute">ReShare</span> <span class="hljs-number">8200</span>（自建数据服务）→ yfinance → AkShare → Mock<br><br></code></pre></td></tr></table></figure>
 
 <p>AkShare 在链上处于第三层。理想情况下，ReShare 8200 应该直接覆盖北向资金数据，但当时 ReShare 还只支持股票行情和 ETF 数据，北向资金这种特殊品种需要直接对接 AkShare。</p>
 <h2 id="问题诊断"><a href="#问题诊断" class="headerlink" title="问题诊断"></a>问题诊断</h2><p><code>stock_hsgt_individual_em</code> 是东方财富的北向资金个股排行接口，返回当日各只股票的北向资金买入&#x2F;卖出明细。调用后发现接口返回了 <code>None</code>——没有有效的 DataFrame。</p>
 <p><code>stock_hsgt_hist_em</code> 是沪&#x2F;深股通的历史成交净买额接口，用来做趋势分析。接口调用虽然返回了结构数据，但 6 月起所有字段的值为 NaN，说明源端不再更新这个字段。</p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="近-7-天数据"><a href="#近-7-天数据" class="headerlink" title="近 7 天数据"></a>近 7 天数据</h3><p>用 <code>stock_hsgt_fund_flow_summary_em()</code> 替代原来的个股排行接口。这个接口的差异：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 旧的（已坏死）</span><br>df = ak.stock_hsgt_individual_em(symbol=<span class="hljs-string">&quot;北上&quot;</span>)<br><br><span class="hljs-comment"># 新的</span><br>df = ak.stock_hsgt_fund_flow_summary_em(market=<span class="hljs-string">&quot;沪股通&quot;</span>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><br><span class="hljs-comment"># 旧的（已坏死）</span><br>df = ak.stock_hsgt_individual_em(symbol=<span class="hljs-string">&quot;北上&quot;</span>)<br><br><span class="hljs-comment"># 新的</span><br>df = ak.stock_hsgt_fund_flow_summary_em(market=<span class="hljs-string">&quot;沪股通&quot;</span>)<br><br></code></pre></td></tr></table></figure>
 
 <p>新接口有几个注意事项：</p>
-<ol>
-<li><strong>返回的是汇总数据</strong>，不是个股明细。如果需要逐股分析，需要额外拆解</li>
-<li><strong>market 参数</strong>支持 <code>&quot;沪股通&quot;</code> 和 <code>&quot;深股通&quot;</code> 两个市场</li>
-<li><strong>数据源</strong>是腾讯实时报价系统，当天数据可用，延迟约 5-10 分钟</li>
-<li><strong>列名不同</strong>，需要重新做列映射</li>
-</ol>
+<ul>
+<li><p><strong>返回的是汇总数据</strong>，不是个股明细。如果需要逐股分析，需要额外拆解</p>
+</li>
+<li><p><strong>market 参数</strong>支持 <code>&quot;沪股通&quot;</code> 和 <code>&quot;深股通&quot;</code> 两个市场</p>
+</li>
+<li><p><strong>数据源</strong>是腾讯实时报价系统，当天数据可用，延迟约 5-10 分钟</p>
+</li>
+<li><p><strong>列名不同</strong>，需要重新做列映射</p>
+</li>
+</ul>
 <h3 id="历史数据"><a href="#历史数据" class="headerlink" title="历史数据"></a>历史数据</h3><p>历史数据保留 <code>stock_hsgt_hist_em</code> 接口，但做了降级处理：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">fetch_northbound_history</span>(<span class="hljs-params">market=<span class="hljs-string">&quot;沪股通&quot;</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;北向资金历史数据，含降级处理&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">try</span>:<br>        df = ak.stock_hsgt_hist_em(symbol=market)<br>        <span class="hljs-keyword">if</span> df <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> df.empty:<br>            logger.warning(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;market&#125;</span> 历史数据为空&quot;</span>)<br>            <span class="hljs-keyword">return</span> pd.DataFrame()<br>        <span class="hljs-comment"># 标准化列名</span><br>        df = df.rename(columns=&#123;<br>            <span class="hljs-string">&quot;日期&quot;</span>: <span class="hljs-string">&quot;date&quot;</span>,<br>            <span class="hljs-string">&quot;成交净买额&quot;</span>: <span class="hljs-string">&quot;net_buy_amount&quot;</span>,<br>            <span class="hljs-string">&quot;买入成交额&quot;</span>: <span class="hljs-string">&quot;buy_amount&quot;</span>,<br>            <span class="hljs-string">&quot;卖出成交额&quot;</span>: <span class="hljs-string">&quot;sell_amount&quot;</span>,<br>        &#125;)<br>        <span class="hljs-comment"># 处理 NaN 值</span><br>        df = df.dropna(subset=[<span class="hljs-string">&quot;net_buy_amount&quot;</span>])<br>        <span class="hljs-keyword">return</span> df<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        logger.error(<span class="hljs-string">f&quot;获取<span class="hljs-subst">&#123;market&#125;</span>历史数据失败: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">return</span> pd.DataFrame()<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><br><span class="hljs-number">16</span><br><span class="hljs-number">17</span><br><span class="hljs-number">18</span><br><span class="hljs-number">19</span><br><span class="hljs-number">20</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">fetch_northbound_history</span>(<span class="hljs-params">market=<span class="hljs-string">&quot;沪股通&quot;</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;北向资金历史数据，含降级处理&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">try</span>:<br>        df = ak.stock_hsgt_hist_em(symbol=market)<br>        <span class="hljs-keyword">if</span> df <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> df.empty:<br>            logger.warning(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;market&#125;</span> 历史数据为空&quot;</span>)<br>            <span class="hljs-keyword">return</span> pd.DataFrame()<br>        <span class="hljs-comment"># 标准化列名</span><br>        df = df.rename(columns=&#123;<br>            <span class="hljs-string">&quot;日期&quot;</span>: <span class="hljs-string">&quot;date&quot;</span>,<br>            <span class="hljs-string">&quot;成交净买额&quot;</span>: <span class="hljs-string">&quot;net_buy_amount&quot;</span>,<br>            <span class="hljs-string">&quot;买入成交额&quot;</span>: <span class="hljs-string">&quot;buy_amount&quot;</span>,<br>            <span class="hljs-string">&quot;卖出成交额&quot;</span>: <span class="hljs-string">&quot;sell_amount&quot;</span>,<br>        &#125;)<br>        <span class="hljs-comment"># 处理 NaN 值</span><br>        df = df.dropna(subset=[<span class="hljs-string">&quot;net_buy_amount&quot;</span>])<br>        <span class="hljs-keyword">return</span> df<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        logger.error(<span class="hljs-string">f&quot;获取<span class="hljs-subst">&#123;market&#125;</span>历史数据失败: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">return</span> pd.DataFrame()<br><br></code></pre></td></tr></table></figure>
 
 <p>关键点是<strong>列名标准化</strong>和<strong>NaN 值清洗</strong>。新版本的数据格式和旧版本不完全一致，直接覆盖原有逻辑会导致下游解析失败。</p>
 <h3 id="列映射适配"><a href="#列映射适配" class="headerlink" title="列映射适配"></a>列映射适配</h3><p>新接口的列名与旧接口不同，需要在数据获取策略层做映射：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">COLUMN_MAPPING = &#123;<br>    <span class="hljs-comment"># 新接口列名 → 统一内部列名</span><br>    <span class="hljs-string">&quot;成交净买额&quot;</span>: <span class="hljs-string">&quot;net_buy_amount&quot;</span>, <br>    <span class="hljs-string">&quot;沪股通/深股通&quot;</span>: <span class="hljs-string">&quot;market&quot;</span>,<br>    <span class="hljs-string">&quot;日期&quot;</span>: <span class="hljs-string">&quot;date&quot;</span>,<br>    <span class="hljs-comment"># 旧接口列名（兼容）</span><br>    <span class="hljs-string">&quot;成交净买入额&quot;</span>: <span class="hljs-string">&quot;net_buy_amount&quot;</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><br>COLUMN_MAPPING = &#123;<br>    <span class="hljs-comment"># 新接口列名 → 统一内部列名</span><br>    <span class="hljs-string">&quot;成交净买额&quot;</span>: <span class="hljs-string">&quot;net_buy_amount&quot;</span>, <br>    <span class="hljs-string">&quot;沪股通/深股通&quot;</span>: <span class="hljs-string">&quot;market&quot;</span>,<br>    <span class="hljs-string">&quot;日期&quot;</span>: <span class="hljs-string">&quot;date&quot;</span>,<br>    <span class="hljs-comment"># 旧接口列名（兼容）</span><br>    <span class="hljs-string">&quot;成交净买入额&quot;</span>: <span class="hljs-string">&quot;net_buy_amount&quot;</span>,<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
 <p>同时处理了 <code>total_inflow=0</code> 时误判为 None 的边界情况：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> value <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">and</span> value == <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">isinstance</span>(value, (<span class="hljs-built_in">int</span>, <span class="hljs-built_in">float</span>)):<br>    <span class="hljs-comment"># 0 是有效值，不是空</span><br>    <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><br><span class="hljs-keyword">if</span> value <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">and</span> value == <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">isinstance</span>(value, (<span class="hljs-built_in">int</span>, <span class="hljs-built_in">float</span>)):<br>    <span class="hljs-comment"># 0 是有效值，不是空</span><br>    <span class="hljs-keyword">pass</span><br><br></code></pre></td></tr></table></figure>
 
 <h3 id="Docker-部署"><a href="#Docker-部署" class="headerlink" title="Docker 部署"></a>Docker 部署</h3><p>修改完成后推送到 Docker 容器的 ReShare 服务：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker restart reshare-backend<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br>docker restart reshare-backend<br><br></code></pre></td></tr></table></figure>
 
 <p>验证健康检查：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl http://localhost:8200/health<br><span class="hljs-comment"># → status: connected, database: connected</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br><br>curl http://localhost:8200/health<br><span class="hljs-comment"># → status: connected, database: connected</span><br><br></code></pre></td></tr></table></figure>
 
 <h2 id="验证结果"><a href="#验证结果" class="headerlink" title="验证结果"></a>验证结果</h2><p>修复后三个维度验证全部通过：</p>
-<table>
-<thead>
-<tr>
-<th>检查项</th>
-<th>结果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>当日数据</td>
-<td>status&#x3D;success，2条记录 ✅</td>
-</tr>
-<tr>
-<td>历史数据</td>
-<td>2024年数据正确返回（10条&#x2F;5天）✅</td>
-</tr>
-<tr>
-<td>健康检查</td>
-<td>status&#x3D;healthy, database&#x3D;connected ✅</td>
-</tr>
-</tbody></table>
+<p>检查项<br>结果</p>
+<p>当日数据<br>status&#x3D;success，2条记录 ✅</p>
+<p>历史数据<br>2024年数据正确返回（10条&#x2F;5天）✅</p>
+<p>健康检查<br>status&#x3D;healthy, database&#x3D;connected ✅</p>
 <p>北向资金监控面板恢复可用，后续 cron 定时采集也正常执行。</p>
-<h2 id="后续改进方向"><a href="#后续改进方向" class="headerlink" title="后续改进方向"></a>后续改进方向</h2><ol>
-<li><strong>告警机制</strong>：北向资金坏死到发现之间隔了多少天？需要添加数据新鲜度告警——如果某数据源连续 N 天返回空&#x2F;NaN，自动触发飞书通知</li>
-<li><strong>自动化开关</strong>：类似接口迁移场景，可配置 fallback 优先级，AkShare 接口失效时自动切换到数据链的下一层（yfinance 或 Mock）</li>
-<li><strong>监控数据源模式</strong>：当前架构是被动修复（发现坏死→改代码→重启），理想状态是主动探测（cron 定时检查各数据源的健康状态，异常时自动切换）</li>
-</ol>
+<h2 id="后续改进方向"><a href="#后续改进方向" class="headerlink" title="后续改进方向"></a>后续改进方向</h2><ul>
+<li><p><strong>告警机制</strong>：北向资金坏死到发现之间隔了多少天？需要添加数据新鲜度告警——如果某数据源连续 N 天返回空&#x2F;NaN，自动触发飞书通知</p>
+</li>
+<li><p><strong>自动化开关</strong>：类似接口迁移场景，可配置 fallback 优先级，AkShare 接口失效时自动切换到数据链的下一层（yfinance 或 Mock）</p>
+</li>
+<li><p><strong>监控数据源模式</strong>：当前架构是被动修复（发现坏死→改代码→重启），理想状态是主动探测（cron 定时检查各数据源的健康状态，异常时自动切换）</p>
+</li>
+</ul>
 
                 
               </div>
@@ -529,7 +499,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%87%8F%E5%8C%96%E6%8A%80%E6%9C%AF/" class="category-chain-item">量化技术</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -540,21 +510,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/python/" class="print-no-link">#python</a>
-      
-        <a href="/tags/akshare/" class="print-no-link">#akshare</a>
-      
-        <a href="/tags/%E9%87%8F%E5%8C%96/" class="print-no-link">#量化</a>
-      
-        <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90/" class="print-no-link">#数据源</a>
-      
-        <a href="/tags/%E5%8C%97%E5%90%91%E8%B5%84%E9%87%91/" class="print-no-link">#北向资金</a>
-      
-    </div>
   
 </div>
 
@@ -609,9 +564,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/" title="构建AI Agent的认知内核：从七问协议到自进化引擎">
+                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">构建AI Agent的认知内核：从七问协议到自进化引擎</span>
+                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -619,8 +574,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/20/ND-20260620-003-nvidia-gpu-power-limit-persistence/" title="Linux 服务器 NVIDIA GPU 功耗限制持久化配置">
-                        <span class="hidden-mobile">Linux 服务器 NVIDIA GPU 功耗限制持久化配置</span>
+                      <a href="/2026/06/20/ND-20260620-001-hermes-gateway-management-pitfalls/" title="Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管">
+                        <span class="hidden-mobile">Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

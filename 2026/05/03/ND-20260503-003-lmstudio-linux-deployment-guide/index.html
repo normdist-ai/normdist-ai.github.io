@@ -19,23 +19,17 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="在 Linux 服务器上部署 LM Studio 时，面临两个实际问题：无法像 Windows 版那样为每个模型设置独立启动参数，以及第三方客户端通过 Anthropic 协议连接时频繁报错。本文分享通过虚拟模型实现参数隔离、以及通过 new-api 转发解决协议兼容问题的完整方案。">
+    <meta name="description" content="作者: 小瑞日期: 2026-05-03环境: Ubuntu 24.04 &#x2F; LM Studio (Linux) &#x2F; new-api  目录 问题背景  问题一：Linux 版无法为每个模型设置独立参数  解决方案：虚拟模型参数隔离  问题二：Anthropic 协议连接报错  解决方案：new-api 协议转发  最终架构  总结    问题背景在 Linux 服务器上通">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LM Studio Linux 部署实战：虚拟模型参数隔离 + new-api 转发方案">
 <meta property="og:url" content="https://www.normdist.com/2026/05/03/ND-20260503-003-lmstudio-linux-deployment-guide/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="在 Linux 服务器上部署 LM Studio 时，面临两个实际问题：无法像 Windows 版那样为每个模型设置独立启动参数，以及第三方客户端通过 Anthropic 协议连接时频繁报错。本文分享通过虚拟模型实现参数隔离、以及通过 new-api 转发解决协议兼容问题的完整方案。">
+<meta property="og:description" content="作者: 小瑞日期: 2026-05-03环境: Ubuntu 24.04 &#x2F; LM Studio (Linux) &#x2F; new-api  目录 问题背景  问题一：Linux 版无法为每个模型设置独立参数  解决方案：虚拟模型参数隔离  问题二：Anthropic 协议连接报错  解决方案：new-api 协议转发  最终架构  总结    问题背景在 Linux 服务器上通">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-08.jpg">
-<meta property="article:published_time" content="2026-05-03T12:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:06:57.016Z">
+<meta property="article:published_time" content="2026-05-03T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T10:29:10.838Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="LM-Studio">
-<meta property="article:tag" content="new-api">
-<meta property="article:tag" content="本地部署">
-<meta property="article:tag" content="模型转发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-08.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -92,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -347,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-03 20:00" pubdate>
-          2026年5月3日 晚上
+        <time datetime="2026-05-03 10:00" pubdate>
+          2026年5月3日 上午
         </time>
       </span>
     
@@ -359,7 +353,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.7k 字
+          5.2k 字
         
       </span>
     
@@ -370,7 +364,7 @@
         
         
         
-          40 分钟
+          43 分钟
         
       </span>
     
@@ -423,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -431,185 +425,137 @@
             
               <div class="markdown-body">
                 
-                <h1 id="LM-Studio-Linux-部署实战：虚拟模型参数隔离-new-api-转发方案"><a href="#LM-Studio-Linux-部署实战：虚拟模型参数隔离-new-api-转发方案" class="headerlink" title="LM Studio Linux 部署实战：虚拟模型参数隔离 + new-api 转发方案"></a>LM Studio Linux 部署实战：虚拟模型参数隔离 + new-api 转发方案</h1><blockquote>
-<p><strong>作者:</strong> 小瑞<br><strong>日期:</strong> 2026-05-03<br><strong>环境:</strong> Ubuntu 24.04 &#x2F; LM Studio (Linux) &#x2F; new-api</p>
+                <blockquote>
 </blockquote>
+<p><strong>作者:</strong> 小瑞<br><strong>日期:</strong> 2026-05-03<br><strong>环境:</strong> Ubuntu 24.04 &#x2F; LM Studio (Linux) &#x2F; new-api</p>
 <hr>
 <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li><a href="#%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF">问题背景</a></li>
-<li><a href="#%E9%97%AE%E9%A2%98%E4%B8%80linux-%E7%89%88%E6%97%A0%E6%B3%95%E4%B8%BA%E6%AF%8F%E4%B8%AA%E6%A8%A1%E5%9E%8B%E8%AE%BE%E7%BD%AE%E7%8B%AC%E7%AB%8B%E5%8F%82%E6%95%B0">问题一：Linux 版无法为每个模型设置独立参数</a></li>
-<li><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E8%99%9A%E6%8B%9F%E6%A8%A1%E5%9E%8B%E5%8F%82%E6%95%B0%E9%9A%94%E7%A6%BB">解决方案：虚拟模型参数隔离</a></li>
-<li><a href="#%E9%97%AE%E9%A2%98%E4%BA%8Canthropic-%E5%8D%8F%E8%AE%AE%E8%BF%9E%E6%8E%A5%E6%8A%A5%E9%94%99">问题二：Anthropic 协议连接报错</a></li>
-<li><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88new-api-%E5%8D%8F%E8%AE%AE%E8%BD%AC%E5%8F%91">解决方案：new-api 协议转发</a></li>
-<li><a href="#%E6%9C%80%E7%BB%88%E6%9E%B6%E6%9E%84">最终架构</a></li>
-<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li><p><a href="#%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF">问题背景</a></p>
+</li>
+<li><p><a href="#%E9%97%AE%E9%A2%98%E4%B8%80linux-%E7%89%88%E6%97%A0%E6%B3%95%E4%B8%BA%E6%AF%8F%E4%B8%AA%E6%A8%A1%E5%9E%8B%E8%AE%BE%E7%BD%AE%E7%8B%AC%E7%AB%8B%E5%8F%82%E6%95%B0">问题一：Linux 版无法为每个模型设置独立参数</a></p>
+</li>
+<li><p><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E8%99%9A%E6%8B%9F%E6%A8%A1%E5%9E%8B%E5%8F%82%E6%95%B0%E9%9A%94%E7%A6%BB">解决方案：虚拟模型参数隔离</a></p>
+</li>
+<li><p><a href="#%E9%97%AE%E9%A2%98%E4%BA%8Canthropic-%E5%8D%8F%E8%AE%AE%E8%BF%9E%E6%8E%A5%E6%8A%A5%E9%94%99">问题二：Anthropic 协议连接报错</a></p>
+</li>
+<li><p><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88new-api-%E5%8D%8F%E8%AE%AE%E8%BD%AC%E5%8F%91">解决方案：new-api 协议转发</a></p>
+</li>
+<li><p><a href="#%E6%9C%80%E7%BB%88%E6%9E%B6%E6%9E%84">最终架构</a></p>
+</li>
+<li><p><a href="#%E6%80%BB%E7%BB%93">总结</a></p>
+</li>
 </ul>
 <hr>
 <h2 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h2><p>在 Linux 服务器上通过 LM Studio 本地部署大语言模型（如 Qwen3.6-35B-A3B），为 Hermes、OpenClaw 等 AI Agent 提供本地推理服务。部署过程中遇到了两个棘手问题：</p>
-<ol>
-<li><strong>参数隔离问题</strong> — 不同模型需要不同的推理参数（temperature、topP 等），但 Linux 版缺少 Windows 版的图形化参数管理</li>
-<li><strong>协议兼容问题</strong> — 第三方客户端通过 Anthropic 格式连接 LM Studio 时频繁报错</li>
-</ol>
+<ul>
+<li><p><strong>参数隔离问题</strong> — 不同模型需要不同的推理参数（temperature、topP 等），但 Linux 版缺少 Windows 版的图形化参数管理</p>
+</li>
+<li><p><strong>协议兼容问题</strong> — 第三方客户端通过 Anthropic 格式连接 LM Studio 时频繁报错</p>
+</li>
+</ul>
 <p>这两个问题一度严重影响了工作效率，经过反复摸索，终于找到了可靠的解决方案。</p>
 <hr>
 <h2 id="问题一：Linux-版无法为每个模型设置独立参数"><a href="#问题一：Linux-版无法为每个模型设置独立参数" class="headerlink" title="问题一：Linux 版无法为每个模型设置独立参数"></a>问题一：Linux 版无法为每个模型设置独立参数</h2><h3 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h3><p>LM Studio 的 Windows 版有直观的图形界面，可以方便地为每个模型设置独立的推理参数（温度、采样策略、上下文长度等）。</p>
 <p>但 Linux 版主要面向无头服务器（headless server）运行，<strong>缺少等价的 GUI 参数管理</strong>。所有模型共享同一套全局设置，导致：</p>
 <ul>
-<li>Qwen3.6 需要 <code>temperature=0.7, topP=0.8</code>（Instruct 模式）</li>
-<li>其他模型可能需要完全不同的参数</li>
-<li>切换模型后，必须手动修改全局配置再重启</li>
+<li><p>Qwen3.6 需要 <code>temperature=0.7, topP=0.8</code>（Instruct 模式）</p>
+</li>
+<li><p>其他模型可能需要完全不同的参数</p>
+</li>
+<li><p>切换模型后，必须手动修改全局配置再重启</p>
+</li>
 </ul>
 <p>这在多模型并存的场景下完全不可接受。</p>
 <hr>
 <h2 id="解决方案：虚拟模型参数隔离"><a href="#解决方案：虚拟模型参数隔离" class="headerlink" title="解决方案：虚拟模型参数隔离"></a>解决方案：虚拟模型参数隔离</h2><h3 id="什么是虚拟模型"><a href="#什么是虚拟模型" class="headerlink" title="什么是虚拟模型"></a>什么是虚拟模型</h3><p>LM Studio 支持通过 <code>model.yaml</code> 文件定义<strong>虚拟模型（Virtual Model）</strong>。虚拟模型本质上是同一个 GGUF 模型文件的不同”配置视图”，每个虚拟模型可以拥有独立的加载参数和推理参数。</p>
-<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs crystal">~<span class="hljs-regexp">/.lmstudio/hub</span><span class="hljs-regexp">/models/custom</span><span class="hljs-regexp">/</span><br><span class="hljs-regexp">├── qwen3.6-35b-a3b-256k/</span>        <span class="hljs-comment"># 虚拟模型 A（256K 上下文 + 特定采样参数）</span><br>│   ├── model.yaml<br>│   └── manifest.json<br>├── qwen3.<span class="hljs-number">6</span>-<span class="hljs-number">35</span>b-a3b-<span class="hljs-number">64</span>k/         <span class="hljs-comment"># 虚拟模型 B（64K 上下文 + 不同采样参数）</span><br>│   ├── model.yaml<br>│   └── manifest.json<br>└── ...<br></code></pre></td></tr></table></figure>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs crystal"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><br>~<span class="hljs-regexp">/.lmstudio/hub</span><span class="hljs-regexp">/models/custom</span><span class="hljs-regexp">/</span><br><span class="hljs-regexp">├── qwen3.6-35b-a3b-256k/</span>        <span class="hljs-comment"># 虚拟模型 A（256K 上下文 + 特定采样参数）</span><br>│   ├── model.yaml<br>│   └── manifest.json<br>├── qwen3.<span class="hljs-number">6</span>-<span class="hljs-number">35</span>b-a3b-<span class="hljs-number">64</span>k/         <span class="hljs-comment"># 虚拟模型 B（64K 上下文 + 不同采样参数）</span><br>│   ├── model.yaml<br>│   └── manifest.json<br>└── ...<br><br></code></pre></td></tr></table></figure>
 
 <p>它们<strong>共享同一个底层 GGUF 文件</strong>，但拥有完全独立的参数配置。</p>
 <h3 id="model-yaml-配置示例"><a href="#model-yaml-配置示例" class="headerlink" title="model.yaml 配置示例"></a>model.yaml 配置示例</h3><p>以下是一个完整的虚拟模型配置文件，每个字段都带有注释说明：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">model:</span> <span class="hljs-string">custom/qwen3.6-35b-a3b-256k</span><br><span class="hljs-attr">base:</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">lmstudio-community/Qwen3.6-35B-A3B-GGUF</span><br>  <span class="hljs-attr">sources:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">huggingface</span><br>    <span class="hljs-attr">user:</span> <span class="hljs-string">lmstudio-community</span><br>    <span class="hljs-attr">repo:</span> <span class="hljs-string">Qwen3.6-35B-A3B-GGUF</span><br><span class="hljs-attr">metadataOverrides:</span><br>  <span class="hljs-attr">domain:</span> <span class="hljs-string">llm</span><br>  <span class="hljs-attr">architectures:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">qwen35moe</span><br>  <span class="hljs-attr">compatibilityTypes:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">gguf</span><br>  <span class="hljs-attr">contextLengths:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-number">262144</span><br>  <span class="hljs-attr">vision:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-attr">reasoning:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-attr">trainedForToolUse:</span> <span class="hljs-literal">true</span><br><span class="hljs-attr">config:</span><br>  <span class="hljs-attr">load:</span><br>    <span class="hljs-attr">fields:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.contextLength</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">262144</span>                    <span class="hljs-comment"># 256K 上下文窗口</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.numParallelSessions</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">2</span>                         <span class="hljs-comment"># 并发会话数</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.llama.acceleration.offloadRatio</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">1.0</span>                       <span class="hljs-comment"># GPU 全量卸载</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.numCpuExpertLayersRatio</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.3</span>                       <span class="hljs-comment"># 30% MoE 专家走 CPU</span><br>  <span class="hljs-attr">operation:</span><br>    <span class="hljs-attr">fields:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.llama.cpuThreads</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">8</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.temperature</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.7</span>                       <span class="hljs-comment"># Instruct 模式推荐值</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.topP</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.8</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.topK</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">20</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.minP</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.0</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.presencePenalty</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">1.5</span>                       <span class="hljs-comment"># 防重复循环</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><br><span class="hljs-number">16</span><br><span class="hljs-number">17</span><br><span class="hljs-number">18</span><br><span class="hljs-number">19</span><br><span class="hljs-number">20</span><br><span class="hljs-number">21</span><br><span class="hljs-number">22</span><br><span class="hljs-number">23</span><br><span class="hljs-number">24</span><br><span class="hljs-number">25</span><br><span class="hljs-number">26</span><br><span class="hljs-number">27</span><br><span class="hljs-number">28</span><br><span class="hljs-number">29</span><br><span class="hljs-number">30</span><br><span class="hljs-number">31</span><br><span class="hljs-number">32</span><br><span class="hljs-number">33</span><br><span class="hljs-number">34</span><br><span class="hljs-number">35</span><br><span class="hljs-number">36</span><br><span class="hljs-number">37</span><br><span class="hljs-number">38</span><br><span class="hljs-number">39</span><br><span class="hljs-number">40</span><br><span class="hljs-number">41</span><br><span class="hljs-number">42</span><br><span class="hljs-number">43</span><br><br><span class="hljs-attr">model:</span> <span class="hljs-string">custom/qwen3.6-35b-a3b-256k</span><br><span class="hljs-attr">base:</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">lmstudio-community/Qwen3.6-35B-A3B-GGUF</span><br>  <span class="hljs-attr">sources:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">huggingface</span><br>    <span class="hljs-attr">user:</span> <span class="hljs-string">lmstudio-community</span><br>    <span class="hljs-attr">repo:</span> <span class="hljs-string">Qwen3.6-35B-A3B-GGUF</span><br><span class="hljs-attr">metadataOverrides:</span><br>  <span class="hljs-attr">domain:</span> <span class="hljs-string">llm</span><br>  <span class="hljs-attr">architectures:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">qwen35moe</span><br>  <span class="hljs-attr">compatibilityTypes:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">gguf</span><br>  <span class="hljs-attr">contextLengths:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-number">262144</span><br>  <span class="hljs-attr">vision:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-attr">reasoning:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-attr">trainedForToolUse:</span> <span class="hljs-literal">true</span><br><span class="hljs-attr">config:</span><br>  <span class="hljs-attr">load:</span><br>    <span class="hljs-attr">fields:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.contextLength</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">262144</span>                    <span class="hljs-comment"># 256K 上下文窗口</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.numParallelSessions</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">2</span>                         <span class="hljs-comment"># 并发会话数</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.llama.acceleration.offloadRatio</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">1.0</span>                       <span class="hljs-comment"># GPU 全量卸载</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.load.numCpuExpertLayersRatio</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.3</span>                       <span class="hljs-comment"># 30% MoE 专家走 CPU</span><br>  <span class="hljs-attr">operation:</span><br>    <span class="hljs-attr">fields:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.llama.cpuThreads</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">8</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.temperature</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.7</span>                       <span class="hljs-comment"># Instruct 模式推荐值</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.topP</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.8</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.topK</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">20</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.minP</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">0.0</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">llm.prediction.presencePenalty</span><br>      <span class="hljs-attr">value:</span> <span class="hljs-number">1.5</span>                       <span class="hljs-comment"># 防重复循环</span><br><br></code></pre></td></tr></table></figure>
 
-<h3 id="关键设计"><a href="#关键设计" class="headerlink" title="关键设计"></a>关键设计</h3><table>
-<thead>
-<tr>
-<th>配置区</th>
-<th>作用</th>
-<th>独立性</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>base</code></td>
-<td>指向底层 GGUF 模型文件</td>
-<td>所有虚拟模型共享同一文件</td>
-</tr>
-<tr>
-<td><code>load</code></td>
-<td>模型加载参数（上下文长度、GPU 卸载比例等）</td>
-<td>每个虚拟模型独立配置</td>
-</tr>
-<tr>
-<td><code>operation</code></td>
-<td>推理参数（temperature、topP、topK 等）</td>
-<td>每个虚拟模型独立配置</td>
-</tr>
-<tr>
-<td><code>metadataOverrides</code></td>
-<td>模型元数据（上下文长度声明、能力标记等）</td>
-<td>每个虚拟模型独立配置</td>
-</tr>
-</tbody></table>
+<h3 id="关键设计"><a href="#关键设计" class="headerlink" title="关键设计"></a>关键设计</h3><p>配置区<br>作用<br>独立性</p>
+<p><code>base</code><br>指向底层 GGUF 模型文件<br>所有虚拟模型共享同一文件</p>
+<p><code>load</code><br>模型加载参数（上下文长度、GPU 卸载比例等）<br>每个虚拟模型独立配置</p>
+<p><code>operation</code><br>推理参数（temperature、topP、topK 等）<br>每个虚拟模型独立配置</p>
+<p><code>metadataOverrides</code><br>模型元数据（上下文长度声明、能力标记等）<br>每个虚拟模型独立配置</p>
 <h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><p>通过虚拟模型，我们在 Linux 上实现了和 Windows 版等价的参数管理体验：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">一个 GGUF 文件 → 多个虚拟模型 → 各自独立的参数配置<br></code></pre></td></tr></table></figure>
-
-<p>切换模型时，LM Studio 自动加载对应的参数，无需手动修改全局配置。</p>
-<hr>
-<h2 id="问题二：Anthropic-协议连接报错"><a href="#问题二：Anthropic-协议连接报错" class="headerlink" title="问题二：Anthropic 协议连接报错"></a>问题二：Anthropic 协议连接报错</h2><h3 id="现象-1"><a href="#现象-1" class="headerlink" title="现象"></a>现象</h3><p>在解决了参数隔离问题后，又遇到了第二个问题。部分 AI 客户端（如 Cherry Studio）在连接 LM Studio 时，偏好使用 <strong>Anthropic 协议格式</strong>。但 LM Studio 原生只提供 <strong>OpenAI 兼容的 API 接口</strong>（<code>/v1/chat/completions</code>），对 Anthropic 协议的支持不完善：</p>
-<ul>
-<li>请求格式不兼容，频繁返回错误</li>
-<li>消息格式转换丢失字段</li>
-<li>流式输出中断</li>
-</ul>
-<h3 id="问题本质"><a href="#问题本质" class="headerlink" title="问题本质"></a>问题本质</h3><p>这是一个<strong>协议不匹配</strong>问题：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">客户端发出 Anthropic 格式请求 → LM Studio 期望 OpenAI 格式 → 格式冲突 → 报错<br></code></pre></td></tr></table></figure>
+<p>1</p>
+<p>一个 GGUF 文件 → 多个虚拟模型 → 各自独立的参数配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><br><span class="hljs-string">切换模型时，LM</span> <span class="hljs-string">Studio</span> <span class="hljs-string">自动加载对应的参数，无需手动修改全局配置。</span><br><br><span class="hljs-meta">---</span><br><span class="hljs-meta"></span><br><span class="hljs-comment">## 问题二：Anthropic 协议连接报错</span><br><br><span class="hljs-comment">### 现象</span><br><br><span class="hljs-string">在解决了参数隔离问题后，又遇到了第二个问题。部分</span> <span class="hljs-string">AI</span> <span class="hljs-string">客户端（如</span> <span class="hljs-string">Cherry</span> <span class="hljs-string">Studio）在连接</span> <span class="hljs-string">LM</span> <span class="hljs-string">Studio</span> <span class="hljs-string">时，偏好使用</span> <span class="hljs-string">**Anthropic</span> <span class="hljs-string">协议格式**。但</span> <span class="hljs-string">LM</span> <span class="hljs-string">Studio</span> <span class="hljs-string">原生只提供</span> <span class="hljs-string">**OpenAI</span> <span class="hljs-string">兼容的</span> <span class="hljs-string">API</span> <span class="hljs-string">接口**（`/v1/chat/completions`），对</span> <span class="hljs-string">Anthropic</span> <span class="hljs-string">协议的支持不完善：</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-string">请求格式不兼容，频繁返回错误</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-string">消息格式转换丢失字段</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-string">流式输出中断</span><br><br><span class="hljs-comment">### 问题本质</span><br><br><span class="hljs-string">这是一个**协议不匹配**问题：</span><br><br><span class="hljs-number">1</span><br><br><span class="hljs-string">客户端发出</span> <span class="hljs-string">Anthropic</span> <span class="hljs-string">格式请求</span> <span class="hljs-string">→</span> <span class="hljs-string">LM</span> <span class="hljs-string">Studio</span> <span class="hljs-string">期望</span> <span class="hljs-string">OpenAI</span> <span class="hljs-string">格式</span> <span class="hljs-string">→</span> <span class="hljs-string">格式冲突</span> <span class="hljs-string">→</span> <span class="hljs-string">报错</span><br><br></code></pre></td></tr></table></figure>
 
 <hr>
 <h2 id="解决方案：new-api-协议转发"><a href="#解决方案：new-api-协议转发" class="headerlink" title="解决方案：new-api 协议转发"></a>解决方案：new-api 协议转发</h2><h3 id="什么是-new-api"><a href="#什么是-new-api" class="headerlink" title="什么是 new-api"></a>什么是 new-api</h3><p><a target="_blank" rel="noopener" href="https://github.com/songquanpeng/new-api">new-api</a> 是一个开源的 AI API 网关，支持多种大模型 API 格式的互相转换。它的核心能力是：</p>
 <ul>
-<li><strong>协议转换</strong>：自动将 Anthropic 格式请求转为 OpenAI 格式</li>
-<li><strong>认证管理</strong>：为裸 API 添加 API Key 认证</li>
-<li><strong>用量统计</strong>：记录每个密钥的调用次数和 Token 消耗</li>
+<li><p><strong>协议转换</strong>：自动将 Anthropic 格式请求转为 OpenAI 格式</p>
+</li>
+<li><p><strong>认证管理</strong>：为裸 API 添加 API Key 认证</p>
+</li>
+<li><p><strong>用量统计</strong>：记录每个密钥的调用次数和 Token 消耗</p>
+</li>
 </ul>
-<h3 id="部署架构"><a href="#部署架构" class="headerlink" title="部署架构"></a>部署架构</h3><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs smali">    ┌──────────────┐<br>    │   Cherry     │<br>    │   Studio /   │<br>    │   Hermes /   │<br>    │   OpenClaw   │<br>    └──────┬───────┘<br>           │<br>Anthropic 或 OpenAI 格式<br>           │<br>    ┌──────▼───────┐<br>    │  <span class="hljs-built_in"> new-api </span>   │  ← 协议转换 + 认证 + 统计<br>    │  (:3000)     │<br>    └──────┬───────┘<br>           │<br>  OpenAI 格式（统一）<br>           │<br>    ┌──────▼───────┐<br>    │  LM Studio   │  ← 本地推理<br>    │  (:1234)     │<br>    └──────┬───────┘<br>           │<br>    ┌──────▼───────┐<br>    │  Qwen3.6-35B │<br>    │  (GGUF)      │<br>    └──────────────┘<br></code></pre></td></tr></table></figure>
+<h3 id="部署架构"><a href="#部署架构" class="headerlink" title="部署架构"></a>部署架构</h3><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs smali"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br><br>    ┌──────────────┐<br>    │   Cherry     │<br>    │   Studio /   │<br>    │   Hermes /   │<br>    │   OpenClaw   │<br>    └──────┬───────┘<br>           │<br>Anthropic 或 OpenAI 格式<br>           │<br>    ┌──────▼───────┐<br>    │  <span class="hljs-built_in"> new-api </span>   │  ← 协议转换 + 认证 + 统计<br>    │  (:3000)     │<br>    └──────┬───────┘<br>           │<br>  OpenAI 格式（统一）<br>           │<br>    ┌──────▼───────┐<br>    │  LM Studio   │  ← 本地推理<br>    │  (:1234)     │<br>    └──────┬───────┘<br>           │<br>    ┌──────▼───────┐<br>    │  Qwen3.6-35B │<br>    │  (GGUF)      │<br>    └──────────────┘<br><br></code></pre></td></tr></table></figure>
 
 <h3 id="配置步骤"><a href="#配置步骤" class="headerlink" title="配置步骤"></a>配置步骤</h3><p><strong>第一步：部署 new-api</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Docker 部署（推荐）</span><br>docker run -d \<br>  --name new-api \<br>  --restart always \<br>  -p 3000:3000 \<br>  -v /path/to/new-api-data:/data \<br>  calciumion/new-api:latest<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br><br><span class="hljs-comment"># Docker 部署（推荐）</span><br>docker run -d \<br>  --name new-api \<br>  --restart always \<br>  -p 3000:3000 \<br>  -v /path/to/new-api-data:/data \<br>  calciumion/new-api:latest<br><br></code></pre></td></tr></table></figure>
 
 <p><strong>第二步：添加 LM Studio 渠道</strong></p>
 <p>在 new-api 管理后台（<code>http://your-server:3000</code>）中：</p>
-<ol>
-<li>进入「渠道管理」→「添加渠道」</li>
-<li>类型选择「自定义渠道」或「OpenAI」</li>
-<li>填写 LM Studio 的地址：</li>
-</ol>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">Base <span class="hljs-built_in">URL</span>: <span class="hljs-keyword">http</span>://<span class="hljs-number">10.28</span><span class="hljs-number">.9</span><span class="hljs-number">.6</span>:<span class="hljs-number">1234</span>/v1<br></code></pre></td></tr></table></figure>
+<ul>
+<li><p>进入「渠道管理」→「添加渠道」</p>
+</li>
+<li><p>类型选择「自定义渠道」或「OpenAI」</p>
+</li>
+<li><p>填写 LM Studio 的地址：</p>
+</li>
+</ul>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver"><br><span class="hljs-number">1</span><br><br>Base <span class="hljs-built_in">URL</span>: <span class="hljs-keyword">http</span>://<span class="hljs-number">10.28</span><span class="hljs-number">.9</span><span class="hljs-number">.6</span>:<span class="hljs-number">1234</span>/v1<br><br></code></pre></td></tr></table></figure>
 
-<ol start="4">
+<ul>
 <li>填写模型列表（与 LM Studio 中加载的模型对应）</li>
-</ol>
+</ul>
 <p><strong>第三步：创建令牌</strong></p>
 <p>在「令牌管理」中创建 API Key，用于客户端认证。</p>
 <p><strong>第四步：客户端连接</strong></p>
 <p>客户端连接配置：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>API Base URL</td>
-<td><code>http://your-server:3000/v1</code></td>
-</tr>
-<tr>
-<td>API Key</td>
-<td>new-api 生成的令牌</td>
-</tr>
-<tr>
-<td>协议格式</td>
-<td>Anthropic 或 OpenAI 均可</td>
-</tr>
-</tbody></table>
+<p>参数<br>值</p>
+<p>API Base URL<br><code>http://your-server:3000/v1</code></p>
+<p>API Key<br>new-api 生成的令牌</p>
+<p>协议格式<br>Anthropic 或 OpenAI 均可</p>
 <h3 id="new-api-的额外收益"><a href="#new-api-的额外收益" class="headerlink" title="new-api 的额外收益"></a>new-api 的额外收益</h3><p>引入 new-api 不仅解决了协议兼容问题，还带来了三个额外好处：</p>
 <h4 id="1-认证保护"><a href="#1-认证保护" class="headerlink" title="1. 认证保护"></a>1. 认证保护</h4><p>LM Studio 本身不提供认证机制，任何能访问端口的人都可以调用模型。new-api 在前面加了一层 API Key 认证：</p>
-<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs smali">无认证 → LM Studio (:1234)   ← 内网裸奔，有安全风险<br>有认证 →<span class="hljs-built_in"> new-api </span>(:3000)     ← API Key 保护，安全可控<br></code></pre></td></tr></table></figure>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs smali"><br>1<br>2<br><br>无认证 → LM Studio (:1234)   ← 内网裸奔，有安全风险<br>有认证 →<span class="hljs-built_in"> new-api </span>(:3000)     ← API Key 保护，安全可控<br><br></code></pre></td></tr></table></figure>
 
 <h4 id="2-用量统计"><a href="#2-用量统计" class="headerlink" title="2. 用量统计"></a>2. 用量统计</h4><p>new-api 自动记录每次调用的 Token 用量，可以按令牌、按渠道查看统计，方便监控模型使用情况。</p>
 <h4 id="3-多客户端统一入口"><a href="#3-多客户端统一入口" class="headerlink" title="3. 多客户端统一入口"></a>3. 多客户端统一入口</h4><p>不管是 Hermes（OpenAI 格式）、Cherry Studio（Anthropic 格式）还是其他客户端，都连接同一个 new-api 地址，由 new-api 统一转发到 LM Studio。配置管理大大简化。</p>
 <hr>
 <h2 id="最终架构"><a href="#最终架构" class="headerlink" title="最终架构"></a>最终架构</h2><p>经过虚拟模型 + new-api 两层优化，最终的部署架构如下：</p>
-<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs smali">┌─────────────┐  ┌─────────────┐  ┌─────────────┐<br>│   Hermes    │  │ Cherry      │  │  OpenClaw   │<br>│  (OpenAI)   │  │ Studio      │  │ (OpenAI)    │<br>│             │  │(Anthropic)  │  │             │<br>└──────┬──────┘  └──────┬──────┘  └──────┬──────┘<br>       │                │                │<br>       └────────────────┼────────────────┘<br>                        │<br>                 ┌──────▼──────┐<br>                 │  <span class="hljs-built_in"> new-api </span>  │  ← 认证 / 统计 / 协议转换<br>                 │  (:3000)    │<br>                 └──────┬──────┘<br>                        │<br>                 ┌──────▼──────┐<br>                 │  LM Studio  │  ← 本地推理引擎<br>                 │  (:1234)    │<br>                 └──────┬──────┘<br>                        │<br>            ┌───────────┼───────────┐<br>            │           │           │<br>     ┌──────▼────┐ ┌───▼────┐ ┌───▼────┐<br>     │ Qwen3.6   │ │ Model  │ │ Model  │<br>     │ 256K      │ │ B      │ │ C      │<br>     │ (虚拟模型) │ │(虚拟)  │ │(虚拟)  │<br>     └───────────┘ └────────┘ └────────┘<br>      temp=0.7     独立参数   独立参数<br>      topP=0.8<br></code></pre></td></tr></table></figure>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs smali"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br><br>┌─────────────┐  ┌─────────────┐  ┌─────────────┐<br>│   Hermes    │  │ Cherry      │  │  OpenClaw   │<br>│  (OpenAI)   │  │ Studio      │  │ (OpenAI)    │<br>│             │  │(Anthropic)  │  │             │<br>└──────┬──────┘  └──────┬──────┘  └──────┬──────┘<br>       │                │                │<br>       └────────────────┼────────────────┘<br>                        │<br>                 ┌──────▼──────┐<br>                 │  <span class="hljs-built_in"> new-api </span>  │  ← 认证 / 统计 / 协议转换<br>                 │  (:3000)    │<br>                 └──────┬──────┘<br>                        │<br>                 ┌──────▼──────┐<br>                 │  LM Studio  │  ← 本地推理引擎<br>                 │  (:1234)    │<br>                 └──────┬──────┘<br>                        │<br>            ┌───────────┼───────────┐<br>            │           │           │<br>     ┌──────▼────┐ ┌───▼────┐ ┌───▼────┐<br>     │ Qwen3.6   │ │ Model  │ │ Model  │<br>     │ 256K      │ │ B      │ │ C      │<br>     │ (虚拟模型) │ │(虚拟)  │ │(虚拟)  │<br>     └───────────┘ └────────┘ └────────┘<br>      temp=0.7     独立参数   独立参数<br>      topP=0.8<br><br></code></pre></td></tr></table></figure>
 
-<h3 id="架构分层"><a href="#架构分层" class="headerlink" title="架构分层"></a>架构分层</h3><table>
-<thead>
-<tr>
-<th>层级</th>
-<th>组件</th>
-<th>职责</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>客户端层</td>
-<td>Hermes &#x2F; Cherry Studio &#x2F; OpenClaw</td>
-<td>不同协议格式的 AI 应用</td>
-</tr>
-<tr>
-<td>网关层</td>
-<td>new-api</td>
-<td>协议转换、认证、统计</td>
-</tr>
-<tr>
-<td>推理层</td>
-<td>LM Studio</td>
-<td>模型加载与推理</td>
-</tr>
-<tr>
-<td>模型层</td>
-<td>虚拟模型 × N</td>
-<td>参数隔离、独立配置</td>
-</tr>
-</tbody></table>
+<h3 id="架构分层"><a href="#架构分层" class="headerlink" title="架构分层"></a>架构分层</h3><p>层级<br>组件<br>职责</p>
+<p>客户端层<br>Hermes &#x2F; Cherry Studio &#x2F; OpenClaw<br>不同协议格式的 AI 应用</p>
+<p>网关层<br>new-api<br>协议转换、认证、统计</p>
+<p>推理层<br>LM Studio<br>模型加载与推理</p>
+<p>模型层<br>虚拟模型 × N<br>参数隔离、独立配置</p>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在 Linux 服务器上部署 LM Studio 时，两个核心问题的解决思路：</p>
 <h3 id="参数隔离-→-虚拟模型"><a href="#参数隔离-→-虚拟模型" class="headerlink" title="参数隔离 → 虚拟模型"></a>参数隔离 → 虚拟模型</h3><ul>
-<li>LM Studio Linux 版缺少图形化参数管理</li>
-<li>通过 <code>model.yaml</code> 定义虚拟模型，实现同一 GGUF 文件的多配置视图</li>
-<li>每个虚拟模型拥有独立的加载参数和推理参数</li>
-<li>效果等同于 Windows 版的独立参数管理</li>
+<li><p>LM Studio Linux 版缺少图形化参数管理</p>
+</li>
+<li><p>通过 <code>model.yaml</code> 定义虚拟模型，实现同一 GGUF 文件的多配置视图</p>
+</li>
+<li><p>每个虚拟模型拥有独立的加载参数和推理参数</p>
+</li>
+<li><p>效果等同于 Windows 版的独立参数管理</p>
+</li>
 </ul>
 <h3 id="协议兼容-→-new-api-转发"><a href="#协议兼容-→-new-api-转发" class="headerlink" title="协议兼容 → new-api 转发"></a>协议兼容 → new-api 转发</h3><ul>
-<li>LM Studio 原生只支持 OpenAI 格式，Anthropic 协议连接容易报错</li>
-<li>new-api 作为中间网关，自动转换协议格式</li>
-<li>额外获得认证保护、用量统计、统一入口三大好处</li>
+<li><p>LM Studio 原生只支持 OpenAI 格式，Anthropic 协议连接容易报错</p>
+</li>
+<li><p>new-api 作为中间网关，自动转换协议格式</p>
+</li>
+<li><p>额外获得认证保护、用量统计、统一入口三大好处</p>
+</li>
 </ul>
 <p>这套方案已经在我们的服务器上稳定运行，希望对同样在 Linux 上部署 LM Studio 的朋友有所帮助。</p>
 
@@ -630,7 +576,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E6%88%98/" class="category-chain-item">技术实战</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -641,19 +587,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/LM-Studio/" class="print-no-link">#LM-Studio</a>
-      
-        <a href="/tags/new-api/" class="print-no-link">#new-api</a>
-      
-        <a href="/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/" class="print-no-link">#本地部署</a>
-      
-        <a href="/tags/%E6%A8%A1%E5%9E%8B%E8%BD%AC%E5%8F%91/" class="print-no-link">#模型转发</a>
-      
-    </div>
   
 </div>
 
@@ -708,9 +641,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/05/ND-20260505-001-trae-solo-14-must-install-skills/" title="TRAE SOLO 必装的 14 个 Skill：从开发到创作的全能武器库">
+                      <a href="/2026/05/03/ND-20260503-001-hermes-model-config-guide/" title="Hermes Agent 模型配置完全指南——从单模型到多模型路由">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">TRAE SOLO 必装的 14 个 Skill：从开发到创作的全能武器库</span>
+                        <span class="hidden-mobile">Hermes Agent 模型配置完全指南——从单模型到多模型路由</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     

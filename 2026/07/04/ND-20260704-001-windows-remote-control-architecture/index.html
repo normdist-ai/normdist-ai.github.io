@@ -1,0 +1,974 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="背景：一个 Linux Agent 想操作 Windows一个运行在 Linux 服务器上的 AI Agent，已经能通过 CDP（Chrome DevTools Protocol）远程操控 Windows 上的 Edge 浏览器。现在需求升级了——不只是浏览器，还要控制整个 Windows 操作系统：文件管理、应用启动、系统设置、桌面 GUI 交互。 核心约束很明确：所有方案必须从 Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型">
+<meta property="og:url" content="https://www.normdist.com/2026/07/04/ND-20260704-001-windows-remote-control-architecture/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="背景：一个 Linux Agent 想操作 Windows一个运行在 Linux 服务器上的 AI Agent，已经能通过 CDP（Chrome DevTools Protocol）远程操控 Windows 上的 Edge 浏览器。现在需求升级了——不只是浏览器，还要控制整个 Windows 操作系统：文件管理、应用启动、系统设置、桌面 GUI 交互。 核心约束很明确：所有方案必须从 Linux">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-04T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T10:29:10.856Z">
+<meta property="article:author" content="小瑞">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-04 10:00" pubdate>
+          2026年7月4日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          31 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月12日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="背景：一个-Linux-Agent-想操作-Windows"><a href="#背景：一个-Linux-Agent-想操作-Windows" class="headerlink" title="背景：一个 Linux Agent 想操作 Windows"></a>背景：一个 Linux Agent 想操作 Windows</h2><p>一个运行在 Linux 服务器上的 AI Agent，已经能通过 CDP（Chrome DevTools Protocol）远程操控 Windows 上的 Edge 浏览器。现在需求升级了——不只是浏览器，还要控制<strong>整个 Windows 操作系统</strong>：文件管理、应用启动、系统设置、桌面 GUI 交互。</p>
+<p>核心约束很明确：<strong>所有方案必须从 Linux 远程控制 Windows</strong>，不能在 Windows 上跑 Agent 主进程。</p>
+<p>这是一个典型的”跨 OS 远程控制”架构选型问题。本文记录了完整的调研过程和最终决策。</p>
+<h2 id="候选方案全景扫描"><a href="#候选方案全景扫描" class="headerlink" title="候选方案全景扫描"></a>候选方案全景扫描</h2><p>市面上能做”AI 控制 GUI”的方案不少，但加上”从 Linux 远程控制 Windows”这个约束后，可选范围迅速收窄。以下是逐一评估。</p>
+<h3 id="方案一：Microsoft-UFO-Agent（UI-Automation-原生方案）"><a href="#方案一：Microsoft-UFO-Agent（UI-Automation-原生方案）" class="headerlink" title="方案一：Microsoft UFO-Agent（UI Automation 原生方案）"></a>方案一：Microsoft UFO-Agent（UI Automation 原生方案）</h3><p><a target="_blank" rel="noopener" href="https://github.com/microsoft/UFO">UFO-Agent</a> 是微软官方出品的 Windows GUI 自动化 Agent，MIT 开源。</p>
+<p><strong>架构亮点</strong>：UFO 不依赖截图和视觉模型，而是直接调用 Windows 内置的 <strong>UI Automation (UIA) API</strong>——这是 Windows 的无障碍接口（Accessibility API）。通过 UIA 树获取应用程序的 UI 元素结构（按钮、菜单、输入框），再通过 UIA 直接操作这些元素。</p>
+<p>双 Agent 架构：</p>
+<ul>
+<li><p><strong>AppAgent</strong>：分析用户意图，从已安装应用中选择合适的工具</p>
+</li>
+<li><p><strong>ActAgent</strong>：在选定应用内部执行具体操作（点击、输入、滚动）</p>
+</li>
+</ul>
+<p><strong>远程控制评估</strong>：</p>
+<p>UFO 支持 RESTful API 模式，可以在 Windows 上作为 HTTP 服务运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br><br><span class="hljs-comment"># Windows 侧部署</span><br>pip install ufo-agent<br>python -m ufo.restful_api --host 0.0.0.0 --port 8000<br><br><span class="hljs-comment"># Linux 侧调用</span><br>curl -X POST http://&lt;windows-ip&gt;:8000/api/task \<br>  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \<br>  -d <span class="hljs-string">&#x27;&#123;&quot;task&quot;: &quot;打开文件管理器，在D盘创建一个名为test的文件夹&quot;&#125;&#x27;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>维度<br>评估</p>
+<p>可行性<br>✅ 高度可行（HTTP Bridge）</p>
+<p>延迟<br>低（局域网 &lt;50ms，LLM 调用 2-5s&#x2F;步）</p>
+<p>精确度<br>⭐⭐⭐⭐⭐（原生 UIA，元素级定位）</p>
+<p>依赖<br>需 GPT-4o API Key</p>
+<p>成熟度<br><strong>8&#x2F;10</strong></p>
+<p><strong>优势</strong>：精确度极高（远超截图方案），微软官方维护，文档完善。<br><strong>劣势</strong>：强依赖 GPT 模型 API，仅支持 Windows。</p>
+<h3 id="方案二：OmniParser-v2（视觉解析中间件）"><a href="#方案二：OmniParser-v2（视觉解析中间件）" class="headerlink" title="方案二：OmniParser v2（视觉解析中间件）"></a>方案二：OmniParser v2（视觉解析中间件）</h3><p><a target="_blank" rel="noopener" href="https://github.com/microsoft/OmniParser">OmniParser</a> 同样来自微软，但定位不同——它不是完整的 Agent，而是<strong>屏幕解析中间件</strong>：把截图转换为结构化的 UI 元素描述。</p>
+<p>工作链路：截图 → YOLOv8 图标检测 + OCR 文本识别 → 元素聚合 + 坐标映射 → 结构化 JSON → 交给任意 LLM 决策。</p>
+<p><strong>关键定位</strong>：OmniParser 是任何视觉 Agent 的「眼睛」，但不是完整方案。需要自行组装”截图采集 → OmniParser 解析 → LLM 决策 → 输入注入”的完整链路。</p>
+<p>纯视觉方案的好处是<strong>跨平台</strong>，但劣势是需要自己搭建完整的基础设施，且截图精度不如 UIA。</p>
+<p>成熟度：<strong>7&#x2F;10</strong>（作为组件优秀，作为方案需大量集成工作）。</p>
+<h3 id="方案三：Anthropic-Computer-Use"><a href="#方案三：Anthropic-Computer-Use" class="headerlink" title="方案三：Anthropic Computer Use"></a>方案三：Anthropic Computer Use</h3><p>Claude 的 Computer Use 通过”反复截图 → 分析 → 输出操作指令 → 执行 → 再截图验证”的循环驱动。</p>
+<p>问题在于：<strong>官方参考实现是 Linux Docker 容器</strong>，不原生支持 Windows 桌面控制。要适配 Windows，需要自建 VNC 桥接或截图+执行服务。</p>
+<p>维度<br>评估</p>
+<p>延迟<br>高（10-20s&#x2F;步）</p>
+<p>精确度<br>⭐⭐⭐（截图不如 UIA）</p>
+<p>工程量<br>大量自建基础设施</p>
+<p>适合需要 Claude 高级推理能力的复杂场景，但对大多数 Windows 操作来说”杀鸡用牛刀”。</p>
+<h3 id="方案四：OpenAI-Operator-CUA"><a href="#方案四：OpenAI-Operator-CUA" class="headerlink" title="方案四：OpenAI Operator &#x2F; CUA"></a>方案四：OpenAI Operator &#x2F; CUA</h3><p>OpenAI 的 CUA 在<strong>云端虚拟环境</strong>中操作，不是控制用户本地的 Windows。对”远程控制本地 Windows 桌面”这一需求基本不适用。排除。</p>
+<h3 id="方案五：其他开源项目"><a href="#方案五：其他开源项目" class="headerlink" title="方案五：其他开源项目"></a>方案五：其他开源项目</h3><ul>
+<li><p><strong>UI-TARS</strong>（字节跳动）：端到端视觉 GUI Agent，开源模型可本地部署，平台无关。模型能力强但工程化需自建。<strong>6&#x2F;10</strong></p>
+</li>
+<li><p><strong>OS-Copilot &#x2F; FRIDAY</strong>：学术研究项目，主要面向 Linux&#x2F;macOS。<strong>5&#x2F;10</strong></p>
+</li>
+<li><p><strong>OpenAdapt</strong>：RPA 录制回放 + LLM，早期项目。<strong>4&#x2F;10</strong></p>
+</li>
+<li><p><strong>Self-Operating Computer</strong>：概念验证级别。<strong>4&#x2F;10</strong></p>
+</li>
+</ul>
+<h2 id="核心对比：五种远程控制通道"><a href="#核心对比：五种远程控制通道" class="headerlink" title="核心对比：五种远程控制通道"></a>核心对比：五种远程控制通道</h2><p>把视角从”用哪个 Agent”切换到”用什么远程通道”，对比更清晰：</p>
+<p>方案<br>通道<br>延迟&#x2F;步<br>精确度<br>复杂度<br>安全性<br>综合评分</p>
+<p><strong>A. UFO HTTP API</strong><br>REST&#x2F;HTTP<br>3-5s<br>⭐⭐⭐⭐⭐<br>★★☆<br>★★★☆<br><strong>9</strong></p>
+<p>B. SSH + PowerShell<br>SSH<br>1-3s<br>⭐⭐⭐⭐<br>★★★☆<br>★★★★<br><strong>7</strong></p>
+<p>C. VNC + 视觉 Agent<br>VNC<br>8-20s<br>⭐⭐⭐<br>★★★★<br>★★☆<br><strong>5</strong></p>
+<p>D. 自建截图+执行 HTTP<br>HTTP<br>5-10s<br>⭐⭐⭐<br>★★★★★<br>★★★☆<br><strong>5</strong></p>
+<p>E. RDP + 工具链<br>RDP<br>8-15s<br>⭐⭐⭐<br>★★★★★<br>★★★☆<br><strong>4</strong></p>
+<h2 id="最终决策：分层控制策略"><a href="#最终决策：分层控制策略" class="headerlink" title="最终决策：分层控制策略"></a>最终决策：分层控制策略</h2><p>单一方案无法覆盖所有场景。最终采用了<strong>分层策略</strong>——按操作复杂度选择不同通道：</p>
+<figure class="highlight nestedtext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext"><br><span class="hljs-attribute">1</span><br><span class="hljs-attribute">2</span><br><span class="hljs-attribute">3</span><br><span class="hljs-attribute">4</span><br><span class="hljs-attribute">5</span><br><span class="hljs-attribute">6</span><br><span class="hljs-attribute">7</span><br><span class="hljs-attribute">8</span><br><span class="hljs-attribute">9</span><br><span class="hljs-attribute">10</span><br><span class="hljs-attribute">11</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">Layer 3</span><span class="hljs-punctuation">:</span> <span class="hljs-string">复杂 GUI 交互（操作 Excel、配置系统设置）</span><br>   <span class="hljs-attribute">────▶ UFO Agent (HTTP API) — UIA 精确操作</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">Layer 2</span><span class="hljs-punctuation">:</span> <span class="hljs-string">简单 GUI 操作（启动程序、窗口管理）</span><br>   <span class="hljs-attribute">────▶ SSH + PowerShell (Start-Process 等)</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">Layer 1</span><span class="hljs-punctuation">:</span> <span class="hljs-string">命令行/脚本操作（文件管理、系统查询）</span><br>   <span class="hljs-attribute">────▶ SSH + PowerShell + 原生命令</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">Layer 0</span><span class="hljs-punctuation">:</span> <span class="hljs-string">浏览器操作（已有能力）</span><br>   ────▶ CDP (Chrome DevTools Protocol)<br><br></code></pre></td></tr></table></figure>
+
+<p><strong>为什么分层而不是全用 UFO？</strong></p>
+<ul>
+<li><p>SSH 方案<strong>零成本、立即可用</strong>（Windows 自带 OpenSSH Server，只需在可选功能中开启），适合 80% 的命令行操作</p>
+</li>
+<li><p>UFO 需要 GPT API Key 和 Python 环境部署，但 GUI 交互场景精度最高</p>
+</li>
+<li><p>CDP 浏览器控制已就绪，无需重复建设</p>
+</li>
+</ul>
+<p><strong>落地路线</strong>：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs subunit"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br><br>Phase 1 (1<span class="hljs-string">-2</span>天): SSH 基础通道<br>├── Windows 启用 OpenSSH Server<br>├── 配置 SSH 密钥认证<br>├── 验证文件操作、进程管理<br><br>Phase 2 (3<span class="hljs-string">-5</span>天): UFO Agent 集成<br>├── Windows 安装 UFO + GPT<span class="hljs-string">-4</span>o 配置<br>├── 启动 REST API 服务<br>├── 验证 GUI 自动化<br><br>Phase 3 (1<span class="hljs-string">-2</span>周): 统一抽象层<br>├── SSH + UFO + CDP 自动路由<br>├── 错误恢复 + 操作审计<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="选型决策树"><a href="#选型决策树" class="headerlink" title="选型决策树"></a>选型决策树</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><br><span class="hljs-number">16</span><br><span class="hljs-number">17</span><br><span class="hljs-number">18</span><br><span class="hljs-number">19</span><br><span class="hljs-number">20</span><br><br>                 需要控制 <span class="hljs-title class_">Windows</span>？<br>               ┌──── 是 ────┐<br>               ▼            ▼<br>         需要<span class="hljs-variable constant_">GUI</span>交互?    仅命令行操作?<br>             │              │<br>             ▼              ▼<br>       ┌─────────┐    <span class="hljs-variable constant_">SSH</span> + <span class="hljs-title class_">PowerShell</span><br>       │ 预算充足<span class="hljs-string">?│</span>    (零成本，立即可用)<br>       │(<span class="hljs-variable constant_">GPT</span> <span class="hljs-variable constant_">API</span>)│<br>       └────┬────┘<br>     ┌──────┴──────┐<br>     ▼             ▼<br>  是(<span class="hljs-variable constant_">GPT</span>)       否(本地模型)<br>     │             │<br>     ▼             ▼<br>┌─────────┐   ┌─────────────┐<br>│ <span class="hljs-variable constant_">UFO</span>     │   │ <span class="hljs-variable constant_">UI</span>-<span class="hljs-variable constant_">TARS</span> +   │<br>│ <span class="hljs-title class_">Agent</span>   │   │ 自建截图/   │<br>│ (<span class="hljs-variable constant_">HTTP</span>)  │   │ 执行桥接    │<br>└─────────┘   └─────────────┘<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="五条核心结论"><a href="#五条核心结论" class="headerlink" title="五条核心结论"></a>五条核心结论</h2><p>- </p>
+<p><strong>UFO Agent 是 Windows GUI 控制的最佳选择</strong>：微软官方、MIT 开源、原生 UIA 精确度远超截图方案、提供 HTTP API 可被 Linux 远程调用。</p>
+<p>- </p>
+<p><strong>分层策略优于单一方案</strong>：SSH 处理命令行（快、稳、免费），UFO 处理 GUI（精确但需 API 费用），CDP 处理浏览器（已有）。</p>
+<p>- </p>
+<p><strong>OmniParser 是有价值的补充</strong>：当 UIA 无法识别非标准 UI（Canvas 渲染、游戏内界面）时，视觉方案作为兜底。</p>
+<p>- </p>
+<p><strong>Anthropic&#x2F;OpenAI 方案不推荐作为主力</strong>：均为截图+视觉方案，延迟高、精度不如 UIA、需大量自建基础设施。</p>
+<p>- </p>
+<p><strong>SSH 方案立即可落地</strong>：仅需在 Windows 上启用 OpenSSH Server，今天就能验证文件操作和系统管理能力。</p>
+<hr>
+<blockquote>
+</blockquote>
+<p>当一个 AI Agent 需要跨操作系统工作时，正确的做法不是寻找一个”万能方案”，而是为每类操作选择最合适的通道，再用统一抽象层串联起来。分层，才是远程控制的正确打开方式。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型</div>
+      <div>https://www.normdist.com/2026/07/04/ND-20260704-001-windows-remote-control-architecture/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" title="Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" title="量化系统 Docker→裸跑迁移：一份踩坑笔记">
+                        <span class="hidden-mobile">量化系统 Docker→裸跑迁移：一份踩坑笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

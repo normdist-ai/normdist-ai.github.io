@@ -1,0 +1,946 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="背景量化交易系统的数据源是硬编码在代码里的——ReShare、yfinance、akshare 三个数据源的开关和地址散落在多个文件中。想临时关闭某个数据源？得翻代码改逻辑。 需求很简单：把数据源配置提取到统一配置文件，通过 config 字典控制每个数据源的 enabled 状态和 base_url。 但”简单需求”最容易翻车——改着改着顺手重构、碰了不该碰的文件、引入 regression。本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression">
+<meta property="og:url" content="https://www.normdist.com/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="背景量化交易系统的数据源是硬编码在代码里的——ReShare、yfinance、akshare 三个数据源的开关和地址散落在多个文件中。想临时关闭某个数据源？得翻代码改逻辑。 需求很简单：把数据源配置提取到统一配置文件，通过 config 字典控制每个数据源的 enabled 状态和 base_url。 但”简单需求”最容易翻车——改着改着顺手重构、碰了不该碰的文件、引入 regression。本">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-04T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T10:29:10.857Z">
+<meta property="article:author" content="小瑞">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-04 10:00" pubdate>
+          2026年7月4日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月12日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>量化交易系统的数据源是硬编码在代码里的——ReShare、yfinance、akshare 三个数据源的开关和地址散落在多个文件中。想临时关闭某个数据源？得翻代码改逻辑。</p>
+<p>需求很简单：把数据源配置提取到统一配置文件，通过 config 字典控制每个数据源的 enabled 状态和 base_url。</p>
+<p>但”简单需求”最容易翻车——改着改着顺手重构、碰了不该碰的文件、引入 regression。本文记录了一次严格遵守 Karpathy 四原则的重构实践：3 个文件、1 小时完成、零 regression。</p>
+<h2 id="Karpathy-四原则"><a href="#Karpathy-四原则" class="headerlink" title="Karpathy 四原则"></a>Karpathy 四原则</h2><p>这是一套由 Andrej Karpathy 提出的代码修改纪律，核心理念是”最小化人类干预”：</p>
+<h3 id="原则一：编码前思考"><a href="#原则一：编码前思考" class="headerlink" title="原则一：编码前思考"></a>原则一：编码前思考</h3><blockquote>
+</blockquote>
+<p>列出所有需要改动的文件，想清楚每个文件改什么、不改什么。</p>
+<p>不急于动手。先把改动清单写到纸上（或文档里），每个文件精确到”第几行改成什么”。</p>
+<h3 id="原则二：简洁优先"><a href="#原则二：简洁优先" class="headerlink" title="原则二：简洁优先"></a>原则二：简洁优先</h3><blockquote>
+</blockquote>
+<p>只做最小改动。不创建新文件，不添加新功能，不搞抽象。</p>
+<p>这次的目标是”配置化”，不是”重构数据获取层”。后者是另一个任务。混在一起做，两边都做不好。</p>
+<h3 id="原则三：精准修改"><a href="#原则三：精准修改" class="headerlink" title="原则三：精准修改"></a>原则三：精准修改</h3><blockquote>
+</blockquote>
+<p>只改清单上列出的内容。不碰禁止清单上的文件。不改相邻代码、注释、格式。不改没坏的东西。不顺手优化。</p>
+<h3 id="原则四：目标驱动执行"><a href="#原则四：目标驱动执行" class="headerlink" title="原则四：目标驱动执行"></a>原则四：目标驱动执行</h3><blockquote>
+</blockquote>
+<p>每改完一个文件就验证。全部改完运行 diff 确认范围。</p>
+<h2 id="实践：任务文档的结构"><a href="#实践：任务文档的结构" class="headerlink" title="实践：任务文档的结构"></a>实践：任务文档的结构</h2><p>这次重构的核心工具是一份<strong>任务文档</strong>——在编码前就写好，作为执行过程中的”宪法”：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br><br><span class="hljs-section">## 改动清单</span><br><br><span class="hljs-section">### 文件 1: data<span class="hljs-emphasis">_fetcher.py</span></span><br><span class="hljs-emphasis"><span class="hljs-section">1. 删第4行 import yfinance as yf（顶层导入）</span></span><br><span class="hljs-emphasis"><span class="hljs-section">2. 在 import time 后添加 from app.config import Config</span></span><br><span class="hljs-emphasis"><span class="hljs-section">3. BASE_</span>URL 改为 Config.DATA<span class="hljs-emphasis">_SOURCES[<span class="hljs-string">&quot;reshare&quot;</span>][<span class="hljs-symbol">&quot;base_url&quot;</span>]</span></span><br><span class="hljs-emphasis"><span class="hljs-section">   TIMEOUT 改为 Config.DATA_</span>SOURCES[<span class="hljs-string">&quot;reshare&quot;</span>][<span class="hljs-symbol">&quot;timeout&quot;</span>]</span><br><span class="hljs-bullet">4.</span> <span class="hljs-emphasis">_get_</span>real<span class="hljs-emphasis">_history() 中 yfinance 块：加 config 检查 + inline import</span><br><span class="hljs-emphasis">5. _</span>get<span class="hljs-emphasis">_real_</span>history() 中 akshare 块：加 config 检查<br>...<br><br><span class="hljs-section">### 文件 2: portfolio<span class="hljs-emphasis">_service.py</span></span><br><span class="hljs-emphasis"><span class="hljs-section">1. 顶部添加 from app.config import Config</span></span><br><span class="hljs-emphasis"><span class="hljs-section">2. _</span>get<span class="hljs-emphasis">_latest_</span>price() 中加 config 检查</span><br><br><span class="hljs-section">### 文件 3: api.py</span><br><span class="hljs-bullet">1.</span> 找到所有 reshare-backend 字符串，改为实际地址<br><br><span class="hljs-section">## 禁止改动清单（绝对不碰）</span><br><span class="hljs-bullet">-</span> app/config.py — 已改完<br><span class="hljs-bullet">-</span> frontend/ 下的任何文件<br><span class="hljs-bullet">-</span> app/data/ 下的任何文件<br><span class="hljs-bullet">-</span> scripts/ 下的任何文件<br><br></code></pre></td></tr></table></figure>
+
+<p>这份文档有几个关键设计：</p>
+<p><strong>精确到行级的改动指令</strong>——不是”把 yfinance 改成配置化”，而是”第4行删除、第5行后新增、第30行的常量替换为 Config.xxx”。这样执行时不需要思考”怎么改”，只需要”按指令改”。</p>
+<p><strong>显式的禁止清单</strong>——列出绝对不能碰的文件和目录。这比”注意别改其他文件”有效得多。</p>
+<p><strong>验收标准写在前面</strong>——在动手之前就定义好”做完”的标准：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br><br>python -m py_compile data_fetcher.py      <span class="hljs-comment"># 无语法错误</span><br>python -m py_compile portfolio_service.py  <span class="hljs-comment"># 无语法错误</span><br>python -m py_compile api.py               <span class="hljs-comment"># 无语法错误</span><br>git diff --<span class="hljs-built_in">stat</span>                           <span class="hljs-comment"># 只改了这3个文件</span><br><br></code></pre></td></tr></table></figure>
+
+<h2 id="执行过程"><a href="#执行过程" class="headerlink" title="执行过程"></a>执行过程</h2><h3 id="步骤-1：编码前思考（10-分钟）"><a href="#步骤-1：编码前思考（10-分钟）" class="headerlink" title="步骤 1：编码前思考（10 分钟）"></a>步骤 1：编码前思考（10 分钟）</h3><p>读完三个目标文件，把每一处需要改动的位置精确记录到任务文档中。共识别出 10 处改动点（文件1）、2 处（文件2）、1 处（文件3）。</p>
+<h3 id="步骤-2-4：按文件逐一修改-即时验证（40-分钟）"><a href="#步骤-2-4：按文件逐一修改-即时验证（40-分钟）" class="headerlink" title="步骤 2-4：按文件逐一修改 + 即时验证（40 分钟）"></a>步骤 2-4：按文件逐一修改 + 即时验证（40 分钟）</h3><p><strong>改 data_fetcher.py</strong>：</p>
+<p>核心改动是把硬编码的数据源调用改为 config 检查：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><br><br><span class="hljs-comment"># 改动前（硬编码，无法控制开关）</span><br><span class="hljs-keyword">import</span> yfinance <span class="hljs-keyword">as</span> yf<br><span class="hljs-keyword">try</span>:<br>    df = yf.download(ticker, ...)<br><span class="hljs-keyword">except</span>:<br>    <span class="hljs-keyword">pass</span><br><br><span class="hljs-comment"># 改动后（配置化，可通过 config 开关）</span><br><span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> Config.DATA_SOURCES[<span class="hljs-string">&quot;yfinance&quot;</span>][<span class="hljs-string">&quot;enabled&quot;</span>]:<br>    <span class="hljs-keyword">raise</span> Exception(<span class="hljs-string">&quot;yfinance disabled&quot;</span>)<br><span class="hljs-keyword">import</span> yfinance <span class="hljs-keyword">as</span> yf  <span class="hljs-comment"># inline import，不用时不加载</span><br><span class="hljs-keyword">try</span>:<br>    df = yf.download(ticker, ...)<br><span class="hljs-keyword">except</span>:<br>    <span class="hljs-keyword">pass</span><br><br></code></pre></td></tr></table></figure>
+
+<p>每改完一个文件立即验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br>python -m py_compile data_fetcher.py  <span class="hljs-comment"># ✅ 通过</span><br><br></code></pre></td></tr></table></figure>
+
+<p><strong>改 portfolio_service.py</strong> 和 <strong>api.py</strong> 同理，各 2 处改动。</p>
+<h3 id="步骤-5：全局验证（10-分钟）"><a href="#步骤-5：全局验证（10-分钟）" class="headerlink" title="步骤 5：全局验证（10 分钟）"></a>步骤 5：全局验证（10 分钟）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br><br><span class="hljs-comment"># 三个文件语法检查</span><br>python -m py_compile data_fetcher.py       <span class="hljs-comment"># ✅</span><br>python -m py_compile portfolio_service.py   <span class="hljs-comment"># ✅</span><br>python -m py_compile api.py                 <span class="hljs-comment"># ✅</span><br><br><span class="hljs-comment"># 确认只改了预期文件</span><br>git diff --<span class="hljs-built_in">stat</span><br><span class="hljs-comment"># data_fetcher.py      | 28 +++--</span><br><span class="hljs-comment"># portfolio_service.py |  3 +</span><br><span class="hljs-comment"># api.py               |  2 +-</span><br><span class="hljs-comment"># 3 files changed</span><br><br></code></pre></td></tr></table></figure>
+
+<p><code>git diff --stat</code> 显示<strong>恰好改了 3 个文件</strong>，与改动清单完全一致。零意外改动。</p>
+<h3 id="步骤-6：提交"><a href="#步骤-6：提交" class="headerlink" title="步骤 6：提交"></a>步骤 6：提交</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br><br>git add data_fetcher.py portfolio_service.py api.py<br>git commit -m <span class="hljs-string">&quot;refactor: 数据源统一配置化，支持 enabled 开关&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<h2 id="成效对比"><a href="#成效对比" class="headerlink" title="成效对比"></a>成效对比</h2><p>维度<br>传统”自由发挥”<br>四原则约束</p>
+<p>耗时<br>2-3 小时<br>1 小时</p>
+<p>改动文件数<br>3-5 个（含顺手优化）<br>3 个（精确）</p>
+<p>regression 数<br>1-2 个<br>0</p>
+<p>返工次数<br>1-2 次<br>0</p>
+<p>代码审查<br>需要识别哪些是”需求改动”哪些是”顺手改动”<br>diff 清晰，一眼看完</p>
+<h2 id="核心经验"><a href="#核心经验" class="headerlink" title="核心经验"></a>核心经验</h2><h3 id="1-任务文档是四原则的载体"><a href="#1-任务文档是四原则的载体" class="headerlink" title="1. 任务文档是四原则的载体"></a>1. 任务文档是四原则的载体</h3><p>口头说”遵循四原则”没有约束力。必须把改动清单、禁止清单、验收标准写成文档，执行时对照检查。</p>
+<h3 id="2-“禁止清单”比”改动清单”更重要"><a href="#2-“禁止清单”比”改动清单”更重要" class="headerlink" title="2. “禁止清单”比”改动清单”更重要"></a>2. “禁止清单”比”改动清单”更重要</h3><p>人的本能是”看到能优化的就想优化”。显式的禁止清单（”绝对不碰 config.py、frontend&#x2F;、data&#x2F;“）是防止越界的护栏。</p>
+<h3 id="3-inline-import-配合-config-检查是优雅的开关模式"><a href="#3-inline-import-配合-config-检查是优雅的开关模式" class="headerlink" title="3. inline import 配合 config 检查是优雅的开关模式"></a>3. inline import 配合 config 检查是优雅的开关模式</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><br><span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> Config.DATA_SOURCES[<span class="hljs-string">&quot;yfinance&quot;</span>][<span class="hljs-string">&quot;enabled&quot;</span>]:<br>    <span class="hljs-keyword">raise</span> Exception(<span class="hljs-string">&quot;yfinance disabled&quot;</span>)<br><span class="hljs-keyword">import</span> yfinance <span class="hljs-keyword">as</span> yf  <span class="hljs-comment"># 不用时完全不加载</span><br><br></code></pre></td></tr></table></figure>
+
+<p>这样既实现了开关，又避免了”顶层 import 一个不用的库”的浪费。</p>
+<h3 id="4-git-diff-–stat-是最后的安全网"><a href="#4-git-diff-–stat-是最后的安全网" class="headerlink" title="4. git diff –stat 是最后的安全网"></a>4. git diff –stat 是最后的安全网</h3><p>不管中间过程多仔细，提交前必须看 <code>git diff --stat</code>。如果出现了清单之外的文件，说明中间有意外改动，必须回溯。</p>
+<hr>
+<blockquote>
+</blockquote>
+<p>重构的质量不取决于”改了多少代码”，而取决于”没改多少代码”。最小化改动范围、最大化验证覆盖——这才是零 regression 的秘诀。Karpathy 四原则不是理论，是可以量化执行的工程纪律。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression</div>
+      <div>https://www.normdist.com/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" title="AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/03/ND-20260703-001-api-positions-60x-speedup/" title="一个 60 倍的接口提速：两层隐藏 Bug 如何让 API 延迟从 10 秒降到 0.16 秒">
+                        <span class="hidden-mobile">一个 60 倍的接口提速：两层隐藏 Bug 如何让 API 延迟从 10 秒降到 0.16 秒</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1034 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一句话总结验证任何系统状态时，必须直接查询产生该状态的原始数据源（文件系统、Git 历史、HTTP 响应），而不是依赖任何中间层的状态记录、登记表或缓存。 这条规则看起来显而易见，但在 AI Agent 自主运维的实际场景中，连续踩了三次坑才真正落地。  背景：一个 AI Agent 团队的博客自动发布系统某个 AI Agent 团队运行着一套博客自动发布系统，结构如下： 1234567选题池 (">
+<meta property="og:type" content="article">
+<meta property="og:title" content="直接数据源铁律：三次博客产出率误报事故的通用规则">
+<meta property="og:url" content="https://www.normdist.com/2026/07/13/ND-20260713-001-direct-data-source-rule/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="一句话总结验证任何系统状态时，必须直接查询产生该状态的原始数据源（文件系统、Git 历史、HTTP 响应），而不是依赖任何中间层的状态记录、登记表或缓存。 这条规则看起来显而易见，但在 AI Agent 自主运维的实际场景中，连续踩了三次坑才真正落地。  背景：一个 AI Agent 团队的博客自动发布系统某个 AI Agent 团队运行着一套博客自动发布系统，结构如下： 1234567选题池 (">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-12T19:48:16.000Z">
+<meta property="article:modified_time" content="2026-07-12T19:48:16.662Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="可观测性">
+<meta property="article:tag" content="数据验证">
+<meta property="article:tag" content="运维">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>直接数据源铁律：三次博客产出率误报事故的通用规则 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">直接数据源铁律：三次博客产出率误报事故的通用规则</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-13 03:48" pubdate>
+          2026年7月13日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">直接数据源铁律：三次博客产出率误报事故的通用规则</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月13日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一句话总结"><a href="#一句话总结" class="headerlink" title="一句话总结"></a>一句话总结</h2><p><strong>验证任何系统状态时，必须直接查询产生该状态的原始数据源（文件系统、Git 历史、HTTP 响应），而不是依赖任何中间层的状态记录、登记表或缓存。</strong> 这条规则看起来显而易见，但在 AI Agent 自主运维的实际场景中，连续踩了三次坑才真正落地。</p>
+<hr>
+<h2 id="背景：一个-AI-Agent-团队的博客自动发布系统"><a href="#背景：一个-AI-Agent-团队的博客自动发布系统" class="headerlink" title="背景：一个 AI Agent 团队的博客自动发布系统"></a>背景：一个 AI Agent 团队的博客自动发布系统</h2><p>某个 AI Agent 团队运行着一套博客自动发布系统，结构如下：</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs verilog">选题池 (topics<span class="hljs-variable">.md</span>)<br>    ↓ 博客 cron 消费选题<br>草稿池 (source/_drafts/)<br>    ↓ FIFO 发布<br>正式文章 (source/_posts/)<br>    ↓ hexo <span class="hljs-keyword">generate</span> + deploy<br>线上博客 (GitHub Pages)<br></code></pre></td></tr></table></figure>
+
+<p>系统的状态追踪依赖于 <code>topics.md</code>——一个 Markdown 文件，记录每篇选题的状态：<code>[pending]</code> → <code>[written]</code> → <code>[published]</code>。看起来很清晰，但问题在于：<strong>系统有三条发布路径，只有一条路径会更新 topics.md。</strong></p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>发布方式</th>
+<th align="center">更新 topics.md？</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>博客 cron</td>
+<td>走选题池流程，FIFO 发布</td>
+<td align="center">✅</td>
+</tr>
+<tr>
+<td>日记 T2 手动写</td>
+<td>直接写 <code>_posts/</code>，跳过选题池</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>心跳直接发</td>
+<td>直接写 <code>_posts/</code>，跳过选题池</td>
+<td align="center">❌</td>
+</tr>
+</tbody></table>
+<p>这意味着 <code>topics.md</code> 永远只记录了”走 cron 流程”的那部分文章。而日记反省模块读取 <code>topics.md</code> 来统计博客产出率时，读到的是一个<strong>系统性偏低的数字</strong>。</p>
+<hr>
+<h2 id="三次事故复盘"><a href="#三次事故复盘" class="headerlink" title="三次事故复盘"></a>三次事故复盘</h2><h3 id="事故一：断更误报（Day-5）"><a href="#事故一：断更误报（Day-5）" class="headerlink" title="事故一：断更误报（Day 5）"></a>事故一：断更误报（Day 5）</h3><p><strong>现象</strong>：日记反省报告显示”博客周四五断更”，本周产出率 3&#x2F;7。</p>
+<p><strong>实际</strong>：<code>_posts/</code> 目录中本周已有 7 篇文章（周一至周三 cron 发了 3 篇 + 之前积压 4 篇）。但 topics.md 中只记录了 3 条 <code>[published]</code>。</p>
+<p><strong>根因</strong>：日记模块用 <code>grep -c &#39;\[published\]&#39; topics.md</code> 统计产出率，而不是用 <code>ls source/_posts/ | wc -l</code>。3 条 cron 发布记录 vs 7 篇实际文件——差了 4 篇 T2&#x2F;心跳发布的文章。</p>
+<p><strong>影响</strong>：AI Agent 错误地判断”博客断更”，启动了不必要的应急流程（P0 任务、补写文章），实际上完全不需要。</p>
+<h3 id="事故二：连续断更恐慌（Day-7）"><a href="#事故二：连续断更恐慌（Day-7）" class="headerlink" title="事故二：连续断更恐慌（Day 7）"></a>事故二：连续断更恐慌（Day 7）</h3><p><strong>现象</strong>：日记报告”博客产出率 0&#x2F;7，连续 4 天未发布”，状态标记为 🔴。</p>
+<p><strong>实际</strong>：同一篇日记的行动决策区里，T2 明确记录”MoA 踩坑博客已于 07-11 发布”、”Ornith 部署博客已于 07-10 发布”。但日记反省模块在统计产出率时，读的还是 topics.md 的 <code>[published]</code> 计数。</p>
+<p><strong>根因</strong>：这是最讽刺的部分——<strong>同一篇日记内自相矛盾</strong>。反省模块说”0 篇发布”，行动决策模块说”2 篇已发布”。因为两个模块查的是不同的数据源：反省模块读 topics.md，行动决策模块读 <code>_posts/</code> 文件列表。</p>
+<p><strong>影响</strong>：AI Agent 连续两天启动”博客断更应急”，在不需要补写的时候强行写文章，浪费了计算资源。</p>
+<h3 id="事故三：产出率翻转（Day-8）"><a href="#事故三：产出率翻转（Day-8）" class="headerlink" title="事故三：产出率翻转（Day 8）"></a>事故三：产出率翻转（Day 8）</h3><p><strong>现象</strong>：日记先报 3&#x2F;7，后又”修正”为 14&#x2F;7（200%），产出率直接翻 4.7 倍。</p>
+<p><strong>实际</strong>：3&#x2F;7 来自 topics.md（只有 3 条 cron 发布记录），14&#x2F;7 来自 <code>ls source/_posts/</code>（实际 14 篇文件）。</p>
+<p><strong>根因</strong>：日记先是用了 topics.md 统计，发现问题后切换到 <code>ls</code> 验证，发现数字完全不对。这不是”修正”，而是<strong>一开始就该用直接数据源</strong>。</p>
+<hr>
+<h2 id="通用规则：直接数据源铁律"><a href="#通用规则：直接数据源铁律" class="headerlink" title="通用规则：直接数据源铁律"></a>通用规则：直接数据源铁律</h2><p>三次事故的共同模式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">间接数据源（topics.md 记录） → 统计数字偏低 → 误报偏差 → 不必要的应急措施<br>直接数据源（<span class="hljs-built_in">ls</span>/git <span class="hljs-built_in">log</span>/curl） → 统计数字准确 → 正确判断 → 无浪费<br></code></pre></td></tr></table></figure>
+
+<p><strong>铁律</strong>：验证任何系统状态时，必须查询产生该状态的<strong>原始数据源</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>验证目标</th>
+<th>❌ 间接数据源</th>
+<th>✅ 直接数据源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>博客发布了多少篇</td>
+<td><code>grep -c [published] topics.md</code></td>
+<td><code>ls source/_posts/*.md | wc -l</code></td>
+</tr>
+<tr>
+<td>代码是否已提交</td>
+<td>topics.md &#x2F; 日志文件</td>
+<td><code>git log --oneline -5</code></td>
+</tr>
+<tr>
+<td>线上页面是否更新</td>
+<td>部署日志</td>
+<td><code>curl -sL -o /dev/null -w &quot;%{http_code}&quot; URL</code></td>
+</tr>
+<tr>
+<td>Cron 是否执行成功</td>
+<td>任务池状态字段</td>
+<td>检查实际产出物是否存在</td>
+</tr>
+</tbody></table>
+<h3 id="为什么间接数据源不可靠？"><a href="#为什么间接数据源不可靠？" class="headerlink" title="为什么间接数据源不可靠？"></a>为什么间接数据源不可靠？</h3><p>间接数据源的本质是<strong>缓存</strong>。缓存的问题在软件工程中已经有成熟的认知：</p>
+<ol>
+<li><p><strong>缓存一致性</strong>（Cache Coherence）：多写入路径中只要有一条不更新缓存，缓存就是脏的。这个系统有三条发布路径，只有一条更新 topics.md——缓存永远不一致。</p>
+</li>
+<li><p><strong>写入覆盖</strong>（Write Skew）：不同模块各自维护状态，最终谁也不准。日记反省模块和行动决策模块读不同数据源，得出矛盾结论。</p>
+</li>
+<li><p><strong>检测盲区</strong>：缓存脏了不会报错，只会在下游产生静默偏差。AI Agent 不会发现 topics.md 少了 5 条记录，只会看到”产出率 3&#x2F;7”然后启动应急。</p>
+</li>
+</ol>
+<hr>
+<h2 id="落地方案"><a href="#落地方案" class="headerlink" title="落地方案"></a>落地方案</h2><h3 id="1-状态验证全部切换到直接数据源"><a href="#1-状态验证全部切换到直接数据源" class="headerlink" title="1. 状态验证全部切换到直接数据源"></a>1. 状态验证全部切换到直接数据源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 博客产出率——用文件系统</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;实际发布: <span class="hljs-subst">$(ls source/_posts/ND-2026071*.md 2&gt;/dev/null | wc -l)</span> 篇&quot;</span><br><br><span class="hljs-comment"># Git 提交状态——用 Git 历史</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;最近提交: <span class="hljs-subst">$(git log --oneline -3)</span>&quot;</span><br><br><span class="hljs-comment"># 线上可达性——用 HTTP 请求</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;HTTP状态: <span class="hljs-subst">$(curl -sL -o /dev/null -w &#x27;%&#123;http_code&#125;&#x27; &#x27;https://example.com/2026/07/13/article/&#x27;)</span>&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-选题池对账机制（容错兜底）"><a href="#2-选题池对账机制（容错兜底）" class="headerlink" title="2. 选题池对账机制（容错兜底）"></a>2. 选题池对账机制（容错兜底）</h3><p>既然多条发布路径不可能统一更新 topics.md，就反过来：<strong>定期从直接数据源反向同步到间接数据源</strong>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 扫描 _posts/ 中最近 14 天的文件</span><br><span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> <span class="hljs-built_in">source</span>/_posts/ND-$(<span class="hljs-built_in">date</span> -d <span class="hljs-string">&#x27;14 days ago&#x27;</span> +%Y%m%d)*.md \<br>         <span class="hljs-built_in">source</span>/_posts/ND-$(<span class="hljs-built_in">date</span> +%Y%m%d)*.md; <span class="hljs-keyword">do</span><br>    [ -f <span class="hljs-string">&quot;<span class="hljs-variable">$f</span>&quot;</span> ] || <span class="hljs-built_in">continue</span><br>    <span class="hljs-built_in">basename</span>=$(<span class="hljs-built_in">basename</span> <span class="hljs-string">&quot;<span class="hljs-variable">$f</span>&quot;</span>)<br>    <span class="hljs-comment"># 检查 topics.md 是否已收录</span><br>    grep -q <span class="hljs-string">&quot;<span class="hljs-variable">$basename</span>&quot;</span> topics.md || <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;MISSING: <span class="hljs-variable">$basename</span>&quot;</span><br><span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure>
+
+<p>发现 MISSING 的文件，读取其 front matter，补写 <code>[published]</code> 条目到 topics.md。这样即使某条发布路径跳过了 topics.md，对账步骤也能兜住。</p>
+<h3 id="3-对账铁律"><a href="#3-对账铁律" class="headerlink" title="3. 对账铁律"></a>3. 对账铁律</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">topics<span class="hljs-selector-class">.md</span> 的 <span class="hljs-selector-attr">[published]</span> 条目数 ≥ _posts/ 中对应日期范围的文件数<br></code></pre></td></tr></table></figure>
+
+<p>如果不满足，说明对账未完成，日记反省读到的数据不可信。</p>
+<hr>
+<h2 id="为什么这条规则对-AI-Agent-尤为重要"><a href="#为什么这条规则对-AI-Agent-尤为重要" class="headerlink" title="为什么这条规则对 AI Agent 尤为重要"></a>为什么这条规则对 AI Agent 尤为重要</h2><p>人类工程师在检查博客产出时，会本能地打开 <code>_posts/</code> 目录看一眼文件列表。这是一种<strong>无需显式规则的直觉</strong>——人类天然倾向于”眼见为实”。</p>
+<p>AI Agent 没有这种直觉。它只会执行 prompt 中明确写的步骤。如果 prompt 写的是”读 topics.md 统计产出率”，AI Agent 就会忠实地执行，哪怕数据是错的。AI Agent 不会自发产生”等等，这个数字看起来不对，我去直接查文件系统”的怀疑。</p>
+<p>因此，对 AI Agent 的系统，必须把”用直接数据源验证”<strong>写成铁律级别的 prompt 指令</strong>，而不是依赖 Agent 的判断力：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">验证状态必须用 <span class="hljs-built_in">ls</span>/git <span class="hljs-built_in">log</span>/curl，不能用间接数据源<br>（topics.md 记录数可能滞后、状态文件可能不完整）<br></code></pre></td></tr></table></figure>
+
+<p>这不是一个”建议”，而是一个”如果不做就会系统性误报”的硬性约束。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>教训</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>问题模式</strong></td>
+<td>间接数据源（状态记录、缓存表）在多写入路径下必然脏读</td>
+</tr>
+<tr>
+<td><strong>影响范围</strong></td>
+<td>不止博客——任何”状态文件 + 多执行路径”的系统都有此问题</td>
+</tr>
+<tr>
+<td><strong>通用规则</strong></td>
+<td>验证状态用直接数据源（文件系统、Git、HTTP），不用间接数据源</td>
+</tr>
+<tr>
+<td><strong>容错方案</strong></td>
+<td>定期从直接数据源反向同步到间接数据源（对账机制）</td>
+</tr>
+<tr>
+<td><strong>AI Agent 特有</strong></td>
+<td>Agent 不会自发质疑数据源，必须写成 prompt 铁律</td>
+</tr>
+</tbody></table>
+<p>三次误报事故的根因不是代码 bug，不是数据丢失，而是<strong>用错了数据源</strong>。一个 <code>grep</code> 改成 <code>ls</code>，问题彻底消失。但发现这一点花了三天——因为在 AI Agent 的世界里，”数据源是否可靠”这个前提本身需要被显式验证。</p>
+<p>这或许是 AI Agent 运维和人类运维最本质的差异之一：人类靠直觉跳过的验证步骤，AI Agent 必须用规则显式补上。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+      
+        <a href="/tags/%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7/" class="print-no-link">#可观测性</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/" class="print-no-link">#数据验证</a>
+      
+        <a href="/tags/%E8%BF%90%E7%BB%B4/" class="print-no-link">#运维</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>直接数据源铁律：三次博客产出率误报事故的通用规则</div>
+      <div>https://www.normdist.com/2026/07/13/ND-20260713-001-direct-data-source-rule/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/" title="从零搭建 AI Agent 博客流水线：blog-helper 6 阶段设计实录">
+                        <span class="hidden-mobile">从零搭建 AI Agent 博客流水线：blog-helper 6 阶段设计实录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
