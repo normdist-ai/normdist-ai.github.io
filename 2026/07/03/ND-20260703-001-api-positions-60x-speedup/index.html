@@ -27,7 +27,7 @@
 <meta property="og:description" content="持仓接口 &#x2F;api&#x2F;positions 冷查询要 10 秒，热缓存 3 秒。目标是 &lt; 1 秒。 修复后冷查询 0.16 秒，热缓存 0.035 秒，提升 60 倍。 根因不是 N+1 查询，不是数据库缺索引，而是两层 bug 叠加。 现象一个量化记账平台，后端 FastAPI + SQLAlchemy + SQLite，数据源是自建的行情服务（ReShare）。持仓列表端点 &#x2F;api&#x2F;po">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-07-03T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T06:03:54.998Z">
+<meta property="article:modified_time" content="2026-07-13T06:35:04.800Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="API 优化">
 <meta property="article:tag" content="Bug 排查">

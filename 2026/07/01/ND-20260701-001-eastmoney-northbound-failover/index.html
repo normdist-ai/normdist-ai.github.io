@@ -27,7 +27,7 @@
 <meta property="og:description" content="某套量化系统的北向资金模块在例行巡检中遭遇了一次”教科书级”的接口故障：东方财富的两个北向资金 API 同时坏死——一个返回空结果，一个返回全 NaN。如果系统只依赖其中一个接口，故障会在当天收盘后才会暴露；但因为两个接口在同一时段同时挂了，数据断档直接触发了告警。 本文记录从发现故障、定位根因到设计降级方案的完整过程，重点讨论：如何在多源数据管道中优雅地处理”主备同时失效”的场景。 一、问题：两">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-07-01T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T06:02:34.829Z">
+<meta property="article:modified_time" content="2026-07-13T06:35:04.799Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="东方财富">
 <meta property="article:tag" content="北向资金">
@@ -590,9 +590,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/07/02/ND-20260702-001-meta-watchdog-for-autonomous-agents/" title="谁来看守看守——自治 AI Agent 系统的静默故障与元监控设计">
+                      <a href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" title="&#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">谁来看守看守——自治 AI Agent 系统的静默故障与元监控设计</span>
+                        <span class="hidden-mobile">&#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -600,8 +600,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" title="&#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录">
-                        <span class="hidden-mobile">&#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录</span>
+                      <a href="/2026/06/28/ND-20260628-001-dollar-credit-scoring/" title="用 5 个公开指标量化&#34;美元信用健康度&#34;——一套可复用的宏观打分系统">
+                        <span class="hidden-mobile">用 5 个公开指标量化&#34;美元信用健康度&#34;——一套可复用的宏观打分系统</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
