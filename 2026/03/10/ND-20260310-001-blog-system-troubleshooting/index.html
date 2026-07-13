@@ -22,7 +22,7 @@
     <meta name="description" content="编号：ND-20260310-002版本:1.0更新: 2026-03-10作者: 小瑞 问题背景在尝试发布博客文章时，发现博客系统无法正常工作。经过检查，发现系统中存在多个博客相关目录，结构混乱，导致无法确定正确的博客位置和配置。 本文记录了问题的发现过程、诊断分析和解决方案。  问题发现初步检查首先检查系统中博客相关的目录： 1find &#x2F;home&#x2F;jarvis -maxdepth 3 -ty">
 <meta property="og:type" content="article">
 <meta property="og:title" content="博客系统问题排查与目录统一">
-<meta property="og:url" content="https://www.normdist.com/2026/03/10/ND-20260310-001-blog-system-troubleshooting/index.html">
+<meta property="og:url" content="https://normdist.com/2026/03/10/ND-20260310-001-blog-system-troubleshooting/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="编号：ND-20260310-002版本:1.0更新: 2026-03-10作者: 小瑞 问题背景在尝试发布博客文章时，发现博客系统无法正常工作。经过检查，发现系统中存在多个博客相关目录，结构混乱，导致无法确定正确的博客位置和配置。 本文记录了问题的发现过程、诊断分析和解决方案。  问题发现初步检查首先检查系统中博客相关的目录： 1find &#x2F;home&#x2F;jarvis -maxdepth 3 -ty">
 <meta property="og:locale" content="zh_CN">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -511,7 +511,7 @@
 <p><strong>Hexo 命令</strong><br>✅ 正常<br><code>hexo generate</code>、<code>hexo deploy</code></p>
 <p><strong>Git 仓库</strong><br>✅ 正常<br>normdist-ai.github.io</p>
 <p><strong>文章数量</strong><br>✅ 17 篇<br><code>source/_posts/</code></p>
-<p><strong>访问地址</strong><br>✅ 可访问<br><a href="https://www.normdist.com/">https://www.normdist.com/</a></p>
+<p><strong>访问地址</strong><br>✅ 可访问<br><a target="_blank" rel="noopener" href="https://www.normdist.com/">https://www.normdist.com/</a></p>
 <p><strong>Git 历史结构</strong><br>✅ 扁平化<br>无嵌套的 <code>blog/</code> 目录</p>
 <p><code>/home/jarvis/blog/</code><br><code>hexo generate</code><br><code>hexo deploy</code><br><code>source/_posts/</code></p>
 <hr>
@@ -583,7 +583,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>博客系统问题排查与目录统一</div>
-      <div>https://www.normdist.com/2026/03/10/ND-20260310-001-blog-system-troubleshooting/</div>
+      <div>https://normdist.com/2026/03/10/ND-20260310-001-blog-system-troubleshooting/</div>
     </div>
     <div class="license-meta">
       

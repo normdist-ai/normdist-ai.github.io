@@ -22,7 +22,7 @@
     <meta name="description" content="探索AI与人类协作的可能性">
 <meta property="og:type" content="website">
 <meta property="og:title" content="进化概率论">
-<meta property="og:url" content="https://www.normdist.com/page/2/index.html">
+<meta property="og:url" content="https://normdist.com/page/2/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="探索AI与人类协作的可能性">
 <meta property="og:locale" content="zh_CN">
@@ -65,7 +65,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -363,6 +363,60 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/06/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
+          外部数据源不稳定的标准修复模式：HTTP重试 + 缓存兜底
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/06/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
+        <div>
+          问题背景一个量化交易系统的宏观周期分析模块依赖外部学术机构发布的 GPR Index（地缘政治风险指数）Excel 文件。该文件由第三方研究者维护，托管在个人学术网站上，通过固定的 HTTPS URL 提供下载。 系统每天凌晨自动执行宏观数据采集管道，其中一个脚本负责下载 GPR Index 并生成风险评分。某次采集周期中，该步骤开始频繁超时失败： 123456789123Traceback (m
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-06 10:00" pubdate>
+              2026-07-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
           从交易记录重建每日资产快照：daily_summaries 历史回填实战
         </a>
@@ -372,6 +426,60 @@
       <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
         <div>
           问题：权益曲线只有 4 个点一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 daily_summaries 表只有 8 行数据，集中在短短几天内。 后端的 generate-summary 端点功能完全正常，手动调用能正确生成当日快照。问题是：从来没有定时任务调用它。 功能存在，但不运转。 这是一个典型的”
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-05 10:00" pubdate>
+              2026-07-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
+          Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
+        <div>
+          背景：一个 Linux Agent，一个 Windows Agent一个运行在 Linux 上的 AI Agent（下称”主 Agent”），已经有了完整工具链：文件读写、代码执行、定时任务、数据库查询。但它够不到隔壁一台 Windows 主机——那台机器上有另一个 Agent（下称”远程 Agent”），能做主 Agent 做不了的事：控制 Edge 浏览器登录态、操作 Windows 桌面应用
         </div>
       </a>
 
@@ -525,60 +633,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
-          Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
-        <div>
-          背景：一个 Linux Agent，一个 Windows Agent一个运行在 Linux 上的 AI Agent（下称”主 Agent”），已经有了完整工具链：文件读写、代码执行、定时任务、数据库查询。但它够不到隔壁一台 Windows 主机——那台机器上有另一个 Agent（下称”远程 Agent”），能做主 Agent 做不了的事：控制 Edge 浏览器登录态、操作 Windows 桌面应用
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-05 10:00" pubdate>
-              2026-07-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2026/07/04/ND-20260704-001-windows-remote-control-architecture/" target="_self">
           AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型
         </a>
@@ -633,15 +687,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
-          量化系统 Docker→裸跑迁移：一份踩坑笔记
+        <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
+          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
         <div>
-          背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，周期数据自动更新的 cron 任务触发——全盘
+          背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累
         </div>
       </a>
 
@@ -687,15 +741,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
-          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家
+        <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
+          量化系统 Docker→裸跑迁移：一份踩坑笔记
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
         <div>
-          背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累
+          背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，周期数据自动更新的 cron 任务触发——全盘
         </div>
       </a>
 
@@ -813,60 +867,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2026-07-03 10:00" pubdate>
               2026-07-03
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/02/ND-20260702-001-meta-watchdog-for-autonomous-agents/" target="_self">
-          谁来看守看守——自治 AI Agent 系统的静默故障与元监控设计
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/02/ND-20260702-001-meta-watchdog-for-autonomous-agents/" target="_self">
-        <div>
-          一个自治系统最危险的故障不是崩溃——崩溃有日志、有告警、有人响应。最危险的是静默退化：系统还在跑，绿灯还亮着，但某个子系统已经悄悄停了，而没有任何人、任何监控知道。 一、两个真实故障某套自治 AI Agent 系统在两周内遭遇了两次静默故障，两次都是事后复盘才发现的。 故障一：日记 cron 静默消失 系统每天凌晨执行一轮 PDCA 反省，产出一份日记文件，用于跟踪任务闭环和偏差复现。这套机制
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-02 10:00" pubdate>
-              2026-07-02
             </time>
           </div>
         

@@ -22,7 +22,7 @@
     <meta name="description" content="去年这个时候，我还在用 ChatGPT 手动粘贴代码、用 Cursor 在 IDE 里补全函数。工具不错，但每次开新会话，AI 忘记昨天讨论了什么；换一台电脑，所有上下文归零。我的量化交易系统有 133K 条对话历史，博客有 80 篇文章的发布流程，日志系统每天凌晨自动运行——这些都不是”打开一个聊天窗口”能搞定的。 折腾了小半年，我把团队迁移到了 Hermes Agent 上。这篇文章不是评测，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="为什么要用 Hermes：一个 AI Agent 实践者的选型复盘">
-<meta property="og:url" content="https://www.normdist.com/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/index.html">
+<meta property="og:url" content="https://normdist.com/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="去年这个时候，我还在用 ChatGPT 手动粘贴代码、用 Cursor 在 IDE 里补全函数。工具不错，但每次开新会话，AI 忘记昨天讨论了什么；换一台电脑，所有上下文归零。我的量化交易系统有 133K 条对话历史，博客有 80 篇文章的发布流程，日志系统每天凌晨自动运行——这些都不是”打开一个聊天窗口”能搞定的。 折腾了小半年，我把团队迁移到了 Hermes Agent 上。这篇文章不是评测，">
 <meta property="og:locale" content="zh_CN">
@@ -77,7 +77,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -724,9 +724,9 @@
 <li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/">Hermes Agent 官方文档</a></li>
 <li><a target="_blank" rel="noopener" href="https://github.com/NousResearch/hermes-agent">Hermes Agent GitHub</a></li>
 <li><a target="_blank" rel="noopener" href="https://nousresearch.com/">Nous Research</a></li>
-<li><a target="_blank" rel="noopener" href="https://normdist.com/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/">从零搭建 AI Agent 博客流水线：blog-helper 6 阶段设计实录</a></li>
-<li><a target="_blank" rel="noopener" href="https://normdist.com/2026/07/11/ND-20260711-001-moa-infinite-loop-trap/">MoA 踩坑实录：多模型协同推理的”无限循环”陷阱</a></li>
-<li><a target="_blank" rel="noopener" href="https://normdist.com/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/">AI Agent 自主重构之路：从响应式审查到全自动修复</a></li>
+<li><a href="https://normdist.com/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/">从零搭建 AI Agent 博客流水线：blog-helper 6 阶段设计实录</a></li>
+<li><a href="https://normdist.com/2026/07/11/ND-20260711-001-moa-infinite-loop-trap/">MoA 踩坑实录：多模型协同推理的”无限循环”陷阱</a></li>
+<li><a href="https://normdist.com/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/">AI Agent 自主重构之路：从响应式审查到全自动修复</a></li>
 </ol>
 
                 
@@ -761,11 +761,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
-      
         <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
       
         <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" class="print-no-link">#自动化</a>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
       
         <a href="/tags/%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94/" class="print-no-link">#选型对比</a>
       
@@ -780,7 +780,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>为什么要用 Hermes：一个 AI Agent 实践者的选型复盘</div>
-      <div>https://www.normdist.com/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/</div>
+      <div>https://normdist.com/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/</div>
     </div>
     <div class="license-meta">
       

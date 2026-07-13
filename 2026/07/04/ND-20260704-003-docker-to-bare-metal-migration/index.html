@@ -22,7 +22,7 @@
     <meta name="description" content="背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，周期数据自动更新的 cron 任务触发——全盘">
 <meta property="og:type" content="article">
 <meta property="og:title" content="量化系统 Docker→裸跑迁移：一份踩坑笔记">
-<meta property="og:url" content="https://www.normdist.com/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/index.html">
+<meta property="og:url" content="https://normdist.com/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，周期数据自动更新的 cron 任务触发——全盘">
 <meta property="og:locale" content="zh_CN">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -525,7 +525,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>量化系统 Docker→裸跑迁移：一份踩坑笔记</div>
-      <div>https://www.normdist.com/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/</div>
+      <div>https://normdist.com/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/</div>
     </div>
     <div class="license-meta">
       
@@ -569,9 +569,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/07/04/ND-20260704-001-windows-remote-control-architecture/" title="AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型">
+                      <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" title="AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型</span>
+                        <span class="hidden-mobile">AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -579,8 +579,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" title="AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家">
-                        <span class="hidden-mobile">AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家</span>
+                      <a href="/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/" title="Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression">
+                        <span class="hidden-mobile">Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

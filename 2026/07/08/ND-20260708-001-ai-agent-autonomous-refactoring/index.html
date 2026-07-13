@@ -22,7 +22,7 @@
     <meta name="description" content="问题前端项目的移动端适配通常是一块「知道该做，但没人愿意碰」的领域。没有新功能亮点，全是 layout 调整、media query 改写、触摸目标放大——机械重复，量还大。 某双页面应用（约 10+ 个页面）的移动端审查报告一口气列出了 12 项适配问题，分布在两个独立前端仓库中。如果手动修，按每项 30 分钟估算，至少需要 6 小时纯工时，还不算来回切换上下文的时间。 但这次的情况不同：从审查">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AI Agent 自主重构之路：从响应式审查到全自动修复">
-<meta property="og:url" content="https://www.normdist.com/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/index.html">
+<meta property="og:url" content="https://normdist.com/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="问题前端项目的移动端适配通常是一块「知道该做，但没人愿意碰」的领域。没有新功能亮点，全是 layout 调整、media query 改写、触摸目标放大——机械重复，量还大。 某双页面应用（约 10+ 个页面）的移动端审查报告一口气列出了 12 项适配问题，分布在两个独立前端仓库中。如果手动修，按每项 30 分钟估算，至少需要 6 小时纯工时，还不算来回切换上下文的时间。 但这次的情况不同：从审查">
 <meta property="og:locale" content="zh_CN">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -527,7 +527,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>AI Agent 自主重构之路：从响应式审查到全自动修复</div>
-      <div>https://www.normdist.com/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/</div>
+      <div>https://normdist.com/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/</div>
     </div>
     <div class="license-meta">
       

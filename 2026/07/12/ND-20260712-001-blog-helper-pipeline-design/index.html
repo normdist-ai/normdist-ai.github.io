@@ -22,7 +22,7 @@
     <meta name="description" content="你有没有过这样的经历：一篇技术文章写完，发布后才发现某个数字写错了。我上周就踩了这个坑——双卡总显存写成了单卡的数字，读者评论里指出来，尴尬得不行。 手动写博客的问题在于，写稿、审核、校对全压在一个人身上，注意力是稀缺资源，长文基本不可能不出错。于是我用 Hermes Agent 搭了一个叫 blog-helper 的技能——6 阶段流水线，多模型协作审稿，事实库防错。这篇文章记录整个设计过程和取">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从零搭建 AI Agent 博客流水线：blog-helper 6 阶段设计实录">
-<meta property="og:url" content="https://www.normdist.com/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/index.html">
+<meta property="og:url" content="https://normdist.com/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="你有没有过这样的经历：一篇技术文章写完，发布后才发现某个数字写错了。我上周就踩了这个坑——双卡总显存写成了单卡的数字，读者评论里指出来，尴尬得不行。 手动写博客的问题在于，写稿、审核、校对全压在一个人身上，注意力是稀缺资源，长文基本不可能不出错。于是我用 Hermes Agent 搭了一个叫 blog-helper 的技能——6 阶段流水线，多模型协作审稿，事实库防错。这篇文章记录整个设计过程和取">
 <meta property="og:locale" content="zh_CN">
@@ -77,7 +77,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -571,13 +571,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
-      
         <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
       
-        <a href="/tags/%E5%8D%9A%E5%AE%A2/" class="print-no-link">#博客</a>
-      
         <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" class="print-no-link">#自动化</a>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+      
+        <a href="/tags/%E5%8D%9A%E5%AE%A2/" class="print-no-link">#博客</a>
       
     </div>
   
@@ -590,7 +590,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>从零搭建 AI Agent 博客流水线：blog-helper 6 阶段设计实录</div>
-      <div>https://www.normdist.com/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/</div>
+      <div>https://normdist.com/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/</div>
     </div>
     <div class="license-meta">
       

@@ -22,13 +22,18 @@
     <meta name="description" content="背景突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。 排查后发现东方财富的数据接口发生了更迭： 原接口状态问题 stock_hsgt_individual_em(symbol&#x3D;&quot;北上&quot;)❌ 完全坏死返回 NoneType 错误 stock_hsgt_hist_em(symbol&#x3D;&quot;沪股通&quot;)⚠️ 结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="东方财富北向资金接口迁移实战">
-<meta property="og:url" content="https://www.normdist.com/2026/06/25/ND-20260625-001-northbound-fund-migration/index.html">
+<meta property="og:url" content="https://normdist.com/2026/06/25/ND-20260625-001-northbound-fund-migration/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="背景突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。 排查后发现东方财富的数据接口发生了更迭： 原接口状态问题 stock_hsgt_individual_em(symbol&#x3D;&quot;北上&quot;)❌ 完全坏死返回 NoneType 错误 stock_hsgt_hist_em(symbol&#x3D;&quot;沪股通&quot;)⚠️ 结构">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-25T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-12T15:08:53.442Z">
+<meta property="article:modified_time" content="2026-07-13T05:29:29.106Z">
 <meta property="article:author" content="小瑞">
+<meta property="article:tag" content="akshare">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="北向资金">
+<meta property="article:tag" content="数据源">
+<meta property="article:tag" content="量化">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -73,7 +78,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -417,7 +422,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月12日 晚上
+                    本文最后更新于 2026年7月13日 下午
                   
                 
               </p>
@@ -511,6 +516,21 @@
     </div>
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/python/" class="print-no-link">#python</a>
+      
+        <a href="/tags/akshare/" class="print-no-link">#akshare</a>
+      
+        <a href="/tags/%E9%87%8F%E5%8C%96/" class="print-no-link">#量化</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90/" class="print-no-link">#数据源</a>
+      
+        <a href="/tags/%E5%8C%97%E5%90%91%E8%B5%84%E9%87%91/" class="print-no-link">#北向资金</a>
+      
+    </div>
+  
 </div>
 
 
@@ -520,7 +540,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>东方财富北向资金接口迁移实战</div>
-      <div>https://www.normdist.com/2026/06/25/ND-20260625-001-northbound-fund-migration/</div>
+      <div>https://normdist.com/2026/06/25/ND-20260625-001-northbound-fund-migration/</div>
     </div>
     <div class="license-meta">
       
@@ -574,8 +594,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/20/ND-20260620-001-hermes-gateway-management-pitfalls/" title="Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管">
-                        <span class="hidden-mobile">Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管</span>
+                      <a href="/2026/06/20/ND-20260620-002-hindsight-config-pitfalls/" title="Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突">
+                        <span class="hidden-mobile">Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

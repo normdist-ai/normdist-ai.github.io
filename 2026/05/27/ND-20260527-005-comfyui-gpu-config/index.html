@@ -22,13 +22,17 @@
     <meta name="description" content="为什么需要指定 GPU？在多 GPU 服务器上运行 ComfyUI 时，经常遇到以下场景：  GPU 资源隔离——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上  显存大小差异——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡  多用户并发——团队共用服务器时，不同服务分配到固定 GP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ComfyUI指定GPU出图配置指南">
-<meta property="og:url" content="https://www.normdist.com/2026/05/27/ND-20260527-005-comfyui-gpu-config/index.html">
+<meta property="og:url" content="https://normdist.com/2026/05/27/ND-20260527-005-comfyui-gpu-config/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="为什么需要指定 GPU？在多 GPU 服务器上运行 ComfyUI 时，经常遇到以下场景：  GPU 资源隔离——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上  显存大小差异——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡  多用户并发——团队共用服务器时，不同服务分配到固定 GP">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-27T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-12T15:08:53.440Z">
+<meta property="article:modified_time" content="2026-07-13T05:29:29.105Z">
 <meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AI绘画">
+<meta property="article:tag" content="ComfyUI">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="配置">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -73,7 +77,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -417,7 +421,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月12日 晚上
+                    本文最后更新于 2026年7月13日 下午
                   
                 
               </p>
@@ -535,6 +539,19 @@
     </div>
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/AI%E7%BB%98%E7%94%BB/" class="print-no-link">#AI绘画</a>
+      
+        <a href="/tags/%E9%85%8D%E7%BD%AE/" class="print-no-link">#配置</a>
+      
+    </div>
+  
 </div>
 
 
@@ -544,7 +561,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>ComfyUI指定GPU出图配置指南</div>
-      <div>https://www.normdist.com/2026/05/27/ND-20260527-005-comfyui-gpu-config/</div>
+      <div>https://normdist.com/2026/05/27/ND-20260527-005-comfyui-gpu-config/</div>
     </div>
     <div class="license-meta">
       

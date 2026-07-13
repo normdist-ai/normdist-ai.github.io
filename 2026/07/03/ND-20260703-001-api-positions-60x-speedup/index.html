@@ -22,7 +22,7 @@
     <meta name="description" content="持仓接口 &#x2F;api&#x2F;positions 冷查询要 10 秒，热缓存 3 秒。目标是 &lt; 1 秒。 修复后冷查询 0.16 秒，热缓存 0.035 秒，提升 60 倍。 根因不是 N+1 查询，不是数据库缺索引，而是两层 bug 叠加。 现象一个量化记账平台，后端 FastAPI + SQLAlchemy + SQLite，数据源是自建的行情服务（ReShare）。持仓列表端点 &#x2F;api&#x2F;po">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一个 60 倍的接口提速：两层隐藏 Bug 如何让 API 延迟从 10 秒降到 0.16 秒">
-<meta property="og:url" content="https://www.normdist.com/2026/07/03/ND-20260703-001-api-positions-60x-speedup/index.html">
+<meta property="og:url" content="https://normdist.com/2026/07/03/ND-20260703-001-api-positions-60x-speedup/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="持仓接口 &#x2F;api&#x2F;positions 冷查询要 10 秒，热缓存 3 秒。目标是 &lt; 1 秒。 修复后冷查询 0.16 秒，热缓存 0.035 秒，提升 60 倍。 根因不是 N+1 查询，不是数据库缺索引，而是两层 bug 叠加。 现象一个量化记账平台，后端 FastAPI + SQLAlchemy + SQLite，数据源是自建的行情服务（ReShare）。持仓列表端点 &#x2F;api&#x2F;po">
 <meta property="og:locale" content="zh_CN">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -529,7 +529,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>一个 60 倍的接口提速：两层隐藏 Bug 如何让 API 延迟从 10 秒降到 0.16 秒</div>
-      <div>https://www.normdist.com/2026/07/03/ND-20260703-001-api-positions-60x-speedup/</div>
+      <div>https://normdist.com/2026/07/03/ND-20260703-001-api-positions-60x-speedup/</div>
     </div>
     <div class="license-meta">
       

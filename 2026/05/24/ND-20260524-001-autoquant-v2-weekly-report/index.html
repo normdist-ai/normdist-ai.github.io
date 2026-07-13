@@ -22,13 +22,17 @@
     <meta name="description" content="📊 本周数据概览指标数值 Git 提交2 次 文件修改63 个 代码新增9,653 行 代码删除496 行 版本升级v1.7.0 → v2.0.0 🎯 重点改进1. 架构重构：从 Streamlit 单体到 FastAPI + React SPA本周最大的里程碑是 AutoQuant 完成了从 v1.x（Streamlit 单体应用）到 v2.0（前后端分离架构）的全面迁移。 旧架构痛点：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AutoQuant 开发周报 - 2026&#x2F;05&#x2F;24">
-<meta property="og:url" content="https://www.normdist.com/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/index.html">
+<meta property="og:url" content="https://normdist.com/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="📊 本周数据概览指标数值 Git 提交2 次 文件修改63 个 代码新增9,653 行 代码删除496 行 版本升级v1.7.0 → v2.0.0 🎯 重点改进1. 架构重构：从 Streamlit 单体到 FastAPI + React SPA本周最大的里程碑是 AutoQuant 完成了从 v1.x（Streamlit 单体应用）到 v2.0（前后端分离架构）的全面迁移。 旧架构痛点：">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-24T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-12T10:29:10.844Z">
+<meta property="article:modified_time" content="2026-07-13T05:29:29.105Z">
 <meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AutoQuant">
+<meta property="article:tag" content="v2.0">
+<meta property="article:tag" content="开发周报">
+<meta property="article:tag" content="量化交易">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -73,7 +77,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -417,7 +421,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月12日 晚上
+                    本文最后更新于 2026年7月13日 下午
                   
                 
               </p>
@@ -531,6 +535,19 @@
     </div>
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AutoQuant/" class="print-no-link">#AutoQuant</a>
+      
+        <a href="/tags/%E5%BC%80%E5%8F%91%E5%91%A8%E6%8A%A5/" class="print-no-link">#开发周报</a>
+      
+        <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="print-no-link">#量化交易</a>
+      
+        <a href="/tags/v2-0/" class="print-no-link">#v2.0</a>
+      
+    </div>
+  
 </div>
 
 
@@ -540,7 +557,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>AutoQuant 开发周报 - 2026/05/24</div>
-      <div>https://www.normdist.com/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/</div>
+      <div>https://normdist.com/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/</div>
     </div>
     <div class="license-meta">
       

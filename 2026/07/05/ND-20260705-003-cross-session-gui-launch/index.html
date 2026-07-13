@@ -22,7 +22,7 @@
     <meta name="description" content="问题：SSH 能执行命令，但启动的应用”看不见”一个 AI Agent 通过 SSH 连接到 Windows 主机，执行 powershell.exe Start-Process notepad.exe，命令返回成功，任务管理器里能看到 notepad.exe 进程。但 RDP 连上去看桌面——什么都没有。记事本窗口没出现在屏幕上。 同样的问题出现在：启动 IDE、启动浏览器、启动任何带 GUI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法">
-<meta property="og:url" content="https://www.normdist.com/2026/07/05/ND-20260705-003-cross-session-gui-launch/index.html">
+<meta property="og:url" content="https://normdist.com/2026/07/05/ND-20260705-003-cross-session-gui-launch/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="问题：SSH 能执行命令，但启动的应用”看不见”一个 AI Agent 通过 SSH 连接到 Windows 主机，执行 powershell.exe Start-Process notepad.exe，命令返回成功，任务管理器里能看到 notepad.exe 进程。但 RDP 连上去看桌面——什么都没有。记事本窗口没出现在屏幕上。 同样的问题出现在：启动 IDE、启动浏览器、启动任何带 GUI">
 <meta property="og:locale" content="zh_CN">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -524,7 +524,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法</div>
-      <div>https://www.normdist.com/2026/07/05/ND-20260705-003-cross-session-gui-launch/</div>
+      <div>https://normdist.com/2026/07/05/ND-20260705-003-cross-session-gui-launch/</div>
     </div>
     <div class="license-meta">
       
@@ -578,8 +578,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" title="Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具">
-                        <span class="hidden-mobile">Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具</span>
+                      <a href="/2026/07/04/ND-20260704-001-windows-remote-control-architecture/" title="AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型">
+                        <span class="hidden-mobile">AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

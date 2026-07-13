@@ -22,13 +22,18 @@
     <meta name="description" content="背景手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。一开始用 LM Studio 跑大语言模型，LM Studio 默认把模型均匀摊到两张卡上。 问题很快暴露了——均匀分配意味着两张卡的剩余显存都不多。ComfyUI 出图要吃显存，Whisper 语音识别也要吃显存，但跑在哪张卡上都比较尴尬：每张卡都只剩那么一点空间，稍微大一点的任务就 OOM。 于">
 <meta property="og:type" content="article">
 <meta property="og:title" content="双卡 GPU 显存分配策略——让 llama.cpp 和 ComfyUI 稳定共存">
-<meta property="og:url" content="https://www.normdist.com/2026/05/30/ND-20260530-001-gpu-allocation/index.html">
+<meta property="og:url" content="https://normdist.com/2026/05/30/ND-20260530-001-gpu-allocation/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="背景手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。一开始用 LM Studio 跑大语言模型，LM Studio 默认把模型均匀摊到两张卡上。 问题很快暴露了——均匀分配意味着两张卡的剩余显存都不多。ComfyUI 出图要吃显存，Whisper 语音识别也要吃显存，但跑在哪张卡上都比较尴尬：每张卡都只剩那么一点空间，稍微大一点的任务就 OOM。 于">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-30T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-12T15:08:53.440Z">
+<meta property="article:modified_time" content="2026-07-13T05:29:29.105Z">
 <meta property="article:author" content="小瑞">
+<meta property="article:tag" content="ComfyUI">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="llama.cpp">
+<meta property="article:tag" content="多GPU">
+<meta property="article:tag" content="显存管理">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -73,7 +78,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -417,7 +422,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月12日 晚上
+                    本文最后更新于 2026年7月13日 下午
                   
                 
               </p>
@@ -510,6 +515,21 @@
     </div>
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
+      
+        <a href="/tags/%E6%98%BE%E5%AD%98%E7%AE%A1%E7%90%86/" class="print-no-link">#显存管理</a>
+      
+        <a href="/tags/%E5%A4%9AGPU/" class="print-no-link">#多GPU</a>
+      
+    </div>
+  
 </div>
 
 
@@ -519,7 +539,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>双卡 GPU 显存分配策略——让 llama.cpp 和 ComfyUI 稳定共存</div>
-      <div>https://www.normdist.com/2026/05/30/ND-20260530-001-gpu-allocation/</div>
+      <div>https://normdist.com/2026/05/30/ND-20260530-001-gpu-allocation/</div>
     </div>
     <div class="license-meta">
       
@@ -563,7 +583,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/05/ND-20260605-001-dual-2080ti-bottleneck/" title="双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测">
+                      <a href="/2026/06/05/ND-20260605-001-bilibili-video-transcript-pipeline/" title="双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测</span>
                         <span class="visible-mobile">上一篇</span>

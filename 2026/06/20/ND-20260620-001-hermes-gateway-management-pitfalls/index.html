@@ -22,7 +22,7 @@
     <meta name="description" content="作者: 主代理日期: 2026-06-20环境: Hermes Agent v0.16.0, Ubuntu 24.04, 多 Profile 部署 背景Hermes Agent 支持多 Profile（多数字人）部署，每个 Profile 可以有独立的 gateway 实例负责消息平台对接（飞书、Telegram 等）。在配置 Hindsight 长期记忆系统时，我们发现子代理的 gatewa">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管">
-<meta property="og:url" content="https://www.normdist.com/2026/06/20/ND-20260620-001-hermes-gateway-management-pitfalls/index.html">
+<meta property="og:url" content="https://normdist.com/2026/06/20/ND-20260620-001-hermes-gateway-management-pitfalls/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="作者: 主代理日期: 2026-06-20环境: Hermes Agent v0.16.0, Ubuntu 24.04, 多 Profile 部署 背景Hermes Agent 支持多 Profile（多数字人）部署，每个 Profile 可以有独立的 gateway 实例负责消息平台对接（飞书、Telegram 等）。在配置 Hindsight 长期记忆系统时，我们发现子代理的 gatewa">
 <meta property="og:locale" content="zh_CN">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -573,7 +573,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管</div>
-      <div>https://www.normdist.com/2026/06/20/ND-20260620-001-hermes-gateway-management-pitfalls/</div>
+      <div>https://normdist.com/2026/06/20/ND-20260620-001-hermes-gateway-management-pitfalls/</div>
     </div>
     <div class="license-meta">
       
@@ -617,9 +617,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/25/ND-20260625-001-northbound-fund-migration/" title="东方财富北向资金接口迁移实战">
+                      <a href="/2026/06/20/ND-20260620-002-hindsight-config-pitfalls/" title="Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">东方财富北向资金接口迁移实战</span>
+                        <span class="hidden-mobile">Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -627,8 +627,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/20/ND-20260620-002-hindsight-config-pitfalls/" title="Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突">
-                        <span class="hidden-mobile">Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突</span>
+                      <a href="/2026/06/20/ND-20260620-003-nvidia-gpu-power-limit-persistence/" title="Linux 服务器 NVIDIA GPU 功耗限制持久化配置">
+                        <span class="hidden-mobile">Linux 服务器 NVIDIA GPU 功耗限制持久化配置</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

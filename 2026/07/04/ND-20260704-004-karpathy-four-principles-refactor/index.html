@@ -22,7 +22,7 @@
     <meta name="description" content="背景量化交易系统的数据源是硬编码在代码里的——ReShare、yfinance、akshare 三个数据源的开关和地址散落在多个文件中。想临时关闭某个数据源？得翻代码改逻辑。 需求很简单：把数据源配置提取到统一配置文件，通过 config 字典控制每个数据源的 enabled 状态和 base_url。 但”简单需求”最容易翻车——改着改着顺手重构、碰了不该碰的文件、引入 regression。本">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression">
-<meta property="og:url" content="https://www.normdist.com/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/index.html">
+<meta property="og:url" content="https://normdist.com/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="背景量化交易系统的数据源是硬编码在代码里的——ReShare、yfinance、akshare 三个数据源的开关和地址散落在多个文件中。想临时关闭某个数据源？得翻代码改逻辑。 需求很简单：把数据源配置提取到统一配置文件，通过 config 字典控制每个数据源的 enabled 状态和 base_url。 但”简单需求”最容易翻车——改着改着顺手重构、碰了不该碰的文件、引入 regression。本">
 <meta property="og:locale" content="zh_CN">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -521,7 +521,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression</div>
-      <div>https://www.normdist.com/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/</div>
+      <div>https://normdist.com/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/</div>
     </div>
     <div class="license-meta">
       
@@ -565,9 +565,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" title="AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家">
+                      <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" title="量化系统 Docker→裸跑迁移：一份踩坑笔记">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家</span>
+                        <span class="hidden-mobile">量化系统 Docker→裸跑迁移：一份踩坑笔记</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
