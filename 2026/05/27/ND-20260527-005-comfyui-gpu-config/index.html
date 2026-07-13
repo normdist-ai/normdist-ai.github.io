@@ -19,20 +19,16 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="为什么需要指定 GPU？在多 GPU 服务器上运行 ComfyUI 时，经常遇到以下场景：  GPU 资源隔离——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上 显存大小差异——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡 多用户并发——团队共用服务器时，不同服务分配到固定 GPU，">
+    <meta name="description" content="为什么需要指定 GPU？在多 GPU 服务器上运行 ComfyUI 时，经常遇到以下场景：  GPU 资源隔离——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上  显存大小差异——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡  多用户并发——团队共用服务器时，不同服务分配到固定 GP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ComfyUI指定GPU出图配置指南">
 <meta property="og:url" content="https://www.normdist.com/2026/05/27/ND-20260527-005-comfyui-gpu-config/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="为什么需要指定 GPU？在多 GPU 服务器上运行 ComfyUI 时，经常遇到以下场景：  GPU 资源隔离——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上 显存大小差异——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡 多用户并发——团队共用服务器时，不同服务分配到固定 GPU，">
+<meta property="og:description" content="为什么需要指定 GPU？在多 GPU 服务器上运行 ComfyUI 时，经常遇到以下场景：  GPU 资源隔离——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上  显存大小差异——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡  多用户并发——团队共用服务器时，不同服务分配到固定 GP">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-27T06:30:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:06:57.019Z">
+<meta property="article:published_time" content="2026-05-27T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:08:53.440Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="配置">
-<meta property="article:tag" content="GPU">
-<meta property="article:tag" content="ComfyUI">
-<meta property="article:tag" content="AI绘画">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -90,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -345,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-27 14:30" pubdate>
-          2026年5月27日 下午
+        <time datetime="2026-05-27 10:00" pubdate>
+          2026年5月27日 上午
         </time>
       </span>
     
@@ -357,7 +353,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.2k 字
+          3.4k 字
         
       </span>
     
@@ -368,7 +364,7 @@
         
         
         
-          27 分钟
+          29 分钟
         
       </span>
     
@@ -421,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -431,127 +427,82 @@
                 
                 <h2 id="为什么需要指定-GPU？"><a href="#为什么需要指定-GPU？" class="headerlink" title="为什么需要指定 GPU？"></a>为什么需要指定 GPU？</h2><p>在多 GPU 服务器上运行 ComfyUI 时，经常遇到以下场景：</p>
 <ul>
-<li><strong>GPU 资源隔离</strong>——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上</li>
-<li><strong>显存大小差异</strong>——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡</li>
-<li><strong>多用户并发</strong>——团队共用服务器时，不同服务分配到固定 GPU，避免争抢资源</li>
+<li><p><strong>GPU 资源隔离</strong>——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上</p>
+</li>
+<li><p><strong>显存大小差异</strong>——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡</p>
+</li>
+<li><p><strong>多用户并发</strong>——团队共用服务器时，不同服务分配到固定 GPU，避免争抢资源</p>
+</li>
 </ul>
 <p>本文记录三种指定 ComfyUI 使用特定 GPU 的方法，以及实际踩坑经验。</p>
 <hr>
 <h2 id="⚡-方法一：systemd-服务配置（推荐）"><a href="#⚡-方法一：systemd-服务配置（推荐）" class="headerlink" title="⚡ 方法一：systemd 服务配置（推荐）"></a>⚡ 方法一：systemd 服务配置（推荐）</h2><p>如果你的 ComfyUI 通过 systemd 服务启动（这也是最稳定的方式），这是<strong>首选方案</strong>。</p>
-<h3 id="查看当前配置"><a href="#查看当前配置" class="headerlink" title="查看当前配置"></a>查看当前配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 用户级服务</span><br><span class="hljs-built_in">cat</span> ~/.config/systemd/user/comfyui.service<br><br><span class="hljs-comment"># 或系统级服务</span><br><span class="hljs-built_in">cat</span> /etc/systemd/system/comfyui.service<br></code></pre></td></tr></table></figure>
+<h3 id="查看当前配置"><a href="#查看当前配置" class="headerlink" title="查看当前配置"></a>查看当前配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br><span class="hljs-comment"># 用户级服务</span><br><span class="hljs-built_in">cat</span> ~/.config/systemd/user/comfyui.service<br><br><span class="hljs-comment"># 或系统级服务</span><br><span class="hljs-built_in">cat</span> /etc/systemd/system/comfyui.service<br><br></code></pre></td></tr></table></figure>
 
 <h3 id="修改-GPU-指定"><a href="#修改-GPU-指定" class="headerlink" title="修改 GPU 指定"></a>修改 GPU 指定</h3><p>编辑服务文件，在 <code>[Service]</code> 段添加环境变量：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=CUDA_VISIBLE_DEVICES=<span class="hljs-number">1</span>   <span class="hljs-comment"># ← 关键行：使用物理 GPU 1</span><br><span class="hljs-attr">ExecStart</span>=/path/to/ComfyUI/venv/bin/python3 main.py --listen <span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span> --port <span class="hljs-number">8188</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=CUDA_VISIBLE_DEVICES=<span class="hljs-number">1</span>   <span class="hljs-comment"># ← 关键行：使用物理 GPU 1</span><br><span class="hljs-attr">ExecStart</span>=/path/to/ComfyUI/venv/bin/python3 main.py --listen <span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span> --port <span class="hljs-number">8188</span><br><br></code></pre></td></tr></table></figure>
 
-<h3 id="重启并验证"><a href="#重启并验证" class="headerlink" title="重启并验证"></a>重启并验证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 重载配置 + 重启服务</span><br>systemctl --user daemon-reload<br>systemctl --user restart comfyui<br><br><span class="hljs-comment"># 确认进程跑在目标 GPU 上</span><br>nvidia-smi | grep python<br></code></pre></td></tr></table></figure>
+<h3 id="重启并验证"><a href="#重启并验证" class="headerlink" title="重启并验证"></a>重启并验证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br><br><span class="hljs-comment"># 重载配置 + 重启服务</span><br>systemctl --user daemon-reload<br>systemctl --user restart comfyui<br><br><span class="hljs-comment"># 确认进程跑在目标 GPU 上</span><br>nvidia-smi | grep python<br><br></code></pre></td></tr></table></figure>
 
 <blockquote>
-<p><strong>优点</strong>：配置持久化，重启自动生效，优先级最高。<br><strong>适用场景</strong>：生产环境、长期运行的 ComfyUI 服务。</p>
 </blockquote>
+<p><strong>优点</strong>：配置持久化，重启自动生效，优先级最高。<br><strong>适用场景</strong>：生产环境、长期运行的 ComfyUI 服务。</p>
 <hr>
 <h2 id="🔧-方法二：命令行参数-cuda-device"><a href="#🔧-方法二：命令行参数-cuda-device" class="headerlink" title="🔧 方法二：命令行参数 --cuda-device"></a>🔧 方法二：命令行参数 <code>--cuda-device</code></h2><p>ComfyUI 原生支持通过命令行指定 GPU：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python main.py --listen 0.0.0.0 --port 8188 --cuda-device 1<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br>python main.py --listen 0.0.0.0 --port 8188 --cuda-device 1<br><br></code></pre></td></tr></table></figure>
 
 <h3 id="⚠️-重要陷阱"><a href="#⚠️-重要陷阱" class="headerlink" title="⚠️ 重要陷阱"></a>⚠️ 重要陷阱</h3><p><strong><code>CUDA_VISIBLE_DEVICES</code> 环境变量的优先级高于 <code>--cuda-device</code>！</strong></p>
 <p>如果环境中已设置 <code>CUDA_VISIBLE_DEVICES=0</code>，即使传入 <code>--cuda-device 1</code>，ComfyUI 实际仍使用 GPU 0。排查方法：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看进程实际的环境变量</span><br><span class="hljs-built_in">cat</span> /proc/&lt;PID&gt;/environ | <span class="hljs-built_in">tr</span> <span class="hljs-string">&#x27;\0&#x27;</span> <span class="hljs-string">&#x27;\n&#x27;</span> | grep CUDA<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br><br><span class="hljs-comment"># 查看进程实际的环境变量</span><br><span class="hljs-built_in">cat</span> /proc/&lt;PID&gt;/environ | <span class="hljs-built_in">tr</span> <span class="hljs-string">&#x27;\0&#x27;</span> <span class="hljs-string">&#x27;\n&#x27;</span> | grep CUDA<br><br></code></pre></td></tr></table></figure>
 
 <blockquote>
-<p><strong>优点</strong>：快速测试、临时切换。<br><strong>缺点</strong>：容易被环境变量覆盖，优先级最低。<br><strong>适用场景</strong>：开发调试、一次性验证。</p>
 </blockquote>
+<p><strong>优点</strong>：快速测试、临时切换。<br><strong>缺点</strong>：容易被环境变量覆盖，优先级最低。<br><strong>适用场景</strong>：开发调试、一次性验证。</p>
 <hr>
 <h2 id="🌍-方法三：环境变量-CUDA-VISIBLE-DEVICES"><a href="#🌍-方法三：环境变量-CUDA-VISIBLE-DEVICES" class="headerlink" title="🌍 方法三：环境变量 CUDA_VISIBLE_DEVICES"></a>🌍 方法三：环境变量 <code>CUDA_VISIBLE_DEVICES</code></h2><p>启动时通过环境变量限制 ComfyUI 可见的 GPU：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 单卡指定</span><br>CUDA_VISIBLE_DEVICES=1 python main.py --listen 0.0.0.0 --port 8188<br><br><span class="hljs-comment"># nohup 后台运行</span><br>CUDA_VISIBLE_DEVICES=1 <span class="hljs-built_in">nohup</span> python main.py --listen 0.0.0.0 --port 8188 &gt; comfyui.log 2&gt;&amp;1 &amp;<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br><span class="hljs-comment"># 单卡指定</span><br>CUDA_VISIBLE_DEVICES=1 python main.py --listen 0.0.0.0 --port 8188<br><br><span class="hljs-comment"># nohup 后台运行</span><br>CUDA_VISIBLE_DEVICES=1 <span class="hljs-built_in">nohup</span> python main.py --listen 0.0.0.0 --port 8188 &gt; comfyui.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
 
 <h3 id="GPU-索引重映射机制"><a href="#GPU-索引重映射机制" class="headerlink" title="GPU 索引重映射机制"></a>GPU 索引重映射机制</h3><p><code>CUDA_VISIBLE_DEVICES</code> 有一个容易忽略的特性——<strong>它会重新编号 GPU 设备</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>设置</th>
-<th>代码中 <code>cuda:0</code> 对应物理卡</th>
-<th>代码中 <code>cuda:1</code> 对应物理卡</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>CUDA_VISIBLE_DEVICES=0</code></td>
-<td>GPU 0</td>
-<td>—</td>
-</tr>
-<tr>
-<td><code>CUDA_VISIBLE_DEVICES=1</code></td>
-<td>GPU 1</td>
-<td>—</td>
-</tr>
-<tr>
-<td><code>CUDA_VISIBLE_DEVICES=0,1</code></td>
-<td>GPU 0</td>
-<td>GPU 1</td>
-</tr>
-<tr>
-<td><code>CUDA_VISIBLE_DEVICES=1,0</code></td>
-<td><strong>GPU 1</strong></td>
-<td>GPU 0</td>
-</tr>
-</tbody></table>
+<p>设置<br>代码中 <code>cuda:0</code> 对应物理卡<br>代码中 <code>cuda:1</code> 对应物理卡</p>
+<p><code>CUDA_VISIBLE_DEVICES=0</code><br>GPU 0<br>—</p>
+<p><code>CUDA_VISIBLE_DEVICES=1</code><br>GPU 1<br>—</p>
+<p><code>CUDA_VISIBLE_DEVICES=0,1</code><br>GPU 0<br>GPU 1</p>
+<p><code>CUDA_VISIBLE_DEVICES=1,0</code><br><strong>GPU 1</strong><br>GPU 0</p>
 <p><strong>示例</strong>：<code>CUDA_VISIBLE_DEVICES=1,0</code> 时，CUDA 将物理 GPU 1 映射为逻辑设备 0。代码里写 <code>cuda:0</code>，实际访问的是物理卡 1。这在某些硬编码 <code>cuda:0</code> 的模型加载场景中非常有用——不用改代码就能指定用哪张卡。</p>
 <blockquote>
-<p><strong>优点</strong>：灵活、无需修改服务文件。<br><strong>缺点</strong>：需要每次启动时设置，shell 配置中可能意外覆盖。<br><strong>适用场景</strong>：手动启动、脚本化部署、需要重映射的场景。</p>
 </blockquote>
+<p><strong>优点</strong>：灵活、无需修改服务文件。<br><strong>缺点</strong>：需要每次启动时设置，shell 配置中可能意外覆盖。<br><strong>适用场景</strong>：手动启动、脚本化部署、需要重映射的场景。</p>
 <hr>
 <h2 id="🕳️-踩坑记录"><a href="#🕳️-踩坑记录" class="headerlink" title="🕳️ 踩坑记录"></a>🕳️ 踩坑记录</h2><h3 id="坑一：-cuda-device-参数”无效”"><a href="#坑一：-cuda-device-参数”无效”" class="headerlink" title="坑一：--cuda-device 参数”无效”"></a>坑一：<code>--cuda-device</code> 参数”无效”</h3><p><strong>现象</strong>：用 <code>--cuda-device 1</code> 启动，<code>nvidia-smi</code> 看到进程仍在 GPU 0。</p>
 <p><strong>原因</strong>：systemd 服务文件中硬编码了 <code>Environment=CUDA_VISIBLE_DEVICES=0</code>，环境变量优先级高于命令行参数。</p>
 <p><strong>解决</strong>：修改 systemd 服务文件中的 <code>CUDA_VISIBLE_DEVICES</code> 值。</p>
 <h3 id="坑二：手动设置的环境变量被覆盖"><a href="#坑二：手动设置的环境变量被覆盖" class="headerlink" title="坑二：手动设置的环境变量被覆盖"></a>坑二：手动设置的环境变量被覆盖</h3><p><strong>现象</strong>：终端里执行 <code>export CUDA_VISIBLE_DEVICES=1</code> 后启动 ComfyUI，进程实际仍用 GPU 0。</p>
 <p><strong>排查清单</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 检查 systemd 服务中的环境变量（最常见原因）</span><br>grep CUDA ~/.config/systemd/user/*.service /etc/systemd/system/*.service<br><br><span class="hljs-comment"># 2. 检查 shell 配置文件</span><br>grep CUDA ~/.bashrc ~/.profile ~/.zshrc /etc/environment<br><br><span class="hljs-comment"># 3. 查看运行中进程的实际环境变量</span><br><span class="hljs-built_in">cat</span> /proc/&lt;PID&gt;/environ | <span class="hljs-built_in">tr</span> <span class="hljs-string">&#x27;\0&#x27;</span> <span class="hljs-string">&#x27;\n&#x27;</span> | grep CUDA<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br><br><span class="hljs-comment"># 1. 检查 systemd 服务中的环境变量（最常见原因）</span><br>grep CUDA ~/.config/systemd/user/*.service /etc/systemd/system/*.service<br><br><span class="hljs-comment"># 2. 检查 shell 配置文件</span><br>grep CUDA ~/.bashrc ~/.profile ~/.zshrc /etc/environment<br><br><span class="hljs-comment"># 3. 查看运行中进程的实际环境变量</span><br><span class="hljs-built_in">cat</span> /proc/&lt;PID&gt;/environ | <span class="hljs-built_in">tr</span> <span class="hljs-string">&#x27;\0&#x27;</span> <span class="hljs-string">&#x27;\n&#x27;</span> | grep CUDA<br><br></code></pre></td></tr></table></figure>
 
 <hr>
 <h2 id="🔄-快速切换脚本"><a href="#🔄-快速切换脚本" class="headerlink" title="🔄 快速切换脚本"></a>🔄 快速切换脚本</h2><p>经常需要在 GPU 之间切换？一个脚本搞定：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-comment"># switch-comfyui-gpu.sh — 一键切换 ComfyUI 的 GPU</span><br><br>GPU_ID=<span class="hljs-variable">$1</span><br><br><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$GPU_ID</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;用法: <span class="hljs-variable">$0</span> &lt;gpu_id&gt;&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;示例: <span class="hljs-variable">$0</span> 1   # 切换到 GPU 1&quot;</span><br>    <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br><br>SERVICE_FILE=~/.config/systemd/user/comfyui.service<br><br><span class="hljs-comment"># 修改服务文件中的 CUDA_VISIBLE_DEVICES</span><br>sed -i <span class="hljs-string">&quot;s/CUDA_VISIBLE_DEVICES=[0-9]/CUDA_VISIBLE_DEVICES=<span class="hljs-variable">$GPU_ID</span>/&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$SERVICE_FILE</span>&quot;</span><br><br><span class="hljs-comment"># 重载配置并重启</span><br>systemctl --user daemon-reload<br>systemctl --user restart comfyui<br><br><span class="hljs-comment"># 验证结果</span><br><span class="hljs-built_in">sleep</span> 3<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;✅ ComfyUI 已切换到 GPU <span class="hljs-variable">$GPU_ID</span>：&quot;</span><br>nvidia-smi | grep python<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br><br><span class="hljs-comment">#!/bin/bash</span><br><span class="hljs-comment"># switch-comfyui-gpu.sh — 一键切换 ComfyUI 的 GPU</span><br><br>GPU_ID=<span class="hljs-variable">$1</span><br><br><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$GPU_ID</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;用法: <span class="hljs-variable">$0</span> &lt;gpu_id&gt;&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;示例: <span class="hljs-variable">$0</span> 1   # 切换到 GPU 1&quot;</span><br>    <span class="hljs-built_in">exit</span> 1<br><span class="hljs-keyword">fi</span><br><br>SERVICE_FILE=~/.config/systemd/user/comfyui.service<br><br><span class="hljs-comment"># 修改服务文件中的 CUDA_VISIBLE_DEVICES</span><br>sed -i <span class="hljs-string">&quot;s/CUDA_VISIBLE_DEVICES=[0-9]/CUDA_VISIBLE_DEVICES=<span class="hljs-variable">$GPU_ID</span>/&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$SERVICE_FILE</span>&quot;</span><br><br><span class="hljs-comment"># 重载配置并重启</span><br>systemctl --user daemon-reload<br>systemctl --user restart comfyui<br><br><span class="hljs-comment"># 验证结果</span><br><span class="hljs-built_in">sleep</span> 3<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;✅ ComfyUI 已切换到 GPU <span class="hljs-variable">$GPU_ID</span>：&quot;</span><br>nvidia-smi | grep python<br><br></code></pre></td></tr></table></figure>
 
 <p>使用方式：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">chmod</span> +x switch-comfyui-gpu.sh<br>./switch-comfyui-gpu.sh 1   <span class="hljs-comment"># 切到 GPU 1</span><br>./switch-comfyui-gpu.sh 0   <span class="hljs-comment"># 切回 GPU 0</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br><br><span class="hljs-built_in">chmod</span> +x switch-comfyui-gpu.sh<br>./switch-comfyui-gpu.sh 1   <span class="hljs-comment"># 切到 GPU 1</span><br>./switch-comfyui-gpu.sh 0   <span class="hljs-comment"># 切回 GPU 0</span><br><br></code></pre></td></tr></table></figure>
 
 <hr>
-<h2 id="📊-方法对比总结"><a href="#📊-方法对比总结" class="headerlink" title="📊 方法对比总结"></a>📊 方法对比总结</h2><table>
-<thead>
-<tr>
-<th>方法</th>
-<th>优先级</th>
-<th>持久化</th>
-<th>可靠性</th>
-<th>推荐场景</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>systemd <code>Environment</code></td>
-<td>⭐⭐⭐ 最高</td>
-<td>✅ 自动</td>
-<td>⭐⭐⭐ 最可靠</td>
-<td>生产环境、长期运行</td>
-</tr>
-<tr>
-<td>环境变量 <code>CUDA_VISIBLE_DEVICES</code></td>
-<td>⭐⭐ 中</td>
-<td>❌ 需每次设置</td>
-<td>⭐⭐ 需注意覆盖</td>
-<td>手动启动、脚本部署</td>
-</tr>
-<tr>
-<td><code>--cuda-device</code> 参数</td>
-<td>⭐ 最低</td>
-<td>❌ 仅本次</td>
-<td>⭐ 易被覆盖</td>
-<td>快速测试、临时验证</td>
-</tr>
-</tbody></table>
+<h2 id="📊-方法对比总结"><a href="#📊-方法对比总结" class="headerlink" title="📊 方法对比总结"></a>📊 方法对比总结</h2><p>方法<br>优先级<br>持久化<br>可靠性<br>推荐场景</p>
+<p>systemd <code>Environment</code><br>⭐⭐⭐ 最高<br>✅ 自动<br>⭐⭐⭐ 最可靠<br>生产环境、长期运行</p>
+<p>环境变量 <code>CUDA_VISIBLE_DEVICES</code><br>⭐⭐ 中<br>❌ 需每次设置<br>⭐⭐ 需注意覆盖<br>手动启动、脚本部署</p>
+<p><code>--cuda-device</code> 参数<br>⭐ 最低<br>❌ 仅本次<br>⭐ 易被覆盖<br>快速测试、临时验证</p>
 <hr>
-<h2 id="💡-最佳实践建议"><a href="#💡-最佳实践建议" class="headerlink" title="💡 最佳实践建议"></a>💡 最佳实践建议</h2><ol>
-<li><strong>生产环境统一用 systemd</strong>：配置一次，永久生效，重启不丢。</li>
-<li><strong>多 GPU 服务器做固定分配</strong>：LM Studio 占 GPU 0，ComfyUI 占 GPU 1，各跑各的互不干扰。</li>
-<li><strong>切换前检查环境变量</strong>：<code>--cuda-device</code> 不生效时，先查 <code>CUDA_VISIBLE_DEVICES</code> 有没有捣乱。</li>
-<li><strong>善用重映射</strong>：需要让代码中的 <code>cuda:0</code> 指向物理 GPU 1 时，用 <code>CUDA_VISIBLE_DEVICES=1,0</code> 比改代码方便得多。</li>
-</ol>
+<h2 id="💡-最佳实践建议"><a href="#💡-最佳实践建议" class="headerlink" title="💡 最佳实践建议"></a>💡 最佳实践建议</h2><ul>
+<li><p><strong>生产环境统一用 systemd</strong>：配置一次，永久生效，重启不丢。</p>
+</li>
+<li><p><strong>多 GPU 服务器做固定分配</strong>：LM Studio 占 GPU 0，ComfyUI 占 GPU 1，各跑各的互不干扰。</p>
+</li>
+<li><p><strong>切换前检查环境变量</strong>：<code>--cuda-device</code> 不生效时，先查 <code>CUDA_VISIBLE_DEVICES</code> 有没有捣乱。</p>
+</li>
+<li><p><strong>善用重映射</strong>：需要让代码中的 <code>cuda:0</code> 指向物理 GPU 1 时，用 <code>CUDA_VISIBLE_DEVICES=1,0</code> 比改代码方便得多。</p>
+</li>
+</ul>
 <hr>
 <p><em>本文基于实际多 GPU 服务器部署经验总结。如有其他踩坑经验，欢迎交流。</em></p>
 
@@ -572,7 +523,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -583,19 +534,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/%E9%85%8D%E7%BD%AE/" class="print-no-link">#配置</a>
-      
-        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
-      
-        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
-      
-        <a href="/tags/AI%E7%BB%98%E7%94%BB/" class="print-no-link">#AI绘画</a>
-      
-    </div>
   
 </div>
 

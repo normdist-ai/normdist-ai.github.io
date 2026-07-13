@@ -26,14 +26,9 @@
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="背景手里有一台服务器，装了两张魔改版 RTX 2080 Ti，每张 22GB 显存，总共 44GB。一开始用 LM Studio 跑大语言模型，LM Studio 默认把模型均匀摊到两张卡上。 问题很快暴露了——均匀分配意味着两张卡的剩余显存都不多。ComfyUI 出图要吃显存，Whisper 语音识别也要吃显存，但跑在哪张卡上都比较尴尬：每张卡都只剩那么一点空间，稍微大一点的任务就 OOM。 于">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-30T06:22:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:06:57.019Z">
+<meta property="article:published_time" content="2026-05-30T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:08:53.440Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="GPU">
-<meta property="article:tag" content="ComfyUI">
-<meta property="article:tag" content="llama.cpp">
-<meta property="article:tag" content="显存管理">
-<meta property="article:tag" content="多GPU">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -91,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -346,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-30 14:22" pubdate>
-          2026年5月30日 下午
+        <time datetime="2026-05-30 10:00" pubdate>
+          2026年5月30日 上午
         </time>
       </span>
     
@@ -358,7 +353,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2k 字
+          2.2k 字
         
       </span>
     
@@ -369,7 +364,7 @@
         
         
         
-          17 分钟
+          19 分钟
         
       </span>
     
@@ -422,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -437,45 +432,52 @@
 <p>这条路走不通，只能换工具。</p>
 <h3 id="第二站：llama-cpp——有这个功能"><a href="#第二站：llama-cpp——有这个功能" class="headerlink" title="第二站：llama.cpp——有这个功能"></a>第二站：llama.cpp——有这个功能</h3><p>换成 llama.cpp 之后，发现它有个 <code>tensor-split</code> 参数，可以<strong>自定义模型在多张 GPU 之间的分配比例</strong>。这正是我需要的。</p>
 <p>思路很清晰：</p>
-<ol>
-<li>把大量显存分配到 GPU0，让大模型主要占这一张卡</li>
-<li>GPU1 尽量少分，空出足够的显存</li>
-<li>把 ComfyUI 和 Whisper 放到 GPU1 上跑</li>
-</ol>
+<ul>
+<li><p>把大量显存分配到 GPU0，让大模型主要占这一张卡</p>
+</li>
+<li><p>GPU1 尽量少分，空出足够的显存</p>
+</li>
+<li><p>把 ComfyUI 和 Whisper 放到 GPU1 上跑</p>
+</li>
+</ul>
 <h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p>反复折腾后，找到了两个关键配置：</p>
 <h3 id="第一张牌：tensor-split"><a href="#第一张牌：tensor-split" class="headerlink" title="第一张牌：tensor-split"></a>第一张牌：<code>tensor-split</code></h3><p>llama.cpp 的参数，控制模型在多 GPU 间的分配比例。设置为 <code>1.0,0.3</code>：</p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">GPU0</span>: <span class="hljs-number">100</span>% 分配比例 → 实际占 ~<span class="hljs-number">21</span>GB<br><span class="hljs-attribute">GPU1</span>:  <span class="hljs-number">30</span>% 分配比例 → 实际占  ~<span class="hljs-number">6</span>GB<br></code></pre></td></tr></table></figure>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs apache"><br><span class="hljs-attribute">1</span><br><span class="hljs-attribute">2</span><br><br><span class="hljs-attribute">GPU0</span>: <span class="hljs-number">100</span>% 分配比例 → 实际占 ~<span class="hljs-number">21</span>GB<br><span class="hljs-attribute">GPU1</span>:  <span class="hljs-number">30</span>% 分配比例 → 实际占  ~<span class="hljs-number">6</span>GB<br><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># llama-server 的 models.ini</span><br><span class="hljs-section">[*]</span><br><span class="hljs-attr">n-gpu-layers</span> = <span class="hljs-number">99</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">1.0</span>,<span class="hljs-number">0.3</span><br><span class="hljs-attr">main-gpu</span> = <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br>4<br>5<br><br><span class="hljs-comment"># llama-server 的 models.ini</span><br><span class="hljs-section">[*]</span><br><span class="hljs-attr">n-gpu-layers</span> = <span class="hljs-number">99</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">1.0</span>,<span class="hljs-number">0.3</span><br><span class="hljs-attr">main-gpu</span> = <span class="hljs-number">0</span><br><br></code></pre></td></tr></table></figure>
 
 <p><code>n-gpu-layers = 99</code> 表示把模型所有层都加载到 GPU，<code>main-gpu = 0</code> 确保主计算在 GPU0 上进行。</p>
 <h3 id="第二张牌：CUDA-VISIBLE-DEVICES"><a href="#第二张牌：CUDA-VISIBLE-DEVICES" class="headerlink" title="第二张牌：CUDA_VISIBLE_DEVICES"></a>第二张牌：<code>CUDA_VISIBLE_DEVICES</code></h3><p>这是 NVIDIA 提供的环境变量，直接从操作系统层面限制应用能看到哪些 GPU。给 ComfyUI 设置 <code>CUDA_VISIBLE_DEVICES=1</code>，它就彻底看不到 GPU0 了——物理隔离，不存在抢占的可能。</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># ComfyUI 的 systemd 服务</span><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=CUDA_VISIBLE_DEVICES=<span class="hljs-number">1</span><br><span class="hljs-attr">ExecStart</span>=/home/tony/comfy/ComfyUI/venv/bin/python main.py \<br>  --listen 0.0.0.0 --port 8188 --force-fp16<br></code></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br>4<br>5<br><br><span class="hljs-comment"># ComfyUI 的 systemd 服务</span><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=CUDA_VISIBLE_DEVICES=<span class="hljs-number">1</span><br><span class="hljs-attr">ExecStart</span>=/home/tony/comfy/ComfyUI/venv/bin/python main.py \<br>  --listen 0.0.0.0 --port 8188 --force-fp16<br><br></code></pre></td></tr></table></figure>
 
 <p>另外还有个省钱参数：</p>
 <ul>
 <li><code>--force-fp16</code>：强制半精度推理，显存直接减半</li>
 </ul>
-<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">┌─────────────────────────────────┐<br>│         GPU0 (<span class="hljs-number">22</span>GB)             │<br>│   <span class="hljs-keyword">llama-server </span>(<span class="hljs-number">21</span>GB)          │<br>│   · 模型权重 <span class="hljs-number">100</span>%              │<br>│   · KV <span class="hljs-keyword">Cache </span>                  │<br>│   空闲: ~<span class="hljs-number">1</span>GB                   │<br>└─────────────────────────────────┘<br><br>┌─────────────────────────────────┐<br>│         GPU1 (<span class="hljs-number">22</span>GB)             │<br>│   <span class="hljs-keyword">llama-server </span>(<span class="hljs-number">6</span>GB)           │<br>│   · 模型权重 <span class="hljs-number">30</span>%               │<br>│                                 │<br>│   ComfyUI (<span class="hljs-number">7</span>GB)                │<br>│   · SD1.<span class="hljs-number">5</span> 模型                 │<br>│   · FaceID + ControlNet        │<br>│                                 │<br>│   空闲: ~<span class="hljs-number">9</span>GB                   │<br>└─────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><br><span class="hljs-number">16</span><br><span class="hljs-number">17</span><br><span class="hljs-number">18</span><br><span class="hljs-number">19</span><br><br>┌─────────────────────────────────┐<br>│         GPU0 (<span class="hljs-number">22</span>GB)             │<br>│   <span class="hljs-keyword">llama-server </span>(<span class="hljs-number">21</span>GB)          │<br>│   · 模型权重 <span class="hljs-number">100</span>%              │<br>│   · KV <span class="hljs-keyword">Cache </span>                  │<br>│   空闲: ~<span class="hljs-number">1</span>GB                   │<br>└─────────────────────────────────┘<br><br>┌─────────────────────────────────┐<br>│         GPU1 (<span class="hljs-number">22</span>GB)             │<br>│   <span class="hljs-keyword">llama-server </span>(<span class="hljs-number">6</span>GB)           │<br>│   · 模型权重 <span class="hljs-number">30</span>%               │<br>│                                 │<br>│   ComfyUI (<span class="hljs-number">7</span>GB)                │<br>│   · SD1.<span class="hljs-number">5</span> 模型                 │<br>│   · FaceID + ControlNet        │<br>│                                 │<br>│   空闲: ~<span class="hljs-number">9</span>GB                   │<br>└─────────────────────────────────┘<br><br></code></pre></td></tr></table></figure>
 
 <p>GPU1 还有 9GB 空闲，未来可以塞更多东西——比如更大的 SDXL 模型，或者再跑一个 Whisper 语音识别服务。</p>
 <h2 id="验证方法"><a href="#验证方法" class="headerlink" title="验证方法"></a>验证方法</h2><p>日常运维三板斧：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 看显存分配</span><br>nvidia-smi<br><br><span class="hljs-comment"># 看服务状态</span><br><span class="hljs-built_in">sudo</span> systemctl status llama-server<br><span class="hljs-built_in">sudo</span> systemctl status comfyui<br><br><span class="hljs-comment"># 实时监控</span><br>watch -n 1 nvidia-smi<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br><br><span class="hljs-comment"># 看显存分配</span><br>nvidia-smi<br><br><span class="hljs-comment"># 看服务状态</span><br><span class="hljs-built_in">sudo</span> systemctl status llama-server<br><span class="hljs-built_in">sudo</span> systemctl status comfyui<br><br><span class="hljs-comment"># 实时监控</span><br>watch -n 1 nvidia-smi<br><br></code></pre></td></tr></table></figure>
 
 <h2 id="调整策略"><a href="#调整策略" class="headerlink" title="调整策略"></a>调整策略</h2><p>需求变了怎么调？改配置重启就行。</p>
 <p><strong>ComfyUI 需要更多显存</strong>（比如跑 SDXL）：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 缩减 llama.cpp 在 GPU1 的比例</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">1.0</span>,<span class="hljs-number">0.2</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br><br><span class="hljs-comment"># 缩减 llama.cpp 在 GPU1 的比例</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">1.0</span>,<span class="hljs-number">0.2</span><br><br></code></pre></td></tr></table></figure>
 
 <p><strong>LLM 需要更大上下文</strong>（比如 512K tokens）：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">ctx-size</span> = <span class="hljs-number">524288</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">0.8</span>,<span class="hljs-number">0.4</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br><br><span class="hljs-attr">ctx-size</span> = <span class="hljs-number">524288</span><br><span class="hljs-attr">tensor-split</span> = <span class="hljs-number">0.8</span>,<span class="hljs-number">0.4</span><br><br></code></pre></td></tr></table></figure>
 
 <p>注意第二种情况 ComfyUI 可能需要暂时让路，因为 GPU1 空闲空间会压缩。</p>
-<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><ol>
-<li><strong>均匀分配不一定是最优解</strong>。两张卡平均分听起来公平，但会导致每张卡都剩不多，其他应用无处安放。</li>
-<li><strong>工具选型很关键</strong>。LM Studio 方便但没有显存分配功能；llama.cpp 的 <code>tensor-split</code> 正好解决了这个问题。</li>
-<li><strong>物理隔离优于软件协调</strong>。<code>CUDA_VISIBLE_DEVICES</code> 是硬隔离，比祈祷应用自觉不越界靠谱得多。</li>
-<li><strong>省钱参数有用</strong>。<code>--force-fp16</code> 在 RTX 2080 Ti 上几乎不影响画质，但能省出宝贵的显存。</li>
-</ol>
+<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><ul>
+<li><p><strong>均匀分配不一定是最优解</strong>。两张卡平均分听起来公平，但会导致每张卡都剩不多，其他应用无处安放。</p>
+</li>
+<li><p><strong>工具选型很关键</strong>。LM Studio 方便但没有显存分配功能；llama.cpp 的 <code>tensor-split</code> 正好解决了这个问题。</p>
+</li>
+<li><p><strong>物理隔离优于软件协调</strong>。<code>CUDA_VISIBLE_DEVICES</code> 是硬隔离，比祈祷应用自觉不越界靠谱得多。</p>
+</li>
+<li><p><strong>省钱参数有用</strong>。<code>--force-fp16</code> 在 RTX 2080 Ti 上几乎不影响画质，但能省出宝贵的显存。</p>
+</li>
+</ul>
 <hr>
 <p>在这个 AI 应用百花齐放的时代，显存永远不够用。合理的分配策略能让有限的硬件发挥最大价值——毕竟不是谁都有 8×A100 的豪华配置。</p>
 
@@ -496,7 +498,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD/" class="category-chain-item">AI基础设施</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -507,21 +509,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
-      
-        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
-      
-        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
-      
-        <a href="/tags/%E6%98%BE%E5%AD%98%E7%AE%A1%E7%90%86/" class="print-no-link">#显存管理</a>
-      
-        <a href="/tags/%E5%A4%9AGPU/" class="print-no-link">#多GPU</a>
-      
-    </div>
   
 </div>
 

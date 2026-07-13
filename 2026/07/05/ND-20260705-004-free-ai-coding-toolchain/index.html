@@ -1,0 +1,973 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="背景：免费模型能写代码吗？市面上有大量”免费 AI 编程工具”——Cursor、Windsurf、Trae-CN……它们提供免费的模型额度，让开发者零成本用 AI 写代码。但免费模型（GLM、DeepSeek、MiniMax 等）的代码能力参差不齐，直接用经常翻车：改了不该改的文件、删除已有功能、留下半成品代码。 问题不是模型不够强，而是没有给模型足够的约束。同一个免费模型，没有约束时改出 bug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码">
+<meta property="og:url" content="https://www.normdist.com/2026/07/05/ND-20260705-004-free-ai-coding-toolchain/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="背景：免费模型能写代码吗？市面上有大量”免费 AI 编程工具”——Cursor、Windsurf、Trae-CN……它们提供免费的模型额度，让开发者零成本用 AI 写代码。但免费模型（GLM、DeepSeek、MiniMax 等）的代码能力参差不齐，直接用经常翻车：改了不该改的文件、删除已有功能、留下半成品代码。 问题不是模型不够强，而是没有给模型足够的约束。同一个免费模型，没有约束时改出 bug">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-05T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T10:29:10.859Z">
+<meta property="article:author" content="小瑞">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-05 10:00" pubdate>
+          2026年7月5日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          41 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月12日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="背景：免费模型能写代码吗？"><a href="#背景：免费模型能写代码吗？" class="headerlink" title="背景：免费模型能写代码吗？"></a>背景：免费模型能写代码吗？</h2><p>市面上有大量”免费 AI 编程工具”——Cursor、Windsurf、Trae-CN……它们提供免费的模型额度，让开发者零成本用 AI 写代码。但免费模型（GLM、DeepSeek、MiniMax 等）的代码能力参差不齐，直接用经常翻车：改了不该改的文件、删除已有功能、留下半成品代码。</p>
+<p>问题不是模型不够强，而是<strong>没有给模型足够的约束</strong>。同一个免费模型，没有约束时改出 bug，加了约束后一次到位。区别在于：你是否把”项目架构””改动范围””编码规范”这些上下文喂给了模型。</p>
+<p>本文记录一套经过反复验证的工具链：用 OpenCode CLI 作为执行器，配合三层 AGENTS.md 约束机制，让免费模型产出生产级代码——零 API 费用，可控可验收。</p>
+<h2 id="工具链全景"><a href="#工具链全景" class="headerlink" title="工具链全景"></a>工具链全景</h2><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs scss"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><br><span class="hljs-number">16</span><br><span class="hljs-number">17</span><br><span class="hljs-number">18</span><br><span class="hljs-number">19</span><br><br>┌─────────────────────────────────────────────────────┐<br>│  AI Agent (编排者)                                    │<br>│  策划 → 委派 → 检查 → 处置 (PDCA)                     │<br>└──────────────────────┬──────────────────────────────┘<br>                       │ opencode run -f TASK<span class="hljs-selector-class">.md</span><br>                       ▼<br>┌─────────────────────────────────────────────────────┐<br>│  OpenCode CLI (执行器)                                │<br>│  合并三层 AGENTS<span class="hljs-selector-class">.md</span> → 注入 system prompt               │<br>│  ├─ 全局 AGENTS<span class="hljs-selector-class">.md</span> (编码行为准则)                      │<br>│  ├─ 项目 AGENTS<span class="hljs-selector-class">.md</span> (架构认知)                          │<br>│  └─ TASK 文件 (精准指令)                               │<br>└──────────────────────┬──────────────────────────────┘<br>                       │ 调用免费模型<br>                       ▼<br>┌─────────────────────────────────────────────────────┐<br>│  免费模型 (DeepSeek V4 Flash / GLM / MiniMax)         │<br>│  在约束下生成代码                                      │<br>└─────────────────────────────────────────────────────┘<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h3><p>组件<br>角色<br>费用</p>
+<p>OpenCode CLI<br>代码执行器，支持多种模型<br>免费（开源）</p>
+<p>免费模型<br>实际写代码的 LLM<br>免费（有速率限制）</p>
+<p>AGENTS.md<br>项目上下文 + 编码规范<br>需手动编写</p>
+<p>TASK 文件<br>单次任务的精准指令<br>需手动编写</p>
+<p>关键分工：<strong>AI Agent 负责策划和检查，OpenCode 负责执行</strong>。Agent 不直接写代码（节省自己的 Token 额度），而是写任务规格书（TASK-*.md），交给 OpenCode 执行，然后验收。</p>
+<h2 id="三层约束机制：核心创新"><a href="#三层约束机制：核心创新" class="headerlink" title="三层约束机制：核心创新"></a>三层约束机制：核心创新</h2><p>OpenCode 启动时会读取多个 AGENTS.md 文件，通过<strong>并集（Union）合并</strong>注入 LLM 的 system prompt。这不是覆盖，是叠加——三层约束同时生效。</p>
+<h3 id="第一层：全局-AGENTS-md（行为准则）"><a href="#第一层：全局-AGENTS-md（行为准则）" class="headerlink" title="第一层：全局 AGENTS.md（行为准则）"></a>第一层：全局 AGENTS.md（行为准则）</h3><p>路径：<code>~/.config/opencode/AGENTS.md</code></p>
+<p>内容：Karpathy 四原则——编码前思考、简洁优先、精准修改、目标驱动执行。</p>
+<p>作用：告诉模型<strong>怎么改代码</strong>——不准乱动没坏的东西，只改要求改的，改完必须验证。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br><br><span class="hljs-section">## Karpathy 四原则</span><br><br><span class="hljs-section">### 1. 编码前思考</span><br>列出所有需要改动的文件，想清楚每个文件改什么，不动什么。<br><br><span class="hljs-section">### 2. 简洁优先</span><br>只做最小改动。不创建新文件，不添加新功能，不搞抽象。<br><br><span class="hljs-section">### 3. 精准修改</span><br>只改任务清单列出的内容。绝对不碰禁止清单里的文件。<br><span class="hljs-bullet">-</span> 不改相邻代码、注释、格式<br><span class="hljs-bullet">-</span> 不改没坏的东西<br><span class="hljs-bullet">-</span> 不顺手优化或重构<br><br><span class="hljs-section">### 4. 目标驱动执行</span><br>每改完一个文件就验证语法。全部改完运行 git diff --stat 确认。<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="第二层：项目-AGENTS-md（架构认知）"><a href="#第二层：项目-AGENTS-md（架构认知）" class="headerlink" title="第二层：项目 AGENTS.md（架构认知）"></a>第二层：项目 AGENTS.md（架构认知）</h3><p>路径：<code>&lt;project&gt;/AGENTS.md</code></p>
+<p>内容：技术栈、API 端点清单、目录结构、数据库模型、关键约定。</p>
+<p>作用：告诉模型<strong>改哪里</strong>——知道项目的模块边界、已有的设计模式、哪些文件不能碰。</p>
+<p>一个典型的项目 AGENTS.md 会包含：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br><br><span class="hljs-section">## 项目概述</span><br><span class="hljs-bullet">-</span> 名称：交易系统<br><span class="hljs-bullet">-</span> 技术栈：FastAPI + React + SQLite<br><span class="hljs-bullet">-</span> 架构铁律：策略脚本不得在 api.py 添加端点<br><br><span class="hljs-section">## API 端点清单（50 个）</span><br>| 方法 | 端点 | 说明 |<br>|------|------|------|<br>| GET  | /api/portfolio | 持仓概览 |<br>| POST | /api/trade     | 执行交易 |<br>...<br><br><span class="hljs-section">## 禁止改动的文件</span><br><span class="hljs-bullet">-</span> app/models.py — 数据模型<br><span class="hljs-bullet">-</span> app/config.py — 配置<br><span class="hljs-bullet">-</span> frontend/ — 任何前端文件<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="第三层：TASK-文件（精准指令）"><a href="#第三层：TASK-文件（精准指令）" class="headerlink" title="第三层：TASK 文件（精准指令）"></a>第三层：TASK 文件（精准指令）</h3><p>路径：<code>&lt;project&gt;/TASK-YYYYMMDD-feature.md</code></p>
+<p>内容：本次任务的具体改动清单、禁止改动清单、验收标准。</p>
+<p>作用：告诉模型<strong>这次只改这些</strong>——精确到文件名和行为。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br><br><span class="hljs-section"># TASK: 数据源配置化</span><br><br><span class="hljs-section">## 改动清单</span><br><span class="hljs-bullet">1.</span> app/config.py — 新增 DATA<span class="hljs-emphasis">_SOURCE 配置项</span><br><span class="hljs-emphasis">2. app/services/data_</span>fetcher.py — 读取配置选择数据源<br><br><span class="hljs-section">## 禁止改动清单（绝对不碰）</span><br><span class="hljs-bullet">-</span> app/api.py<br><span class="hljs-bullet">-</span> app/models.py<br><span class="hljs-bullet">-</span> frontend/<br><br><span class="hljs-section">## 验收标准</span><br><span class="hljs-bullet">-</span> git diff --stat 只显示 2 个文件被修改<br><span class="hljs-bullet">-</span> python -c &quot;import ast; ast.parse(open(&#x27;app/config.py&#x27;).read())&quot;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="三层缺一不可"><a href="#三层缺一不可" class="headerlink" title="三层缺一不可"></a>三层缺一不可</h3><p>症状<br>缺哪层<br>根因</p>
+<p>改了不该改的文件<br>第一层（全局）<br>模型不知道”只改要求改的”</p>
+<p>改了错误的模块<br>第二层（项目）<br>模型不知道项目结构</p>
+<p>改了多余的行号<br>第三层（TASK）<br>模型不知道本次任务的精确范围</p>
+<p>实测案例：同一个任务，Round 1 全局 AGENTS.md 为空（四原则未注入），模型改了一堆不该改的文件，前端白屏。Round 2 补全三层约束后，模型只改了预期的 3 个文件，1 小时完成，零 regression。</p>
+<h2 id="免费模型实测：哪个能用"><a href="#免费模型实测：哪个能用" class="headerlink" title="免费模型实测：哪个能用"></a>免费模型实测：哪个能用</h2><p>OpenCode 内置多个免费模型，能力差异巨大：</p>
+<p>模型<br>编码能力<br>适用场景</p>
+<p>DeepSeek V4 Flash<br>★★★★★<br>复杂多文件任务、全局重构</p>
+<p>GLM-4.6 (big-pickle)<br>★★★☆☆<br>简单单文件改动</p>
+<p>MiniMax M3<br>★★★☆☆<br>通用任务</p>
+<h3 id="关键教训：模型选择决定返工量"><a href="#关键教训：模型选择决定返工量" class="headerlink" title="关键教训：模型选择决定返工量"></a>关键教训：模型选择决定返工量</h3><p>同一个 bug 修复任务：</p>
+<ul>
+<li><p><strong>GLM-4.6 做</strong>：改了一半，留下重复的 return 代码块（dead code），还误改了 CSS 文件导致前端白屏。需要人工补修。</p>
+</li>
+<li><p><strong>DeepSeek V4 Flash 做</strong>：正确诊断根因（缺少入口文件导致 tree-shaking），一次创建完整修复（4 处改动），构建验证部署一条龙。</p>
+</li>
+</ul>
+<p>结论：<strong>编码任务无脑选 DeepSeek V4 Flash。</strong> GLM-4.6 只用于最简单的单文件改动。跳过模型选择直接用默认模型 &#x3D; 流程违规。</p>
+<h3 id="模型可用性会波动"><a href="#模型可用性会波动" class="headerlink" title="模型可用性会波动"></a>模型可用性会波动</h3><p>免费模型随时可能返回 400 “Model does not exist” 或 429 速率限制。正确流程：</p>
+<ul>
+<li><p><code>opencode models</code> 列出当前可用模型</p>
+</li>
+<li><p>按能力排序选最强的</p>
+</li>
+<li><p>首选模型不可用，直接换次强的，<strong>不要问用户</strong></p>
+</li>
+<li><p>所有免费模型都不可用时，才考虑付费 provider</p>
+</li>
+</ul>
+<h2 id="代码审查实战：report-only-模式"><a href="#代码审查实战：report-only-模式" class="headerlink" title="代码审查实战：report-only 模式"></a>代码审查实战：report-only 模式</h2><p>除了写代码，免费模型还能做代码审查。最佳实践是 <strong>report-only 模式</strong>：让模型只报告问题，不改代码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br><br>opencode run <span class="hljs-string">&quot;审查 app/api.py，只报告 bug 和安全问题，不要改代码。维度：逻辑错误、SQL注入、异常处理缺失、性能瓶颈。每个问题标注行号和严重级别（P0/P1/P2）。&quot;</span> \<br>  --model opencode/deepseek-v4-flash-free \<br>  -f review-checklist.md<br><br></code></pre></td></tr></table></figure>
+
+<p>为什么要分离审查和修复？</p>
+<p>模式<br>模型行为<br>风险</p>
+<p>审查+修复一起做<br>边查边改<br>容易改过头，误删功能</p>
+<p>只审查（report-only）<br>只输出报告<br>无风险，报告质量高</p>
+<p>单独修复<br>按报告逐项修<br>可控，每步可验收</p>
+<p>实测：report-only 模式下，GLM-4.6 在 api.py（2000+ 行）中找到 9 个 bug，含 3 个 P1 全部准确。然后再写单独的修复 TASK，逐项修复，每步验收。</p>
+<h2 id="完整工作流"><a href="#完整工作流" class="headerlink" title="完整工作流"></a>完整工作流</h2><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs ada"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><br><br><span class="hljs-number">1</span>. AI Agent 分析需求<br>   ↓<br><span class="hljs-number">2</span>. 编写 <span class="hljs-keyword">TASK</span>-*.md（改动清单 + 禁止清单 + 验收标准）<br>   ↓<br><span class="hljs-number">3</span>. opencode models  →  选最强免费模型<br>   ↓<br><span class="hljs-number">4</span>. opencode run <span class="hljs-string">&quot;阅读 TASK-xxx.md 并执行&quot;</span> <span class="hljs-comment">--model &lt;best-free&gt;</span><br>   ↓<br><span class="hljs-number">5</span>. AI Agent 验收：<br>   - git diff <span class="hljs-comment">--stat（只改了预期文件？）</span><br>   - 语法检查（ast.parse / tsc）<br>   - 功能测试<br>   ↓<br><span class="hljs-number">6</span>. 不通过 → 补充 <span class="hljs-keyword">TASK</span> 回到步骤 <span class="hljs-number">4</span><br>   通过 → 更新文档 + 提交<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="典型调用示例"><a href="#典型调用示例" class="headerlink" title="典型调用示例"></a>典型调用示例</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br><br><span class="hljs-comment"># 检查模型可用性</span><br>opencode run <span class="hljs-string">&quot;Reply with: OK&quot;</span> --model opencode/deepseek-v4-flash-free<br><br><span class="hljs-comment"># 执行任务（附带 TASK 文件）</span><br>opencode run <span class="hljs-string">&quot;阅读 TASK-20260705-data-source-config.md 并按说明执行&quot;</span> \<br>  --model opencode/deepseek-v4-flash-free \<br>  -f TASK-20260705-data-source-config.md \<br>  --workdir /home/user/project<br><br><span class="hljs-comment"># 验收</span><br><span class="hljs-built_in">cd</span> /home/user/project<br>git diff --<span class="hljs-built_in">stat</span><br>python -m py_compile app/config.py<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="踩坑总结"><a href="#踩坑总结" class="headerlink" title="踩坑总结"></a>踩坑总结</h2><p>坑<br>症状<br>修复</p>
+<p>全局 AGENTS.md 路径写错<br>四原则不生效，模型乱改<br><code>~/.config/opencode/</code>（不是 <code>~/.opencode/</code>）</p>
+<p>模型选错<br>复杂任务改一半留垃圾<br>无脑用 DeepSeek V4 Flash</p>
+<p>TASK 文件在 workdir 外<br>OpenCode 拒绝读取<br>TASK 放项目目录内</p>
+<p><code>~</code> 路径解析错误<br>文件写到错误位置<br>一律用绝对路径</p>
+<p>审查修复一起做<br>误删已有功能<br>分离审查（report-only）和修复</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>维度<br>方案</p>
+<p>执行器<br>OpenCode CLI（开源、免费）</p>
+<p>约束机制<br>三层 AGENTS.md 并集合并</p>
+<p>首选模型<br>DeepSeek V4 Flash（免费最强）</p>
+<p>代码审查<br>report-only 模式，审查与修复分离</p>
+<p>成本<br>$0（全部使用免费模型额度）</p>
+<p>免费模型不是不能用，关键在于<strong>约束</strong>。三层 AGENTS.md 机制把”项目架构””编码规范””任务范围”三层上下文叠加注入，让免费模型在充分约束下的产出质量，逼近甚至超过无约束的付费模型。</p>
+<p>核心心法：<strong>Agent 策划，OpenCode 执行，免费模型干活，人工验收。</strong> 每一层各司其职，成本为零。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码</div>
+      <div>https://www.normdist.com/2026/07/05/ND-20260705-004-free-ai-coding-toolchain/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" title="从交易记录重建每日资产快照：daily_summaries 历史回填实战">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">从交易记录重建每日资产快照：daily_summaries 历史回填实战</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" title="SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法">
+                        <span class="hidden-mobile">SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

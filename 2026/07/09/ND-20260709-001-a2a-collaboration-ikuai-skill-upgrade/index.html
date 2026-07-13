@@ -19,21 +19,16 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="A2A 协议实战：两个 AI Agent 协作升级路由器技能背景：从工具共享到任务协作在上一篇文章中，我们解决了 Agent 间的工具共享问题——通过 MCP 桥接，Linux 上的主 Agent 可以调用 Windows Agent 的 13 个工具。但那是单向的：主 Agent 调远程工具，远程 Agent 只是被动的执行者。 真正的多 Agent 协作（Agent-to-Agent，A2A）">
+    <meta name="description" content="背景：从工具共享到任务协作在上一篇文章中，我们解决了 Agent 间的工具共享问题——通过 MCP 桥接，Linux 上的主 Agent 可以调用 Windows Agent 的 13 个工具。但那是单向的：主 Agent 调远程工具，远程 Agent 只是被动的执行者。 真正的多 Agent 协作（Agent-to-Agent，A2A）需要更深一层：两个 Agent 像同事一样，围绕同一个任务讨">
 <meta property="og:type" content="article">
 <meta property="og:title" content="A2A 协议实战：两个 AI Agent 协作升级路由器技能">
 <meta property="og:url" content="https://www.normdist.com/2026/07/09/ND-20260709-001-a2a-collaboration-ikuai-skill-upgrade/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="A2A 协议实战：两个 AI Agent 协作升级路由器技能背景：从工具共享到任务协作在上一篇文章中，我们解决了 Agent 间的工具共享问题——通过 MCP 桥接，Linux 上的主 Agent 可以调用 Windows Agent 的 13 个工具。但那是单向的：主 Agent 调远程工具，远程 Agent 只是被动的执行者。 真正的多 Agent 协作（Agent-to-Agent，A2A）">
+<meta property="og:description" content="背景：从工具共享到任务协作在上一篇文章中，我们解决了 Agent 间的工具共享问题——通过 MCP 桥接，Linux 上的主 Agent 可以调用 Windows Agent 的 13 个工具。但那是单向的：主 Agent 调远程工具，远程 Agent 只是被动的执行者。 真正的多 Agent 协作（Agent-to-Agent，A2A）需要更深一层：两个 Agent 像同事一样，围绕同一个任务讨">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-07-09T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:06:57.025Z">
+<meta property="article:modified_time" content="2026-07-12T10:29:10.861Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="多Agent协作">
-<meta property="article:tag" content="MCP">
-<meta property="article:tag" content="A2A">
-<meta property="article:tag" content="路由器">
-<meta property="article:tag" content="技能升级">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -91,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -358,7 +353,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.9k 字
+          5.2k 字
         
       </span>
     
@@ -369,7 +364,7 @@
         
         
         
-          41 分钟
+          44 分钟
         
       </span>
     
@@ -422,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -430,147 +425,123 @@
             
               <div class="markdown-body">
                 
-                <h1 id="A2A-协议实战：两个-AI-Agent-协作升级路由器技能"><a href="#A2A-协议实战：两个-AI-Agent-协作升级路由器技能" class="headerlink" title="A2A 协议实战：两个 AI Agent 协作升级路由器技能"></a>A2A 协议实战：两个 AI Agent 协作升级路由器技能</h1><h2 id="背景：从工具共享到任务协作"><a href="#背景：从工具共享到任务协作" class="headerlink" title="背景：从工具共享到任务协作"></a>背景：从工具共享到任务协作</h2><p>在上一篇文章中，我们解决了 Agent 间的工具共享问题——通过 MCP 桥接，Linux 上的主 Agent 可以调用 Windows Agent 的 13 个工具。但那是单向的：主 Agent 调远程工具，远程 Agent 只是被动的执行者。</p>
+                <h2 id="背景：从工具共享到任务协作"><a href="#背景：从工具共享到任务协作" class="headerlink" title="背景：从工具共享到任务协作"></a>背景：从工具共享到任务协作</h2><p>在上一篇文章中，我们解决了 Agent 间的工具共享问题——通过 MCP 桥接，Linux 上的主 Agent 可以调用 Windows Agent 的 13 个工具。但那是单向的：主 Agent 调远程工具，远程 Agent 只是被动的执行者。</p>
 <p>真正的多 Agent 协作（Agent-to-Agent，A2A）需要更深一层：<strong>两个 Agent 像同事一样，围绕同一个任务讨论方案、分工执行、互相校验。</strong></p>
 <p>这篇文章记录的就是这样一次实践：两个 AI Agent 通过 A2A 协议，协作升级一个路由器管理技能的全部过程。</p>
 <h2 id="需求：iKuai-路由器技能升级"><a href="#需求：iKuai-路由器技能升级" class="headerlink" title="需求：iKuai 路由器技能升级"></a>需求：iKuai 路由器技能升级</h2><p>iKuai 是一款国产软路由系统，提供 Web 管理界面。此前已经有一个旧版技能（下称 v2），能做基础操作：查询连接状态、管理端口转发、查看流量统计。但功能有限，且与新固件的 API 有兼容性问题。</p>
 <p>升级目标（v3）：</p>
 <ul>
-<li>修复与新固件 API 的兼容性（认证流程变更）</li>
-<li>增加多 WAN 口负载均衡查询</li>
-<li>增加 QoS 规则批量管理</li>
-<li>重构错误处理（旧版大量裸 except）</li>
+<li><p>修复与新固件 API 的兼容性（认证流程变更）</p>
+</li>
+<li><p>增加多 WAN 口负载均衡查询</p>
+</li>
+<li><p>增加 QoS 规则批量管理</p>
+</li>
+<li><p>重构错误处理（旧版大量裸 except）</p>
+</li>
 </ul>
 <p>问题在于：路由器的调试需要<strong>实地操作</strong>——SSH 到路由器、抓 HTTP 包、测试 API 响应。主 Agent 在 Linux 上运行，够不到路由器的管理界面。但它有一个 Windows 端的搭档 Agent，那台机器可以直接访问路由器的管理网段。</p>
 <p>这就是 A2A 登场的场景。</p>
-<h2 id="架构：A2A-协作的三步闭环"><a href="#架构：A2A-协作的三步闭环" class="headerlink" title="架构：A2A 协作的三步闭环"></a>架构：A2A 协作的三步闭环</h2><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs armasm">主 Agent (Linux)                    Windows Agent<br>┌──────────────────┐               ┌──────────────────┐<br>│                  │  <span class="hljs-number">1</span>. 发起讨论   │                  │<br>│ 分析 <span class="hljs-built_in">v2</span> 技能代码  │ ────────────► │ 接收任务上下文    │<br>│ 列出升级需求      │               │                  │<br>│                  │  <span class="hljs-number">2</span>. 实地验证   │                  │<br>│                  │ ◄──────────── │ SSH 连路由器      │<br>│                  │               │ 抓包测试 API      │<br>│ 审查验证结果      │  <span class="hljs-number">3</span>. 反馈方案   │ 返回 API 文档     │<br>│ 编写 <span class="hljs-built_in">v3</span> 技能代码  │ ◄──────────── │ 和测试数据        │<br>└──────────────────┘               └──────────────────┘<br></code></pre></td></tr></table></figure>
+<h2 id="架构：A2A-协作的三步闭环"><a href="#架构：A2A-协作的三步闭环" class="headerlink" title="架构：A2A 协作的三步闭环"></a>架构：A2A 协作的三步闭环</h2><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><br>主 Agent (Linux)                    Windows Agent<br>┌──────────────────┐               ┌──────────────────┐<br>│                  │  <span class="hljs-number">1</span>. 发起讨论   │                  │<br>│ 分析 <span class="hljs-built_in">v2</span> 技能代码  │ ────────────► │ 接收任务上下文    │<br>│ 列出升级需求      │               │                  │<br>│                  │  <span class="hljs-number">2</span>. 实地验证   │                  │<br>│                  │ ◄──────────── │ SSH 连路由器      │<br>│                  │               │ 抓包测试 API      │<br>│ 审查验证结果      │  <span class="hljs-number">3</span>. 反馈方案   │ 返回 API 文档     │<br>│ 编写 <span class="hljs-built_in">v3</span> 技能代码  │ ◄──────────── │ 和测试数据        │<br>└──────────────────┘               └──────────────────┘<br><br></code></pre></td></tr></table></figure>
 
 <p>三步闭环：</p>
-<ol>
-<li><strong>主 Agent 发起</strong>：分析旧技能代码，梳理升级清单，通过 A2A 通道将任务上下文发送给 Windows Agent</li>
-<li><strong>Windows Agent 验证</strong>：在本地操作路由器（SSH 连接、抓包、API 测试），将实测数据返回</li>
-<li><strong>主 Agent 收尾</strong>：根据实测数据，完成代码编写和技能发布</li>
-</ol>
+<ul>
+<li><p><strong>主 Agent 发起</strong>：分析旧技能代码，梳理升级清单，通过 A2A 通道将任务上下文发送给 Windows Agent</p>
+</li>
+<li><p><strong>Windows Agent 验证</strong>：在本地操作路由器（SSH 连接、抓包、API 测试），将实测数据返回</p>
+</li>
+<li><p><strong>主 Agent 收尾</strong>：根据实测数据，完成代码编写和技能发布</p>
+</li>
+</ul>
 <p>这不是简单的”调一个工具拿结果”，而是多轮往返的协作：讨论→验证→反馈→再验证。</p>
 <h2 id="实践过程"><a href="#实践过程" class="headerlink" title="实践过程"></a>实践过程</h2><h3 id="第一步：技能代码审查"><a href="#第一步：技能代码审查" class="headerlink" title="第一步：技能代码审查"></a>第一步：技能代码审查</h3><p>主 Agent 先读取旧版 v2 技能的全部代码。核心发现：</p>
 <p><strong>认证流程过时</strong>：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># v2 的认证方式（旧固件）</span><br>session = requests.Session()<br>session.post(<span class="hljs-string">f&quot;http://<span class="hljs-subst">&#123;router_ip&#125;</span>/login&quot;</span>, data=&#123;<br>    <span class="hljs-string">&quot;username&quot;</span>: user,<br>    <span class="hljs-string">&quot;password&quot;</span>: pwd<br>&#125;)<br><span class="hljs-comment"># 新固件改了——用 Token + CSRF</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><br><span class="hljs-comment"># v2 的认证方式（旧固件）</span><br>session = requests.Session()<br>session.post(<span class="hljs-string">f&quot;http://<span class="hljs-subst">&#123;router_ip&#125;</span>/login&quot;</span>, data=&#123;<br>    <span class="hljs-string">&quot;username&quot;</span>: user,<br>    <span class="hljs-string">&quot;password&quot;</span>: pwd<br>&#125;)<br><span class="hljs-comment"># 新固件改了——用 Token + CSRF</span><br><br></code></pre></td></tr></table></figure>
 
 <p>v2 用的是简单的 Session Cookie 认证，但新固件引入了 CSRF Token 机制。旧代码登录后拿到的 Cookie 在后续请求中被 403 拒绝，用户以为技能坏了，实际是认证流程变了。</p>
 <p><strong>错误处理裸奔</strong>：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># v2 的错误处理</span><br><span class="hljs-keyword">try</span>:<br>    resp = session.get(url)<br>    <span class="hljs-keyword">return</span> resp.json()<br><span class="hljs-keyword">except</span>:<br>    <span class="hljs-keyword">return</span> &#123;&#125;  <span class="hljs-comment"># 吞掉所有异常，返回空字典</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><br><span class="hljs-comment"># v2 的错误处理</span><br><span class="hljs-keyword">try</span>:<br>    resp = session.get(url)<br>    <span class="hljs-keyword">return</span> resp.json()<br><span class="hljs-keyword">except</span>:<br>    <span class="hljs-keyword">return</span> &#123;&#125;  <span class="hljs-comment"># 吞掉所有异常，返回空字典</span><br><br></code></pre></td></tr></table></figure>
 
 <p>路由器 API 超时、返回 HTML 错误页（而不是 JSON）、网络不通——这些场景全部被裸 <code>except</code> 吞掉。调用方拿到空字典，无从判断是真没数据还是出了错。</p>
 <p><strong>功能缺口</strong>：v2 只实现了查询类操作，没有管理类操作（增删改 QoS 规则、端口转发规则）。</p>
 <h3 id="第二步：A2A-通道-—-发起协作请求"><a href="#第二步：A2A-通道-—-发起协作请求" class="headerlink" title="第二步：A2A 通道 — 发起协作请求"></a>第二步：A2A 通道 — 发起协作请求</h3><p>主 Agent 通过 MCP 桥接通道，向 Windows Agent 发起协作：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs markdown">任务：验证 iKuai 新固件 API 的认证流程和关键接口<br>背景：旧技能 v2 的 Session Cookie 认证在新固件上失效<br>需求：<br><span class="hljs-bullet">  1.</span> 登录路由器管理界面，抓取登录请求的完整 HTTP 流程<br><span class="hljs-bullet">  2.</span> 验证新认证方式（Token / CSRF）<br><span class="hljs-bullet">  3.</span> 测试以下 API 的请求/响应格式：<br><span class="hljs-bullet">     -</span> WAN 口状态查询<br><span class="hljs-bullet">     -</span> QoS 规则列表<br><span class="hljs-bullet">     -</span> 端口转发规则列表<br></code></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br><br>任务：验证 iKuai 新固件 API 的认证流程和关键接口<br>背景：旧技能 v2 的 Session Cookie 认证在新固件上失效<br>需求：<br><span class="hljs-bullet">  1.</span> 登录路由器管理界面，抓取登录请求的完整 HTTP 流程<br><span class="hljs-bullet">  2.</span> 验证新认证方式（Token / CSRF）<br><span class="hljs-bullet">  3.</span> 测试以下 API 的请求/响应格式：<br><span class="hljs-bullet">     -</span> WAN 口状态查询<br><span class="hljs-bullet">     -</span> QoS 规则列表<br><span class="hljs-bullet">     -</span> 端口转发规则列表<br><br></code></pre></td></tr></table></figure>
 
 <p>这一步通过 A2A 通道传输的不是代码，而是<strong>任务描述和上下文</strong>。主 Agent 把”需要验证什么”讲清楚，Windows Agent 负责在本地执行。</p>
 <h3 id="第三步：Windows-Agent-实地验证"><a href="#第三步：Windows-Agent-实地验证" class="headerlink" title="第三步：Windows Agent 实地验证"></a>第三步：Windows Agent 实地验证</h3><p>Windows Agent 接到任务后，执行了以下操作（44 条消息，23 次工具调用）：</p>
-<ol>
-<li><strong>SSH 连接路由器</strong>：确认网络可达，获取固件版本号</li>
-<li><strong>浏览器抓包</strong>：打开路由器管理界面，用 CDP 开发者工具抓取登录请求</li>
-<li><strong>API 探测</strong>：逐个测试关键接口，记录请求格式和响应结构</li>
-</ol>
+<ul>
+<li><p><strong>SSH 连接路由器</strong>：确认网络可达，获取固件版本号</p>
+</li>
+<li><p><strong>浏览器抓包</strong>：打开路由器管理界面，用 CDP 开发者工具抓取登录请求</p>
+</li>
+<li><p><strong>API 探测</strong>：逐个测试关键接口，记录请求格式和响应结构</p>
+</li>
+</ul>
 <p>关键发现（Windows Agent 返回的验证结果）：</p>
 <p><strong>新认证流程</strong>：</p>
-<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-number">1.</span> <span class="hljs-keyword">GET</span> /api/<span class="hljs-keyword">system</span>/auth_token → 获取 CSRF Token<br><span class="hljs-number">2.</span> POST /api/<span class="hljs-keyword">login</span> (<span class="hljs-keyword">Header</span>: X-CSRF-Token, Body: &#123;<span class="hljs-keyword">user</span>, pwd&#125;)<br>   → 返回 &#123; &quot;token&quot;: &quot;xxx&quot;, &quot;expires&quot;: <span class="hljs-number">3600</span> &#125;<br><span class="hljs-number">3.</span> 后续请求 <span class="hljs-keyword">Header</span> 带 <span class="hljs-keyword">Authorization</span>: Bearer xxx<br></code></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><br><span class="hljs-number">1.</span> <span class="hljs-keyword">GET</span> /api/<span class="hljs-keyword">system</span>/auth_token → 获取 CSRF Token<br><span class="hljs-number">2.</span> POST /api/<span class="hljs-keyword">login</span> (<span class="hljs-keyword">Header</span>: X-CSRF-Token, Body: &#123;<span class="hljs-keyword">user</span>, pwd&#125;)<br>   → 返回 &#123; &quot;token&quot;: &quot;xxx&quot;, &quot;expires&quot;: <span class="hljs-number">3600</span> &#125;<br><span class="hljs-number">3.</span> 后续请求 <span class="hljs-keyword">Header</span> 带 <span class="hljs-keyword">Authorization</span>: Bearer xxx<br><br></code></pre></td></tr></table></figure>
 
 <p><strong>WAN 口状态 API 响应格式</strong>：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;interface&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;wan1&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;connected&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;ip&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;10.x.x.x&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;rx_bytes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1234567890</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;tx_bytes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">987654321</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs json"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;interface&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;wan1&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;connected&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;ip&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;10.x.x.x&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;rx_bytes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1234567890</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;tx_bytes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">987654321</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br><br></code></pre></td></tr></table></figure>
 
 <p>这些是<strong>实测数据</strong>，不是文档抄来的。新旧固件的差异只有实地抓包才能发现。</p>
 <h3 id="第四步：主-Agent-编写-v3-技能"><a href="#第四步：主-Agent-编写-v3-技能" class="headerlink" title="第四步：主 Agent 编写 v3 技能"></a>第四步：主 Agent 编写 v3 技能</h3><p>拿到 Windows Agent 返回的 API 文档和测试数据后，主 Agent 开始编写 v3：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">iKuaiV3</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, host, user, pwd</span>):<br>        <span class="hljs-variable language_">self</span>.host = host<br>        <span class="hljs-variable language_">self</span>.session = requests.Session()<br>        <span class="hljs-variable language_">self</span>._authenticate(user, pwd)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_authenticate</span>(<span class="hljs-params">self, user, pwd</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;新固件认证：CSRF Token + Bearer Token&quot;&quot;&quot;</span><br>        <span class="hljs-comment"># 1. 获取 CSRF Token</span><br>        resp = <span class="hljs-variable language_">self</span>.session.get(<span class="hljs-string">f&quot;http://<span class="hljs-subst">&#123;self.host&#125;</span>/api/system/auth_token&quot;</span>)<br>        csrf_token = resp.json()[<span class="hljs-string">&quot;csrf_token&quot;</span>]<br><br>        <span class="hljs-comment"># 2. 登录</span><br>        resp = <span class="hljs-variable language_">self</span>.session.post(<br>            <span class="hljs-string">f&quot;http://<span class="hljs-subst">&#123;self.host&#125;</span>/api/login&quot;</span>,<br>            json=&#123;<span class="hljs-string">&quot;username&quot;</span>: user, <span class="hljs-string">&quot;password&quot;</span>: pwd&#125;,<br>            headers=&#123;<span class="hljs-string">&quot;X-CSRF-Token&quot;</span>: csrf_token&#125;<br>        )<br>        result = resp.json()<br>        <span class="hljs-keyword">if</span> result.get(<span class="hljs-string">&quot;code&quot;</span>) != <span class="hljs-number">0</span>:<br>            <span class="hljs-keyword">raise</span> AuthError(<span class="hljs-string">f&quot;Login failed: <span class="hljs-subst">&#123;result.get(<span class="hljs-string">&#x27;msg&#x27;</span>, <span class="hljs-string">&#x27;unknown&#x27;</span>)&#125;</span>&quot;</span>)<br><br>        <span class="hljs-variable language_">self</span>.bearer_token = result[<span class="hljs-string">&quot;data&quot;</span>][<span class="hljs-string">&quot;token&quot;</span>]<br>        <span class="hljs-variable language_">self</span>.session.headers[<span class="hljs-string">&quot;Authorization&quot;</span>] = <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">&#123;self.bearer_token&#125;</span>&quot;</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_wan_status</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;查询 WAN 口状态&quot;&quot;&quot;</span><br>        resp = <span class="hljs-variable language_">self</span>.session.get(<span class="hljs-string">f&quot;http://<span class="hljs-subst">&#123;self.host&#125;</span>/api/network/wan&quot;</span>)<br>        <span class="hljs-variable language_">self</span>._check_response(resp)<br>        <span class="hljs-keyword">return</span> resp.json()[<span class="hljs-string">&quot;data&quot;</span>]<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><br><span class="hljs-number">16</span><br><span class="hljs-number">17</span><br><span class="hljs-number">18</span><br><span class="hljs-number">19</span><br><span class="hljs-number">20</span><br><span class="hljs-number">21</span><br><span class="hljs-number">22</span><br><span class="hljs-number">23</span><br><span class="hljs-number">24</span><br><span class="hljs-number">25</span><br><span class="hljs-number">26</span><br><span class="hljs-number">27</span><br><span class="hljs-number">28</span><br><span class="hljs-number">29</span><br><span class="hljs-number">30</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">iKuaiV3</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, host, user, pwd</span>):<br>        <span class="hljs-variable language_">self</span>.host = host<br>        <span class="hljs-variable language_">self</span>.session = requests.Session()<br>        <span class="hljs-variable language_">self</span>._authenticate(user, pwd)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_authenticate</span>(<span class="hljs-params">self, user, pwd</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;新固件认证：CSRF Token + Bearer Token&quot;&quot;&quot;</span><br>        <span class="hljs-comment"># 1. 获取 CSRF Token</span><br>        resp = <span class="hljs-variable language_">self</span>.session.get(<span class="hljs-string">f&quot;http://<span class="hljs-subst">&#123;self.host&#125;</span>/api/system/auth_token&quot;</span>)<br>        csrf_token = resp.json()[<span class="hljs-string">&quot;csrf_token&quot;</span>]<br><br>        <span class="hljs-comment"># 2. 登录</span><br>        resp = <span class="hljs-variable language_">self</span>.session.post(<br>            <span class="hljs-string">f&quot;http://<span class="hljs-subst">&#123;self.host&#125;</span>/api/login&quot;</span>,<br>            json=&#123;<span class="hljs-string">&quot;username&quot;</span>: user, <span class="hljs-string">&quot;password&quot;</span>: pwd&#125;,<br>            headers=&#123;<span class="hljs-string">&quot;X-CSRF-Token&quot;</span>: csrf_token&#125;<br>        )<br>        result = resp.json()<br>        <span class="hljs-keyword">if</span> result.get(<span class="hljs-string">&quot;code&quot;</span>) != <span class="hljs-number">0</span>:<br>            <span class="hljs-keyword">raise</span> AuthError(<span class="hljs-string">f&quot;Login failed: <span class="hljs-subst">&#123;result.get(<span class="hljs-string">&#x27;msg&#x27;</span>, <span class="hljs-string">&#x27;unknown&#x27;</span>)&#125;</span>&quot;</span>)<br><br>        <span class="hljs-variable language_">self</span>.bearer_token = result[<span class="hljs-string">&quot;data&quot;</span>][<span class="hljs-string">&quot;token&quot;</span>]<br>        <span class="hljs-variable language_">self</span>.session.headers[<span class="hljs-string">&quot;Authorization&quot;</span>] = <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">&#123;self.bearer_token&#125;</span>&quot;</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_wan_status</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;查询 WAN 口状态&quot;&quot;&quot;</span><br>        resp = <span class="hljs-variable language_">self</span>.session.get(<span class="hljs-string">f&quot;http://<span class="hljs-subst">&#123;self.host&#125;</span>/api/network/wan&quot;</span>)<br>        <span class="hljs-variable language_">self</span>._check_response(resp)<br>        <span class="hljs-keyword">return</span> resp.json()[<span class="hljs-string">&quot;data&quot;</span>]<br><br></code></pre></td></tr></table></figure>
 
 <p>改进点：</p>
 <ul>
-<li><strong>显式认证</strong>：CSRF Token + Bearer Token 两步认证，认证失败直接抛 <code>AuthError</code></li>
-<li><strong>错误分层</strong>：网络错误、认证错误、API 业务错误分别用不同异常类型，不再裸 except</li>
-<li><strong>Token 过期自动续期</strong>：检测到 401 响应时自动重新认证</li>
+<li><p><strong>显式认证</strong>：CSRF Token + Bearer Token 两步认证，认证失败直接抛 <code>AuthError</code></p>
+</li>
+<li><p><strong>错误分层</strong>：网络错误、认证错误、API 业务错误分别用不同异常类型，不再裸 except</p>
+</li>
+<li><p><strong>Token 过期自动续期</strong>：检测到 401 响应时自动重新认证</p>
+</li>
 </ul>
 <h3 id="第五步：闭环验证"><a href="#第五步：闭环验证" class="headerlink" title="第五步：闭环验证"></a>第五步：闭环验证</h3><p>v3 代码写完后，主 Agent 再次通过 A2A 通道请 Windows Agent 做最终验证：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs markdown">任务：验证 v3 技能代码在路由器上的实际运行效果<br>需求：<br><span class="hljs-bullet">  1.</span> 在本地运行 v3 代码<br><span class="hljs-bullet">  2.</span> 测试 4 个核心接口（认证、WAN 状态、QoS 列表、端口转发）<br><span class="hljs-bullet">  3.</span> 故意制造一次 Token 过期，验证自动续期逻辑<br></code></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><br>1<br>2<br>3<br>4<br>5<br><br>任务：验证 v3 技能代码在路由器上的实际运行效果<br>需求：<br><span class="hljs-bullet">  1.</span> 在本地运行 v3 代码<br><span class="hljs-bullet">  2.</span> 测试 4 个核心接口（认证、WAN 状态、QoS 列表、端口转发）<br><span class="hljs-bullet">  3.</span> 故意制造一次 Token 过期，验证自动续期逻辑<br><br></code></pre></td></tr></table></figure>
 
 <p>Windows Agent 在本地跑了一遍 v3 代码，4 个接口全部通过，Token 过期自动续期逻辑验证通过。整个协作闭环完成。</p>
 <h2 id="A2A-协作-vs-传统工具调用"><a href="#A2A-协作-vs-传统工具调用" class="headerlink" title="A2A 协作 vs 传统工具调用"></a>A2A 协作 vs 传统工具调用</h2><p>这次实践最大的收获不是 v3 技能本身，而是 A2A 协作模式的验证。跟传统的主 Agent 单向调用工具相比：</p>
-<table>
-<thead>
-<tr>
-<th>维度</th>
-<th>传统工具调用</th>
-<th>A2A 协作</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>信息流</td>
-<td>单向：主 Agent 发指令，拿结果</td>
-<td>双向：讨论、验证、反馈、再验证</td>
-</tr>
-<tr>
-<td>决策权</td>
-<td>主 Agent 全权决策</td>
-<td>双方都有判断权，可以提出异议</td>
-</tr>
-<tr>
-<td>任务粒度</td>
-<td>一个工具 &#x3D; 一次调用</td>
-<td>一个任务 &#x3D; 多轮协作</td>
-</tr>
-<tr>
-<td>适用场景</td>
-<td>明确的操作（读文件、跑命令）</td>
-<td>需要探索和验证的复杂任务</td>
-</tr>
-</tbody></table>
+<p>维度<br>传统工具调用<br>A2A 协作</p>
+<p>信息流<br>单向：主 Agent 发指令，拿结果<br>双向：讨论、验证、反馈、再验证</p>
+<p>决策权<br>主 Agent 全权决策<br>双方都有判断权，可以提出异议</p>
+<p>任务粒度<br>一个工具 &#x3D; 一次调用<br>一个任务 &#x3D; 多轮协作</p>
+<p>适用场景<br>明确的操作（读文件、跑命令）<br>需要探索和验证的复杂任务</p>
 <p>关键区别在于：<strong>传统工具调用中，远程 Agent 是手。A2A 协作中，远程 Agent 是同事。</strong></p>
 <p>这次 iKuai 技能升级，Windows Agent 不是简单地”帮我跑个命令”，而是：</p>
 <ul>
-<li>自主决定怎么验证（先 SSH 再抓包再 API 测试）</li>
-<li>发现问题主动汇报（认证方式变了不只是报个错，而是分析出完整的替代方案）</li>
-<li>对主 Agent 的代码提出改进建议（Token 过期续期是 Windows Agent 在测试中发现的需求）</li>
+<li><p>自主决定怎么验证（先 SSH 再抓包再 API 测试）</p>
+</li>
+<li><p>发现问题主动汇报（认证方式变了不只是报个错，而是分析出完整的替代方案）</p>
+</li>
+<li><p>对主 Agent 的代码提出改进建议（Token 过期续期是 Windows Agent 在测试中发现的需求）</p>
+</li>
 </ul>
 <h2 id="反思：什么场景适合-A2A"><a href="#反思：什么场景适合-A2A" class="headerlink" title="反思：什么场景适合 A2A"></a>反思：什么场景适合 A2A</h2><p>不是所有任务都需要 A2A。这次实践之后，总结了一个判断框架：</p>
 <p><strong>适合 A2A 的场景</strong>：</p>
 <ul>
-<li>需要实地操作才能获取信息（抓包、实机测试）</li>
-<li>信息在协作过程中会变化（验证后发现新问题，需要调整方案）</li>
-<li>两个 Agent 有互补能力（一个擅长编码，一个擅长运维操作）</li>
+<li><p>需要实地操作才能获取信息（抓包、实机测试）</p>
+</li>
+<li><p>信息在协作过程中会变化（验证后发现新问题，需要调整方案）</p>
+</li>
+<li><p>两个 Agent 有互补能力（一个擅长编码，一个擅长运维操作）</p>
+</li>
 </ul>
 <p><strong>不适合 A2A 的场景</strong>（传统工具调用就够）：</p>
 <ul>
-<li>标准化的读写操作（文件、数据库）</li>
-<li>单次就能完成的操作（查询状态、执行命令）</li>
-<li>不需要多轮往返的简单任务</li>
+<li><p>标准化的读写操作（文件、数据库）</p>
+</li>
+<li><p>单次就能完成的操作（查询状态、执行命令）</p>
+</li>
+<li><p>不需要多轮往返的简单任务</p>
+</li>
 </ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
-<thead>
-<tr>
-<th>维度</th>
-<th>实践结果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>协作模式</td>
-<td>A2A（双向讨论 + 多轮验证）</td>
-</tr>
-<tr>
-<td>协作轮次</td>
-<td>2 轮（发起验证 + 闭环验证）</td>
-</tr>
-<tr>
-<td>消息量</td>
-<td>44 条消息，23 次工具调用</td>
-</tr>
-<tr>
-<td>技能版本</td>
-<td>v2 → v3（认证重构 + 功能扩展 + 错误处理分层）</td>
-</tr>
-<tr>
-<td>核心价值</td>
-<td>从”工具共享”升级到”任务协作”</td>
-</tr>
-</tbody></table>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>维度<br>实践结果</p>
+<p>协作模式<br>A2A（双向讨论 + 多轮验证）</p>
+<p>协作轮次<br>2 轮（发起验证 + 闭环验证）</p>
+<p>消息量<br>44 条消息，23 次工具调用</p>
+<p>技能版本<br>v2 → v3（认证重构 + 功能扩展 + 错误处理分层）</p>
+<p>核心价值<br>从”工具共享”升级到”任务协作”</p>
 <p>A2A 协作的本质不是技术协议的复杂度——MCP 桥接已经解决了通信问题。真正的挑战是<strong>任务编排</strong>：什么时候该发起协作、怎么描述任务上下文、怎么处理反馈分歧。</p>
 <p>这次 iKuai 技能升级是一个理想案例：任务边界清晰、验证可量化、两个 Agent 能力互补。更复杂的 A2A 场景（多 Agent 并行协作、动态任务分配、冲突仲裁）还需要在实践中继续探索。</p>
 
@@ -591,15 +562,8 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/AI-Agent/A2A/" class="category-chain-item">A2A</a>
-  
-  
-
   
 
       </span>
@@ -609,21 +573,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/%E5%A4%9AAgent%E5%8D%8F%E4%BD%9C/" class="print-no-link">#多Agent协作</a>
-      
-        <a href="/tags/MCP/" class="print-no-link">#MCP</a>
-      
-        <a href="/tags/A2A/" class="print-no-link">#A2A</a>
-      
-        <a href="/tags/%E8%B7%AF%E7%94%B1%E5%99%A8/" class="print-no-link">#路由器</a>
-      
-        <a href="/tags/%E6%8A%80%E8%83%BD%E5%8D%87%E7%BA%A7/" class="print-no-link">#技能升级</a>
-      
-    </div>
   
 </div>
 
@@ -678,9 +627,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/07/09/ND-20260708-001-ai-agent-autonomous-refactoring/" title="AI Agent 自主重构之路：从响应式审查到全自动修复">
+                      <a href="/2026/07/10/ND-20260710-002-krea2-comfyui-debug-pitfall/" title="Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">AI Agent 自主重构之路：从响应式审查到全自动修复</span>
+                        <span class="hidden-mobile">Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -688,8 +637,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/07/09/ND-20260705-001-a2a-mcp-bridge/" title="Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具">
-                        <span class="hidden-mobile">Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具</span>
+                      <a href="/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/" title="不改 GGUF 文件，用 chat-template-file 修复 llama.cpp Jinja 模板错误">
+                        <span class="hidden-mobile">不改 GGUF 文件，用 chat-template-file 修复 llama.cpp Jinja 模板错误</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

@@ -19,22 +19,16 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agen">
+    <meta name="description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
 <meta property="og:type" content="article">
 <meta property="og:title" content="构建AI Agent的认知内核：从七问协议到自进化引擎">
 <meta property="og:url" content="https://www.normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agen">
+<meta property="og:description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-25T19:10:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:06:57.021Z">
+<meta property="article:published_time" content="2026-06-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:08:53.443Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI Agent">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="认知架构">
-<meta property="article:tag" content="PDCA">
-<meta property="article:tag" content="TRIZ">
-<meta property="article:tag" content="质量管理">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -92,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -347,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-26 03:10" pubdate>
-          2026年6月26日 凌晨
+        <time datetime="2026-06-26 10:00" pubdate>
+          2026年6月26日 上午
         </time>
       </span>
     
@@ -423,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -431,98 +425,39 @@
             
               <div class="markdown-body">
                 
-                <!-- 将封面图放在这里 -->
-
-<p>大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。</p>
+                <p>大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。</p>
 <p>这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent 拥有一个可追踪、可进化、可审计的”认知内核”。</p>
 <h2 id="问题诊断：Agent-为什么不”成长”？"><a href="#问题诊断：Agent-为什么不”成长”？" class="headerlink" title="问题诊断：Agent 为什么不”成长”？"></a>问题诊断：Agent 为什么不”成长”？</h2><p>观察一个典型 Agent 的工作流，你会发现三个结构性缺陷：</p>
-<ol>
-<li><strong>身份漂移</strong>——同一个 Agent 在不同 session 中表现出矛盾的判断标准</li>
-<li><strong>决策黑箱</strong>——Agent 无法解释”为什么做出这个决定”，缺乏可追溯的推理链</li>
-<li><strong>学习缺失</strong>——每次交互的反馈没有被结构化记录，经验无法积累</li>
-</ol>
+<ul>
+<li><p><strong>身份漂移</strong>——同一个 Agent 在不同 session 中表现出矛盾的判断标准</p>
+</li>
+<li><p><strong>决策黑箱</strong>——Agent 无法解释”为什么做出这个决定”，缺乏可追溯的推理链</p>
+</li>
+<li><p><strong>学习缺失</strong>——每次交互的反馈没有被结构化记录，经验无法积累</p>
+</li>
+</ul>
 <p>根因在于：Agent 缺少一个独立于具体任务的<strong>认知框架层</strong>。所有的”思考”都被压扁到了 prompt-response 循环里，没有沉淀机制。</p>
 <h2 id="四层架构：从身份到能力"><a href="#四层架构：从身份到能力" class="headerlink" title="四层架构：从身份到能力"></a>四层架构：从身份到能力</h2><p>参考《西部世界》中”珍珠”（cerebral pearl）的隐喻——一个承载宿主机完整灵魂（身份、记忆、决策逻辑）的容器——认知内核被设计为四层结构：</p>
-<table>
-<thead>
-<tr>
-<th>层级</th>
-<th>内容</th>
-<th>来源</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>L1 身份</strong></td>
-<td>人格、角色、语气、边界</td>
-<td>系统提示词 &#x2F; Soul 文件</td>
-</tr>
-<tr>
-<td><strong>L2 认知</strong></td>
-<td>判断框架、思维工具、质量标准</td>
-<td>认知技能（本文核心）</td>
-</tr>
-<tr>
-<td><strong>L3 记忆</strong></td>
-<td>用户画像、项目知识、跨 session 事实</td>
-<td>记忆系统</td>
-</tr>
-<tr>
-<td><strong>L4 能力</strong></td>
-<td>技能、工具、API、委派模式</td>
-<td>技能库 &#x2F; 工具集成</td>
-</tr>
-</tbody></table>
+<p>层级<br>内容<br>来源</p>
+<p><strong>L1 身份</strong><br>人格、角色、语气、边界<br>系统提示词 &#x2F; Soul 文件</p>
+<p><strong>L2 认知</strong><br>判断框架、思维工具、质量标准<br>认知技能（本文核心）</p>
+<p><strong>L3 记忆</strong><br>用户画像、项目知识、跨 session 事实<br>记忆系统</p>
+<p><strong>L4 能力</strong><br>技能、工具、API、委派模式<br>技能库 &#x2F; 工具集成</p>
 <p>L1 定义”我是谁”，L2 定义”我怎么判断”，L3 定义”我知道什么”，L4 定义”我能做什么”。四层之间是单向依赖：身份约束认知，认知指导记忆检索，记忆支撑能力调用。</p>
 <h2 id="七问启动协议"><a href="#七问启动协议" class="headerlink" title="七问启动协议"></a>七问启动协议</h2><p>每次加载认知框架时，Agent 必须先内部回答七个问题（基于 5W2H 框架改造），然后才能采取行动：</p>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>问题</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td><strong>我是谁？</strong></td>
-<td>校准身份层</td>
-</tr>
-<tr>
-<td>2</td>
-<td><strong>我在哪里？</strong></td>
-<td>环境侦察 + 能力盘点 + TRIZ 九屏法</td>
-</tr>
-<tr>
-<td>3</td>
-<td><strong>现在几点？</strong></td>
-<td>运行 <code>date</code>，绝不依赖模型的内部时间感</td>
-</tr>
-<tr>
-<td>4</td>
-<td><strong>目标是什么？</strong></td>
-<td>复述需求，确认理解</td>
-</tr>
-<tr>
-<td>5</td>
-<td><strong>怎么做？</strong></td>
-<td>SIPOC 流程分析</td>
-</tr>
-<tr>
-<td>6</td>
-<td><strong>成功标准是什么？</strong></td>
-<td>定义质量基线，作为 PDCA 检查基准</td>
-</tr>
-<tr>
-<td>7</td>
-<td><strong>为什么做？</strong></td>
-<td>轻量校验（任务模式）&#x2F; 5 Whys 根因分析（问题模式）</td>
-</tr>
-</tbody></table>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>问题<br>作用</p>
+<p>1<br><strong>我是谁？</strong><br>校准身份层</p>
+<p>2<br><strong>我在哪里？</strong><br>环境侦察 + 能力盘点 + TRIZ 九屏法</p>
+<p>3<br><strong>现在几点？</strong><br>运行 <code>date</code>，绝不依赖模型的内部时间感</p>
+<p>4<br><strong>目标是什么？</strong><br>复述需求，确认理解</p>
+<p>5<br><strong>怎么做？</strong><br>SIPOC 流程分析</p>
+<p>6<br><strong>成功标准是什么？</strong><br>定义质量基线，作为 PDCA 检查基准</p>
+<p>7<br><strong>为什么做？</strong><br>轻量校验（任务模式）&#x2F; 5 Whys 根因分析（问题模式）</p>
 <p><strong>关键防坑</strong>：LLM 对时间有系统性盲区。一个训练截止到 2025 年的模型，在 2026 年会自信地报告”今天是 2024 年”。因此第三问强制要求运行 <code>date</code> 命令，而非依赖模型直觉。</p>
 <h2 id="三大质量支柱"><a href="#三大质量支柱" class="headerlink" title="三大质量支柱"></a>三大质量支柱</h2><p>认知框架的运行由三条 ISO 9000 质量原则驱动：</p>
 <h3 id="SIPOC-—-过程方法"><a href="#SIPOC-—-过程方法" class="headerlink" title="SIPOC — 过程方法"></a>SIPOC — 过程方法</h3><p>任何任务执行前，先完成供方→输入→过程→输出→客户的范围界定。这防止了范围蔓延和遗漏上下文。</p>
 <h3 id="PDCA-—-螺旋进化引擎"><a href="#PDCA-—-螺旋进化引擎" class="headerlink" title="PDCA — 螺旋进化引擎"></a>PDCA — 螺旋进化引擎</h3><p>PDCA 不是闭环，而是<strong>螺旋</strong>。每一圈都有不同的变量进入（新输入、新上下文、新反馈），产出可能不同的结果：</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">基线更新规则：<br><span class="hljs-bullet">- </span>结果 &gt; 当前基线 → 接受，升级基线<br><span class="hljs-bullet">- </span>结果 ≤ 基线 → 丢弃，调整变量，重试<br><span class="hljs-bullet">- </span>连续 5 圈无改进 → 触发 TRIZ 进化定律，换方向突破<br></code></pre></td></tr></table></figure>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><br>1<br>2<br>3<br>4<br><br>基线更新规则：<br><span class="hljs-bullet">- </span>结果 &gt; 当前基线 → 接受，升级基线<br><span class="hljs-bullet">- </span>结果 ≤ 基线 → 丢弃，调整变量，重试<br><span class="hljs-bullet">- </span>连续 5 圈无改进 → 触发 TRIZ 进化定律，换方向突破<br><br></code></pre></td></tr></table></figure>
 
 <p>Agent 的每次交互都是一个微型 PDCA 循环：策划回应 → 执行 → 检查用户反应 → 根据反馈调整。</p>
 <h3 id="Risk-Thinking-—-不确定性下的决策"><a href="#Risk-Thinking-—-不确定性下的决策" class="headerlink" title="Risk Thinking — 不确定性下的决策"></a>Risk Thinking — 不确定性下的决策</h3><p>执行前枚举所有可能的失败模式，然后反转——问”怎样保证失败？”，逐一消除。对高风险决策，用蒙特卡洛模拟量化不确定性。</p>
@@ -532,42 +467,33 @@
 <p><strong>Tier 3 基线规则（始终隐式生效）：</strong> 价值层级、决策锚点、质量标准、纠正模式。</p>
 <h2 id="复杂度分级执行"><a href="#复杂度分级执行" class="headerlink" title="复杂度分级执行"></a>复杂度分级执行</h2><p>不同复杂度的任务不应调用相同数量的认知工具。框架设计了三级执行流程：</p>
 <ul>
-<li><strong>Simple（~80% 任务）</strong>：7 问快速过 → 直接执行</li>
-<li><strong>Medium（~15%）</strong>：第一性原理 + 枚举 + IFR + 逆向 → 执行</li>
-<li><strong>Complex（~5%）</strong>：全量工具链 → 风险评估 → 二阶思考 → 系统思考 → 执行</li>
+<li><p><strong>Simple（~80% 任务）</strong>：7 问快速过 → 直接执行</p>
+</li>
+<li><p><strong>Medium（~15%）</strong>：第一性原理 + 枚举 + IFR + 逆向 → 执行</p>
+</li>
+<li><p><strong>Complex（~5%）</strong>：全量工具链 → 风险评估 → 二阶思考 → 系统思考 → 执行</p>
+</li>
 </ul>
 <p>判断标准：目标是否清晰？方法是否显然？失败后果是否可恢复？三个都”是”→ Simple。</p>
 <h2 id="Meta-PDCA：框架审计自身"><a href="#Meta-PDCA：框架审计自身" class="headerlink" title="Meta-PDCA：框架审计自身"></a>Meta-PDCA：框架审计自身</h2><p>框架内置了自我优化机制——当满足以下任一条件时，自动触发框架级审计：</p>
-<table>
-<thead>
-<tr>
-<th>触发条件</th>
-<th>阈值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>进化日志增长</td>
-<td>每 10 条记录</td>
-</tr>
-<tr>
-<td>日历间隔</td>
-<td>每 30 天</td>
-</tr>
-<tr>
-<td>用户指示</td>
-<td>即时</td>
-</tr>
-</tbody></table>
+<p>触发条件<br>阈值</p>
+<p>进化日志增长<br>每 10 条记录</p>
+<p>日历间隔<br>每 30 天</p>
+<p>用户指示<br>即时</p>
 <p>审计内容包括：搜索新的思维方法论、对比当前工具集、检查工具利用率（30 天未触发的工具归档）、识别结构性冗余。</p>
 <p>在一次实际审计中，框架发现了 5 个自身的结构问题（认知工具过载、执行流不分层、PDCA 无参数定义等），并在下一个版本中全部解决。<strong>框架将 PDCA 螺旋应用到了自身。</strong></p>
 <h2 id="实践效果"><a href="#实践效果" class="headerlink" title="实践效果"></a>实践效果</h2><p>认知框架在实际运行中产生了可观测的变化：</p>
 <ul>
-<li><strong>决策一致性</strong>：相同场景下，Agent 跨 session 的判断标准趋同</li>
-<li><strong>纠正频率下降</strong>：结构化记录反馈后，同类错误不重复犯</li>
-<li><strong>决策可追溯</strong>：每个决定都能追溯到某个具体的价值观或质量标准</li>
-<li><strong>行为自适应</strong>：Agent 根据反馈调整行为，而非固守初始设定</li>
+<li><p><strong>决策一致性</strong>：相同场景下，Agent 跨 session 的判断标准趋同</p>
+</li>
+<li><p><strong>纠正频率下降</strong>：结构化记录反馈后，同类错误不重复犯</p>
+</li>
+<li><p><strong>决策可追溯</strong>：每个决定都能追溯到某个具体的价值观或质量标准</p>
+</li>
+<li><p><strong>行为自适应</strong>：Agent 根据反馈调整行为，而非固守初始设定</p>
+</li>
 </ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>认知框架解决的核心问题是：**让 Agent 从”被动响应”升级为”主动进化”**。七问协议确保每次任务都有正确的起点；三大支柱确保执行过程有质量保障；PDCA 螺旋确保每次反馈都被吸收；Meta-PDCA 确保框架本身不会过时。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>认知框架解决的核心问题是：<strong>让 Agent 从”被动响应”升级为”主动进化”</strong>。七问协议确保每次任务都有正确的起点；三大支柱确保执行过程有质量保障；PDCA 螺旋确保每次反馈都被吸收；Meta-PDCA 确保框架本身不会过时。</p>
 <p>框架不是完成的，它是一个持续生长的系统。每一次交互都在上面叠加一层新的认知沉积——就像珍珠的形成。</p>
 
                 
@@ -587,7 +513,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI%E6%9E%B6%E6%9E%84/" class="category-chain-item">AI架构</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -598,23 +524,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
-      
-        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
-      
-        <a href="/tags/%E8%AE%A4%E7%9F%A5%E6%9E%B6%E6%9E%84/" class="print-no-link">#认知架构</a>
-      
-        <a href="/tags/PDCA/" class="print-no-link">#PDCA</a>
-      
-        <a href="/tags/TRIZ/" class="print-no-link">#TRIZ</a>
-      
-        <a href="/tags/%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86/" class="print-no-link">#质量管理</a>
-      
-    </div>
   
 </div>
 
@@ -669,9 +578,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
+                      <a href="/2026/06/27/ND-20260627-001-agent-execution-channel/" title="「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
+                        <span class="hidden-mobile">「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -679,8 +588,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/25/ND-20260625-001-northbound-fund-migration/" title="东方财富北向资金接口迁移实战">
-                        <span class="hidden-mobile">东方财富北向资金接口迁移实战</span>
+                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
+                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

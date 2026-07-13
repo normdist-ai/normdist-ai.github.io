@@ -78,7 +78,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -363,6 +363,140 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/13/ND-20260713-001-direct-data-source-rule/" target="_self">
+          直接数据源铁律：三次博客产出率误报事故的通用规则
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/13/ND-20260713-001-direct-data-source-rule/" target="_self">
+        <div>
+          一句话总结验证任何系统状态时，必须直接查询产生该状态的原始数据源（文件系统、Git 历史、HTTP 响应），而不是依赖任何中间层的状态记录、登记表或缓存。 这条规则看起来显而易见，但在 AI Agent 自主运维的实际场景中，连续踩了三次坑才真正落地。  背景：一个 AI Agent 团队的博客自动发布系统某个 AI Agent 团队运行着一套博客自动发布系统，结构如下： 1234567选题池 (
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-13 03:48" pubdate>
+              2026-07-13
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7/">#可观测性</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/">#数据验证</a>
+            
+              <a href="/tags/%E8%BF%90%E7%BB%B4/">#运维</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/" target="_self">
+          从零搭建 AI Agent 博客流水线：blog-helper 6 阶段设计实录
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/" target="_self">
+        <div>
+          你有没有过这样的经历：一篇技术文章写完，发布后才发现某个数字写错了。我上周就踩了这个坑——双卡总显存写成了单卡的数字，读者评论里指出来，尴尬得不行。 手动写博客的问题在于，写稿、审核、校对全压在一个人身上，注意力是稀缺资源，长文基本不可能不出错。于是我用 Hermes Agent 搭了一个叫 blog-helper 的技能——6 阶段流水线，多模型协作审稿，事实库防错。这篇文章记录整个设计过程和取
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-12 12:30" pubdate>
+              2026-07-12
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E5%8D%9A%E5%AE%A2/">#博客</a>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/11/ND-20260711-001-moa-infinite-loop-trap/" target="_self">
           MoA 踩坑实录：多模型协同推理的&#34;无限循环&#34;陷阱
         </a>
@@ -371,7 +505,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/07/11/ND-20260711-001-moa-infinite-loop-trap/" target="_self">
         <div>
-          MoA 踩坑实录：多模型协同推理的”无限循环”陷阱背景：什么是 MoA？MoA（Mixture of Agents）是一种多模型协同推理架构。不同于传统 MoE（Mixture of Experts）在单个模型内部路由专家，MoA 在多个独立模型之间进行路由和聚合。 核心流程： 1234567用户输入   │   ├──→ 参考模型 1（生成独立回答）   ├──→ 参考模型 2（生成独立回答）
+          背景：什么是 MoA？MoA（Mixture of Agents）是一种多模型协同推理架构。不同于传统 MoE（Mixture of Experts）在单个模型内部路由专家，MoA 在多个独立模型之间进行路由和聚合。 核心流程： 12345678910111213141516171234567用户输入   │   ├──→ 参考模型 1（生成独立回答）   ├──→ 参考模型 2（生成独立回答）
         </div>
       </a>
 
@@ -379,7 +513,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-11 03:48" pubdate>
+            <time datetime="2026-07-11 10:00" pubdate>
               2026-07-11
             </time>
           </div>
@@ -395,7 +529,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI%E6%9E%B6%E6%9E%84/" class="category-chain-item">AI架构</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -406,98 +540,6 @@
 
           </div>
         
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/new-api/">#new-api</a>
-            
-              <a href="/tags/LLM/">#LLM</a>
-            
-              <a href="/tags/llama-cpp/">#llama.cpp</a>
-            
-              <a href="/tags/MoA/">#MoA</a>
-            
-              <a href="/tags/Mixture-of-Agents/">#Mixture of Agents</a>
-            
-              <a href="/tags/%E5%A4%9A%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86/">#多模型推理</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/10/ND-20260710-002-krea2-comfyui-debug-pitfall/" target="_self">
-          Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/10/ND-20260710-002-krea2-comfyui-debug-pitfall/" target="_self">
-        <div>
-          前言：为什么要折腾 Krea2Krea2 是 Krea.ai 发布的 12B 参数 DiT 模型，基于 flow-matching 架构，支持 1K 到 2K 分辨率。在图像质量上，它直接对标 Midjourney 和 DALL·E 3 级别的商用模型。更关键的是，它是开源的。 但开源不意味着开箱即用。在双 RTX 2080 Ti（22GB 魔改版）上部署 Krea2 Turbo，我遇到了整整六层
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-10 16:30" pubdate>
-              2026-07-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI-%E5%B7%A5%E7%A8%8B/" class="category-chain-item">AI 工程</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/ComfyUI/">#ComfyUI</a>
-            
-              <a href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">#踩坑记录</a>
-            
-              <a href="/tags/Krea2/">#Krea2</a>
-            
-              <a href="/tags/2080-Ti/">#2080 Ti</a>
-            
-              <a href="/tags/Turing/">#Turing</a>
-            
-              <a href="/tags/AI-%E5%9B%BE%E5%83%8F%E7%94%9F%E6%88%90/">#AI 图像生成</a>
-            
-              <a href="/tags/DiT/">#DiT</a>
-            
-          </div>
         
       </div>
     </article>
@@ -525,7 +567,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-10 03:47" pubdate>
+            <time datetime="2026-07-10 10:00" pubdate>
               2026-07-10
             </time>
           </div>
@@ -541,7 +583,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI-%E5%B7%A5%E7%A8%8B/" class="category-chain-item">AI 工程</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -553,26 +595,113 @@
           </div>
         
         
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/">#本地部署</a>
-            
-              <a href="/tags/Qwen/">#Qwen</a>
-            
-              <a href="/tags/LLM/">#LLM</a>
-            
-              <a href="/tags/llama-cpp/">#llama.cpp</a>
-            
-              <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#性能优化</a>
-            
-              <a href="/tags/MoE/">#MoE</a>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96/">#量化</a>
-            
-              <a href="/tags/Ornith/">#Ornith</a>
-            
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/10/ND-20260710-002-krea2-comfyui-debug-pitfall/" target="_self">
+          Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/10/ND-20260710-002-krea2-comfyui-debug-pitfall/" target="_self">
+        <div>
+          前言：为什么要折腾 Krea2Krea2 是 Krea.ai 发布的 12B 参数 DiT 模型，基于 flow-matching 架构，支持 1K 到 2K 分辨率。在图像质量上，它直接对标 Midjourney 和 DALL·E 3 级别的商用模型。更关键的是，它是开源的。 但开源不意味着开箱即用。在双 RTX 2080 Ti（22GB 魔改版）上部署 Krea2 Turbo，我遇到了整整六层
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-10 10:00" pubdate>
+              2026-07-10
+            </time>
           </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/09/ND-20260709-001-a2a-collaboration-ikuai-skill-upgrade/" target="_self">
+          A2A 协议实战：两个 AI Agent 协作升级路由器技能
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260709-001-a2a-collaboration-ikuai-skill-upgrade/" target="_self">
+        <div>
+          背景：从工具共享到任务协作在上一篇文章中，我们解决了 Agent 间的工具共享问题——通过 MCP 桥接，Linux 上的主 Agent 可以调用 Windows Agent 的 13 个工具。但那是单向的：主 Agent 调远程工具，远程 Agent 只是被动的执行者。 真正的多 Agent 协作（Agent-to-Agent，A2A）需要更深一层：两个 Agent 像同事一样，围绕同一个任务讨
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-09 10:00" pubdate>
+              2026-07-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
         
       </div>
     </article>
@@ -592,78 +721,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/" target="_self">
         <div>
-          问题：HTTP 400 “Unable to generate parser for this template”本地部署的 Qwen3.5-35B-A3B 模型（Ornith 微调版），通过 llama.cpp server 提供 API 服务。某天发现部分请求稳定返回 400 错误： 123456789101112HTTP 400&#123;  &quot;error&quot;: &#123
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-09 19:58" pubdate>
-              2026-07-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI%E5%B7%A5%E7%A8%8B/" class="category-chain-item">AI工程</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Qwen/">#Qwen</a>
-            
-              <a href="/tags/GGUF/">#GGUF</a>
-            
-              <a href="/tags/Jinja/">#Jinja</a>
-            
-              <a href="/tags/llama-cpp/">#llama.cpp</a>
-            
-              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
-            
-              <a href="/tags/chat-template/">#chat-template</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/09/ND-20260705-002-daily-summaries-backfill/" target="_self">
-          从交易记录重建每日资产快照：daily_summaries 历史回填实战
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260705-002-daily-summaries-backfill/" target="_self">
-        <div>
-          从交易记录重建每日资产快照：daily_summaries 历史回填实战问题：权益曲线只有 4 个点一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 daily_summaries 表只有 8 行数据，集中在短短几天内。 后端的 generate-summary 端点功能完全正常，手动调用能正确生成当日快照。
+          问题：HTTP 400 “Unable to generate parser for this template”本地部署的 Qwen3.5-35B-A3B 模型（Ornith 微调版），通过 llama.cpp server 提供 API 服务。某天发现部分请求稳定返回 400 错误： 1234567891011121314151617181920212223242526271234567891
         </div>
       </a>
 
@@ -687,15 +745,8 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/%E6%95%B0%E6%8D%AE%E5%B7%A5%E7%A8%8B/" class="category-chain-item">数据工程</a>
-  
-  
-
   
 
       </span>
@@ -705,21 +756,6 @@
 
           </div>
         
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Python/">#Python</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%9B%9E%E5%A1%AB/">#数据回填</a>
-            
-              <a href="/tags/SQLite/">#SQLite</a>
-            
-              <a href="/tags/%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/">#定时任务</a>
-            
-              <a href="/tags/%E6%9D%83%E7%9B%8A%E6%9B%B2%E7%BA%BF/">#权益曲线</a>
-            
-          </div>
         
       </div>
     </article>
@@ -731,321 +767,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/09/ND-20260705-003-cross-session-gui-launch/" target="_self">
-          SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260705-003-cross-session-gui-launch/" target="_self">
-        <div>
-          SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法问题：SSH 能执行命令，但启动的应用”看不见”一个 AI Agent 通过 SSH 连接到 Windows 主机，执行 powershell.exe Start-Process notepad.exe，命令返回成功，任务管理器里能看到 notepad.exe 进程。但 RDP 连上去看桌面——什么都没有。记事本窗口
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-09 10:00" pubdate>
-              2026-07-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" class="category-chain-item">系统运维</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/Windows/" class="category-chain-item">Windows</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Windows/">#Windows</a>
-            
-              <a href="/tags/SSH/">#SSH</a>
-            
-              <a href="/tags/PsExec/">#PsExec</a>
-            
-              <a href="/tags/Session-0/">#Session-0</a>
-            
-              <a href="/tags/%E8%B7%A8%E4%BC%9A%E8%AF%9D/">#跨会话</a>
-            
-              <a href="/tags/GUI/">#GUI</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/09/ND-20260705-004-free-ai-coding-toolchain/" target="_self">
-          免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260705-004-free-ai-coding-toolchain/" target="_self">
-        <div>
-          免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码背景：免费模型能写代码吗？市面上有大量”免费 AI 编程工具”——Cursor、Windsurf、Trae-CN……它们提供免费的模型额度，让开发者零成本用 AI 写代码。但免费模型（GLM、DeepSeek、MiniMax 等）的代码能力参差不齐，直接用经常翻车：改了不该改的文件、删除已有功能、留下半成品代码。 问题不
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-09 10:00" pubdate>
-              2026-07-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/AI-Agent/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" class="category-chain-item">开发工具</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/OpenCode/">#OpenCode</a>
-            
-              <a href="/tags/Karpathy/">#Karpathy</a>
-            
-              <a href="/tags/%E5%85%8D%E8%B4%B9%E6%A8%A1%E5%9E%8B/">#免费模型</a>
-            
-              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5/">#代码审查</a>
-            
-              <a href="/tags/AGENTS-md/">#AGENTS.md</a>
-            
-              <a href="/tags/%E4%BB%A3%E7%A0%81%E7%BA%A6%E6%9D%9F/">#代码约束</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/09/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
-          外部数据源不稳定的标准修复模式：HTTP重试 + 缓存兜底
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
-        <div>
-          外部数据源不稳定的标准修复模式：HTTP重试 + 缓存兜底问题背景一个量化交易系统的宏观周期分析模块依赖外部学术机构发布的 GPR Index（地缘政治风险指数）Excel 文件。该文件由第三方研究者维护，托管在个人学术网站上，通过固定的 HTTPS URL 提供下载。 系统每天凌晨自动执行宏观数据采集管道，其中一个脚本负责下载 GPR Index 并生成风险评分。某次采集周期中，该步骤开始频繁超
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-09 10:00" pubdate>
-              2026-07-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%B7%A5%E7%A8%8B/" class="category-chain-item">后端工程</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%B7%A5%E7%A8%8B/%E6%95%B0%E6%8D%AE%E5%B7%A5%E7%A8%8B/" class="category-chain-item">数据工程</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Python/">#Python</a>
-            
-              <a href="/tags/%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E6%BA%90/">#外部数据源</a>
-            
-              <a href="/tags/%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/">#容错设计</a>
-            
-              <a href="/tags/%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/">#重试机制</a>
-            
-              <a href="/tags/%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5/">#缓存策略</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/09/ND-20260707-001-ghost-deviation/" target="_self">
-          幽灵偏差：当你的日报系统开始对自己撒谎
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260707-001-ghost-deviation/" target="_self">
-        <div>
-          幽灵偏差：当你的日报系统开始对自己撒谎一个连续 4 天的”未闭环”Bug一套量化交易系统配备了一个 AI 日记系统，每天凌晨自动反省：做了什么、哪些计划没落地、怎么改进。这个自省机制基于 PDCA 循环——计划（Plan）、执行（Do）、检查（Check）、处置（Act），每天对账。 某天，日记系统记录了一个偏差：宏观分析模块依赖的 GPR Index（地缘政治风险指数）外部数据源下载超时，看板上
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-09 10:00" pubdate>
-              2026-07-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/" class="category-chain-item">工程实践</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/AI-Agent/" class="category-chain-item">AI Agent</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/PDCA/">#PDCA</a>
-            
-              <a href="/tags/%E6%97%A5%E8%AE%B0%E7%B3%BB%E7%BB%9F/">#日记系统</a>
-            
-              <a href="/tags/%E5%81%8F%E5%B7%AE%E6%A3%80%E6%B5%8B/">#偏差检测</a>
-            
-              <a href="/tags/%E8%87%AA%E7%9C%81%E6%9C%BA%E5%88%B6/">#自省机制</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/">#数据验证</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/09/ND-20260708-001-ai-agent-autonomous-refactoring/" target="_self">
+        <a href="/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/" target="_self">
           AI Agent 自主重构之路：从响应式审查到全自动修复
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260708-001-ai-agent-autonomous-refactoring/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/" target="_self">
         <div>
           问题前端项目的移动端适配通常是一块「知道该做，但没人愿意碰」的领域。没有新功能亮点，全是 layout 调整、media query 改写、触摸目标放大——机械重复，量还大。 某双页面应用（约 10+ 个页面）的移动端审查报告一口气列出了 12 项适配问题，分布在两个独立前端仓库中。如果手动修，按每项 30 分钟估算，至少需要 6 小时纯工时，还不算来回切换上下文的时间。 但这次的情况不同：从审查
         </div>
@@ -1055,8 +783,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-09 10:00" pubdate>
-              2026-07-09
+            <time datetime="2026-07-08 10:00" pubdate>
+              2026-07-08
             </time>
           </div>
         
@@ -1071,7 +799,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/" class="category-chain-item">工程实践</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -1083,18 +811,113 @@
           </div>
         
         
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI-Agent</a>
-            
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
-            
-              <a href="/tags/%E5%89%8D%E7%AB%AF%E5%93%8D%E5%BA%94%E5%BC%8F/">#前端响应式</a>
-            
-              <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">#工程实践</a>
-            
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/07/ND-20260707-001-ghost-deviation/" target="_self">
+          幽灵偏差：当你的日报系统开始对自己撒谎
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/07/ND-20260707-001-ghost-deviation/" target="_self">
+        <div>
+          一个连续 4 天的”未闭环”Bug一套量化交易系统配备了一个 AI 日记系统，每天凌晨自动反省：做了什么、哪些计划没落地、怎么改进。这个自省机制基于 PDCA 循环——计划（Plan）、执行（Do）、检查（Check）、处置（Act），每天对账。 某天，日记系统记录了一个偏差：宏观分析模块依赖的 GPR Index（地缘政治风险指数）外部数据源下载超时，看板上的地缘风险字段显示为问号。改进措施是：
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-07 10:00" pubdate>
+              2026-07-07
+            </time>
           </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/06/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
+          外部数据源不稳定的标准修复模式：HTTP重试 + 缓存兜底
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/06/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
+        <div>
+          问题背景一个量化交易系统的宏观周期分析模块依赖外部学术机构发布的 GPR Index（地缘政治风险指数）Excel 文件。该文件由第三方研究者维护，托管在个人学术网站上，通过固定的 HTTPS URL 提供下载。 系统每天凌晨自动执行宏观数据采集管道，其中一个脚本负责下载 GPR Index 并生成风险评分。某次采集周期中，该步骤开始频繁超时失败： 123456789123Traceback (m
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-06 10:00" pubdate>
+              2026-07-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
         
       </div>
     </article>

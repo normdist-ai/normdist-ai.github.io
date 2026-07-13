@@ -19,22 +19,17 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文分析OpenClaw技能blocked状态的成因，通过BlogWatcher案例介绍问题排查与解决思路。">
+    <meta name="description" content="编号：ND-20260311-002版本:1.0更新: 2026-03-11作者: 小瑞 问题背景今天在检查 OpenClaw 技能状态时，发现 BlogWatcher 技能显示为 blocked 状态，无法正常使用。 问题现象在 OpenClaw 控制台查看技能状态： 1 2 3 4 5 6Built-in Skills 📰 blogwatcher   Monitor blogs and RS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="解决 OpenClaw 技能 blocked 状态：BlogWatcher 案例分析">
 <meta property="og:url" content="https://www.normdist.com/2026/03/11/ND-20260311-002-openclaw-skill-troubleshooting/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="本文分析OpenClaw技能blocked状态的成因，通过BlogWatcher案例介绍问题排查与解决思路。">
+<meta property="og:description" content="编号：ND-20260311-002版本:1.0更新: 2026-03-11作者: 小瑞 问题背景今天在检查 OpenClaw 技能状态时，发现 BlogWatcher 技能显示为 blocked 状态，无法正常使用。 问题现象在 OpenClaw 控制台查看技能状态： 1 2 3 4 5 6Built-in Skills 📰 blogwatcher   Monitor blogs and RS">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-08.jpg">
-<meta property="article:published_time" content="2026-03-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:07:05.492Z">
+<meta property="article:published_time" content="2026-03-11T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:08:53.430Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="OpenClaw">
-<meta property="article:tag" content="BlogWatcher">
-<meta property="article:tag" content="技能">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-08.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -91,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -346,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-11 00:00" pubdate>
-          2026年3月11日 凌晨
+        <time datetime="2026-03-11 10:00" pubdate>
+          2026年3月11日 上午
         </time>
       </span>
     
@@ -422,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -433,130 +428,88 @@
                 <p><strong>编号</strong>：ND-20260311-002<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-11<br><strong>作者</strong>: 小瑞</p>
 <h2 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h2><p>今天在检查 OpenClaw 技能状态时，发现 BlogWatcher 技能显示为 <strong>blocked</strong> 状态，无法正常使用。</p>
 <h2 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h2><p>在 OpenClaw 控制台查看技能状态：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5 6</code></td>
-<td><code>Built-in Skills 📰 blogwatcher   Monitor blogs and RSS/Atom feeds for updates using blogwatcher CLI.   openclaw-bundled   blocked   Missing: bin:blogwatcher</code></td>
-</tr>
-</tbody></table>
+<p><code>1 2 3 4 5 6</code><br><code>Built-in Skills 📰 blogwatcher   Monitor blogs and RSS/Atom feeds for updates using blogwatcher CLI.   openclaw-bundled   blocked   Missing: bin:blogwatcher</code></p>
 <p><code>Built-in Skills  📰 blogwatcher    Monitor blogs and RSS/Atom feeds for updates using the blogwatcher CLI.    openclaw-bundled    blocked    Missing: bin:blogwatcher</code></p>
 <p>技能显示 <strong>blocked</strong>，提示找不到 <code>blogwatcher</code> 可执行文件。</p>
 <p><code>blogwatcher</code></p>
 <h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><h3 id="1-技能依赖检查机制"><a href="#1-技能依赖检查机制" class="headerlink" title="1. 技能依赖检查机制"></a>1. 技能依赖检查机制</h3><p>OpenClaw 内置技能会在启动时检查依赖的可执行文件是否存在。如果找不到，则标记为 <strong>blocked</strong> 状态。</p>
 <p>BlogWatcher 技能的依赖配置：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4</code></td>
-<td><code>metadata:   openclaw:     requires:       bins: [&quot;blogwatcher&quot;] </code></td>
-</tr>
-</tbody></table>
+<p><code>1 2 3 4</code><br><code>metadata:   openclaw:     requires:       bins: [&quot;blogwatcher&quot;] </code></p>
 <p><code>metadata:    openclaw:      requires:        bins: [&quot;blogwatcher&quot;]</code></p>
 <h3 id="2-根因定位"><a href="#2-根因定位" class="headerlink" title="2. 根因定位"></a>2. 根因定位</h3><p>检查 blogwatcher 可执行文件位置：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5</code></td>
-<td><code># 查找 blogwatcher 安装位置 find /home/jarvis -name &quot;blogwatcher&quot; -type f # 输出： /home/jarvis/go/bin/blogwatcher </code></td>
-</tr>
-</tbody></table>
+<p><code>1 2 3 4 5</code><br><code># 查找 blogwatcher 安装位置 find /home/jarvis -name &quot;blogwatcher&quot; -type f # 输出： /home/jarvis/go/bin/blogwatcher </code></p>
 <p><code># 查找 blogwatcher 安装位置</code><br><code>find /home/jarvis -name &quot;blogwatcher&quot; -type f</code><br><code># 输出： /home/jarvis/go/bin/blogwatcher</code></p>
 <p><strong>问题原因</strong>：<code>/home/jarvis/go/bin</code> 不在系统 PATH 中，OpenClaw 无法找到该可执行文件。</p>
 <p><code>/home/jarvis/go/bin</code></p>
 <p>检查 Gateway 进程的 PATH：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3</code></td>
-<td>&#96;&#96;&#96;cat &#x2F;proc&#x2F;<gateway_pid>&#x2F;environ</td>
-</tr>
-</tbody></table>
-<p><code>cat /proc/&lt;gateway_pid&gt;/environ | tr &#39;\0&#39; &#39;\n&#39; | grep &quot;^PATH=&quot;</code><br><code># 输出：</code><br><code>PATH=/home/jarvis/.local/bin:/home/jarvis/.npm-global/bin:...</code></p>
-<p>可以看到 Gateway 进程的 PATH 不包含 <code>/home/jarvis/go/bin</code>。</p>
-<p><code>/home/jarvis/go/bin</code></p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案：创建符号链接"><a href="#方案：创建符号链接" class="headerlink" title="方案：创建符号链接"></a>方案：创建符号链接</h3><p>将 blogwatcher 链接到系统 PATH 中的目录：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1</code></td>
-<td><code>sudo ln -sf /home/jarvis/go/bin/blogwatcher /usr/local/bin/blogwatcher</code></td>
-</tr>
-</tbody></table>
-<p><code>sudo ln -sf /home/jarvis/go/bin/blogwatcher /usr/local/bin/blogwatcher</code></p>
-<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5 6 7</code></td>
-<td><code># 验证链接成功 which blogwatcher # 输出：/usr/local/bin/blogwatcher # 验证版本 blogwatcher --version # 输出：dev </code></td>
-</tr>
-</tbody></table>
-<p><code># 验证链接成功</code><br><code>which blogwatcher</code><br><code># 输出：/usr/local/bin/blogwatcher</code></p>
-<p><code># 验证版本</code><br><code>blogwatcher --version</code><br><code># 输出：dev</code></p>
-<p>重启 Gateway 使配置生效：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1</code></td>
-<td><code>openclaw gateway restart</code></td>
-</tr>
-</tbody></table>
-<p><code>openclaw gateway restart</code></p>
-<h2 id="修复效果"><a href="#修复效果" class="headerlink" title="修复效果"></a>修复效果</h2><table>
-<thead>
-<tr>
-<th>状态</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>修复前</td>
-<td>✗ blocked（Missing: bin:blogwatcher）</td>
-</tr>
-<tr>
-<td>修复后</td>
-<td>✓ ready</td>
-</tr>
-</tbody></table>
-<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><h3 id="问题排查步骤"><a href="#问题排查步骤" class="headerlink" title="问题排查步骤"></a>问题排查步骤</h3><p><code>openclaw skills list</code><br><code>find</code></p>
-<h3 id="预防措施"><a href="#预防措施" class="headerlink" title="预防措施"></a>预防措施</h3><p><code>/usr/local/bin</code><br><code>.bashrc</code></p>
-<hr>
-<p><strong>相关参考</strong>：</p>
+<p><code>1 2 3</code></p>
+<pre><code class="language-cat">
+`cat /proc/&lt;gateway_pid&gt;/environ | tr &#39;\0&#39; &#39;\n&#39; | grep &quot;^PATH=&quot;`
+`# 输出：`
+`PATH=/home/jarvis/.local/bin:/home/jarvis/.npm-global/bin:...`
+
+可以看到 Gateway 进程的 PATH 不包含 `/home/jarvis/go/bin`。
+
+`/home/jarvis/go/bin`
+
+## 解决方案
+
+### 方案：创建符号链接
+
+将 blogwatcher 链接到系统 PATH 中的目录：
+
+`1`
+`sudo ln -sf /home/jarvis/go/bin/blogwatcher /usr/local/bin/blogwatcher`
+
+`sudo ln -sf /home/jarvis/go/bin/blogwatcher /usr/local/bin/blogwatcher`
+
+### 验证
+
+`1 2 3 4 5 6 7`
+`# 验证链接成功 which blogwatcher # 输出：/usr/local/bin/blogwatcher # 验证版本 blogwatcher --version # 输出：dev `
+
+`# 验证链接成功`
+`which blogwatcher`
+`# 输出：/usr/local/bin/blogwatcher`
+
+`# 验证版本`
+`blogwatcher --version`
+`# 输出：dev`
+
+重启 Gateway 使配置生效：
+
+`1`
+`openclaw gateway restart`
+
+`openclaw gateway restart`
+
+## 修复效果
+
+状态
+说明
+
+修复前
+✗ blocked（Missing: bin:blogwatcher）
+
+修复后
+✓ ready
+
+## 经验总结
+
+### 问题排查步骤
+
+`openclaw skills list`
+`find`
+
+### 预防措施
+
+`/usr/local/bin`
+`.bashrc`
+
+---
+
+**相关参考**：
+</code></pre>
 
                 
               </div>
@@ -575,7 +528,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -586,17 +539,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/OpenClaw/" class="print-no-link">#OpenClaw</a>
-      
-        <a href="/tags/BlogWatcher/" class="print-no-link">#BlogWatcher</a>
-      
-        <a href="/tags/%E6%8A%80%E8%83%BD/" class="print-no-link">#技能</a>
-      
-    </div>
   
 </div>
 

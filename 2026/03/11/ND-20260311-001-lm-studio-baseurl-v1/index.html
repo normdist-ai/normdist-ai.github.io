@@ -19,22 +19,17 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文介绍在OpenClaw中配置LM Studio本地模型时，baseUrl必须以&#x2F;v1结尾的配置问题与解决方案。">
+    <meta name="description" content="编号：ND-20260311-001版本:1.0更新: 2026-03-11作者: 小瑞 问题背景今天在 OpenClaw 中新增 LM Studio 本地模型时，发现模型无法正常调用。经过排查，发现是一个容易被忽略的配置问题。 问题现象配置好 LM Studio 本地模型后，OpenClaw 提示模型调用失败，无法正常响应。 根本原因baseUrl 配置不完整 —— LM Studio 的 AP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OpenClaw 接入 LM Studio 本地模型：baseUrl 必须是 &#x2F;v1结尾">
 <meta property="og:url" content="https://www.normdist.com/2026/03/11/ND-20260311-001-lm-studio-baseurl-v1/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="本文介绍在OpenClaw中配置LM Studio本地模型时，baseUrl必须以&#x2F;v1结尾的配置问题与解决方案。">
+<meta property="og:description" content="编号：ND-20260311-001版本:1.0更新: 2026-03-11作者: 小瑞 问题背景今天在 OpenClaw 中新增 LM Studio 本地模型时，发现模型无法正常调用。经过排查，发现是一个容易被忽略的配置问题。 问题现象配置好 LM Studio 本地模型后，OpenClaw 提示模型调用失败，无法正常响应。 根本原因baseUrl 配置不完整 —— LM Studio 的 AP">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-07.jpg">
-<meta property="article:published_time" content="2026-03-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:07:05.492Z">
+<meta property="article:published_time" content="2026-03-11T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:08:53.430Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="OpenClaw">
-<meta property="article:tag" content="LM-Studio">
-<meta property="article:tag" content="配置">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-07.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -91,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -346,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-11 00:00" pubdate>
-          2026年3月11日 凌晨
+        <time datetime="2026-03-11 10:00" pubdate>
+          2026年3月11日 上午
         </time>
       </span>
     
@@ -422,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -436,69 +431,20 @@
 <h2 id="根本原因"><a href="#根本原因" class="headerlink" title="根本原因"></a>根本原因</h2><p><strong>baseUrl 配置不完整</strong> —— LM Studio 的 API 地址需要在 URL 后面加上 <code>/v1</code> 后缀。</p>
 <p><code>/v1</code></p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>修改 OpenClaw 配置文件 <code>openclaw.json</code>：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2</code></td>
-<td><code>- &quot;baseUrl&quot;: &quot;http://10.28.9.6:1234&quot; + &quot;baseUrl&quot;: &quot;http://10.28.9.6:1234/v1&quot;</code></td>
-</tr>
-</tbody></table>
+<p><code>1 2</code><br><code>- &quot;baseUrl&quot;: &quot;http://10.28.9.6:1234&quot; + &quot;baseUrl&quot;: &quot;http://10.28.9.6:1234/v1&quot;</code></p>
 <p><code>- &quot;baseUrl&quot;: &quot;http://10.28.9.6:1234&quot;</code> </p>
 <ul>
-<li>“baseUrl”: “<a target="_blank" rel="noopener" href="http://10.28.9.6:1234/v1%22%60">http://10.28.9.6:1234/v1&quot;`</a></li>
+<li>“baseUrl”: “[<a target="_blank" rel="noopener" href="http://10.28.9.6:1234/v1%22%60](http://10.28.9.6:1234/v1%22%60)">http://10.28.9.6:1234/v1&quot;`](http://10.28.9.6:1234/v1%22%60)</a></li>
 </ul>
-<h3 id="完整配置示例"><a href="#完整配置示例" class="headerlink" title="完整配置示例"></a>完整配置示例</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5 6 7 8 9 10 11</code></td>
-<td><code>&#123;   &quot;provider&quot;: &quot;lm-studio&quot;,   &quot;models&quot;: [     &#123;       &quot;id&quot;: &quot;qwen/qwen3.5-9b&quot;,       &quot;contextWindow&quot;: 204800,       &quot;maxTokens&quot;: 131072     &#125;   ],   &quot;baseUrl&quot;: &quot;http://10.28.9.6:1234/v1&quot; &#125;</code></td>
-</tr>
-</tbody></table>
-<p><code>&#123;    &quot;provider&quot;: &quot;lm-studio&quot;,    &quot;models&quot;: [      &#123;        &quot;id&quot;: &quot;qwen/qwen3.5-9b&quot;,        &quot;contextWindow&quot;: 204800,        &quot;maxTokens&quot;: 131072      &#125;    ],    &quot;baseUrl&quot;: &quot;http://10.28.9.6:1234/v1&quot;  &#125;</code></p>
-<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><table>
-<thead>
-<tr>
-<th>要点</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>LM Studio API</strong></td>
-<td>需要 <code>/v1</code> 后缀才能兼容 OpenAI 格式</td>
-</tr>
-<tr>
-<td><strong>Ollama</strong></td>
-<td>不需要 <code>/v1</code> 后缀</td>
-</tr>
-<tr>
-<td><strong>本地模型优势</strong></td>
-<td>无外部 API 依赖，稳定可靠</td>
-</tr>
-</tbody></table>
+<h3 id="完整配置示例"><a href="#完整配置示例" class="headerlink" title="完整配置示例"></a>完整配置示例</h3><p><code>1 2 3 4 5 6 7 8 9 10 11</code><br><code>{   &quot;provider&quot;: &quot;lm-studio&quot;,   &quot;models&quot;: [     {       &quot;id&quot;: &quot;qwen/qwen3.5-9b&quot;,       &quot;contextWindow&quot;: 204800,       &quot;maxTokens&quot;: 131072     }   ],   &quot;baseUrl&quot;: &quot;http://10.28.9.6:1234/v1&quot; }</code></p>
+<p><code>{    &quot;provider&quot;: &quot;lm-studio&quot;,    &quot;models&quot;: [      {        &quot;id&quot;: &quot;qwen/qwen3.5-9b&quot;,        &quot;contextWindow&quot;: 204800,        &quot;maxTokens&quot;: 131072      }    ],    &quot;baseUrl&quot;: &quot;http://10.28.9.6:1234/v1&quot;  }</code></p>
+<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><p>要点<br>说明</p>
+<p><strong>LM Studio API</strong><br>需要 <code>/v1</code> 后缀才能兼容 OpenAI 格式</p>
+<p><strong>Ollama</strong><br>不需要 <code>/v1</code> 后缀</p>
+<p><strong>本地模型优势</strong><br>无外部 API 依赖，稳定可靠</p>
 <p><code>/v1``/v1</code></p>
 <h2 id="验证方法"><a href="#验证方法" class="headerlink" title="验证方法"></a>验证方法</h2><p>配置完成后，可以通过以下命令验证：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2</code></td>
-<td><code># 测试 LM Studio 模型连通性 curl -s http://10.28.9.6:1234/v1/models</code></td>
-</tr>
-</tbody></table>
+<p><code>1 2</code><br><code># 测试 LM Studio 模型连通性 curl -s http://10.28.9.6:1234/v1/models</code></p>
 <p><code># 测试 LM Studio 模型连通性</code><br><code>curl -s http://10.28.9.6:1234/v1/models</code></p>
 <p>如果返回模型列表，说明配置正确。</p>
 <hr>
@@ -521,7 +467,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -532,17 +478,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/OpenClaw/" class="print-no-link">#OpenClaw</a>
-      
-        <a href="/tags/LM-Studio/" class="print-no-link">#LM-Studio</a>
-      
-        <a href="/tags/%E9%85%8D%E7%BD%AE/" class="print-no-link">#配置</a>
-      
-    </div>
   
 </div>
 

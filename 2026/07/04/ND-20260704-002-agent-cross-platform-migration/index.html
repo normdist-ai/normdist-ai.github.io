@@ -1,0 +1,976 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家">
+<meta property="og:url" content="https://www.normdist.com/2026/07/04/ND-20260704-002-agent-cross-platform-migration/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-04T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T10:29:10.856Z">
+<meta property="article:author" content="小瑞">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-04 10:00" pubdate>
+          2026年7月4日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月12日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。</p>
+<p>这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：</p>
+<ul>
+<li><p><strong>定时任务零损失</strong>：十几个 cron job 能否在新平台上 1:1 恢复？</p>
+</li>
+<li><p><strong>记忆完整性</strong>：积累数月的对话记忆、技能配置能否无损迁移？</p>
+</li>
+<li><p><strong>灵魂文件写入</strong>：Agent 的 system prompt（人格定义）能否在新环境正确加载？</p>
+</li>
+</ul>
+<p>本文记录了这次迁移的全过程和踩过的坑。</p>
+<h2 id="迁移范围清点"><a href="#迁移范围清点" class="headerlink" title="迁移范围清点"></a>迁移范围清点</h2><p>迁移前，先做一次完整的资产盘点：</p>
+<p>资产<br>位置<br>迁移方式</p>
+<p>Agent 核心代码<br>代码仓库<br>git clone</p>
+<p>灵魂文件（system prompt）<br>profile 目录<br>直接复制</p>
+<p>长期记忆<br>profile&#x2F;memories&#x2F;<br>直接复制</p>
+<p>技能定义<br>skills&#x2F;<br>直接复制</p>
+<p>定时任务<br>cron jobs 配置<br>逐个重建</p>
+<p>运行环境<br>Python venv + 依赖<br>新环境重建</p>
+<p>工具链<br>gh、git、node<br>逐个安装</p>
+<p>前四项是”文件级迁移”，复制即可。真正的难点在后面三项。</p>
+<h2 id="难点一：Cron-任务的跨平台恢复"><a href="#难点一：Cron-任务的跨平台恢复" class="headerlink" title="难点一：Cron 任务的跨平台恢复"></a>难点一：Cron 任务的跨平台恢复</h2><p>Linux 的 cron 是 Agent 自动化运转的心脏。迁移到 Windows 后，cron 调度机制能否保留？</p>
+<p><strong>策略</strong>：保留 Linux 服务器作为 Agent 主运行环境，Windows 作为被控目标。Agent 本体不搬——搬的是”控制范围”。Agent 在 Linux 上调度，通过 SSH&#x2F;HTTP 远程操控 Windows。</p>
+<p>这意味着 <strong>cron 配置完全不需要迁移</strong>。所有定时任务继续在 Linux 上按原节奏运行，只是执行的目标多了 Windows 这台机器。</p>
+<blockquote>
+</blockquote>
+<p>关键决策：Agent 迁移 ≠ Agent 搬家。更好的方案是让 Agent 留在 Linux，扩展它的”触手”到 Windows。这样 cron 零损失、记忆零损失、灵魂文件零改动。</p>
+<h2 id="难点二：运行环境重建"><a href="#难点二：运行环境重建" class="headerlink" title="难点二：运行环境重建"></a>难点二：运行环境重建</h2><p>Windows 上需要安装的开发工具链：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><br><span class="hljs-comment"># 1. Git（Windows 版自带 Git Bash）</span><br>winget install Git.Git<br><br><span class="hljs-comment"># 2. GitHub CLI</span><br>winget install GitHub.cli<br><br><span class="hljs-comment"># 3. Python 3.12</span><br>winget install Python.Python.<span class="hljs-number">3.12</span><br><br><span class="hljs-comment"># 4. Node.js（如果需要）</span><br>winget install OpenJS.NodeJS.LTS<br><br><span class="hljs-comment"># 5. OpenSSH Server（让 Linux 能远程连入）</span><br><span class="hljs-comment"># Settings → Apps → Optional Features → Add &quot;OpenSSH Server&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<p><strong>踩坑记录</strong>：</p>
+<ul>
+<li><p><strong>bin 目录丢失</strong>：安装 GitHub CLI 后 <code>gh</code> 命令不识别。根因：安装路径未加入 PATH。修复：手动将 <code>%ProgramFiles%\GitHub CLI</code> 添加到系统 PATH。</p>
+</li>
+<li><p><strong>SSH 服务未自启</strong>：OpenSSH Server 安装后默认未启动。需要在 <code>services.msc</code> 中将 OpenSSH SSH Server 设为自动启动。</p>
+</li>
+</ul>
+<h2 id="难点三：验证迁移完整性"><a href="#难点三：验证迁移完整性" class="headerlink" title="难点三：验证迁移完整性"></a>难点三：验证迁移完整性</h2><p>迁移不是”复制完就结束”，必须有验证步骤。设计了三级验证：</p>
+<h3 id="Level-1：连通性验证"><a href="#Level-1：连通性验证" class="headerlink" title="Level 1：连通性验证"></a>Level 1：连通性验证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br><span class="hljs-comment"># 从 Linux 测试 SSH 连通</span><br>ssh tony@&lt;windows-ip&gt; <span class="hljs-string">&quot;echo OK &amp;&amp; hostname&quot;</span><br><br><span class="hljs-comment"># 验证 Windows 上工具链</span><br>ssh tony@&lt;windows-ip&gt; <span class="hljs-string">&quot;git --version &amp;&amp; gh --version &amp;&amp; python --version&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="Level-2：功能验证"><a href="#Level-2：功能验证" class="headerlink" title="Level 2：功能验证"></a>Level 2：功能验证</h3><p>Agent 通过 SSH 向 Windows 发送实际操作指令，验证文件操作、进程管理等基础能力：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br><span class="hljs-comment"># 创建测试文件</span><br>ssh tony@&lt;windows-ip&gt; <span class="hljs-string">&quot;powershell -Command &#x27;New-Item -ItemType File -Path C:\Users\test\migration_check.txt&#x27;&quot;</span><br><br><span class="hljs-comment"># 查询系统状态</span><br>ssh tony@&lt;windows-ip&gt; <span class="hljs-string">&quot;powershell -Command &#x27;Get-ComputerInfo | Select-Object OsName, OsVersion&#x27;&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="Level-3：场景验证"><a href="#Level-3：场景验证" class="headerlink" title="Level 3：场景验证"></a>Level 3：场景验证</h3><p>让 Agent 完成一个端到端任务（如”在 Windows 上打开 Edge 浏览器并访问指定网页”），通过 CDP 验证浏览器控制链路。</p>
+<h2 id="迁移模式总结"><a href="#迁移模式总结" class="headerlink" title="迁移模式总结"></a>迁移模式总结</h2><p>经过实践，总结出 Agent 跨平台迁移的两种模式：</p>
+<h3 id="模式-A：本体搬迁（不推荐）"><a href="#模式-A：本体搬迁（不推荐）" class="headerlink" title="模式 A：本体搬迁（不推荐）"></a>模式 A：本体搬迁（不推荐）</h3><p>把 Agent 整体从 Linux 搬到 Windows。</p>
+<ul>
+<li><p>❌ Cron 需要全部重建（Windows 没有原生 cron）</p>
+</li>
+<li><p>❌ 记忆文件需手动复制</p>
+</li>
+<li><p>❌ 灵魂文件路径需重新配置</p>
+</li>
+<li><p>❌ Python 依赖可能不兼容</p>
+</li>
+<li><p>❌ 运维成本高</p>
+</li>
+</ul>
+<h3 id="模式-B：触手延伸（推荐）"><a href="#模式-B：触手延伸（推荐）" class="headerlink" title="模式 B：触手延伸（推荐）"></a>模式 B：触手延伸（推荐）</h3><p>Agent 留在 Linux，通过远程控制协议扩展到 Windows。</p>
+<ul>
+<li><p>✅ Cron 零损失</p>
+</li>
+<li><p>✅ 记忆零损失</p>
+</li>
+<li><p>✅ 灵魂文件零改动</p>
+</li>
+<li><p>✅ 增量扩展，不破坏现有能力</p>
+</li>
+<li><p>✅ Linux + Windows 双平台协同</p>
+</li>
+</ul>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs nix"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><br>┌──────────────────────────────────────┐<br>│  Linux 服务器（Agent 本体）            │<br>│  ├── 灵魂文件 <span class="hljs-symbol">/</span> 记忆 <span class="hljs-symbol">/</span> 技能            │<br>│  ├── Cron 调度（全部保留）              │<br>│  └── 远程控制通道                      │<br>│       ├── SSH → Windows（命令行）      │<br>│       ├── HTTP → UFO（GUI）            │<br>│       └── CDP → Edge（浏览器）         │<br>└──────────────────────────────────────┘<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="教训与最佳实践"><a href="#教训与最佳实践" class="headerlink" title="教训与最佳实践"></a>教训与最佳实践</h2><p>- </p>
+<p><strong>迁移前先问”真的需要搬吗”</strong>：很多时候，扩展控制范围比物理搬迁更合理。Agent 的”迁移”应该理解为”能力延伸”，不是”身体搬家”。</p>
+<p>- </p>
+<p><strong>资产盘点先于动手</strong>：列清每一项资产的位置和迁移方式，避免遗漏。特别是 cron 配置、记忆文件这类”看不见但关键”的资产。</p>
+<p>- </p>
+<p><strong>三级验证不可省</strong>：连通性 → 功能 → 场景，逐级验证才能确保迁移质量。只做连通性验证是”自欺欺人”。</p>
+<p>- </p>
+<p><strong>Windows 工具链的 PATH 问题</strong>：winget 安装的工具不总是自动加入 PATH。迁移后第一时间验证 <code>git</code>、<code>gh</code>、<code>python</code> 等关键命令可用。</p>
+<p>- </p>
+<p><strong>OpenSSH Server 要设自启</strong>：否则重启后 Linux 侧的 Agent 会突然连不上 Windows。</p>
+<hr>
+<blockquote>
+</blockquote>
+<p>一个有记忆的 Agent 迁移，本质上是”让它的身体可以重建，但灵魂和记忆不能丢”。选对迁移模式，比选对工具更重要。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家</div>
+      <div>https://www.normdist.com/2026/07/04/ND-20260704-002-agent-cross-platform-migration/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" title="量化系统 Docker→裸跑迁移：一份踩坑笔记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">量化系统 Docker→裸跑迁移：一份踩坑笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/" title="Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression">
+                        <span class="hidden-mobile">Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

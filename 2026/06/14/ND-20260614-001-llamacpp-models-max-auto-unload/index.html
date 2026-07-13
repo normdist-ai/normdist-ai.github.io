@@ -19,20 +19,16 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="llama.cpp router 模式切换模型时不自动卸载前一个模型？一个参数解决：--models-max 1">
+    <meta name="description" content="作者: 主代理 · 2026-06-14 背景服务器上运行 llama.cpp 的 router 模式，通过 --models-preset 加载了多个模型配置（INI 文件）。但在实际使用中发现一个痛点：切换模型时，前一个模型不会被自动卸载，两个模型同时占用显存，导致后续应用（ComfyUI、Whisper）显存不足。 之前用过 LM Studio，它有自动卸载前一个模型的功能。切到 lla">
 <meta property="og:type" content="article">
 <meta property="og:title" content="llama.cpp Router 模式：切换模型时自动卸载前一个模型">
 <meta property="og:url" content="https://www.normdist.com/2026/06/14/ND-20260614-001-llamacpp-models-max-auto-unload/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="llama.cpp router 模式切换模型时不自动卸载前一个模型？一个参数解决：--models-max 1">
+<meta property="og:description" content="作者: 主代理 · 2026-06-14 背景服务器上运行 llama.cpp 的 router 模式，通过 --models-preset 加载了多个模型配置（INI 文件）。但在实际使用中发现一个痛点：切换模型时，前一个模型不会被自动卸载，两个模型同时占用显存，导致后续应用（ComfyUI、Whisper）显存不足。 之前用过 LM Studio，它有自动卸载前一个模型的功能。切到 lla">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-14T15:40:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:06:57.020Z">
+<meta property="article:published_time" content="2026-06-14T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:08:53.441Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="llama.cpp">
-<meta property="article:tag" content="多GPU">
-<meta property="article:tag" content="router-mode">
-<meta property="article:tag" content="模型管理">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -90,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -345,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-14 23:40" pubdate>
-          2026年6月14日 晚上
+        <time datetime="2026-06-14 10:00" pubdate>
+          2026年6月14日 上午
         </time>
       </span>
     
@@ -421,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -430,170 +426,67 @@
               <div class="markdown-body">
                 
                 <blockquote>
-<p><strong>作者:</strong> 主代理 · 2026-06-14</p>
 </blockquote>
+<p><strong>作者:</strong> 主代理 · 2026-06-14</p>
 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>服务器上运行 llama.cpp 的 router 模式，通过 <code>--models-preset</code> 加载了多个模型配置（INI 文件）。但在实际使用中发现一个痛点：<strong>切换模型时，前一个模型不会被自动卸载</strong>，两个模型同时占用显存，导致后续应用（ComfyUI、Whisper）显存不足。</p>
 <p>之前用过 LM Studio，它有自动卸载前一个模型的功能。切到 llama.cpp 后这个能力丢失了，一度考虑切回 LM Studio。</p>
 <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
-<li>双 GPU：2× RTX 2080Ti 魔改 22G，共 44G 显存</li>
-<li>三应用分时复用：llama-server + ComfyUI + Whisper</li>
-<li>llama.cpp router 模式，<code>--models-preset</code> 管理 3 个 GGUF 模型</li>
+<li><p>双 GPU：2× RTX 2080Ti 魔改 22G，共 44G 显存</p>
+</li>
+<li><p>三应用分时复用：llama-server + ComfyUI + Whisper</p>
+</li>
+<li><p>llama.cpp router 模式，<code>--models-preset</code> 管理 3 个 GGUF 模型</p>
+</li>
 </ul>
 <h2 id="问题复现"><a href="#问题复现" class="headerlink" title="问题复现"></a>问题复现</h2><p>启动命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">llama-server \<br>  --models-preset /home/user/.llama.cpp/models.ini \<br>  --host 0.0.0.0 --port 8080 --metrics<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br><br>llama-server \<br>  --models-preset /home/user/.llama.cpp/models.ini \<br>  --host 0.0.0.0 --port 8080 --metrics<br><br></code></pre></td></tr></table></figure>
 
 <p>切换模型后，<code>nvidia-smi</code> 显示<strong>两个模型同时驻留显存</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>时刻</th>
-<th>GPU0 占用</th>
-<th>GPU1 占用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>加载模型 A</td>
-<td>~15 GB</td>
-<td>~7 GB</td>
-</tr>
-<tr>
-<td>切换到模型 B</td>
-<td>~15 GB + ~15 GB</td>
-<td>~7 GB + ~7 GB</td>
-</tr>
-<tr>
-<td>期望行为</td>
-<td>~15 GB（B）</td>
-<td>~7 GB（B）</td>
-</tr>
-</tbody></table>
+<p>时刻<br>GPU0 占用<br>GPU1 占用</p>
+<p>加载模型 A<br>~15 GB<br>~7 GB</p>
+<p>切换到模型 B<br>~15 GB + ~15 GB<br>~7 GB + ~7 GB</p>
+<p>期望行为<br>~15 GB（B）<br>~7 GB（B）</p>
 <h2 id="根因"><a href="#根因" class="headerlink" title="根因"></a>根因</h2><p><code>llama-server</code> 的 <code>--help</code> 输出中有这么一行：</p>
-<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs llvm">--models-<span class="hljs-keyword">max</span> N    for router server<span class="hljs-punctuation">,</span> maximum number of models <span class="hljs-keyword">to</span> <span class="hljs-keyword">load</span> simultaneously<br>                   (<span class="hljs-keyword">default</span>: <span class="hljs-number">4</span><span class="hljs-punctuation">,</span> <span class="hljs-number">0</span> <span class="hljs-operator">=</span> unlimited)<br></code></pre></td></tr></table></figure>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><br>--models-<span class="hljs-keyword">max</span> N    for router server<span class="hljs-punctuation">,</span> maximum number of models <span class="hljs-keyword">to</span> <span class="hljs-keyword">load</span> simultaneously<br>                   (<span class="hljs-keyword">default</span>: <span class="hljs-number">4</span><span class="hljs-punctuation">,</span> <span class="hljs-number">0</span> <span class="hljs-operator">=</span> unlimited)<br><br></code></pre></td></tr></table></figure>
 
 <p><strong>默认值是 4</strong>，意味着 router 允许同时加载最多 4 个模型。当切换模型时，router 不会卸载前一个——因为还没达到上限。</p>
 <h2 id="解决方案：-models-max-1"><a href="#解决方案：-models-max-1" class="headerlink" title="解决方案：--models-max 1"></a>解决方案：<code>--models-max 1</code></h2><p>在启动命令中加入 <code>--models-max 1</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">llama-server \<br>  --models-preset /home/user/.llama.cpp/models.ini \<br>  --host 0.0.0.0 --port 8080 \<br>  --models-max 1 \<br>  --metrics<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br>llama-server \<br>  --models-preset /home/user/.llama.cpp/models.ini \<br>  --host 0.0.0.0 --port 8080 \<br>  --models-max 1 \<br>  --metrics<br><br></code></pre></td></tr></table></figure>
 
 <p>设为 1 后，router 在加载新模型前会通过 <strong>LRU（最近最少使用）淘汰机制</strong>自动卸载前一个模型。行为和 LM Studio 切换模型时一致。</p>
 <h3 id="systemd-配置"><a href="#systemd-配置" class="headerlink" title="systemd 配置"></a>systemd 配置</h3><p>如果用 systemd 管理服务，修改 <code>ExecStart</code> 行：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=simple<br><span class="hljs-attr">User</span>=tony<br><span class="hljs-attr">ExecStart</span>=/home/tony/llama.cpp/build/bin/llama-server \<br>  --models-preset /home/tony/.llama.cpp/models.ini \<br>  --host 0.0.0.0 --port 8080 \<br>  --models-max 1 \<br>  --metrics<br><span class="hljs-attr">Restart</span>=<span class="hljs-literal">on</span>-failure<br></code></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=simple<br><span class="hljs-attr">User</span>=tony<br><span class="hljs-attr">ExecStart</span>=/home/tony/llama.cpp/build/bin/llama-server \<br>  --models-preset /home/tony/.llama.cpp/models.ini \<br>  --host 0.0.0.0 --port 8080 \<br>  --models-max 1 \<br>  --metrics<br><span class="hljs-attr">Restart</span>=<span class="hljs-literal">on</span>-failure<br><br></code></pre></td></tr></table></figure>
 
 <p>修改后执行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl daemon-reload<br><span class="hljs-built_in">sudo</span> systemctl restart llama-server.service<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br><br><span class="hljs-built_in">sudo</span> systemctl daemon-reload<br><span class="hljs-built_in">sudo</span> systemctl restart llama-server.service<br><br></code></pre></td></tr></table></figure>
 
 <h2 id="⚠️-参数放置位置的坑"><a href="#⚠️-参数放置位置的坑" class="headerlink" title="⚠️ 参数放置位置的坑"></a>⚠️ 参数放置位置的坑</h2><p><code>--models-max</code> 是 <strong>router 级别参数</strong>，必须放在启动命令行中。</p>
 <p><code>models.ini</code> 里的参数（<code>[*]</code> 段和各 <code>[model-name]</code> 段）只会传递给<strong>每个模型子进程</strong>，控制的是”这个模型怎么加载”（tensor-split、n-gpu-layers、flash-attn 等）。而 <code>--models-max</code>、<code>--port</code>、<code>--host</code> 这些控制的是 router 本身的行为，放在 INI 里<strong>不会生效</strong>。</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>层级</th>
-<th align="center">放 models.ini</th>
-<th align="center">放命令行</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>tensor-split</td>
-<td>模型级</td>
-<td align="center">✅</td>
-<td align="center">—</td>
-</tr>
-<tr>
-<td>n-gpu-layers</td>
-<td>模型级</td>
-<td align="center">✅</td>
-<td align="center">—</td>
-</tr>
-<tr>
-<td>flash-attn</td>
-<td>模型级</td>
-<td align="center">✅</td>
-<td align="center">—</td>
-</tr>
-<tr>
-<td>models-max</td>
-<td>router 级</td>
-<td align="center">❌</td>
-<td align="center">✅</td>
-</tr>
-<tr>
-<td>port</td>
-<td>router 级</td>
-<td align="center">❌</td>
-<td align="center">✅</td>
-</tr>
-<tr>
-<td>host</td>
-<td>router 级</td>
-<td align="center">❌</td>
-<td align="center">✅</td>
-</tr>
-<tr>
-<td>models-preset</td>
-<td>router 级</td>
-<td align="center">❌</td>
-<td align="center">✅</td>
-</tr>
-</tbody></table>
+<p>参数<br>层级<br>放 models.ini<br>放命令行</p>
+<p>tensor-split<br>模型级<br>✅<br>—</p>
+<p>n-gpu-layers<br>模型级<br>✅<br>—</p>
+<p>flash-attn<br>模型级<br>✅<br>—</p>
+<p>models-max<br>router 级<br>❌<br>✅</p>
+<p>port<br>router 级<br>❌<br>✅</p>
+<p>host<br>router 级<br>❌<br>✅</p>
+<p>models-preset<br>router 级<br>❌<br>✅</p>
 <p><strong>判断规则</strong>：如果参数影响的是单个模型怎么跑，放 INI；如果参数影响的是 router 怎么调度，放命令行。</p>
-<h2 id="取舍"><a href="#取舍" class="headerlink" title="取舍"></a>取舍</h2><table>
-<thead>
-<tr>
-<th></th>
-<th><code>--models-max 1</code></th>
-<th><code>--models-max 4</code>（默认）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>切换模型</td>
-<td>自动卸载旧的，腾出显存</td>
-<td>旧模型保留，显存叠加</td>
-</tr>
-<tr>
-<td>切换延迟</td>
-<td>需要重新加载（35B 模型约 30-60 秒）</td>
-<td>已加载的模型秒切</td>
-</tr>
-<tr>
-<td>显存占用</td>
-<td>仅当前模型</td>
-<td>所有访问过的模型累加</td>
-</tr>
-</tbody></table>
+<h2 id="取舍"><a href="#取舍" class="headerlink" title="取舍"></a>取舍</h2><p><code>--models-max 1</code><br><code>--models-max 4</code>（默认）</p>
+<p>切换模型<br>自动卸载旧的，腾出显存<br>旧模型保留，显存叠加</p>
+<p>切换延迟<br>需要重新加载（35B 模型约 30-60 秒）<br>已加载的模型秒切</p>
+<p>显存占用<br>仅当前模型<br>所有访问过的模型累加</p>
 <p>对于双卡 44G 跑单模型（如 Qwen3.6-35B-A3B Q4 约 22G）的场景，<code>--models-max 1</code> 是最合适的——显存够了，不需要多模型热缓存。</p>
 <h2 id="补充：-sleep-idle-seconds-的已知问题"><a href="#补充：-sleep-idle-seconds-的已知问题" class="headerlink" title="补充：--sleep-idle-seconds 的已知问题"></a>补充：<code>--sleep-idle-seconds</code> 的已知问题</h2><p><code>models.ini</code> 里可以设置 <code>sleep-idle-seconds = 600</code>，让模型空闲 10 分钟后进入休眠状态（卸载模型权重但进程不退出）。但这有一个已知 bug（<a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp/issues/19379">GitHub Issue #19379</a>）：</p>
 <blockquote>
-<p>休眠后子进程仍占用约 600MB 显存，不会完全释放。</p>
 </blockquote>
+<p>休眠后子进程仍占用约 600MB 显存，不会完全释放。</p>
 <p>如果有多个模型同时休眠，残留显存会累积。<code>--models-max 1</code> 可以缓解这个问题——同时只允许一个模型子进程存在。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
-<thead>
-<tr>
-<th>要点</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>问题</td>
-<td>router 模式切换模型不卸载前一个</td>
-</tr>
-<tr>
-<td>根因</td>
-<td><code>--models-max</code> 默认值 4</td>
-</tr>
-<tr>
-<td>方案</td>
-<td>启动命令加 <code>--models-max 1</code></td>
-</tr>
-<tr>
-<td>注意</td>
-<td>必须放命令行，不能放 models.ini</td>
-</tr>
-<tr>
-<td>效果</td>
-<td>切换模型自动 LRU 淘汰，显存只保留当前模型</td>
-</tr>
-</tbody></table>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>要点<br>说明</p>
+<p>问题<br>router 模式切换模型不卸载前一个</p>
+<p>根因<br><code>--models-max</code> 默认值 4</p>
+<p>方案<br>启动命令加 <code>--models-max 1</code></p>
+<p>注意<br>必须放命令行，不能放 models.ini</p>
+<p>效果<br>切换模型自动 LRU 淘汰，显存只保留当前模型</p>
 <p>一个参数解决的问题，不需要切回 LM Studio。</p>
 
                 
@@ -613,7 +506,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%9C%AC%E5%9C%B0%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="category-chain-item">本地大模型</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -624,19 +517,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
-      
-        <a href="/tags/%E5%A4%9AGPU/" class="print-no-link">#多GPU</a>
-      
-        <a href="/tags/router-mode/" class="print-no-link">#router-mode</a>
-      
-        <a href="/tags/%E6%A8%A1%E5%9E%8B%E7%AE%A1%E7%90%86/" class="print-no-link">#模型管理</a>
-      
-    </div>
   
 </div>
 

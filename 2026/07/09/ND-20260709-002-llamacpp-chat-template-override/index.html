@@ -19,22 +19,16 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="问题：HTTP 400 “Unable to generate parser for this template”本地部署的 Qwen3.5-35B-A3B 模型（Ornith 微调版），通过 llama.cpp server 提供 API 服务。某天发现部分请求稳定返回 400 错误： 123456789101112HTTP 400&amp;#123;  &quot;error&quot;: &amp;#123">
+    <meta name="description" content="问题：HTTP 400 “Unable to generate parser for this template”本地部署的 Qwen3.5-35B-A3B 模型（Ornith 微调版），通过 llama.cpp server 提供 API 服务。某天发现部分请求稳定返回 400 错误： 1234567891011121314151617181920212223242526271234567891">
 <meta property="og:type" content="article">
 <meta property="og:title" content="不改 GGUF 文件，用 chat-template-file 修复 llama.cpp Jinja 模板错误">
 <meta property="og:url" content="https://www.normdist.com/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="问题：HTTP 400 “Unable to generate parser for this template”本地部署的 Qwen3.5-35B-A3B 模型（Ornith 微调版），通过 llama.cpp server 提供 API 服务。某天发现部分请求稳定返回 400 错误： 123456789101112HTTP 400&amp;#123;  &quot;error&quot;: &amp;#123">
+<meta property="og:description" content="问题：HTTP 400 “Unable to generate parser for this template”本地部署的 Qwen3.5-35B-A3B 模型（Ornith 微调版），通过 llama.cpp server 提供 API 服务。某天发现部分请求稳定返回 400 错误： 1234567891011121314151617181920212223242526271234567891">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-07-09T11:58:06.000Z">
-<meta property="article:modified_time" content="2026-07-09T11:58:06.773Z">
+<meta property="article:published_time" content="2026-07-09T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:02:44.464Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="Qwen">
-<meta property="article:tag" content="GGUF">
-<meta property="article:tag" content="Jinja">
-<meta property="article:tag" content="llama.cpp">
-<meta property="article:tag" content="故障排查">
-<meta property="article:tag" content="chat-template">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -92,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -347,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-07-09 19:58" pubdate>
-          2026年7月9日 晚上
+        <time datetime="2026-07-09 10:00" pubdate>
+          2026年7月9日 上午
         </time>
       </span>
     
@@ -359,7 +353,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7k 字
+          7.5k 字
         
       </span>
     
@@ -370,7 +364,7 @@
         
         
         
-          59 分钟
+          63 分钟
         
       </span>
     
@@ -423,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -432,68 +426,31 @@
               <div class="markdown-body">
                 
                 <h2 id="问题：HTTP-400-“Unable-to-generate-parser-for-this-template”"><a href="#问题：HTTP-400-“Unable-to-generate-parser-for-this-template”" class="headerlink" title="问题：HTTP 400 “Unable to generate parser for this template”"></a>问题：HTTP 400 “Unable to generate parser for this template”</h2><p>本地部署的 Qwen3.5-35B-A3B 模型（Ornith 微调版），通过 llama.cpp server 提供 API 服务。某天发现部分请求稳定返回 400 错误：</p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs stata">HTTP 400<br>&#123;<br>  <span class="hljs-string">&quot;error&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;code&quot;</span>: 400,<br>    <span class="hljs-string">&quot;message&quot;</span>: &quot;Unable to <span class="hljs-keyword">generate</span> parser <span class="hljs-keyword">for</span> this template. Automatic parser generation failed:<br><span class="hljs-keyword">While</span> executing CallExpression at <span class="hljs-keyword">line</span> 79, column 24 <span class="hljs-keyword">in</span> source:<br>... &#123;&#123;- raise_exception(&#x27;<span class="hljs-keyword">No</span> user <span class="hljs-keyword">query</span> found <span class="hljs-keyword">in</span> messages.&#x27;) &#125;&#125;<br>...<br><span class="hljs-keyword">Error</span>: Jinja Exception: <span class="hljs-keyword">No</span> user <span class="hljs-keyword">query</span> found <span class="hljs-keyword">in</span> messages.&quot;,<br>    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;invalid_request_error&quot;</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs stata"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br><br>HTTP 400<br>&#123;<br>  <span class="hljs-string">&quot;error&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;code&quot;</span>: 400,<br>    <span class="hljs-string">&quot;message&quot;</span>: &quot;Unable to <span class="hljs-keyword">generate</span> parser <span class="hljs-keyword">for</span> this template. Automatic parser generation failed:<br><span class="hljs-keyword">While</span> executing CallExpression at <span class="hljs-keyword">line</span> 79, column 24 <span class="hljs-keyword">in</span> source:<br>... &#123;&#123;- raise_exception(&#x27;<span class="hljs-keyword">No</span> user <span class="hljs-keyword">query</span> found <span class="hljs-keyword">in</span> messages.&#x27;) &#125;&#125;<br>...<br><span class="hljs-keyword">Error</span>: Jinja Exception: <span class="hljs-keyword">No</span> user <span class="hljs-keyword">query</span> found <span class="hljs-keyword">in</span> messages.&quot;,<br>    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;invalid_request_error&quot;</span><br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
 <p>错误信息看起来很明确——模板里有个 <code>raise_exception</code> 被触发了。但奇怪的是，这个错误<strong>不是偶发的</strong>，而是<strong>100% 可复现</strong>的，只在特定条件下触发。</p>
 <h2 id="复现：精确定位触发条件"><a href="#复现：精确定位触发条件" class="headerlink" title="复现：精确定位触发条件"></a>复现：精确定位触发条件</h2><p>为了搞清楚到底是什么触发了这个错误，设计了一组结构化测试矩阵，覆盖各种消息组合：</p>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>请求格式</th>
-<th>结果</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td><code>[&#123;user: &quot;hi&quot;&#125;]</code></td>
-<td>✅ 200</td>
-<td>正常</td>
-</tr>
-<tr>
-<td>2</td>
-<td><code>[&#123;system: &quot;...&quot;&#125;, &#123;user: &quot;hi&quot;&#125;]</code></td>
-<td>✅ 200</td>
-<td>正常</td>
-</tr>
-<tr>
-<td>3</td>
-<td><code>[&#123;user: &quot;&quot;&#125;]</code></td>
-<td>✅ 200</td>
-<td>空 content 也算</td>
-</tr>
-<tr>
-<td>4</td>
-<td><code>[&#123;system: &quot;...&quot;&#125;]</code></td>
-<td>❌ <strong>400</strong></td>
-<td>无 user 角色</td>
-</tr>
-<tr>
-<td>5</td>
-<td><code>[&#123;assistant: &quot;...&quot;&#125;]</code></td>
-<td>❌ <strong>400</strong></td>
-<td>无 user 角色</td>
-</tr>
-<tr>
-<td>6</td>
-<td><code>[&#123;system: &quot;...&quot;&#125;, &#123;assistant: &quot;...&quot;&#125;]</code></td>
-<td>❌ <strong>400</strong></td>
-<td>无 user 角色</td>
-</tr>
-</tbody></table>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>请求格式<br>结果<br>说明</p>
+<p>1<br><code>[&#123;user: &quot;hi&quot;&#125;]</code><br>✅ 200<br>正常</p>
+<p>2<br><code>[&#123;system: &quot;...&quot;&#125;, &#123;user: &quot;hi&quot;&#125;]</code><br>✅ 200<br>正常</p>
+<p>3<br><code>[&#123;user: &quot;&quot;&#125;]</code><br>✅ 200<br>空 content 也算</p>
+<p>4<br><code>[&#123;system: &quot;...&quot;&#125;]</code><br>❌ <strong>400</strong><br>无 user 角色</p>
+<p>5<br><code>[&#123;assistant: &quot;...&quot;&#125;]</code><br>❌ <strong>400</strong><br>无 user 角色</p>
+<p>6<br><code>[&#123;system: &quot;...&quot;&#125;, &#123;assistant: &quot;...&quot;&#125;]</code><br>❌ <strong>400</strong><br>无 user 角色</p>
 <p><strong>规律极其清晰</strong>：只要 messages 数组里<strong>没有任何一条 <code>role: user</code> 的消息</strong>，就 100% 触发 400 错误。</p>
 <p>每组测试跑了 5-20 次，结果完全一致，排除了偶发网络问题的可能。</p>
 <h2 id="根因分析：两层问题"><a href="#根因分析：两层问题" class="headerlink" title="根因分析：两层问题"></a>根因分析：两层问题</h2><p>深入分析后，发现问题其实有两层。</p>
 <h3 id="第一层：Qwen-chat-template-中的-raise-exception"><a href="#第一层：Qwen-chat-template-中的-raise-exception" class="headerlink" title="第一层：Qwen chat_template 中的 raise_exception"></a>第一层：Qwen chat_template 中的 raise_exception</h3><p>Qwen3.5 系列模型的 <code>chat_template.jinja</code> 中内置了校验逻辑，会在模板渲染阶段检查消息合法性。其中包含多个 <code>raise_exception()</code> 调用：</p>
-<figure class="highlight jinja"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs jinja"><span class="hljs-comment">&#123;# 检查是否有 user 消息 #&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-template-tag">&#123;% <span class="hljs-name"><span class="hljs-name">if</span></span> not user_messages %&#125;</span><span class="language-xml"></span><br><span class="language-xml">    </span><span class="hljs-template-variable">&#123;&#123;- raise_exception(&#x27;No user query found in messages.&#x27;) &#125;&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-template-tag">&#123;%- <span class="hljs-name"><span class="hljs-name">endif</span></span> %&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-comment">&#123;# 检查 system 消息位置 #&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-template-tag">&#123;% <span class="hljs-name"><span class="hljs-name">if</span></span> system_in_middle %&#125;</span><span class="language-xml"></span><br><span class="language-xml">    </span><span class="hljs-template-variable">&#123;&#123;- raise_exception(&#x27;System message must be at the beginning.&#x27;) &#125;&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-template-tag">&#123;%- <span class="hljs-name"><span class="hljs-name">endif</span></span> %&#125;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight jinja"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs jinja"><span class="language-xml"></span><br><span class="language-xml">1</span><br><span class="language-xml">2</span><br><span class="language-xml">3</span><br><span class="language-xml">4</span><br><span class="language-xml">5</span><br><span class="language-xml">6</span><br><span class="language-xml">7</span><br><span class="language-xml">8</span><br><span class="language-xml">9</span><br><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-comment">&#123;# 检查是否有 user 消息 #&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-template-tag">&#123;% <span class="hljs-name"><span class="hljs-name">if</span></span> not user_messages %&#125;</span><span class="language-xml"></span><br><span class="language-xml">    </span><span class="hljs-template-variable">&#123;&#123;- raise_exception(&#x27;No user query found in messages.&#x27;) &#125;&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-template-tag">&#123;%- <span class="hljs-name"><span class="hljs-name">endif</span></span> %&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-comment">&#123;# 检查 system 消息位置 #&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-template-tag">&#123;% <span class="hljs-name"><span class="hljs-name">if</span></span> system_in_middle %&#125;</span><span class="language-xml"></span><br><span class="language-xml">    </span><span class="hljs-template-variable">&#123;&#123;- raise_exception(&#x27;System message must be at the beginning.&#x27;) &#125;&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-template-tag">&#123;%- <span class="hljs-name"><span class="hljs-name">endif</span></span> %&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><br></code></pre></td></tr></table></figure>
 
 <p>这些校验在标准的 Python Jinja2 引擎中工作正常——引擎遇到 <code>raise_exception</code> 时会抛出异常。但在 llama.cpp 中情况不同。</p>
 <h3 id="第二层：llama-cpp-的-minijinja-不完整支持-Jinja2"><a href="#第二层：llama-cpp-的-minijinja-不完整支持-Jinja2" class="headerlink" title="第二层：llama.cpp 的 minijinja 不完整支持 Jinja2"></a>第二层：llama.cpp 的 minijinja 不完整支持 Jinja2</h3><p>llama.cpp 内置了一个轻量级 Jinja 引擎（minijinja），用于渲染 chat template。这个引擎<strong>不支持 <code>raise_exception()</code> 这种 CallExpression 语法</strong>。</p>
 <p>关键区别在于：</p>
 <ul>
-<li><strong>Python Jinja2</strong>：遇到 <code>raise_exception</code> 时抛出异常，被上层捕获后返回语义化的错误信息</li>
-<li><strong>llama.cpp minijinja</strong>：在<strong>解析模板阶段</strong>就尝试编译这个表达式，发现不支持的语法直接报 <code>Unable to generate parser for this template</code></li>
+<li><p><strong>Python Jinja2</strong>：遇到 <code>raise_exception</code> 时抛出异常，被上层捕获后返回语义化的错误信息</p>
+</li>
+<li><p><strong>llama.cpp minijinja</strong>：在<strong>解析模板阶段</strong>就尝试编译这个表达式，发现不支持的语法直接报 <code>Unable to generate parser for this template</code></p>
+</li>
 </ul>
 <p>也就是说，这不是”模板逻辑判断没有 user 消息所以报错”，而是”模板引擎根本无法解析包含 <code>raise_exception</code> 的模板”。</p>
 <h3 id="为什么有-user-消息时不报错？"><a href="#为什么有-user-消息时不报错？" class="headerlink" title="为什么有 user 消息时不报错？"></a>为什么有 user 消息时不报错？</h3><p>这是一个让人困惑的点。如果 minijinja 不支持 <code>raise_exception</code>，为什么有 user 消息时是好的？</p>
@@ -502,167 +459,88 @@
 <h2 id="解决方案探索"><a href="#解决方案探索" class="headerlink" title="解决方案探索"></a>解决方案探索</h2><h3 id="方案一：修改-GGUF-文件（被否决）"><a href="#方案一：修改-GGUF-文件（被否决）" class="headerlink" title="方案一：修改 GGUF 文件（被否决）"></a>方案一：修改 GGUF 文件（被否决）</h3><p>最直接的方法是用 <code>gguf-py</code> 等工具直接修改 GGUF 文件中内嵌的 <code>chat_template</code> 元数据，删除所有 <code>raise_exception</code> 调用。</p>
 <p><strong>优点</strong>：一劳永逸，修改的是源头。<br><strong>缺点</strong>：</p>
 <ul>
-<li>需要重新上传修改后的 GGUF（35GB 文件，传输耗时）</li>
-<li>GGUF 文件被修改后，模型校验和失效</li>
-<li>如果将来从 HuggingFace 重新下载模型，修改会丢失</li>
-<li>不利于维护——每次更新模型都要重新改</li>
+<li><p>需要重新上传修改后的 GGUF（35GB 文件，传输耗时）</p>
+</li>
+<li><p>GGUF 文件被修改后，模型校验和失效</p>
+</li>
+<li><p>如果将来从 HuggingFace 重新下载模型，修改会丢失</p>
+</li>
+<li><p>不利于维护——每次更新模型都要重新改</p>
+</li>
 </ul>
 <p>考虑到这些缺点，决定寻找不改 GGUF 的替代方案。</p>
 <h3 id="方案二：换推理引擎（备选）"><a href="#方案二：换推理引擎（备选）" class="headerlink" title="方案二：换推理引擎（备选）"></a>方案二：换推理引擎（备选）</h3><p>Qwen3.5 模型同时支持 vLLM 和 SGLang，这两个引擎使用 Python Jinja2，天然支持 <code>raise_exception</code>。</p>
 <p><strong>优点</strong>：根治问题，无需任何 workaround。<br><strong>缺点</strong>：</p>
 <ul>
-<li>需要重新部署整个推理服务</li>
-<li>vLLM 对 MoE 模型的显存管理和 llama.cpp 不同，需要重新调参</li>
-<li>当前 llama.cpp 运行稳定（~106 t&#x2F;s），切换引擎有风险</li>
+<li><p>需要重新部署整个推理服务</p>
+</li>
+<li><p>vLLM 对 MoE 模型的显存管理和 llama.cpp 不同，需要重新调参</p>
+</li>
+<li><p>当前 llama.cpp 运行稳定（~106 t&#x2F;s），切换引擎有风险</p>
+</li>
 </ul>
 <h3 id="方案三：llama-cpp-chat-template-file（最终选定）"><a href="#方案三：llama-cpp-chat-template-file（最终选定）" class="headerlink" title="方案三：llama.cpp --chat-template-file（最终选定）"></a>方案三：llama.cpp <code>--chat-template-file</code>（最终选定）</h3><p>在 llama.cpp 源码中发现了两个关键启动参数：</p>
 <ul>
-<li><code>--chat-template JINJA_TEMPLATE</code>：直接传入自定义 Jinja 模板字符串</li>
-<li><code>--chat-template-file JINJA_TEMPLATE_FILE</code>：从外部文件读取自定义模板</li>
+<li><p><code>--chat-template JINJA_TEMPLATE</code>：直接传入自定义 Jinja 模板字符串</p>
+</li>
+<li><p><code>--chat-template-file JINJA_TEMPLATE_FILE</code>：从外部文件读取自定义模板</p>
+</li>
 </ul>
 <p>这两个参数会<strong>覆盖</strong> GGUF 文件中内嵌的 <code>chat_template</code>，实现运行时模板替换。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">llama-server --model ornith.gguf \<br>  --jinja \<br>  --chat-template-file /path/to/fixed-template.jinja<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br><br>llama-server --model ornith.gguf \<br>  --jinja \<br>  --chat-template-file /path/to/fixed-template.jinja<br><br></code></pre></td></tr></table></figure>
 
 <p><strong>优点</strong>：</p>
 <ul>
-<li>不碰 GGUF 文件</li>
-<li>模板文件可以随时修改，只需重启服务</li>
-<li>配置在 models.ini 中管理，版本可控</li>
-<li>社区已有验证（HuggingFace 上的修复讨论）</li>
+<li><p>不碰 GGUF 文件</p>
+</li>
+<li><p>模板文件可以随时修改，只需重启服务</p>
+</li>
+<li><p>配置在 models.ini 中管理，版本可控</p>
+</li>
+<li><p>社区已有验证（HuggingFace 上的修复讨论）</p>
+</li>
 </ul>
 <p><strong>缺点</strong>：</p>
 <ul>
-<li>需要重启 llama-server 服务</li>
-<li>需要准备修复版模板文件</li>
+<li><p>需要重启 llama-server 服务</p>
+</li>
+<li><p>需要准备修复版模板文件</p>
+</li>
 </ul>
 <p>这个方案最干净、侵入性最低，最终选定。</p>
 <h2 id="实施：四步修复"><a href="#实施：四步修复" class="headerlink" title="实施：四步修复"></a>实施：四步修复</h2><h3 id="第一步：准备修复版模板"><a href="#第一步：准备修复版模板" class="headerlink" title="第一步：准备修复版模板"></a>第一步：准备修复版模板</h3><p>从 HuggingFace 上 unsloth 的 Qwen3.5 仓库获取 <code>chat_template.jinja</code>。unsloth 版本已经移除了部分 <code>raise_exception</code>，但还残留了 5 处用于内容类型校验的调用。</p>
-<p>为了彻底解决问题，用 sed 把所有 <code>raise_exception(&#39;...&#39;)</code> 替换为空操作 <code>&#123;&#123; '' &#125;&#125;</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sed <span class="hljs-string">&quot;s/&#123;&#123;- raise_exception(&#x27;[^&#x27;]*&#x27;) &#125;&#125;/&#123;&#123; &#x27;&#x27; &#125;&#125;/g&quot;</span> chat_template.jinja &gt; fixed-template.jinja<br></code></pre></td></tr></table></figure>
+<p>为了彻底解决问题，用 sed 把所有 <code>raise_exception(&#39;...&#39;)</code> 替换为空操作 <code>&#123;&#123; &#39;&#39; &#125;&#125;</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br>sed <span class="hljs-string">&quot;s/&#123;&#123;- raise_exception(&#x27;[^&#x27;]*&#x27;) &#125;&#125;/&#123;&#123; &#x27;&#x27; &#125;&#125;/g&quot;</span> chat_template.jinja &gt; fixed-template.jinja<br><br></code></pre></td></tr></table></figure>
 
 <p>替换后验证：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ grep -c <span class="hljs-string">&#x27;raise_exception&#x27;</span> fixed-template.jinja<br>0<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br><br>$ grep -c <span class="hljs-string">&#x27;raise_exception&#x27;</span> fixed-template.jinja<br>0<br><br></code></pre></td></tr></table></figure>
 
 <p>零残留，模板中的所有 <code>raise_exception</code> 调用全部移除。</p>
 <h3 id="第二步：修改-models-ini"><a href="#第二步：修改-models-ini" class="headerlink" title="第二步：修改 models.ini"></a>第二步：修改 models.ini</h3><p>llama.cpp 的 models preset 模式使用 INI 文件管理多个模型。在 Ornith 模型的 section 中添加两行：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Qwen/Qwen3.5-35B-A3B-Ornith]</span><br><span class="hljs-attr">alias</span> = deepreinforce-ai/ornith-<span class="hljs-number">1.0</span>-<span class="hljs-number">35</span>b<br><span class="hljs-attr">model</span> = /path/to/ornith-<span class="hljs-number">1.0</span>-<span class="hljs-number">35</span>b-Q4_K_M.gguf<br><span class="hljs-attr">mmproj</span> = /path/to/mmproj-ornith-<span class="hljs-number">35</span>b-f16.gguf<br><span class="hljs-attr">ctx-size</span> = <span class="hljs-number">262144</span><br><span class="hljs-attr">temp</span> = <span class="hljs-number">0.6</span><br><span class="hljs-attr">top-p</span> = <span class="hljs-number">0.95</span><br><span class="hljs-attr">top-k</span> = <span class="hljs-number">20</span><br><span class="hljs-attr">reasoning</span> = <span class="hljs-literal">on</span><br><span class="hljs-attr">jinja</span> = <span class="hljs-literal">true</span>                                                          <span class="hljs-comment"># ← 新增</span><br><span class="hljs-attr">chat-template-file</span> = /path/to/fixed-template.jinja                   <span class="hljs-comment"># ← 新增</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br><br><span class="hljs-section">[Qwen/Qwen3.5-35B-A3B-Ornith]</span><br><span class="hljs-attr">alias</span> = deepreinforce-ai/ornith-<span class="hljs-number">1.0</span>-<span class="hljs-number">35</span>b<br><span class="hljs-attr">model</span> = /path/to/ornith-<span class="hljs-number">1.0</span>-<span class="hljs-number">35</span>b-Q4_K_M.gguf<br><span class="hljs-attr">mmproj</span> = /path/to/mmproj-ornith-<span class="hljs-number">35</span>b-f16.gguf<br><span class="hljs-attr">ctx-size</span> = <span class="hljs-number">262144</span><br><span class="hljs-attr">temp</span> = <span class="hljs-number">0.6</span><br><span class="hljs-attr">top-p</span> = <span class="hljs-number">0.95</span><br><span class="hljs-attr">top-k</span> = <span class="hljs-number">20</span><br><span class="hljs-attr">reasoning</span> = <span class="hljs-literal">on</span><br><span class="hljs-attr">jinja</span> = <span class="hljs-literal">true</span>                                                          <span class="hljs-comment"># ← 新增</span><br><span class="hljs-attr">chat-template-file</span> = /path/to/fixed-template.jinja                   <span class="hljs-comment"># ← 新增</span><br><br></code></pre></td></tr></table></figure>
 
 <p><strong>关键技术细节</strong>：models.ini 的 key 映射规则——llama.cpp 源码中的 <code>get_map_key_opt()</code> 函数会遍历所有 CLI 参数，用环境变量名（如 <code>LLAMA_ARG_CHAT_TEMPLATE_FILE</code>）和去掉 <code>--</code> 前缀的参数名（如 <code>chat-template-file</code>）作为 INI key。</p>
 <p>所以 INI 中写 <code>chat-template-file</code> 等价于命令行 <code>--chat-template-file</code>，写 <code>jinja = true</code> 等价于 <code>--jinja</code>。<code>--jinja</code> 必须设置，否则 <code>--chat-template-file</code> 只接受内置模板名列表，不接受自定义 Jinja 文件。</p>
-<h3 id="第三步：上传模板并重启服务"><a href="#第三步：上传模板并重启服务" class="headerlink" title="第三步：上传模板并重启服务"></a>第三步：上传模板并重启服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 上传修复版模板到服务器</span><br>scp fixed-template.jinja server:/path/to/templates/<br><br><span class="hljs-comment"># 重启 llama-server（通过 systemd）</span><br>ssh server <span class="hljs-string">&quot;sudo systemctl restart llama-server&quot;</span><br></code></pre></td></tr></table></figure>
+<h3 id="第三步：上传模板并重启服务"><a href="#第三步：上传模板并重启服务" class="headerlink" title="第三步：上传模板并重启服务"></a>第三步：上传模板并重启服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br><span class="hljs-comment"># 上传修复版模板到服务器</span><br>scp fixed-template.jinja server:/path/to/templates/<br><br><span class="hljs-comment"># 重启 llama-server（通过 systemd）</span><br>ssh server <span class="hljs-string">&quot;sudo systemctl restart llama-server&quot;</span><br><br></code></pre></td></tr></table></figure>
 
 <p>重启后，主进程重新读取 <code>models.ini</code>，用新的配置参数 spawn Ornith 子进程。</p>
 <h3 id="第四步：验证启动参数"><a href="#第四步：验证启动参数" class="headerlink" title="第四步：验证启动参数"></a>第四步：验证启动参数</h3><p>通过 llama.cpp 的 <code>/v1/models</code> API 确认新进程的启动参数：</p>
-<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">✅ <span class="hljs-params">--jinja</span>: 已启用<br>✅ <span class="hljs-params">--chat-template-file</span>: <span class="hljs-string">/path/to/fixed-template.jinja</span><br></code></pre></td></tr></table></figure>
-
-<p>子进程的完整参数列表中包含了 <code>--chat-template-file</code> 和 <code>--jinja</code>，确认配置已生效。</p>
-<h2 id="验证：完整测试矩阵"><a href="#验证：完整测试矩阵" class="headerlink" title="验证：完整测试矩阵"></a>验证：完整测试矩阵</h2><p>修复后，用同样的测试矩阵重新跑一遍：</p>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>请求格式</th>
-<th>修复前</th>
-<th>修复后</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td><code>[&#123;user: &quot;hi&quot;&#125;]</code></td>
-<td>✅ 200</td>
-<td>✅ 200</td>
-</tr>
-<tr>
-<td>2</td>
-<td><code>[&#123;system&#125;, &#123;user: &quot;hi&quot;&#125;]</code></td>
-<td>✅ 200</td>
-<td>✅ 200</td>
-</tr>
-<tr>
-<td>3</td>
-<td><code>[&#123;user: &quot;&quot;&#125;]</code></td>
-<td>✅ 200</td>
-<td>✅ 200</td>
-</tr>
-<tr>
-<td>4</td>
-<td><code>[&#123;system: &quot;...&quot;&#125;]</code></td>
-<td>❌ 400</td>
-<td>✅ <strong>200</strong></td>
-</tr>
-<tr>
-<td>5</td>
-<td><code>[&#123;assistant: &quot;...&quot;&#125;]</code></td>
-<td>❌ 400</td>
-<td>✅ <strong>200</strong></td>
-</tr>
-<tr>
-<td>6</td>
-<td><code>[&#123;system&#125;, &#123;assistant&#125;]</code></td>
-<td>❌ 400</td>
-<td>✅ <strong>200</strong></td>
-</tr>
-</tbody></table>
-<p><strong>全部通过。</strong> 之前 100% 失败的三个场景，现在全部返回 200。正常的请求不受影响。</p>
-<p>同时通过 API 代理层（new-api）验证了端到端链路：代理 → llama.cpp → 模板渲染 → 正常响应，全链路通畅。</p>
-<h2 id="坑点总结"><a href="#坑点总结" class="headerlink" title="坑点总结"></a>坑点总结</h2><p>这次排查过程中踩了几个坑，记录下来：</p>
-<h3 id="坑-1：误判错误来源"><a href="#坑-1：误判错误来源" class="headerlink" title="坑 1：误判错误来源"></a>坑 1：误判错误来源</h3><p>最初以为错误来自上游 API 服务商（SiliconFlow），因为错误信息里有 <code>raise_exception</code>。但实际测试发现，免费模型和本地模型的错误信息<strong>完全不同</strong>：</p>
-<ul>
-<li><strong>免费模型（上游）</strong>：模板能正常解析，<code>raise_exception</code> 是正常的运行时校验</li>
-<li><strong>本地模型（llama.cpp）</strong>：minijinja 引擎不支持 <code>raise_exception</code>，解析&#x2F;执行阶段崩溃</li>
-</ul>
-<p>两个问题根因不同，解决方法也不同。通过对比 <code>Server</code> HTTP 头可以快速区分：上游返回的是服务商标识，本地返回的是 <code>Server: llama.cpp</code>。</p>
-<h3 id="坑-2：unsloth-修复版模板不够彻底"><a href="#坑-2：unsloth-修复版模板不够彻底" class="headerlink" title="坑 2：unsloth 修复版模板不够彻底"></a>坑 2：unsloth 修复版模板不够彻底</h3><p>unsloth 的修复版移除了最常触发的两处 <code>raise_exception</code>（user 检查和 system 位置检查），但保留了 5 处用于内容类型校验的调用（图片&#x2F;视频类型检查、空消息检查）。</p>
-<p>修复后测试发现，只含 assistant 消息的请求仍然报错——因为触发了 <code>&#39;No messages provided.&#39;</code> 这处残留的 <code>raise_exception</code>。最终用 sed 全量替换，0 残留才彻底解决。</p>
-<p><strong>教训</strong>：使用社区的修复方案时，不能只看 star 数和讨论热度，必须实际测试覆盖所有边界场景。</p>
-<h3 id="坑-3：models-ini-配置不生效（需要重启主进程）"><a href="#坑-3：models-ini-配置不生效（需要重启主进程）" class="headerlink" title="坑 3：models.ini 配置不生效（需要重启主进程）"></a>坑 3：models.ini 配置不生效（需要重启主进程）</h3><p>修改 <code>models.ini</code> 后，尝试通过 <code>/models/unload</code> API 卸载模型，期望自动重新加载。但卸载后重新 spawn 的子进程<strong>仍然使用旧参数</strong>——因为主进程在启动时读取 <code>models.ini</code> 并缓存在内存中，单纯卸载模型不会触发重新读取。</p>
-<p><strong>解决方法</strong>：通过 <code>systemctl restart llama-server</code> 重启整个主进程，让它重新解析 <code>models.ini</code>。</p>
-<h3 id="坑-4：models-ini-的-key-命名规则"><a href="#坑-4：models-ini-的-key-命名规则" class="headerlink" title="坑 4：models.ini 的 key 命名规则"></a>坑 4：models.ini 的 key 命名规则</h3><p>models.ini 不是随便起 key 名的。通过阅读 llama.cpp 源码，发现 INI key 必须匹配以下两种格式之一：</p>
-<ul>
-<li>环境变量名：<code>LLAMA_ARG_CHAT_TEMPLATE_FILE</code></li>
-<li>去掉 <code>--</code> 的参数名：<code>chat-template-file</code></li>
-</ul>
-<p>写 <code>chat_template_file</code>（下划线）或 <code>chatTemplateFile</code>（驼峰）都不行，会报 <code>option not recognized</code> 错误。</p>
-<h2 id="技术要点速查"><a href="#技术要点速查" class="headerlink" title="技术要点速查"></a>技术要点速查</h2><h3 id="llama-cpp-chat-template-override-方法总结"><a href="#llama-cpp-chat-template-override-方法总结" class="headerlink" title="llama.cpp chat template override 方法总结"></a>llama.cpp chat template override 方法总结</h3><table>
-<thead>
-<tr>
-<th>方法</th>
-<th>命令</th>
-<th>适用场景</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>--chat-template</code></td>
-<td><code>--chat-template chatml</code></td>
-<td>使用内置模板（ChatML、Llama3 等 50+ 种）</td>
-</tr>
-<tr>
-<td><code>--chat-template</code></td>
-<td><code>--chat-template &quot;&#123;&#123;...&#125;&#125;&quot;</code></td>
-<td>直接传入 Jinja 字符串（需加 <code>--jinja</code>）</td>
-</tr>
-<tr>
-<td><code>--chat-template-file</code></td>
-<td><code>--chat-template-file ./template.jinja</code></td>
-<td>从文件加载（需加 <code>--jinja</code>）</td>
-</tr>
-<tr>
-<td><code>--no-jinja</code></td>
-<td><code>--no-jinja --chat-template chatml</code></td>
-<td>完全绕过 Jinja 引擎（可能丢失 tool-call）</td>
-</tr>
-</tbody></table>
-<h3 id="查找-llama-cpp-支持的内置模板"><a href="#查找-llama-cpp-支持的内置模板" class="headerlink" title="查找 llama.cpp 支持的内置模板"></a>查找 llama.cpp 支持的内置模板</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">llama-server --<span class="hljs-built_in">help</span> | grep -A 100 <span class="hljs-string">&quot;chat-template&quot;</span><br></code></pre></td></tr></table></figure>
+<p>1<br>2</p>
+<p>✅ –jinja: 已启用<br>✅ –chat-template-file: &#x2F;path&#x2F;to&#x2F;fixed-template.jinja</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey"><br>子进程的完整参数列表中包含了 `--chat-template-file` 和 `--jinja`，确认配置已生效。<br><br>## 验证：完整测试矩阵<br><br>修复后，用同样的测试矩阵重新跑一遍：<br><br>#<br>请求格式<br>修复前<br>修复后<br><br><span class="hljs-number">1</span><br>`[&#123;user: <span class="hljs-string">&quot;hi&quot;</span>&#125;]`<br>✅ <span class="hljs-number">200</span><br>✅ <span class="hljs-number">200</span><br><br><span class="hljs-number">2</span><br>`[&#123;system&#125;, &#123;user: <span class="hljs-string">&quot;hi&quot;</span>&#125;]`<br>✅ <span class="hljs-number">200</span><br>✅ <span class="hljs-number">200</span><br><br><span class="hljs-number">3</span><br>`[&#123;user: <span class="hljs-string">&quot;&quot;</span>&#125;]`<br>✅ <span class="hljs-number">200</span><br>✅ <span class="hljs-number">200</span><br><br><span class="hljs-number">4</span><br>`[&#123;system: <span class="hljs-string">&quot;...&quot;</span>&#125;]`<br>❌ <span class="hljs-number">400</span><br>✅ **<span class="hljs-number">200</span>**<br><br><span class="hljs-number">5</span><br>`[&#123;assistant: <span class="hljs-string">&quot;...&quot;</span>&#125;]`<br>❌ <span class="hljs-number">400</span><br>✅ **<span class="hljs-number">200</span>**<br><br><span class="hljs-number">6</span><br>`[&#123;system&#125;, &#123;assistant&#125;]`<br>❌ <span class="hljs-number">400</span><br>✅ **<span class="hljs-number">200</span>**<br><br>**全部通过。** 之前 <span class="hljs-number">100</span>% 失败的三个场景，现在全部返回 <span class="hljs-number">200</span>。正常的请求不受影响。<br><br>同时通过 API 代理层（<span class="hljs-keyword">new</span>-api）验证了端到端链路：代理 → llama.cpp → 模板渲染 → 正常响应，全链路通畅。<br><br>## 坑点总结<br><br>这次排查过程中踩了几个坑，记录下来：<br><br>### 坑 <span class="hljs-number">1</span>：误判错误来源<br><br>最初以为错误来自上游 API 服务商（SiliconFlow），因为错误信息里有 `raise_exception`。但实际测试发现，免费模型和本地模型的错误信息**完全不同**：<br><br>- **免费模型（上游）**：模板能正常解析，`raise_exception` 是正常的运行时校验<br><br>- **本地模型（llama.cpp）**：minijinja 引擎不支持 `raise_exception`，解析/执行阶段崩溃<br><br><span class="hljs-title">两个问题根因不同，解决方法也不同。通过对比 `Server` HTTP 头可以快速区分：上游返回的是服务商标识，本地返回的是 `Server:</span> llama.cpp`。<br><br>### 坑 <span class="hljs-number">2</span>：unsloth 修复版模板不够彻底<br><br>unsloth 的修复版移除了最常触发的两处 `raise_exception`（user 检查和 system 位置检查），但保留了 <span class="hljs-number">5</span> 处用于内容类型校验的调用（图片/视频类型检查、空消息检查）。<br><br>修复后测试发现，只含 assistant 消息的请求仍然报错——因为触发了 `&#x27;No messages provided.&#x27;` 这处残留的 `raise_exception`。最终用 sed 全量替换，<span class="hljs-number">0</span> 残留才彻底解决。<br><br>**教训**：使用社区的修复方案时，不能只看 star 数和讨论热度，必须实际测试覆盖所有边界场景。<br><br>### 坑 <span class="hljs-number">3</span>：models.ini 配置不生效（需要重启主进程）<br><br>修改 `models.ini` 后，尝试通过 `/models/unload` API 卸载模型，期望自动重新加载。但卸载后重新 spawn 的子进程**仍然使用旧参数**——因为主进程在启动时读取 `models.ini` 并缓存在内存中，单纯卸载模型不会触发重新读取。<br><br>**解决方法**：通过 `systemctl restart llama-server` 重启整个主进程，让它重新解析 `models.ini`。<br><br>### 坑 <span class="hljs-number">4</span>：models.ini 的 key 命名规则<br><br>models.ini 不是随便起 key 名的。通过阅读 llama.cpp 源码，发现 INI key 必须匹配以下两种格式之一：<br><br>- 环境变量名：`LLAM<span class="hljs-built_in">A_ARG</span>_CHAT_TEMPLATE_FILE`<br><br>- 去掉 `--` 的参数名：`chat-template-file`<br><br>写 `chat_template_file`（下划线）或 `chatTemplateFile`（驼峰）都不行，会报 `option <span class="hljs-literal">not</span> recognized` 错误。<br><br>## 技术要点速查<br><br>### llama.cpp chat template override 方法总结<br><br>方法<br>命令<br>适用场景<br><br>`--chat-template`<br>`--chat-template chatml`<br>使用内置模板（ChatML、Llama3 等 <span class="hljs-number">50</span>+ 种）<br><br>`--chat-template`<br>`--chat-template <span class="hljs-string">&quot;&#123;&#123;...&#125;&#125;&quot;</span>`<br>直接传入 Jinja 字符串（需加 `--jinja`）<br><br>`--chat-template-file`<br>`--chat-template-file ./template.jinja`<br>从文件加载（需加 `--jinja`）<br><br>`--no-jinja`<br>`--no-jinja --chat-template chatml`<br>完全绕过 Jinja 引擎（可能丢失 tool-call）<br><br>### 查找 llama.cpp 支持的内置模板<br><br>```bash<br><br><span class="hljs-number">1</span><br><br>llama-server --help | grep -A <span class="hljs-number">100</span> <span class="hljs-string">&quot;chat-template&quot;</span><br><br></code></pre></td></tr></table></figure>
 
 <p>常见内置模板：<code>chatml</code>、<code>llama3</code>、<code>deepseek3</code>、<code>gemma</code>、<code>mistral-v3</code>、<code>phi3</code>、<code>zephyr</code> 等。</p>
-<h3 id="models-ini-中添加自定义模板"><a href="#models-ini-中添加自定义模板" class="headerlink" title="models.ini 中添加自定义模板"></a>models.ini 中添加自定义模板</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[YourModel]</span><br><span class="hljs-attr">model</span> = /path/to/model.gguf<br><span class="hljs-attr">jinja</span> = <span class="hljs-literal">true</span><br><span class="hljs-attr">chat-template-file</span> = /path/to/fixed-template.jinja<br></code></pre></td></tr></table></figure>
+<h3 id="models-ini-中添加自定义模板"><a href="#models-ini-中添加自定义模板" class="headerlink" title="models.ini 中添加自定义模板"></a>models.ini 中添加自定义模板</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br>4<br><br><span class="hljs-section">[YourModel]</span><br><span class="hljs-attr">model</span> = /path/to/model.gguf<br><span class="hljs-attr">jinja</span> = <span class="hljs-literal">true</span><br><span class="hljs-attr">chat-template-file</span> = /path/to/fixed-template.jinja<br><br></code></pre></td></tr></table></figure>
 
 <p>记住三点：</p>
-<ol>
-<li><code>jinja = true</code> 必须设置（否则只接受内置模板名）</li>
-<li>key 用连字符格式（<code>chat-template-file</code>），不是下划线</li>
-<li>修改后需重启 llama-server 主进程</li>
-</ol>
+<ul>
+<li><p><code>jinja = true</code> 必须设置（否则只接受内置模板名）</p>
+</li>
+<li><p>key 用连字符格式（<code>chat-template-file</code>），不是下划线</p>
+</li>
+<li><p>修改后需重启 llama-server 主进程</p>
+</li>
+</ul>
 <h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>llama.cpp 的 minijinja 引擎对 Jinja2 的支持不是完整的，<code>raise_exception</code> 只是其中一个不兼容的点。当模型 chat_template 使用了 minijinja 不支持的特性时，通过 <code>--chat-template-file</code> 在运行时覆盖模板，是不修改 GGUF 文件的最佳解决方案。</p>
 <p>这个方案的核心优势是<strong>关注点分离</strong>：模型权重（GGUF）和对话模板（jinja 文件）独立管理，模板可以随时更新而不用动几十 GB 的模型文件。对于需要频繁迭代 prompt 格式的场景（比如调整 tool-calling 格式、修改 system prompt 处理逻辑），这种分离特别有价值。</p>
 
@@ -683,7 +561,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI%E5%B7%A5%E7%A8%8B/" class="category-chain-item">AI工程</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -694,23 +572,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/Qwen/" class="print-no-link">#Qwen</a>
-      
-        <a href="/tags/GGUF/" class="print-no-link">#GGUF</a>
-      
-        <a href="/tags/Jinja/" class="print-no-link">#Jinja</a>
-      
-        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
-      
-        <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" class="print-no-link">#故障排查</a>
-      
-        <a href="/tags/chat-template/" class="print-no-link">#chat-template</a>
-      
-    </div>
   
 </div>
 
@@ -765,9 +626,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/07/10/ND-20260710-001-ornith-local-deployment/" title="Ornith 开源模型本地部署：替代 Qwen3.6 的完整实战">
+                      <a href="/2026/07/09/ND-20260709-001-a2a-collaboration-ikuai-skill-upgrade/" title="A2A 协议实战：两个 AI Agent 协作升级路由器技能">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Ornith 开源模型本地部署：替代 Qwen3.6 的完整实战</span>
+                        <span class="hidden-mobile">A2A 协议实战：两个 AI Agent 协作升级路由器技能</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -775,8 +636,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/07/09/ND-20260705-002-daily-summaries-backfill/" title="从交易记录重建每日资产快照：daily_summaries 历史回填实战">
-                        <span class="hidden-mobile">从交易记录重建每日资产快照：daily_summaries 历史回填实战</span>
+                      <a href="/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/" title="AI Agent 自主重构之路：从响应式审查到全自动修复">
+                        <span class="hidden-mobile">AI Agent 自主重构之路：从响应式审查到全自动修复</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

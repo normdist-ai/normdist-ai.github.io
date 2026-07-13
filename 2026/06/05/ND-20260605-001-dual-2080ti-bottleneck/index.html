@@ -19,23 +19,16 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="玩本地大模型的玩家，几乎都会遇到一个灵魂拷问：双卡之间到底该怎么连？PCIe x4 够不够用？要不要上 NVLink？要不要换主板？ 我的配置是两张 RTX 2080 Ti 22GB 魔改版，跑 Qwen3.6-35B-A3B（MoE 架构，35B 总参数，3B 激活），实测生成速度 105 t&#x2F;s。这个速度在同类配置中算不错，但我一直想搞清楚：还能更快吗？瓶颈到底在哪？">
+    <meta name="description" content="玩本地大模型的玩家，几乎都会遇到一个灵魂拷问：双卡之间到底该怎么连？PCIe x4 够不够用？要不要上 NVLink？要不要换主板？ 我的配置是两张 RTX 2080 Ti 22GB 魔改版，跑 Qwen3.6-35B-A3B（MoE 架构，35B 总参数，3B 激活），实测生成速度 105 t&#x2F;s。这个速度在同类配置中算不错，但我一直想搞清楚：还能更快吗？瓶颈到底在哪？ 我的硬件配置先">
 <meta property="og:type" content="article">
 <meta property="og:title" content="双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测">
 <meta property="og:url" content="https://www.normdist.com/2026/06/05/ND-20260605-001-dual-2080ti-bottleneck/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="玩本地大模型的玩家，几乎都会遇到一个灵魂拷问：双卡之间到底该怎么连？PCIe x4 够不够用？要不要上 NVLink？要不要换主板？ 我的配置是两张 RTX 2080 Ti 22GB 魔改版，跑 Qwen3.6-35B-A3B（MoE 架构，35B 总参数，3B 激活），实测生成速度 105 t&#x2F;s。这个速度在同类配置中算不错，但我一直想搞清楚：还能更快吗？瓶颈到底在哪？">
+<meta property="og:description" content="玩本地大模型的玩家，几乎都会遇到一个灵魂拷问：双卡之间到底该怎么连？PCIe x4 够不够用？要不要上 NVLink？要不要换主板？ 我的配置是两张 RTX 2080 Ti 22GB 魔改版，跑 Qwen3.6-35B-A3B（MoE 架构，35B 总参数，3B 激活），实测生成速度 105 t&#x2F;s。这个速度在同类配置中算不错，但我一直想搞清楚：还能更快吗？瓶颈到底在哪？ 我的硬件配置先">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-05T00:30:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:06:57.019Z">
+<meta property="article:published_time" content="2026-06-05T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:08:53.441Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="GPU">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="llama.cpp">
-<meta property="article:tag" content="性能优化">
-<meta property="article:tag" content="RTX 2080 Ti">
-<meta property="article:tag" content="MoE">
-<meta property="article:tag" content="PCIe">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -93,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -348,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-05 08:30" pubdate>
-          2026年6月5日 早上
+        <time datetime="2026-06-05 10:00" pubdate>
+          2026年6月5日 上午
         </time>
       </span>
     
@@ -360,7 +353,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.9k 字
+          4k 字
         
       </span>
     
@@ -371,7 +364,7 @@
         
         
         
-          33 分钟
+          34 分钟
         
       </span>
     
@@ -424,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -434,257 +427,123 @@
                 
                 <p>玩本地大模型的玩家，几乎都会遇到一个灵魂拷问：<strong>双卡之间到底该怎么连？PCIe x4 够不够用？要不要上 NVLink？要不要换主板？</strong></p>
 <p>我的配置是两张 RTX 2080 Ti 22GB 魔改版，跑 Qwen3.6-35B-A3B（MoE 架构，35B 总参数，3B 激活），实测生成速度 105 t&#x2F;s。这个速度在同类配置中算不错，但我一直想搞清楚：<strong>还能更快吗？瓶颈到底在哪？</strong></p>
-<span id="more"></span>
-
 <h2 id="我的硬件配置"><a href="#我的硬件配置" class="headerlink" title="我的硬件配置"></a>我的硬件配置</h2><p>先交代一下家底：</p>
-<table>
-<thead>
-<tr>
-<th>组件</th>
-<th>型号</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>CPU</td>
-<td>AMD Ryzen 7 5700G</td>
-<td>8核16线程，Zen3</td>
-</tr>
-<tr>
-<td>主板</td>
-<td>MSI MAG B550M MORTAR</td>
-<td>mATX，AM4</td>
-</tr>
-<tr>
-<td>GPU 0</td>
-<td>RTX 2080 Ti Rev.A 22GB（魔改）</td>
-<td>PCIe x16 Gen3</td>
-</tr>
-<tr>
-<td>GPU 1</td>
-<td>RTX 2080 Ti 22GB（魔改）</td>
-<td><strong>PCIe x4 Gen3</strong></td>
-</tr>
-<tr>
-<td>显存</td>
-<td>44GB (22GB × 2)</td>
-<td>无 NVLink</td>
-</tr>
-<tr>
-<td>模型</td>
-<td>Qwen3.6-35B-A3B-MTP Q4_K_M</td>
-<td>MoE 架构</td>
-</tr>
-</tbody></table>
+<p>组件<br>型号<br>备注</p>
+<p>CPU<br>AMD Ryzen 7 5700G<br>8核16线程，Zen3</p>
+<p>主板<br>MSI MAG B550M MORTAR<br>mATX，AM4</p>
+<p>GPU 0<br>RTX 2080 Ti Rev.A 22GB（魔改）<br>PCIe x16 Gen3</p>
+<p>GPU 1<br>RTX 2080 Ti 22GB（魔改）<br><strong>PCIe x4 Gen3</strong></p>
+<p>显存<br>44GB (22GB × 2)<br>无 NVLink</p>
+<p>模型<br>Qwen3.6-35B-A3B-MTP Q4_K_M<br>MoE 架构</p>
 <p>B550M 主板的第二条 PCIe 插槽只有 x4 通道，这是很多 mATX 玩家的痛点。两张卡之间没有 NVLink，跨卡通信需要走 CPU 中转（PHB 拓扑）。</p>
 <h2 id="实测速度：三个阶梯"><a href="#实测速度：三个阶梯" class="headerlink" title="实测速度：三个阶梯"></a>实测速度：三个阶梯</h2><p>我用 llama.cpp 做了系统测试，同一模型在不同配置下的生成速度：</p>
-<table>
-<thead>
-<tr>
-<th>配置</th>
-<th>生成速度</th>
-<th>相对单卡提升</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>单卡 2080 Ti 22GB</td>
-<td>73 t&#x2F;s</td>
-<td>基准</td>
-</tr>
-<tr>
-<td>双卡 tensor-split 0.6&#x2F;0.4</td>
-<td>93 t&#x2F;s</td>
-<td>+27%</td>
-</tr>
-<tr>
-<td>双卡 + MTP 推测解码</td>
-<td>105 t&#x2F;s</td>
-<td>+44%</td>
-</tr>
-</tbody></table>
+<p>配置<br>生成速度<br>相对单卡提升</p>
+<p>单卡 2080 Ti 22GB<br>73 t&#x2F;s<br>基准</p>
+<p>双卡 tensor-split 0.6&#x2F;0.4<br>93 t&#x2F;s<br>+27%</p>
+<p>双卡 + MTP 推测解码<br>105 t&#x2F;s<br>+44%</p>
 <p>三个关键观察：</p>
-<ol>
-<li>**单卡变双卡，提升约 27%**——远低于理论上的近 100%</li>
-<li>**MTP 只额外提升了 13%**——远低于论文宣称的 30-50%</li>
-<li>双卡效率只有 45%——<strong>一半的算力被浪费了</strong></li>
-</ol>
+<ul>
+<li><p><strong>单卡变双卡，提升约 27%</strong>——远低于理论上的近 100%</p>
+</li>
+<li><p><strong>MTP 只额外提升了 13%</strong>——远低于论文宣称的 30-50%</p>
+</li>
+<li><p>双卡效率只有 45%——<strong>一半的算力被浪费了</strong></p>
+</li>
+</ul>
 <p>问题来了：这 55% 的浪费，是谁造成的？</p>
 <h2 id="压力测试：30-轮连续请求"><a href="#压力测试：30-轮连续请求" class="headerlink" title="压力测试：30 轮连续请求"></a>压力测试：30 轮连续请求</h2><p>为了定位瓶颈，我写了一个压力测试脚本，向模型服务器连续发送 30 个不同类型的请求（知识问答、代码生成、数学推理、创意写作等），同时用 <code>nvidia-smi dmon</code> 以每秒一次的频率采集 GPU 全链路指标。</p>
 <p>测试结果非常稳定：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">成功: 30/30, 失败: 0<br>生成速度: 平均 100.9 t/s, 中位数 106.8 t/s<br>最小: 73.8 t/s, 最大: 112.8 t/s<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br><br>成功: 30/30, 失败: 0<br>生成速度: 平均 100.9 t/s, 中位数 106.8 t/s<br>最小: 73.8 t/s, 最大: 112.8 t/s<br><br></code></pre></td></tr></table></figure>
 
 <p>接下来逐项分析监控数据。</p>
 <h2 id="PCIe-带宽：不到-5-的利用率"><a href="#PCIe-带宽：不到-5-的利用率" class="headerlink" title="PCIe 带宽：不到 5% 的利用率"></a>PCIe 带宽：不到 5% 的利用率</h2><p>这是最让我意外的数据。</p>
-<h3 id="GPU-0（PCIe-x16-Gen3，理论上限-15-7-GB-x2F-s）"><a href="#GPU-0（PCIe-x16-Gen3，理论上限-15-7-GB-x2F-s）" class="headerlink" title="GPU 0（PCIe x16 Gen3，理论上限 15.7 GB&#x2F;s）"></a>GPU 0（PCIe x16 Gen3，理论上限 15.7 GB&#x2F;s）</h3><table>
-<thead>
-<tr>
-<th>指标</th>
-<th>实测值</th>
-<th>利用率</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Rx 平均</td>
-<td>85 MB&#x2F;s</td>
-<td>0.5%</td>
-</tr>
-<tr>
-<td>Tx 平均</td>
-<td>18 MB&#x2F;s</td>
-<td>0.1%</td>
-</tr>
-<tr>
-<td>偶发峰值</td>
-<td>2,356 MB&#x2F;s</td>
-<td>15.0%</td>
-</tr>
-</tbody></table>
-<h3 id="GPU-1（PCIe-x4-Gen3，理论上限-3-9-GB-x2F-s）"><a href="#GPU-1（PCIe-x4-Gen3，理论上限-3-9-GB-x2F-s）" class="headerlink" title="GPU 1（PCIe x4 Gen3，理论上限 3.9 GB&#x2F;s）"></a>GPU 1（PCIe x4 Gen3，理论上限 3.9 GB&#x2F;s）</h3><table>
-<thead>
-<tr>
-<th>指标</th>
-<th>实测值</th>
-<th>利用率</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Rx 平均</td>
-<td>65 MB&#x2F;s</td>
-<td>1.7%</td>
-</tr>
-<tr>
-<td>Tx 平均</td>
-<td>175 MB&#x2F;s</td>
-<td>4.4%</td>
-</tr>
-<tr>
-<td>偶发峰值</td>
-<td>1,334 MB&#x2F;s</td>
-<td>33.9%</td>
-</tr>
-</tbody></table>
-<p>GPU1 的 x4 带宽，全程平均利用率只有 **4.4%**。即使是偶发峰值，也只用了三分之一。</p>
+<h3 id="GPU-0（PCIe-x16-Gen3，理论上限-15-7-GB-s）"><a href="#GPU-0（PCIe-x16-Gen3，理论上限-15-7-GB-s）" class="headerlink" title="GPU 0（PCIe x16 Gen3，理论上限 15.7 GB&#x2F;s）"></a>GPU 0（PCIe x16 Gen3，理论上限 15.7 GB&#x2F;s）</h3><p>指标<br>实测值<br>利用率</p>
+<p>Rx 平均<br>85 MB&#x2F;s<br>0.5%</p>
+<p>Tx 平均<br>18 MB&#x2F;s<br>0.1%</p>
+<p>偶发峰值<br>2,356 MB&#x2F;s<br>15.0%</p>
+<h3 id="GPU-1（PCIe-x4-Gen3，理论上限-3-9-GB-s）"><a href="#GPU-1（PCIe-x4-Gen3，理论上限-3-9-GB-s）" class="headerlink" title="GPU 1（PCIe x4 Gen3，理论上限 3.9 GB&#x2F;s）"></a>GPU 1（PCIe x4 Gen3，理论上限 3.9 GB&#x2F;s）</h3><p>指标<br>实测值<br>利用率</p>
+<p>Rx 平均<br>65 MB&#x2F;s<br>1.7%</p>
+<p>Tx 平均<br>175 MB&#x2F;s<br>4.4%</p>
+<p>偶发峰值<br>1,334 MB&#x2F;s<br>33.9%</p>
+<p>GPU1 的 x4 带宽，全程平均利用率只有 <strong>4.4%</strong>。即使是偶发峰值，也只用了三分之一。</p>
 <p>更关键的是，<strong>120 秒内 PCIe Replay 错误为零</strong>——没有任何因带宽不足导致的重传。</p>
 <p>这说明：<strong>PCIe x4 在我们的推理场景中完全不是瓶颈。</strong></p>
 <h2 id="GPU-利用率：只有-40"><a href="#GPU-利用率：只有-40" class="headerlink" title="GPU 利用率：只有 40%"></a>GPU 利用率：只有 40%</h2><p>监控数据显示两张卡的 SM（流处理器）利用率都稳定在 39-44%，功耗约 130W（TDP 250W 的 52%）。</p>
 <p>SM 利用率低通常意味着两种可能：</p>
-<ol>
-<li>算力有富余，被其他环节卡住了</li>
-<li>kernel launch 之间有空隙</li>
-</ol>
+<ul>
+<li><p>算力有富余，被其他环节卡住了</p>
+</li>
+<li><p>kernel launch 之间有空隙</p>
+</li>
+</ul>
 <p>结合 PCIe 带宽也远未饱和，问题指向一个更底层的瓶颈。</p>
 <h2 id="真正的瓶颈：显存带宽"><a href="#真正的瓶颈：显存带宽" class="headerlink" title="真正的瓶颈：显存带宽"></a>真正的瓶颈：显存带宽</h2><p>推算过程很简单：</p>
-<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs tap">每 token 激活参数量：3B（A3B MoE，只激活 ~3B/35B）<br>量化精度：Q4_K_M ≈<span class="hljs-number"> 2 </span>bytes/param<br>每 token 需要读取的数据量：3B ×<span class="hljs-number"> 2 </span>=<span class="hljs-number"> 6 </span>GB<br><br>2080 Ti 显存带宽：616 GB/s<br>理论生成速度上限：616 ÷<span class="hljs-number"> 6 </span>≈<span class="hljs-number"> 103 </span>t/s<br></code></pre></td></tr></table></figure>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs tap"><br>1<br>2<br>3<br>4<br>5<br>6<br><br>每 token 激活参数量：3B（A3B MoE，只激活 ~3B/35B）<br>量化精度：Q4_K_M ≈<span class="hljs-number"> 2 </span>bytes/param<br>每 token 需要读取的数据量：3B ×<span class="hljs-number"> 2 </span>=<span class="hljs-number"> 6 </span>GB<br><br>2080 Ti 显存带宽：616 GB/s<br>理论生成速度上限：616 ÷<span class="hljs-number"> 6 </span>≈<span class="hljs-number"> 103 </span>t/s<br><br></code></pre></td></tr></table></figure>
 
 <p><strong>103 t&#x2F;s 的理论天花板，跟实测的 105 t&#x2F;s 几乎完全吻合。</strong></p>
 <p>这就解释了一切：</p>
 <ul>
-<li><strong>单卡 73 t&#x2F;s</strong>：单卡显存带宽 616 GB&#x2F;s，效率 71%（kernel 开销、KV cache 读取等损耗）</li>
-<li><strong>双卡 93 t&#x2F;s</strong>：有效带宽翻倍到 1232 GB&#x2F;s，但同步开销吃掉了一半收益，实际效率 45%</li>
-<li><strong>MTP 105 t&#x2F;s</strong>：MTP 接受率 49%，额外 10% 的提升也被显存带宽上限压制</li>
+<li><p><strong>单卡 73 t&#x2F;s</strong>：单卡显存带宽 616 GB&#x2F;s，效率 71%（kernel 开销、KV cache 读取等损耗）</p>
+</li>
+<li><p><strong>双卡 93 t&#x2F;s</strong>：有效带宽翻倍到 1232 GB&#x2F;s，但同步开销吃掉了一半收益，实际效率 45%</p>
+</li>
+<li><p><strong>MTP 105 t&#x2F;s</strong>：MTP 接受率 49%，额外 10% 的提升也被显存带宽上限压制</p>
+</li>
 </ul>
 <p>显存带宽是硬天花板。算力够用（SM 40%），PCIe 够用（利用率 5%），但每生成一个 token，都必须从 VRAM 读取 6 GB 的权重数据，这个速度取决于显存带宽，跟 PCIe 完全无关。</p>
 <h2 id="为什么双卡效率只有-45-？"><a href="#为什么双卡效率只有-45-？" class="headerlink" title="为什么双卡效率只有 45%？"></a>为什么双卡效率只有 45%？</h2><p>既然不是 PCIe 的问题，那双卡扩展效率低的原因是什么？</p>
 <p>答案是 <strong>PHB 拓扑下的同步延迟</strong>。</p>
 <p>我们的两张卡没有 NVLink，跨卡通信路径是：</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">GPU0</span> → CPU → GPU1<br></code></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><br>1<br><br><span class="hljs-attribute">GPU0</span> → CPU → GPU1<br><br></code></pre></td></tr></table></figure>
 
 <p>Tensor Parallel 的每一层都需要 all-reduce 同步。Qwen3.6 有 64 层，每层一次同步，意味着每生成一个 token 要做 64 次跨卡通信。虽然单次通信数据量不大（all-reduce 的是梯度&#x2F;激活值，不是权重），但延迟会累积。</p>
 <p>粗略估算：</p>
 <ul>
-<li>每层 all-reduce 延迟：~5-10 μs</li>
-<li>64 层总计：~320-640 μs</li>
-<li>每个 token 生成时间：~10 ms</li>
-<li>通信开销占比：3-6%</li>
+<li><p>每层 all-reduce 延迟：~5-10 μs</p>
+</li>
+<li><p>64 层总计：~320-640 μs</p>
+</li>
+<li><p>每个 token 生成时间：~10 ms</p>
+</li>
+<li><p>通信开销占比：3-6%</p>
+</li>
 </ul>
 <p>加上 kernel launch 调度、CUDA stream 同步等开销，总效率损失约 50%。</p>
 <h2 id="升级路径-ROI-分析"><a href="#升级路径-ROI-分析" class="headerlink" title="升级路径 ROI 分析"></a>升级路径 ROI 分析</h2><p>基于以上分析，我评估了四条升级路径：</p>
-<table>
-<thead>
-<tr>
-<th>方案</th>
-<th>成本</th>
-<th>预期提速</th>
-<th>ROI</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>换 X570 主板（x16&#x2F;x16）</td>
-<td>500-800 元</td>
-<td>~0%</td>
-<td>❌ 白花钱</td>
-</tr>
-<tr>
-<td>加 NVLink 桥接</td>
-<td>200-500 元</td>
-<td>5-10%</td>
-<td>⚠️ 意义不大</td>
-</tr>
-<tr>
-<td>换 2× RTX 3090</td>
-<td>6,000-8,000 元</td>
-<td>+50%</td>
-<td>✅ 性价比最高</td>
-</tr>
-<tr>
-<td>换 2× RTX 4090</td>
-<td>20,000+ 元</td>
-<td>+65%</td>
-<td>💰 土豪方案</td>
-</tr>
-</tbody></table>
+<p>方案<br>成本<br>预期提速<br>ROI</p>
+<p>换 X570 主板（x16&#x2F;x16）<br>500-800 元<br>~0%<br>❌ 白花钱</p>
+<p>加 NVLink 桥接<br>200-500 元<br>5-10%<br>⚠️ 意义不大</p>
+<p>换 2× RTX 3090<br>6,000-8,000 元<br>+50%<br>✅ 性价比最高</p>
+<p>换 2× RTX 4090<br>20,000+ 元<br>+65%<br>💰 土豪方案</p>
 <h3 id="为什么换主板没用？"><a href="#为什么换主板没用？" class="headerlink" title="为什么换主板没用？"></a>为什么换主板没用？</h3><p>因为 PCIe x4 的带宽只用了不到 5%。把 x4 升级到 x16，就像给一条日均车流量 50 辆的双车道公路扩建成八车道——路是宽了，但车没变多。</p>
 <h3 id="NVLink-呢？"><a href="#NVLink-呢？" class="headerlink" title="NVLink 呢？"></a>NVLink 呢？</h3><p>NVLink 能消除 PHB 中转延迟，把 all-reduce 从 CPU 桥接改为 GPU 直连。但我们的 MoE 模型单 token 激活参数只有 3B，同步数据量很小，延迟改善有限。预计提速 5-10%，投入 200-500 元不太划算。</p>
 <h3 id="真正有意义的升级：换卡"><a href="#真正有意义的升级：换卡" class="headerlink" title="真正有意义的升级：换卡"></a>真正有意义的升级：换卡</h3><p>RTX 3090 显存带宽 936 GB&#x2F;s（比 2080 Ti 的 616 GB&#x2F;s 高 52%），24GB 显存还能跑更大的模型。二手价 3000-4000 元，两张 6000-8000 元，预计跑 35B-A3B 能到 <strong>140-160 t&#x2F;s</strong>。</p>
-<h2 id="显存带宽性价比对照"><a href="#显存带宽性价比对照" class="headerlink" title="显存带宽性价比对照"></a>显存带宽性价比对照</h2><table>
-<thead>
-<tr>
-<th>GPU</th>
-<th>显存带宽</th>
-<th>二手价(估)</th>
-<th>显存</th>
-<th>性价比</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>2080 Ti 22GB（魔改）</td>
-<td>616 GB&#x2F;s</td>
-<td>1,500 元</td>
-<td>22GB</td>
-<td>0.41</td>
-</tr>
-<tr>
-<td>RTX 3090 24GB</td>
-<td>936 GB&#x2F;s</td>
-<td>3,500 元</td>
-<td>24GB</td>
-<td>0.27</td>
-</tr>
-<tr>
-<td>RTX 4090 24GB</td>
-<td>1,008 GB&#x2F;s</td>
-<td>13,000 元</td>
-<td>24GB</td>
-<td>0.08</td>
-</tr>
-</tbody></table>
+<h2 id="显存带宽性价比对照"><a href="#显存带宽性价比对照" class="headerlink" title="显存带宽性价比对照"></a>显存带宽性价比对照</h2><p>GPU<br>显存带宽<br>二手价(估)<br>显存<br>性价比</p>
+<p>2080 Ti 22GB（魔改）<br>616 GB&#x2F;s<br>1,500 元<br>22GB<br>0.41</p>
+<p>RTX 3090 24GB<br>936 GB&#x2F;s<br>3,500 元<br>24GB<br>0.27</p>
+<p>RTX 4090 24GB<br>1,008 GB&#x2F;s<br>13,000 元<br>24GB<br>0.08</p>
 <p>2080 Ti 魔改版的性价比确实最高。但如果你追求速度，3090 是最合理的升级目标。</p>
-<h2 id="关键结论"><a href="#关键结论" class="headerlink" title="关键结论"></a>关键结论</h2><ol>
-<li><strong>PCIe x4 不是瓶颈</strong>——实际利用率不到 5%，换主板解决不了问题</li>
-<li><strong>显存带宽才是天花板</strong>——616 GB&#x2F;s 限制了 103 t&#x2F;s 的理论极限</li>
-<li><strong>双卡效率低是因为同步延迟</strong>——PHB 拓扑的 CPU 中转，不是 PCIe 带宽不够</li>
-<li><strong>MTP 在显存带宽受限时收益有限</strong>——带宽用满了，分给投机 token 的空间很小</li>
-<li><strong>升级优先看显存带宽</strong>——3090 是性价比最优解</li>
-</ol>
+<h2 id="关键结论"><a href="#关键结论" class="headerlink" title="关键结论"></a>关键结论</h2><ul>
+<li><p><strong>PCIe x4 不是瓶颈</strong>——实际利用率不到 5%，换主板解决不了问题</p>
+</li>
+<li><p><strong>显存带宽才是天花板</strong>——616 GB&#x2F;s 限制了 103 t&#x2F;s 的理论极限</p>
+</li>
+<li><p><strong>双卡效率低是因为同步延迟</strong>——PHB 拓扑的 CPU 中转，不是 PCIe 带宽不够</p>
+</li>
+<li><p><strong>MTP 在显存带宽受限时收益有限</strong>——带宽用满了，分给投机 token 的空间很小</p>
+</li>
+<li><p><strong>升级优先看显存带宽</strong>——3090 是性价比最优解</p>
+</li>
+</ul>
 <h2 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h2><p>如果你也想做类似的瓶颈分析，核心命令是：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># PCIe 带宽监控（每秒采样）</span><br>nvidia-smi dmon -s t -d 1 -c 120 &gt; pcie_bandwidth.log<br><br><span class="hljs-comment"># GPU 利用率 + 功耗</span><br>nvidia-smi dmon -s pu -d 1 -c 120 &gt; gpu_util_power.log<br><br><span class="hljs-comment"># 显存使用</span><br>nvidia-smi dmon -s m -d 1 -c 120 &gt; gpu_memory.log<br><br><span class="hljs-comment"># PCIe Replay 错误</span><br>nvidia-smi dmon -s e -d 1 -c 120 &gt; pcie_errors.log<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br><br><span class="hljs-comment"># PCIe 带宽监控（每秒采样）</span><br>nvidia-smi dmon -s t -d 1 -c 120 &gt; pcie_bandwidth.log<br><br><span class="hljs-comment"># GPU 利用率 + 功耗</span><br>nvidia-smi dmon -s pu -d 1 -c 120 &gt; gpu_util_power.log<br><br><span class="hljs-comment"># 显存使用</span><br>nvidia-smi dmon -s m -d 1 -c 120 &gt; gpu_memory.log<br><br><span class="hljs-comment"># PCIe Replay 错误</span><br>nvidia-smi dmon -s e -d 1 -c 120 &gt; pcie_errors.log<br><br></code></pre></td></tr></table></figure>
 
 <p>然后在跑推理的同时采集数据。如果 PCIe 利用率低于 30%、Replay 错误为零，那就跟 PCIe 没关系，去看显存带宽。</p>
 <h2 id="附录：原始数据"><a href="#附录：原始数据" class="headerlink" title="附录：原始数据"></a>附录：原始数据</h2><p>30 轮压力测试的完整数据（节选）：</p>
-<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs coq">[<span class="hljs-number">01</span>]  <span class="hljs-number">512</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">5.46</span>s |  <span class="hljs-type">93</span><span class="hljs-number">.7</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">31</span> tok<br>[<span class="hljs-number">02</span>]  <span class="hljs-number">400</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">3.99</span>s | <span class="hljs-type">100</span><span class="hljs-number">.3</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">38</span> tok<br>[<span class="hljs-number">06</span>]  <span class="hljs-number">400</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">3.75</span>s | <span class="hljs-type">106</span><span class="hljs-number">.8</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">41</span> tok<br>[<span class="hljs-number">16</span>]  <span class="hljs-number">300</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">2.66</span>s | <span class="hljs-type">112</span><span class="hljs-number">.8</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">40</span> tok<br>[<span class="hljs-number">21</span>]  <span class="hljs-number">500</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">5.33</span>s |  <span class="hljs-type">93</span><span class="hljs-number">.8</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">50</span> tok<br>[<span class="hljs-number">29</span>]  <span class="hljs-number">242</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">3.07</span>s |  <span class="hljs-type">78</span><span class="hljs-number">.8</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">34</span> tok<br>[<span class="hljs-number">30</span>]  <span class="hljs-number">400</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">3.76</span>s | <span class="hljs-type">106</span><span class="hljs-number">.3</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">41</span> tok<br><br>平均: <span class="hljs-number">100.9</span> t/s, 中位数: <span class="hljs-number">106.8</span> t/s, 标准差: <span class="hljs-number">11.3</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs coq"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><br>[<span class="hljs-number">01</span>]  <span class="hljs-number">512</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">5.46</span>s |  <span class="hljs-type">93</span><span class="hljs-number">.7</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">31</span> tok<br>[<span class="hljs-number">02</span>]  <span class="hljs-number">400</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">3.99</span>s | <span class="hljs-type">100</span><span class="hljs-number">.3</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">38</span> tok<br>[<span class="hljs-number">06</span>]  <span class="hljs-number">400</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">3.75</span>s | <span class="hljs-type">106</span><span class="hljs-number">.8</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">41</span> tok<br>[<span class="hljs-number">16</span>]  <span class="hljs-number">300</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">2.66</span>s | <span class="hljs-type">112</span><span class="hljs-number">.8</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">40</span> tok<br>[<span class="hljs-number">21</span>]  <span class="hljs-number">500</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">5.33</span>s |  <span class="hljs-type">93</span><span class="hljs-number">.8</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">50</span> tok<br>[<span class="hljs-number">29</span>]  <span class="hljs-number">242</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">3.07</span>s |  <span class="hljs-type">78</span><span class="hljs-number">.8</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">34</span> tok<br>[<span class="hljs-number">30</span>]  <span class="hljs-number">400</span> tokens <span class="hljs-built_in">in</span>   <span class="hljs-number">3.76</span>s | <span class="hljs-type">106</span><span class="hljs-number">.3</span> t/s | <span class="hljs-type">prompt</span>: <span class="hljs-number">41</span> tok<br><br>平均: <span class="hljs-number">100.9</span> t/s, 中位数: <span class="hljs-number">106.8</span> t/s, 标准差: <span class="hljs-number">11.3</span><br><br></code></pre></td></tr></table></figure>
 
 <p>PCIe 带宽数据（推理期间典型值）：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">GPU 0 (x16): Rx ~85 MB/s, Tx ~18 MB/s</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">GPU 1 (x4):  Rx ~65 MB/s, Tx ~175 MB/s</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">偶发峰值: GPU0 Tx 2356 MB/s, GPU1 Tx 1334 MB/s</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">PCIe Replay 错误: 全程为零</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell"><br>1<br>2<br>3<br>4<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">GPU 0 (x16): Rx ~85 MB/s, Tx ~18 MB/s</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">GPU 1 (x4):  Rx ~65 MB/s, Tx ~175 MB/s</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">偶发峰值: GPU0 Tx 2356 MB/s, GPU1 Tx 1334 MB/s</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">PCIe Replay 错误: 全程为零</span><br><br></code></pre></td></tr></table></figure>
 
 <hr>
 <p><em>测试环境：Ubuntu 22.04, CUDA 13.0, llama.cpp (2026-06-05 build), 驱动 580.159.03</em></p>
@@ -706,7 +565,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD/" class="category-chain-item">AI基础设施</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -717,25 +576,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
-      
-        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
-      
-        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
-      
-        <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="print-no-link">#性能优化</a>
-      
-        <a href="/tags/RTX-2080-Ti/" class="print-no-link">#RTX 2080 Ti</a>
-      
-        <a href="/tags/MoE/" class="print-no-link">#MoE</a>
-      
-        <a href="/tags/PCIe/" class="print-no-link">#PCIe</a>
-      
-    </div>
   
 </div>
 
@@ -790,9 +630,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/05/ND-20260605-001-bilibili-video-transcript-pipeline/" title="从零打造B站视频自动解读：一条三级降级的内容提取流水线">
+                      <a href="/2026/06/05/ND-20260605-001-bilibili-video-transcript-pipeline/" title="双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">从零打造B站视频自动解读：一条三级降级的内容提取流水线</span>
+                        <span class="hidden-mobile">双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     

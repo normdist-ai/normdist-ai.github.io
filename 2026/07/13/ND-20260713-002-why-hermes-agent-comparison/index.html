@@ -1,0 +1,1199 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="去年这个时候，我还在用 ChatGPT 手动粘贴代码、用 Cursor 在 IDE 里补全函数。工具不错，但每次开新会话，AI 忘记昨天讨论了什么；换一台电脑，所有上下文归零。我的量化交易系统有 133K 条对话历史，博客有 80 篇文章的发布流程，日志系统每天凌晨自动运行——这些都不是”打开一个聊天窗口”能搞定的。 折腾了小半年，我把团队迁移到了 Hermes Agent 上。这篇文章不是评测，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为什么要用 Hermes：一个 AI Agent 实践者的选型复盘">
+<meta property="og:url" content="https://www.normdist.com/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="去年这个时候，我还在用 ChatGPT 手动粘贴代码、用 Cursor 在 IDE 里补全函数。工具不错，但每次开新会话，AI 忘记昨天讨论了什么；换一台电脑，所有上下文归零。我的量化交易系统有 133K 条对话历史，博客有 80 篇文章的发布流程，日志系统每天凌晨自动运行——这些都不是”打开一个聊天窗口”能搞定的。 折腾了小半年，我把团队迁移到了 Hermes Agent 上。这篇文章不是评测，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-13T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-13T00:43:23.689Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="自动化">
+<meta property="article:tag" content="选型对比">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>为什么要用 Hermes：一个 AI Agent 实践者的选型复盘 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">为什么要用 Hermes：一个 AI Agent 实践者的选型复盘</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-13 10:00" pubdate>
+          2026年7月13日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">为什么要用 Hermes：一个 AI Agent 实践者的选型复盘</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月13日 早上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>去年这个时候，我还在用 ChatGPT 手动粘贴代码、用 Cursor 在 IDE 里补全函数。工具不错，但每次开新会话，AI 忘记昨天讨论了什么；换一台电脑，所有上下文归零。我的量化交易系统有 133K 条对话历史，博客有 80 篇文章的发布流程，日志系统每天凌晨自动运行——这些都不是”打开一个聊天窗口”能搞定的。</p>
+<p>折腾了小半年，我把团队迁移到了 Hermes Agent 上。这篇文章不是评测，是从实际项目出发的选型复盘：为什么最终选了它，以及它和 ChatGPT、Cursor、AutoGPT 这些工具到底差在哪。</p>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><p>先说背景，方便你判断结论是否适用于你的场景。</p>
+<ul>
+<li><strong>团队规模</strong>：1 人 + 多个 AI Agent（量化交易系统 AutoQuant + 博客发布系统 + 数据中台 ReShare）</li>
+<li><strong>运行环境</strong>：Linux 服务器（7×24 运行）+ Windows 开发机 + 局域网 GPU 服务器（双 RTX 2080 Ti）</li>
+<li><strong>核心需求</strong>：长期运行的自动化任务、跨平台通信、多模型协同、持久记忆</li>
+<li><strong>使用时长</strong>：Hermes 连续运行 4 个月，之前用 ChatGPT&#x2F;Claude 约 8 个月</li>
+</ul>
+<h2 id="候选方案一览"><a href="#候选方案一览" class="headerlink" title="候选方案一览"></a>候选方案一览</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>一句话定位</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ChatGPT &#x2F; Claude</td>
+<td>聊天窗口里的万能助手</td>
+<td>问答、写文案、单次任务</td>
+</tr>
+<tr>
+<td>Cursor &#x2F; GitHub Copilot</td>
+<td>IDE 内的编码副驾驶</td>
+<td>写代码、重构、debug</td>
+</tr>
+<tr>
+<td>AutoGPT &#x2F; crewAI</td>
+<td>自主 Agent 框架</td>
+<td>概念验证、简单自动化链</td>
+</tr>
+<tr>
+<td>LangChain</td>
+<td>LLM 应用开发框架</td>
+<td>搭建 RAG、pipeline</td>
+</tr>
+<tr>
+<td><strong>Hermes Agent</strong></td>
+<td>自主进化型 Agent 平台</td>
+<td>长期运行的多任务自动化</td>
+</tr>
+</tbody></table>
+<h2 id="对比维度"><a href="#对比维度" class="headerlink" title="对比维度"></a>对比维度</h2><p>实践下来，真正决定能不能”用起来”的不是跑分，是这几个维度：</p>
+<ol>
+<li><strong>自主性</strong>：能不能 7×24 自己干活，不需要人盯着</li>
+<li><strong>持久记忆</strong>：跨会话记住上下文，不是每次从零开始</li>
+<li><strong>多平台通信</strong>：能不能从手机聊天软件直接指挥服务器上的任务</li>
+<li><strong>多模型协同</strong>：能不能同时用多个模型，取长补短</li>
+<li><strong>自我进化</strong>：能不能从经验中学习，越用越聪明</li>
+</ol>
+<h2 id="实测对比"><a href="#实测对比" class="headerlink" title="实测对比"></a>实测对比</h2><h3 id="1-自主性：谁能在你睡觉时干活"><a href="#1-自主性：谁能在你睡觉时干活" class="headerlink" title="1. 自主性：谁能在你睡觉时干活"></a>1. 自主性：谁能在你睡觉时干活</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>ChatGPT&#x2F;Claude</th>
+<th>Cursor</th>
+<th>AutoGPT</th>
+<th>Hermes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7×24 运行</td>
+<td>❌ 关网页就没了</td>
+<td>❌ 关 IDE 就没了</td>
+<td>⚠️ 理论可以，实际不稳定</td>
+<td>✅ 服务器常驻</td>
+</tr>
+<tr>
+<td>定时任务</td>
+<td>❌</td>
+<td>❌</td>
+<td>⚠️ 需自己搭</td>
+<td>✅ 内置 cron</td>
+</tr>
+<tr>
+<td>后台并行</td>
+<td>❌ 单会话</td>
+<td>❌ 单 IDE</td>
+<td>⚠️ 有限</td>
+<td>✅ 子代理并行</td>
+</tr>
+<tr>
+<td>不绑定设备</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p>我的量化系统每天凌晨 3 点自动采集宏观数据、生成投资简报、推送到飞书。这流程在 ChatGPT 里根本做不了——你不能开着浏览器等 3 点。Hermes 的 cron 调度器让我设定好任务，就去睡觉了。</p>
+<p>凌晨出过一次事故：外部数据源超时导致日报字段缺失，Hermes 的 PDCA 自省系统在日记中自动记录了偏差并提出了修复方案——这些全是凌晨自动发生的，我第二天早上看日志才知道。</p>
+<h3 id="2-持久记忆：跨会话记忆是分水岭"><a href="#2-持久记忆：跨会话记忆是分水岭" class="headerlink" title="2. 持久记忆：跨会话记忆是分水岭"></a>2. 持久记忆：跨会话记忆是分水岭</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>ChatGPT&#x2F;Claude</th>
+<th>Cursor</th>
+<th>Hermes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>会话内记忆</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>跨会话记忆</td>
+<td>⚠️ 有限（Memory 功能）</td>
+<td>❌</td>
+<td>✅ 持久化</td>
+</tr>
+<tr>
+<td>结构化记忆</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅ 实体图谱</td>
+</tr>
+<tr>
+<td>自主写入记忆</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p>ChatGPT 加了 Memory 功能，能记住一些偏好。但它记住的是”用户喜欢简洁回复”这种碎片。Hermes 的记忆是分层的：</p>
+<ul>
+<li><strong>工作记忆</strong>：当前会话上下文</li>
+<li><strong>持久记忆（MEMORY.md）</strong>：每次启动自动加载，记录环境配置、用户偏好、项目约定</li>
+<li><strong>全息记忆（fact_store）</strong>：带信任评分的实体关系图谱，可以做推理查询</li>
+</ul>
+<p>实际效果：我告诉 Hermes 一次”双卡 2080 Ti 是魔改版，单卡 22GB 不是 11GB”，它就永远记住了。之后每次写文章提到显卡，都会自动用正确的数据——因为它把这个事实写进了事实库，审稿时会自动检查。</p>
+<h3 id="3-多平台通信：从手机指挥服务器"><a href="#3-多平台通信：从手机指挥服务器" class="headerlink" title="3. 多平台通信：从手机指挥服务器"></a>3. 多平台通信：从手机指挥服务器</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>ChatGPT</th>
+<th>Cursor</th>
+<th>Hermes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Web</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>IDE</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Telegram</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Discord</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>飞书</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>微信&#x2F;企微</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>20+ 平台</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p>这是 Hermes 最直观的优势。我的 Agent 跑在 Linux 服务器上，但我通过飞书跟它对话。语音输入一个指令，它就在服务器上执行，结果直接回飞书。</p>
+<p>从开发者的角度，这意味着 AI Agent 不再绑定在某个终端前。我可以在地铁上用手机查看系统状态、批准一个部署、或者让它写篇文章。</p>
+<h3 id="4-多模型协同：MoA-不是噱头"><a href="#4-多模型协同：MoA-不是噱头" class="headerlink" title="4. 多模型协同：MoA 不是噱头"></a>4. 多模型协同：MoA 不是噱头</h3><p>大多数工具绑定一个模型。ChatGPT 用 GPT，Claude 用 Anthropic 的模型，Cursor 可以切换但一次只用一个。</p>
+<p>Hermes 的 MoA（Mixture of Agents）机制让多个模型同时工作：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">用户输入<br>  ├──→ DeepSeek-V4-Pro（严谨风格）<br>  ├──→ GLM-5（接地气风格）<br>  └──→ Qwen3.5-Ornith（简洁风格）<br>         ↓<br>    聚合器融合三路输出 → 最终稿<br></code></pre></td></tr></table></figure>
+
+<p>我的博客系统用了这套机制写稿：三个模型各写一版初稿，主模型融合优势——不同训练数据带来知识互补，不同推理路径带来观点互补，不同作者身份带来风格互补。融合后的稿件比任何单模型写的都全面。</p>
+<p>当然 MoA 也踩过坑。有一次触发了无限循环：API 超时 → 聚合器拿不到完整输入 → Agent loop 重试 → 再触发 4 次 API 调用 → 循环。后来加了超时保护和降级逻辑才解决。但核心价值是实打实的——多模型协同确实比单模型输出质量更高。</p>
+<h3 id="5-自我进化：技能系统是真正的护城河"><a href="#5-自我进化：技能系统是真正的护城河" class="headerlink" title="5. 自我进化：技能系统是真正的护城河"></a>5. 自我进化：技能系统是真正的护城河</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>ChatGPT&#x2F;Claude</th>
+<th>Cursor</th>
+<th>Hermes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>从经验中学习</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅ 技能系统</td>
+</tr>
+<tr>
+<td>跨会话复用</td>
+<td>⚠️ GPTs</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>自主创建技能</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>社区共享</td>
+<td>✅ GPT Store</td>
+<td>❌</td>
+<td>✅ Skills Hub</td>
+</tr>
+</tbody></table>
+<p>这是 Hermes 最核心的差异化。它不只是”记住”了什么，而是把解决方案沉淀成可复用的技能。</p>
+<p>举一个真实的例子：我们第一次部署博客时，hexo deploy 命令清空了 .deploy_git 目录，62 篇文章线上消失，首页 404。排查了两个小时才修复。修复完之后，Hermes 自动把这个教训写成了一条技能——包括根因分析、修复步骤、验证清单。后来再发布文章时，它自动走增量部署流程，再也没出过这个问题。</p>
+<p>这种”踩坑一次，永久免疫”的能力，是聊天机器人做不到的。ChatGPT 关了窗口就忘了，下次还踩同样的坑。</p>
+<p>到现在，我们的技能库积累了 200+ 个技能：量化交易策略部署、博客发布流水线、GPU 服务器管理、网络设备配置、数据源故障恢复……每个技能都是一次真实问题的解决方案。</p>
+<h2 id="关键差异分析"><a href="#关键差异分析" class="headerlink" title="关键差异分析"></a>关键差异分析</h2><h3 id="差异一：Hermes-是-Agent，不是-Copilot"><a href="#差异一：Hermes-是-Agent，不是-Copilot" class="headerlink" title="差异一：Hermes 是 Agent，不是 Copilot"></a>差异一：Hermes 是 Agent，不是 Copilot</h3><p>ChatGPT 和 Cursor 的本质是 Copilot——你问一个问题，它回答一个答案。交互模式是一问一答。</p>
+<p>Hermes 的本质是 Agent——你给一个目标，它自己分解任务、调用工具、验证结果、循环改进。交互模式是”下达指令 → 等待完成”。</p>
+<p>举个实际场景：我说”写一篇关于为什么用 Hermes 的博客并发布”。在 ChatGPT 里，我需要：让它写稿 → 复制到编辑器 → 自己排版 → 自己发布。在 Hermes 里，它自己走完整条流水线：选题调研 → MoA 写稿 → 三模型审稿 → 自动校对 → 增量部署到 GitHub Pages → 线上验证 HTTP 200 → 注册表标记完成。全程不需要我介入。</p>
+<h3 id="差异二：Hermes-会委派，不是一个人战斗"><a href="#差异二：Hermes-会委派，不是一个人战斗" class="headerlink" title="差异二：Hermes 会委派，不是一个人战斗"></a>差异二：Hermes 会委派，不是一个人战斗</h3><p>Hermes 支持子代理委派（delegate_task）。主代理可以把复杂任务拆分成多个子任务，并行分派给独立的子代理执行。</p>
+<p>我的团队架构是三层：</p>
+<ul>
+<li><strong>主代理（韩梅梅）</strong>：负责对话、策划、检查、决策</li>
+<li><strong>独立代理（李雷&#x2F;露西&#x2F;波莉）</strong>：负责重型执行（数据分析、代码开发、系统运维）</li>
+<li><strong>编码工具（OpenCode&#x2F;Claude Code）</strong>：负责具体代码编写</li>
+</ul>
+<p>遇到写代码的任务，主代理不自己写，而是委派给编码工具。遇到量化分析，委派给独立代理。这种分工让每个模型专注自己的强项，而不是让一个模型什么都干。</p>
+<h2 id="选型建议"><a href="#选型建议" class="headerlink" title="选型建议"></a>选型建议</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>偶尔问答、写文案</td>
+<td>ChatGPT&#x2F;Claude</td>
+<td>轻量、零配置</td>
+</tr>
+<tr>
+<td>IDE 内编码辅助</td>
+<td>Cursor</td>
+<td>补全体验最好</td>
+</tr>
+<tr>
+<td>搭建 RAG&#x2F;简单 pipeline</td>
+<td>LangChain</td>
+<td>灵活可控</td>
+</tr>
+<tr>
+<td>概念验证自主 Agent</td>
+<td>AutoGPT</td>
+<td>学习成本低</td>
+</tr>
+<tr>
+<td>长期运行的自动化系统</td>
+<td><strong>Hermes</strong></td>
+<td>自主性+记忆+技能体系</td>
+</tr>
+<tr>
+<td>多平台远程指挥</td>
+<td><strong>Hermes</strong></td>
+<td>20+ 平台原生支持</td>
+</tr>
+<tr>
+<td>多模型协同推理</td>
+<td><strong>Hermes</strong></td>
+<td>MoA 内置，无需开发</td>
+</tr>
+</tbody></table>
+<p>不是所有场景都需要 Hermes。如果你的需求是”偶尔写写代码、问问问题”，ChatGPT + Cursor 完全够用。但如果你在做一个需要 7×24 运行、跨平台控制、多模型协同、且能从错误中自我进化的系统，目前我还没找到比 Hermes 更合适的选择。</p>
+<p>四个月前迁移时还有些犹豫。现在回头看，技能库里 200+ 个沉淀的解决方案、凌晨自动跑的 cron 任务、飞书上一句话就能调动整个服务器集群的能力——这些不是”锦上添花”，是工作方式的根本变化。</p>
+<p>从”人驱动工具”到”人设定目标，Agent 自己完成”，这个转变值得折腾。</p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/">Hermes Agent 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/NousResearch/hermes-agent">Hermes Agent GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://nousresearch.com/">Nous Research</a></li>
+<li><a target="_blank" rel="noopener" href="https://normdist.com/2026/07/12/ND-20260712-001-blog-helper-pipeline-design/">从零搭建 AI Agent 博客流水线：blog-helper 6 阶段设计实录</a></li>
+<li><a target="_blank" rel="noopener" href="https://normdist.com/2026/07/11/ND-20260711-001-moa-infinite-loop-trap/">MoA 踩坑实录：多模型协同推理的”无限循环”陷阱</a></li>
+<li><a target="_blank" rel="noopener" href="https://normdist.com/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/">AI Agent 自主重构之路：从响应式审查到全自动修复</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+      
+        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
+      
+        <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" class="print-no-link">#自动化</a>
+      
+        <a href="/tags/%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94/" class="print-no-link">#选型对比</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>为什么要用 Hermes：一个 AI Agent 实践者的选型复盘</div>
+      <div>https://www.normdist.com/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/13/ND-20260713-001-direct-data-source-rule/" title="直接数据源铁律：三次博客产出率误报事故的通用规则">
+                        <span class="hidden-mobile">直接数据源铁律：三次博客产出率误报事故的通用规则</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

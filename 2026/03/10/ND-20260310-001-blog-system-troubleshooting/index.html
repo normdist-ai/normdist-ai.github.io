@@ -19,22 +19,17 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="问题背景 在尝试发布博客文章时，发现博客系统无法正常工作。经过检查，发现系统中存在多个博客相关目录，结构混乱，导致无法确定正确的博客位置和配置。 本文记录了问题的发现过程、诊断分析和解决方案。 问题发现 初步检查 首先检查系统中博客相关的目录： 发现的结果 ： 详细诊断 检查 的内容： 发现的问题 ： 结论 ： 不是完整的 Hexo 项目，只是静态网站的部署目标。 根本原因分析 历史追溯 通过检查">
+    <meta name="description" content="编号：ND-20260310-002版本:1.0更新: 2026-03-10作者: 小瑞 问题背景在尝试发布博客文章时，发现博客系统无法正常工作。经过检查，发现系统中存在多个博客相关目录，结构混乱，导致无法确定正确的博客位置和配置。 本文记录了问题的发现过程、诊断分析和解决方案。  问题发现初步检查首先检查系统中博客相关的目录： 1find &#x2F;home&#x2F;jarvis -maxdepth 3 -ty">
 <meta property="og:type" content="article">
 <meta property="og:title" content="博客系统问题排查与目录统一">
 <meta property="og:url" content="https://www.normdist.com/2026/03/10/ND-20260310-001-blog-system-troubleshooting/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="问题背景 在尝试发布博客文章时，发现博客系统无法正常工作。经过检查，发现系统中存在多个博客相关目录，结构混乱，导致无法确定正确的博客位置和配置。 本文记录了问题的发现过程、诊断分析和解决方案。 问题发现 初步检查 首先检查系统中博客相关的目录： 发现的结果 ： 详细诊断 检查 的内容： 发现的问题 ： 结论 ： 不是完整的 Hexo 项目，只是静态网站的部署目标。 根本原因分析 历史追溯 通过检查">
+<meta property="og:description" content="编号：ND-20260310-002版本:1.0更新: 2026-03-10作者: 小瑞 问题背景在尝试发布博客文章时，发现博客系统无法正常工作。经过检查，发现系统中存在多个博客相关目录，结构混乱，导致无法确定正确的博客位置和配置。 本文记录了问题的发现过程、诊断分析和解决方案。  问题发现初步检查首先检查系统中博客相关的目录： 1find &#x2F;home&#x2F;jarvis -maxdepth 3 -ty">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.normdist.com/img/cover-flat-05.jpg">
-<meta property="article:published_time" content="2026-03-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-09T10:07:05.492Z">
+<meta property="article:published_time" content="2026-03-10T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-12T15:08:53.429Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="博客">
-<meta property="article:tag" content="Hexo">
-<meta property="article:tag" content="问题排查">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.normdist.com/img/cover-flat-05.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -91,7 +86,7 @@
 
 
   
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 8.1.2"></head>
 
 
 <body>
@@ -346,8 +341,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-10 00:00" pubdate>
-          2026年3月10日 凌晨
+        <time datetime="2026-03-10 10:00" pubdate>
+          2026年3月10日 上午
         </time>
       </span>
     
@@ -422,7 +417,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月9日 晚上
+                    本文最后更新于 2026年7月12日 晚上
                   
                 
               </p>
@@ -435,35 +430,13 @@
 <p>本文记录了问题的发现过程、诊断分析和解决方案。</p>
 <hr>
 <h2 id="问题发现"><a href="#问题发现" class="headerlink" title="问题发现"></a>问题发现</h2><h3 id="初步检查"><a href="#初步检查" class="headerlink" title="初步检查"></a>初步检查</h3><p>首先检查系统中博客相关的目录：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1</code></td>
-<td><code>find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; -o -name &quot;_posts&quot; \)</code></td>
-</tr>
-</tbody></table>
+<p><code>1</code><br><code>find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; -o -name &quot;_posts&quot; \)</code></p>
 <p><code>find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; -o -name &quot;_posts&quot; \)</code></p>
 <p><strong>发现的结果</strong>：</p>
 <p><code>/home/jarvis/blog/</code><br><code>/home/jarvis/blog/blog/</code></p>
 <hr>
 <h3 id="详细诊断"><a href="#详细诊断" class="headerlink" title="详细诊断"></a>详细诊断</h3><p>检查 <code>/home/jarvis/blog/</code> 的内容：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1</code></td>
-<td><code>ls -la /home/jarvis/blog/</code></td>
-</tr>
-</tbody></table>
+<p><code>1</code><br><code>ls -la /home/jarvis/blog/</code></p>
 <p><code>ls -la /home/jarvis/blog/</code></p>
 <p><strong>发现的问题</strong>：</p>
 <p><code>source/_posts/</code><br><code>_config.yml</code><br><code>package.json</code><br><code>hexo generate</code></p>
@@ -475,76 +448,23 @@
 <h3 id="根本原因"><a href="#根本原因" class="headerlink" title="根本原因"></a>根本原因</h3><p><strong>主要问题</strong>：</p>
 <hr>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案选择"><a href="#方案选择" class="headerlink" title="方案选择"></a>方案选择</h3><p>分析多个方案：</p>
-<table>
-<thead>
-<tr>
-<th>方案</th>
-<th>优点</th>
-<th>缺点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>A：尝试修复</strong></td>
-<td>保留所有数据</td>
-<td>结构混乱，容易出错</td>
-</tr>
-<tr>
-<td><strong>B：合并目录</strong></td>
-<td>合并两处内容</td>
-<td>需要手动处理冲突</td>
-</tr>
-<tr>
-<td><strong>C：统一目录</strong></td>
-<td>简单清晰，一劳永逸</td>
-<td>需要移动大量文件</td>
-</tr>
-</tbody></table>
+<p>方案<br>优点<br>缺点</p>
+<p><strong>A：尝试修复</strong><br>保留所有数据<br>结构混乱，容易出错</p>
+<p><strong>B：合并目录</strong><br>合并两处内容<br>需要手动处理冲突</p>
+<p><strong>C：统一目录</strong><br>简单清晰，一劳永逸<br>需要移动大量文件</p>
 <p><strong>选择：方案 C - 统一到工作区</strong></p>
 <hr>
-<h3 id="实施步骤"><a href="#实施步骤" class="headerlink" title="实施步骤"></a>实施步骤</h3><h4 id="1-备份旧目录"><a href="#1-备份旧目录" class="headerlink" title="1. 备份旧目录"></a>1. 备份旧目录</h4><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2</code></td>
-<td><code># 备份旧的静态网站目录 mv /home/jarvis/blog /home/jarvis/blog.backup.$(date +%Y%m%d-%H%M%S)</code></td>
-</tr>
-</tbody></table>
+<h3 id="实施步骤"><a href="#实施步骤" class="headerlink" title="实施步骤"></a>实施步骤</h3><h4 id="1-备份旧目录"><a href="#1-备份旧目录" class="headerlink" title="1. 备份旧目录"></a>1. 备份旧目录</h4><p><code>1 2</code><br><code># 备份旧的静态网站目录 mv /home/jarvis/blog /home/jarvis/blog.backup.$(date +%Y%m%d-%H%M%S)</code></p>
 <p><code># 备份旧的静态网站目录</code><br><code>mv /home/jarvis/blog /home/jarvis/blog.backup.$(date +%Y%m%d-%H%M%S)</code></p>
 <p><strong>结果</strong>：旧目录备份到 <code>blog.backup.20260310-090610</code></p>
 <p><code>blog.backup.20260310-090610</code></p>
 <hr>
-<h4 id="2-移动博客项目"><a href="#2-移动博客项目" class="headerlink" title="2. 移动博客项目"></a>2. 移动博客项目</h4><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2</code></td>
-<td><code># 将完整的 Hexo 项目移动到主目录 mv /home/jarvis/.openclaw/workspace-main/blog /home/jarvis/blog</code></td>
-</tr>
-</tbody></table>
+<h4 id="2-移动博客项目"><a href="#2-移动博客项目" class="headerlink" title="2. 移动博客项目"></a>2. 移动博客项目</h4><p><code>1 2</code><br><code># 将完整的 Hexo 项目移动到主目录 mv /home/jarvis/.openclaw/workspace-main/blog /home/jarvis/blog</code></p>
 <p><code># 将完整的 Hexo 项目移动到主目录</code><br><code>mv /home/jarvis/.openclaw/workspace-main/blog /home/jarvis/blog</code></p>
 <p><strong>结果</strong>：博客统一到 <code>/home/jarvis/blog/</code></p>
 <p><code>/home/jarvis/blog/</code></p>
 <hr>
-<h4 id="3-更新-gitignore"><a href="#3-更新-gitignore" class="headerlink" title="3. 更新 .gitignore"></a>3. 更新 .gitignore</h4><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20</code></td>
-<td><code>cat &gt; /home/jarvis/blog/.gitignore &lt;&lt; &#39;EOF&#39; # Dependencies node_modules/ db.json # Deployment .deploy_git/ public/ # OS .DS_Store Thumbs.db # IDE .vscode/ .idea/ # Logs *.log EOF</code></td>
-</tr>
-</tbody></table>
+<h4 id="3-更新-gitignore"><a href="#3-更新-gitignore" class="headerlink" title="3. 更新 .gitignore"></a>3. 更新 .gitignore</h4><p><code>1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20</code><br><code>cat &gt; /home/jarvis/blog/.gitignore &lt;&lt; &#39;EOF&#39; # Dependencies node_modules/ db.json # Deployment .deploy_git/ public/ # OS .DS_Store Thumbs.db # IDE .vscode/ .idea/ # Logs *.log EOF</code></p>
 <p><code>cat &gt; /home/jarvis/blog/.gitignore &lt;&lt; &#39;EOF&#39;</code><br><code># Dependencies</code><br><code>node_modules/</code><br><code>db.json</code></p>
 <p><code># Deployment</code><br><code>.deploy_git/</code><br><code>public/</code></p>
 <p><code># OS</code><br><code>.DS_Store</code><br><code>Thumbs.db</code></p>
@@ -552,181 +472,50 @@
 <p><code># Logs</code><br><code>*.log</code><br><code>EOF</code></p>
 <p><strong>目的</strong>：避免将无关文件提交到 Git 仓库</p>
 <hr>
-<h4 id="4-清理-Git-历史"><a href="#4-清理-Git-历史" class="headerlink" title="4. 清理 Git 历史"></a>4. 清理 Git 历史</h4><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4</code></td>
-<td><code># 重置 Git 状态，清理嵌套的 blog/ 结构 cd /home/jarvis/blog git reset HEAD git add -A</code></td>
-</tr>
-</tbody></table>
+<h4 id="4-清理-Git-历史"><a href="#4-清理-Git-历史" class="headerlink" title="4. 清理 Git 历史"></a>4. 清理 Git 历史</h4><p><code>1 2 3 4</code><br><code># 重置 Git 状态，清理嵌套的 blog/ 结构 cd /home/jarvis/blog git reset HEAD git add -A</code></p>
 <p><code># 重置 Git 状态，清理嵌套的 blog/ 结构</code><br><code>cd /home/jarvis/blog</code><br><code>git reset HEAD</code><br><code>git add -A</code></p>
 <p><strong>结果</strong>：Git 仓库结构扁平化，移除了嵌套的 <code>blog/</code> 目录</p>
 <p><code>blog/</code></p>
 <hr>
-<h4 id="5-提交变更"><a href="#5-提交变更" class="headerlink" title="5. 提交变更"></a>5. 提交变更</h4><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5 6</code></td>
-<td><code>git commit -m &quot;重构：统一博客目录到 /home/jarvis/blog - 将博客从 workspace-main/blog 移动到 /home/jarvis/blog - 备份旧的静态网站目录 - 更新 .gitignore（忽略 node_modules、db.json、.deploy_git、public） - 移除嵌套的 blog/ 目录结构&quot;</code></td>
-</tr>
-</tbody></table>
+<h4 id="5-提交变更"><a href="#5-提交变更" class="headerlink" title="5. 提交变更"></a>5. 提交变更</h4><p><code>1 2 3 4 5 6</code><br><code>git commit -m &quot;重构：统一博客目录到 /home/jarvis/blog - 将博客从 workspace-main/blog 移动到 /home/jarvis/blog - 备份旧的静态网站目录 - 更新 .gitignore（忽略 node_modules、db.json、.deploy_git、public） - 移除嵌套的 blog/ 目录结构&quot;</code></p>
 <p><code>git commit -m &quot;重构：统一博客目录到 /home/jarvis/blog</code><br><code>  - 将博客从 workspace-main/blog 移动到 /home/jarvis/blog</code><br><code>  - 备份旧的静态网站目录</code><br><code>  - 更新 .gitignore（忽略 node_modules、db.json、.deploy_git、public）</code><br><code>  - 移除嵌套的 blog/ 目录结构&quot;</code></p>
 <p><strong>结果</strong>：72 个文件变更，Git 历史已清理</p>
 <hr>
-<h4 id="6-推送到远程"><a href="#6-推送到远程" class="headerlink" title="6. 推送到远程"></a>6. 推送到远程</h4><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1</code></td>
-<td><code>git push origin main --force</code></td>
-</tr>
-</tbody></table>
+<h4 id="6-推送到远程"><a href="#6-推送到远程" class="headerlink" title="6. 推送到远程"></a>6. 推送到远程</h4><p><code>1</code><br><code>git push origin main --force</code></p>
 <p><code>git push origin main --force</code></p>
 <p><strong>结果</strong>：远程仓库已更新</p>
 <hr>
-<h2 id="验证测试"><a href="#验证测试" class="headerlink" title="验证测试"></a>验证测试</h2><h3 id="测试-1：创建测试文章"><a href="#测试-1：创建测试文章" class="headerlink" title="测试 1：创建测试文章"></a>测试 1：创建测试文章</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1</code></td>
-<td><code>hexo new &quot;测试文章发布&quot;</code></td>
-</tr>
-</tbody></table>
+<h2 id="验证测试"><a href="#验证测试" class="headerlink" title="验证测试"></a>验证测试</h2><h3 id="测试-1：创建测试文章"><a href="#测试-1：创建测试文章" class="headerlink" title="测试 1：创建测试文章"></a>测试 1：创建测试文章</h3><p><code>1</code><br><code>hexo new &quot;测试文章发布&quot;</code></p>
 <p><code>hexo new &quot;测试文章发布&quot;</code></p>
 <p><strong>结果</strong>：✅ 成功创建 <code>source/_posts/测试文章发布.md</code></p>
 <p><code>source/_posts/测试文章发布.md</code></p>
 <hr>
-<h3 id="测试-2：生成静态网站"><a href="#测试-2：生成静态网站" class="headerlink" title="测试 2：生成静态网站"></a>测试 2：生成静态网站</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2</code></td>
-<td><code>hexo clean &amp;&amp; hexo generate</code></td>
-</tr>
-</tbody></table>
+<h3 id="测试-2：生成静态网站"><a href="#测试-2：生成静态网站" class="headerlink" title="测试 2：生成静态网站"></a>测试 2：生成静态网站</h3><p><code>1 2</code><br><code>hexo clean &amp;&amp; hexo generate</code></p>
 <p><code>hexo clean &amp;&amp; hexo generate</code></p>
 <p><strong>结果</strong>：✅ 成功生成 134 个静态文件</p>
 <hr>
-<h3 id="测试-3：部署到-GitHub-Pages"><a href="#测试-3：部署到-GitHub-Pages" class="headerlink" title="测试 3：部署到 GitHub Pages"></a>测试 3：部署到 GitHub Pages</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1</code></td>
-<td><code>hexo deploy</code></td>
-</tr>
-</tbody></table>
+<h3 id="测试-3：部署到-GitHub-Pages"><a href="#测试-3：部署到-GitHub-Pages" class="headerlink" title="测试 3：部署到 GitHub Pages"></a>测试 3：部署到 GitHub Pages</h3><p><code>1</code><br><code>hexo deploy</code></p>
 <p><code>hexo deploy</code></p>
 <p><strong>结果</strong>：✅ 成功部署，推送 16 个文件变更</p>
 <hr>
-<h3 id="测试-4：验证访问"><a href="#测试-4：验证访问" class="headerlink" title="测试 4：验证访问"></a>测试 4：验证访问</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1</code></td>
-<td><code>curl -I https://www.normdist.com/2026/03/10/测试文章发布/</code></td>
-</tr>
-</tbody></table>
+<h3 id="测试-4：验证访问"><a href="#测试-4：验证访问" class="headerlink" title="测试 4：验证访问"></a>测试 4：验证访问</h3><p><code>1</code><br><code>curl -I https://www.normdist.com/2026/03/10/测试文章发布/</code></p>
 <p><code>curl -I https://www.normdist.com/2026/03/10/测试文章发布/</code></p>
 <p><strong>结果</strong>：✅ HTTP 200，文章可以正常访问</p>
 <hr>
-<h3 id="测试-5：清理测试文章"><a href="#测试-5：清理测试文章" class="headerlink" title="测试 5：清理测试文章"></a>测试 5：清理测试文章</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4</code></td>
-<td><code>rm source/_posts/测试文章发布.md hexo clean &amp;&amp; hexo generate git add -A &amp;&amp; git commit -m &quot;测试：删除测试文章&quot; git push origin main</code></td>
-</tr>
-</tbody></table>
+<h3 id="测试-5：清理测试文章"><a href="#测试-5：清理测试文章" class="headerlink" title="测试 5：清理测试文章"></a>测试 5：清理测试文章</h3><p><code>1 2 3 4</code><br><code>rm source/_posts/测试文章发布.md hexo clean &amp;&amp; hexo generate git add -A &amp;&amp; git commit -m &quot;测试：删除测试文章&quot; git push origin main</code></p>
 <p><code>rm source/_posts/测试文章发布.md</code><br><code>hexo clean &amp;&amp; hexo generate</code><br><code>git add -A &amp;&amp; git commit -m &quot;测试：删除测试文章&quot;</code><br><code>git push origin main</code></p>
 <p><strong>结果</strong>：✅ 清理完成，远程仓库已更新</p>
 <hr>
-<h2 id="最终状态"><a href="#最终状态" class="headerlink" title="最终状态"></a>最终状态</h2><h3 id="博客系统信息"><a href="#博客系统信息" class="headerlink" title="博客系统信息"></a>博客系统信息</h3><table>
-<thead>
-<tr>
-<th>项目</th>
-<th>状态</th>
-<th>值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>博客位置</strong></td>
-<td>✅ 统一</td>
-<td><code>/home/jarvis/blog/</code></td>
-</tr>
-<tr>
-<td><strong>Hexo 命令</strong></td>
-<td>✅ 正常</td>
-<td><code>hexo generate</code>、<code>hexo deploy</code></td>
-</tr>
-<tr>
-<td><strong>Git 仓库</strong></td>
-<td>✅ 正常</td>
-<td>normdist-ai.github.io</td>
-</tr>
-<tr>
-<td><strong>文章数量</strong></td>
-<td>✅ 17 篇</td>
-<td><code>source/_posts/</code></td>
-</tr>
-<tr>
-<td><strong>访问地址</strong></td>
-<td>✅ 可访问</td>
-<td><a href="https://www.normdist.com/">https://www.normdist.com/</a></td>
-</tr>
-<tr>
-<td><strong>Git 历史结构</strong></td>
-<td>✅ 扁平化</td>
-<td>无嵌套的 <code>blog/</code> 目录</td>
-</tr>
-</tbody></table>
+<h2 id="最终状态"><a href="#最终状态" class="headerlink" title="最终状态"></a>最终状态</h2><h3 id="博客系统信息"><a href="#博客系统信息" class="headerlink" title="博客系统信息"></a>博客系统信息</h3><p>项目<br>状态<br>值</p>
+<p><strong>博客位置</strong><br>✅ 统一<br><code>/home/jarvis/blog/</code></p>
+<p><strong>Hexo 命令</strong><br>✅ 正常<br><code>hexo generate</code>、<code>hexo deploy</code></p>
+<p><strong>Git 仓库</strong><br>✅ 正常<br>normdist-ai.github.io</p>
+<p><strong>文章数量</strong><br>✅ 17 篇<br><code>source/_posts/</code></p>
+<p><strong>访问地址</strong><br>✅ 可访问<br><a href="https://www.normdist.com/">https://www.normdist.com/</a></p>
+<p><strong>Git 历史结构</strong><br>✅ 扁平化<br>无嵌套的 <code>blog/</code> 目录</p>
 <p><code>/home/jarvis/blog/</code><br><code>hexo generate</code><br><code>hexo deploy</code><br><code>source/_posts/</code></p>
 <hr>
-<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5 6 7 8 9 10 11</code></td>
-<td><code>/home/jarvis/blog/ ├── _config.yml              # Hexo 主配置 ├── _config.fluid.yml        # Fluid 主题配置 ├── _drafts/               # 草稿目录 ├── source/                 # 源代码目录 │   ├── _posts/          # 已发布文章（17 篇） │   ├── img/             # 图片资源 │   └── ... ├── public/                 # 生成的静态网站（忽略） ├── node_modules/          # 依赖包（忽略） └── .gitignore              # Git 忽略规则</code></td>
-</tr>
-</tbody></table>
+<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><p><code>1 2 3 4 5 6 7 8 9 10 11</code><br><code>/home/jarvis/blog/ ├── _config.yml              # Hexo 主配置 ├── _config.fluid.yml        # Fluid 主题配置 ├── _drafts/               # 草稿目录 ├── source/                 # 源代码目录 │   ├── _posts/          # 已发布文章（17 篇） │   ├── img/             # 图片资源 │   └── ... ├── public/                 # 生成的静态网站（忽略） ├── node_modules/          # 依赖包（忽略） └── .gitignore              # Git 忽略规则</code></p>
 <p><code>/home/jarvis/blog/</code><br><code>├── _config.yml              # Hexo 主配置</code><br><code>├── _config.fluid.yml        # Fluid 主题配置</code><br><code>├── _drafts/               # 草稿目录</code><br><code>├── source/                 # 源代码目录</code><br><code>│ ├── _posts/          # 已发布文章（17 篇）</code><br><code>│ ├── img/             # 图片资源</code><br><code>│ └── ...</code><br><code>├── public/                 # 生成的静态网站（忽略）</code><br><code>├── node_modules/          # 依赖包（忽略）</code><br><code>└── .gitignore              # Git 忽略规则</code></p>
 <hr>
 <h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><h3 id="关键教训"><a href="#关键教训" class="headerlink" title="关键教训"></a>关键教训</h3><p><strong>目录统一管理</strong>：</p>
@@ -736,36 +525,14 @@
 <p><code>git reset</code></p>
 <p><strong>备份和测试</strong>：</p>
 <hr>
-<h3 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h3><h4 id="博客系统维护"><a href="#博客系统维护" class="headerlink" title="博客系统维护"></a>博客系统维护</h4><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5 6 7 8 9 10 11 12 13</code></td>
-<td><code># 1. 创建文章 hexo new &quot;文章标题&quot; # 2. 编辑文章（添加内容） # 3. 生成本地预览 hexo clean &amp;&amp; hexo generate # 4. 部署到 GitHub Pages hexo deploy # 5. 验证访问 curl -I https://www.normdist.com/年/月/日/文章标题/</code></td>
-</tr>
-</tbody></table>
+<h3 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h3><h4 id="博客系统维护"><a href="#博客系统维护" class="headerlink" title="博客系统维护"></a>博客系统维护</h4><p><code>1 2 3 4 5 6 7 8 9 10 11 12 13</code><br><code># 1. 创建文章 hexo new &quot;文章标题&quot; # 2. 编辑文章（添加内容） # 3. 生成本地预览 hexo clean &amp;&amp; hexo generate # 4. 部署到 GitHub Pages hexo deploy # 5. 验证访问 curl -I https://www.normdist.com/年/月/日/文章标题/</code></p>
 <p><code># 1. 创建文章</code><br><code>hexo new &quot;文章标题&quot;</code></p>
 <p><code># 2. 编辑文章（添加内容）</code></p>
 <p><code># 3. 生成本地预览</code><br><code>hexo clean &amp;&amp; hexo generate</code></p>
 <p><code># 4. 部署到 GitHub Pages</code><br><code>hexo deploy</code></p>
 <p><code># 5. 验证访问</code><br><code>curl -I https://www.normdist.com/年/月/日/文章标题/</code></p>
 <hr>
-<h4 id="定期检查"><a href="#定期检查" class="headerlink" title="定期检查"></a>定期检查</h4><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>1 2 3 4 5 6 7 8</code></td>
-<td><code># 检查目录结构 find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; \) # 检查 Git 状态 git status # 检查远程同步 git fetch &amp;&amp; git status</code></td>
-</tr>
-</tbody></table>
+<h4 id="定期检查"><a href="#定期检查" class="headerlink" title="定期检查"></a>定期检查</h4><p><code>1 2 3 4 5 6 7 8</code><br><code># 检查目录结构 find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; \) # 检查 Git 状态 git status # 检查远程同步 git fetch &amp;&amp; git status</code></p>
 <p><code># 检查目录结构</code><br><code>find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; \)</code></p>
 <p><code># 检查 Git 状态</code><br><code>git status</code></p>
 <p><code># 检查远程同步</code><br><code>git fetch &amp;&amp; git status</code></p>
@@ -795,7 +562,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -806,17 +573,6 @@
 
     </div>
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/%E5%8D%9A%E5%AE%A2/" class="print-no-link">#博客</a>
-      
-        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
-      
-        <a href="/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" class="print-no-link">#问题排查</a>
-      
-    </div>
   
 </div>
 
