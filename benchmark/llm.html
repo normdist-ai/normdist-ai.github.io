@@ -132,6 +132,28 @@
   </div>
 </div>
 <div class="controls">
+  <div class="toolbar">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="search" placeholder="搜索模型..." oninput="filterTable()">
+    </div>
+    <div class="col-toggle-wrap">
+      <button class="col-btn" onclick="toggleColPanel()">⚙ 表头 <span class="arrow">▾</span></button>
+      <div class="col-panel" id="colPanel">
+        <div class="col-panel-title">显示列</div>
+        <div class="col-item"><input type="checkbox" data-col="rank" checked onchange="toggleCol('rank')"><label onclick="this.previousElementSibling.click()">排名 #</label></div>
+        <div class="col-item"><input type="checkbox" data-col="model" checked onchange="toggleCol('model')"><label onclick="this.previousElementSibling.click()">模型</label></div>
+        <div class="col-item"><input type="checkbox" data-col="params" checked onchange="toggleCol('params')"><label onclick="this.previousElementSibling.click()">参数</label></div>
+        <div class="col-item"><input type="checkbox" data-col="arch" checked onchange="toggleCol('arch')"><label onclick="this.previousElementSibling.click()">架构</label></div>
+        <div class="col-item"><input type="checkbox" data-col="date" checked onchange="toggleCol('date')"><label onclick="this.previousElementSibling.click()">发布时间</label></div>
+        <div class="col-item"><input type="checkbox" data-col="score" checked onchange="toggleCol('score')"><label onclick="this.previousElementSibling.click()">编程能力</label></div>
+        <div class="col-item"><input type="checkbox" data-col="humaneval" checked onchange="toggleCol('humaneval')"><label onclick="this.previousElementSibling.click()">HumanEval</label></div>
+        <div class="col-item"><input type="checkbox" data-col="swebench" checked onchange="toggleCol('swebench')"><label onclick="this.previousElementSibling.click()">SWE-bench</label></div>
+        <div class="col-item"><input type="checkbox" data-col="vram" checked onchange="toggleCol('vram')"><label onclick="this.previousElementSibling.click()">VRAM</label></div>
+      </div>
+    </div>
+    <span id="model-count" style="color:#52525b;font-size:12px;white-space:nowrap"></span>
+  </div>
   <div class="filter-row">
     <div class="filter-group">
       <span class="filter-label">快速</span>
@@ -169,28 +191,6 @@
       <button class="chip" data-filter="org:OpenAI">OpenAI</button>
       <button class="chip" data-filter="org:DeepReinforce">DeepReinforce</button>
     </div>
-  </div>
-  <div class="toolbar">
-    <div class="search-box">
-      <span>🔍</span>
-      <input type="text" id="search" placeholder="搜索模型..." oninput="filterTable()">
-    </div>
-    <div class="col-toggle-wrap">
-      <button class="col-btn" onclick="toggleColPanel()">⚙ 表头 <span class="arrow">▾</span></button>
-      <div class="col-panel" id="colPanel">
-        <div class="col-panel-title">显示列</div>
-        <div class="col-item"><input type="checkbox" data-col="rank" checked onchange="toggleCol('rank')"><label onclick="this.previousElementSibling.click()">排名 #</label></div>
-        <div class="col-item"><input type="checkbox" data-col="model" checked onchange="toggleCol('model')"><label onclick="this.previousElementSibling.click()">模型</label></div>
-        <div class="col-item"><input type="checkbox" data-col="params" checked onchange="toggleCol('params')"><label onclick="this.previousElementSibling.click()">参数</label></div>
-        <div class="col-item"><input type="checkbox" data-col="arch" checked onchange="toggleCol('arch')"><label onclick="this.previousElementSibling.click()">架构</label></div>
-        <div class="col-item"><input type="checkbox" data-col="date" checked onchange="toggleCol('date')"><label onclick="this.previousElementSibling.click()">发布时间</label></div>
-        <div class="col-item"><input type="checkbox" data-col="score" checked onchange="toggleCol('score')"><label onclick="this.previousElementSibling.click()">编程能力</label></div>
-        <div class="col-item"><input type="checkbox" data-col="humaneval" checked onchange="toggleCol('humaneval')"><label onclick="this.previousElementSibling.click()">HumanEval</label></div>
-        <div class="col-item"><input type="checkbox" data-col="swebench" checked onchange="toggleCol('swebench')"><label onclick="this.previousElementSibling.click()">SWE-bench</label></div>
-        <div class="col-item"><input type="checkbox" data-col="vram" checked onchange="toggleCol('vram')"><label onclick="this.previousElementSibling.click()">VRAM</label></div>
-      </div>
-    </div>
-    <span id="model-count" style="color:#52525b;font-size:12px;white-space:nowrap"></span>
   </div>
 </div>
 <div class="legend">
