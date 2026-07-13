@@ -30,9 +30,10 @@
   .chip:hover{border-color:#52525b;color:#e8e8ed;background:rgba(99,102,241,.05)}
   .chip.active{background:#6366f1;border-color:#6366f1;color:#fff}
   .chip-sep{width:1px;height:20px;background:#27272a;flex-shrink:0;margin:0 4px}
-  .search-box{margin-left:auto;display:flex;align-items:center;gap:6px;background:#18181b;border:1px solid #27272a;border-radius:8px;padding:5px 12px;flex-shrink:0}
+  .search-box{display:flex;align-items:center;gap:6px;background:#18181b;border:1px solid #27272a;border-radius:8px;padding:5px 12px;flex-shrink:0}
   .search-box input{background:transparent;border:none;outline:none;color:#e8e8ed;font-size:12px;width:140px}
   .search-box input::placeholder{color:#52525b}
+  .toolbar{max-width:1280px;margin:0 auto 10px;padding:0 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   /* 列选择器 */
   .col-toggle-wrap{position:relative;flex-shrink:0}
   .col-btn{padding:5px 14px;border:1px solid #27272a;border-radius:20px;background:transparent;color:#a1a1aa;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
@@ -168,6 +169,12 @@
       <button class="chip" data-filter="org:OpenAI">OpenAI</button>
       <button class="chip" data-filter="org:DeepReinforce">DeepReinforce</button>
     </div>
+  </div>
+  <div class="toolbar">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="search" placeholder="搜索模型..." oninput="filterTable()">
+    </div>
     <div class="col-toggle-wrap">
       <button class="col-btn" onclick="toggleColPanel()">⚙ 列 <span class="arrow">▾</span></button>
       <div class="col-panel" id="colPanel">
@@ -183,10 +190,7 @@
         <div class="col-item"><input type="checkbox" data-col="vram" checked onchange="toggleCol('vram')"><label onclick="this.previousElementSibling.click()">VRAM</label></div>
       </div>
     </div>
-    <div class="search-box">
-      <span>🔍</span>
-      <input type="text" id="search" placeholder="搜索模型..." oninput="filterTable()">
-    </div>
+    <span id="model-count" style="color:#52525b;font-size:12px;white-space:nowrap"></span>
   </div>
 </div>
 <div class="legend">
