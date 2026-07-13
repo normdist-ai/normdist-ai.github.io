@@ -70,15 +70,13 @@
 70|  .legend-dot{width:10px;height:10px;border-radius:50%}
 71|  .highlight{border-left:3px solid #6366f1}
 72|  @keyframes barGrow{from{width:0!important}}
-.score-bar{animation:barGrow 1.2s ease-out}
-/* 新结构兼容 */
-td .score-bar{display:flex;align-items:center;gap:10px;height:auto;animation:none}
-td .score-bar .bar{height:6px;border-radius:3px;transition:width .8s ease;min-width:0}
-td .score-bar .score-val{font-weight:600;font-size:13px;min-width:36px;text-align:right;font-variant-numeric:tabular-nums;color:#e4e4e7}
-.bar-90{background:linear-gradient(90deg,#6366f1,#8b5cf6)}
-.bar-80{background:linear-gradient(90deg,#6366f1,#818cf8)}
-.bar-70{background:linear-gradient(90deg,#2563eb,#3b82f6)}
-.bar-low{background:linear-gradient(90deg,#1e40af,#2563eb)}
+  .score-bar{animation:barGrow 1.2s ease-out;display:flex;align-items:center;gap:8px}
+  .score-bar .bar{height:8px;border-radius:4px;transition:width .8s ease;min-width:0;flex-shrink:0}
+  .score-bar .score-val{font-weight:600;font-size:13px;min-width:32px;text-align:right;font-variant-numeric:tabular-nums;color:#e4e4e7}
+  .bar-90{background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+  .bar-80{background:linear-gradient(90deg,#818cf8,#6366f1)}
+  .bar-70{background:linear-gradient(90deg,#3b82f6,#2563eb)}
+  .bar-low{background:linear-gradient(90deg,#60a5fa,#3b82f6)}
 </style>
 </head>
 76|<body>
