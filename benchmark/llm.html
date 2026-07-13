@@ -30,6 +30,18 @@
   .chip:hover{border-color:#52525b;color:#e8e8ed;background:rgba(99,102,241,.05)}
   .chip.active{background:#6366f1;border-color:#6366f1;color:#fff}
   .chip-sep{width:1px;height:20px;background:#27272a;flex-shrink:0;margin:0 4px}
+  
+  /* 表头排序 + 删除 */
+  th{position:relative;user-select:none}
+  .th-content{display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+  .sort-arrows{display:inline-flex;flex-direction:column;line-height:.7;gap:0}
+  .sort-arrow{font-size:8px;color:#3f3f46;transition:color .15s}
+  .sort-arrow.active{color:#6366f1}
+  .th-content:hover .sort-arrow{color:#71717a}
+  .th-content:hover .sort-arrow.active{color:#818cf8}
+  .col-close{position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:13px;color:#3f3f46;cursor:pointer;opacity:0;transition:opacity .15s;line-height:1;padding:0 2px}
+  th:hover .col-close{opacity:1}
+  .col-close:hover{color:#ef4444}
   .search-box{display:flex;align-items:center;gap:6px;background:#18181b;border:1px solid #27272a;border-radius:8px;padding:5px 12px;flex-shrink:0}
   .search-box input{background:transparent;border:none;outline:none;color:#e8e8ed;font-size:12px;width:140px}
   .search-box input::placeholder{color:#52525b}
@@ -208,15 +220,15 @@
   <table id="leaderboard">
     <thead>
       <tr>
-        <th data-col="rank" style="width:32px">#</th>
-        <th data-col="model">模型</th>
-        <th data-col="params" class="hide-small" style="width:100px">参数</th>
-        <th data-col="arch" class="hide-small" style="width:68px">架构</th>
-        <th data-col="date" style="width:104px">发布时间</th>
-        <th data-col="score" style="min-width:130px">编程能力</th>
-        <th data-col="humaneval" class="hide-mobile" style="width:100px">HumanEval</th>
-        <th data-col="swebench" class="hide-mobile" style="width:110px">SWE-bench</th>
-        <th data-col="vram" class="hide-mobile" style="width:90px">VRAM</th>
+        <th data-col="rank" style="width:32px"><span class="th-content" onclick="sortBy('rank')">#<span class="sort-arrows"><span class="sort-arrow up" data-col="rank" data-dir="asc">▲</span><span class="sort-arrow down" data-col="rank" data-dir="desc">▼</span></span></span><span class="col-close" onclick="event.stopPropagation();hideCol('rank')">×</span></th>
+        <th data-col="model"><span class="th-content" onclick="sortBy('model')">模型<span class="sort-arrows"><span class="sort-arrow up" data-col="model" data-dir="asc">▲</span><span class="sort-arrow down" data-col="model" data-dir="desc">▼</span></span></span><span class="col-close" onclick="event.stopPropagation();hideCol('model')">×</span></th>
+        <th data-col="params" class="hide-small" style="width:100px"><span class="th-content" onclick="sortBy('params')">参数<span class="sort-arrows"><span class="sort-arrow up" data-col="params" data-dir="asc">▲</span><span class="sort-arrow down" data-col="params" data-dir="desc">▼</span></span></span><span class="col-close" onclick="event.stopPropagation();hideCol('params')">×</span></th>
+        <th data-col="arch" class="hide-small" style="width:68px"><span class="th-content" onclick="sortBy('arch')">架构<span class="sort-arrows"><span class="sort-arrow up" data-col="arch" data-dir="asc">▲</span><span class="sort-arrow down" data-col="arch" data-dir="desc">▼</span></span></span><span class="col-close" onclick="event.stopPropagation();hideCol('arch')">×</span></th>
+        <th data-col="date" style="width:104px"><span class="th-content" onclick="sortBy('date')">发布时间<span class="sort-arrows"><span class="sort-arrow up" data-col="date" data-dir="asc">▲</span><span class="sort-arrow down" data-col="date" data-dir="desc">▼</span></span></span><span class="col-close" onclick="event.stopPropagation();hideCol('date')">×</span></th>
+        <th data-col="score" style="min-width:130px"><span class="th-content" onclick="sortBy('score')">编程能力<span class="sort-arrows"><span class="sort-arrow up" data-col="score" data-dir="asc">▲</span><span class="sort-arrow down" data-col="score" data-dir="desc">▼</span></span></span><span class="col-close" onclick="event.stopPropagation();hideCol('score')">×</span></th>
+        <th data-col="humaneval" class="hide-mobile" style="width:100px"><span class="th-content" onclick="sortBy('humaneval')">HumanEval<span class="sort-arrows"><span class="sort-arrow up" data-col="humaneval" data-dir="asc">▲</span><span class="sort-arrow down" data-col="humaneval" data-dir="desc">▼</span></span></span><span class="col-close" onclick="event.stopPropagation();hideCol('humaneval')">×</span></th>
+        <th data-col="swebench" class="hide-mobile" style="width:110px"><span class="th-content" onclick="sortBy('swebench')">SWE-bench<span class="sort-arrows"><span class="sort-arrow up" data-col="swebench" data-dir="asc">▲</span><span class="sort-arrow down" data-col="swebench" data-dir="desc">▼</span></span></span><span class="col-close" onclick="event.stopPropagation();hideCol('swebench')">×</span></th>
+        <th data-col="vram" class="hide-mobile" style="width:90px"><span class="th-content" onclick="sortBy('vram')">VRAM<span class="sort-arrows"><span class="sort-arrow up" data-col="vram" data-dir="asc">▲</span><span class="sort-arrow down" data-col="vram" data-dir="desc">▼</span></span></span><span class="col-close" onclick="event.stopPropagation();hideCol('vram')">×</span></th>
       </tr>
     </thead>
     <tbody>
@@ -899,6 +911,96 @@
   <p>由 <a href="https://www.normdist.com">进化概率论</a> 维护 · 数据持续更新 · * 标注为替代基准分数</p>
 </div>
 <script>
+
+// ========== 排序 ==========
+let sortState = { col: null, dir: null };
+
+function getSortVal(row, col) {
+  const cell = row.querySelector('[data-col="' + col + '"]') || row.querySelector('td:nth-child(' + (getColIndex(col) + 1) + ')');
+  if (!cell) return '';
+  const text = cell.textContent.trim();
+  switch(col) {
+    case 'rank':
+    case 'score': {
+      const m = text.match(/-?[\d.]+/);
+      return m ? parseFloat(m[0]) : 0;
+    }
+    case 'humaneval':
+    case 'swebench': {
+      const m = text.match(/-?[\d.]+/);
+      return m ? parseFloat(m[0]) : -1;
+    }
+    case 'date':
+      return text;
+    case 'params': {
+      const m = text.match(/([\d.]+)\s*B/i);
+      return m ? parseFloat(m[1]) : 0;
+    }
+    case 'vram': {
+      const m = text.match(/([\d.]+)/);
+      return m ? parseFloat(m[1]) : 0;
+    }
+    default:
+      return text.toLowerCase();
+  }
+}
+
+function getColIndex(col) {
+  const ths = document.querySelectorAll('thead th');
+  for (let i = 0; i < ths.length; i++) {
+    if (ths[i].dataset.col === col) return i;
+  }
+  return 0;
+}
+
+function sortBy(col) {
+  if (sortState.col === col) {
+    if (sortState.dir === 'asc') sortState.dir = 'desc';
+    else if (sortState.dir === 'desc') { sortState = { col: null, dir: null }; restoreOrder(); return; }
+  } else {
+    sortState = { col: col, dir: 'asc' };
+  }
+  const tbody = document.querySelector('#leaderboard tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.sort((a, b) => {
+    const va = getSortVal(a, col);
+    const vb = getSortVal(b, col);
+    if (typeof va === 'number' && typeof vb === 'number') {
+      return sortState.dir === 'asc' ? va - vb : vb - va;
+    }
+    return sortState.dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+  rows.forEach(r => tbody.appendChild(r));
+  updateSortArrows();
+}
+
+function restoreOrder() {
+  // 按编程能力降序恢复（原始排名）
+  const tbody = document.querySelector('#leaderboard tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.sort((a, b) => {
+    const va = getSortVal(a, 'score');
+    const vb = getSortVal(b, 'score');
+    return vb - va;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+  updateSortArrows();
+}
+
+function updateSortArrows() {
+  document.querySelectorAll('.sort-arrow').forEach(a => a.classList.remove('active'));
+  if (sortState.col && sortState.dir) {
+    const sel = '.sort-arrow[data-col="' + sortState.col + '"][data-dir="' + sortState.dir + '"]';
+    const arrow = document.querySelector(sel);
+    if (arrow) arrow.classList.add('active');
+  }
+}
+
+function hideCol(col) {
+  const cb = document.querySelector('input[data-col="' + col + '"]');
+  if (cb) { cb.checked = false; toggleCol(col); }
+}
+
 // ========== 列选择器 ==========
 function toggleColPanel(){
   document.getElementById('colPanel').classList.toggle('open');
