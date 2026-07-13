@@ -1,7 +1,7 @@
 ---
 title: 'Ornith 开源模型本地部署：替代 Qwen3.6 的完整实战'
 date: 2026-07-10 10:00:00
-tags: []
+tags: [Ornith, 本地部署, llama.cpp, Qwen3.6, 开源模型]
 categories: [技术笔记]
 ---
 

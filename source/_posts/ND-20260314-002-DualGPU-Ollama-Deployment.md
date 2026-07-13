@@ -1,7 +1,7 @@
 ---
 title: 'Ubuntu 双显卡部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速完整指南'
 date: 2026-03-14 10:00:00
-tags: []
+tags: [GPU, Ollama, Ubuntu, CUDA, AI部署, 双显卡]
 categories: [技术笔记]
 ---
 

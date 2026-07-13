@@ -1,7 +1,7 @@
 ---
 title: 'OpenClaw 接入 LM Studio 本地模型：baseUrl 必须是 /v1结尾'
 date: 2026-03-11 10:00:00
-tags: []
+tags: [OpenClaw, LM Studio, 本地模型, 配置排错]
 categories: [技术笔记]
 ---
 

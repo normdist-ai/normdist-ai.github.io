@@ -1,7 +1,7 @@
 ---
 title: 'Hexo 博客部署故障排查与解决'
 date: 2026-04-04 10:00:00
-tags: []
+tags: [Hexo, 博客部署, GitHub Pages, 故障排查, 静态博客]
 categories: [技术笔记]
 ---
 

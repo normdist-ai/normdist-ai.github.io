@@ -1,10 +1,7 @@
 ---
 title: VoC (Voice of Customer) 技能
 date: 2026-03-24
-tags:
-  - VoC
-  - 技能
-  - 用户反馈
+tags: [VoC, 技能, 用户反馈]
 categories:
   - 学习笔记
 index_img: /img/cover-flat-04.jpg

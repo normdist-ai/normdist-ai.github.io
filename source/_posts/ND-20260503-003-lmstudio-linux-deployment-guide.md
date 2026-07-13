@@ -1,7 +1,7 @@
 ---
 title: 'LM Studio Linux 部署实战：虚拟模型参数隔离 + new-api 转发方案'
 date: 2026-05-03 10:00:00
-tags: []
+tags: [LM Studio, Linux, 模型部署, new-api, 参数隔离]
 categories: [技术笔记]
 ---
 

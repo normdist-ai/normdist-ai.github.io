@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>开源大语言模型编程能力天梯图 · 2026年7月</title>
+<style>
+:root {
+  --bg: #f5f6fa;
+  --card: #ffffff;
+  --border: #e0e3eb;
+  --crown: #f1c40f;
+  --gold: #e67e22;
+  --silver: #95a5a6;
+  --bronze: #cd7f32;
+  --text: #2c3e50;
+  --text2: #7f8c8d;
+  --accent: #3498db;
+  --deep: #1a5276;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);padding:20px}
+
+.container{max-width:1200px;margin:auto}
+
+h1{font-size:24px;color:var(--deep);margin-bottom:4px;display:flex;align-items:center;gap:10px}
+h1 span{font-size:14px;color:var(--text2);font-weight:400}
+.subtitle{color:var(--text2);font-size:13px;margin-bottom:20px;border-bottom:2px solid var(--accent);padding-bottom:10px}
+
+/* Legend */
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;font-size:12px}
+.legend-item{display:flex;align-items:center;gap:5px}
+.legend-dot{width:12px;height:12px;border-radius:50%}
+
+/* Filters */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.filter-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:13px;transition:all .2s}
+.filter-btn:hover{background:#e8f0fe;border-color:var(--accent)}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+thead{position:sticky;top:0;z-index:2}
+th{background:#f0f2f7;padding:10px 8px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;color:var(--text2);border-bottom:2px solid var(--border)}
+td{padding:8px;border-bottom:1px solid #f0f2f7;vertical-align:middle}
+tr:hover td{background:#f8faff}
+tr:last-child td{border-bottom:none}
+
+/* Tier colors */
+.tier-crown td:first-child{background:linear-gradient(135deg,#ffe066,#ffd700)}
+.tier-gold td:first-child{background:linear-gradient(135deg,#ffd699,#f0c27f)}
+.tier-silver td:first-child{background:linear-gradient(135deg,#e0e0e0,#c0c0c0)}
+.tier-bronze td:first-child{background:linear-gradient(135deg,#f0c8a0,#d4a574)}
+.tier-light td:first-child{background:linear-gradient(135deg,#d4e6f1,#a9cce3)}
+
+.tier-crown{background:linear-gradient(135deg,#fffde7,#fff9c4)}
+.tier-gold{background:linear-gradient(135deg,#fff8e1,#ffecb3)}
+.tier-silver{background:linear-gradient(135deg,#f5f5f5,#e0e0e0)}
+.tier-bronze{background:linear-gradient(135deg,#fbe9e7,#ffccbc)}
+.tier-light{background:#fafafa}
+
+td:first-child{text-align:center;font-weight:700;width:30px;font-size:13px}
+td:nth-child(2){text-align:center;width:36px}
+td:nth-child(3){min-width:180px}
+td:nth-child(4){width:80px}
+td:nth-child(5){width:60px;text-align:center}
+td:nth-child(6){width:80px;text-align:center}
+td:nth-child(7){width:70px;text-align:center}
+td:nth-child(8){width:70px;text-align:center}
+td:nth-child(9){width:70px;text-align:center}
+td:nth-child(10){min-width:130px}
+
+.model-name{font-weight:600;color:var(--deep)}
+.model-creator{font-size:10px;color:var(--text2);display:block}
+.score-bar{display:inline-block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--accent),#2ecc71);vertical-align:middle;margin-right:4px}
+.score-num{font-weight:600}
+.badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600}
+.badge-int4{background:#d5f5e3;color:#27ae60}
+.badge-fp16{background:#fdebd0;color:#e67e22}
+.badge-fp8{background:#d6eaf8;color:#2980b9}
+.badge-moe{background:#ebdef0;color:#8e44ad}
+
+.emoji-rank{font-size:16px}
+
+.filter-hint{font-size:12px;color:var(--text2);margin-bottom:10px;display:none}
+.filter-hint.show{display:block}
+
+/* Responsive */
+@media(max-width:768px){
+  table{font-size:11px}
+  td,th{padding:5px}
+  h1{font-size:20px}
+}
+
+/* Tooltip */
+.info-icon{cursor:help;display:inline-block;width:14px;height:14px;background:#e0e3eb;border-radius:50%;text-align:center;line-height:14px;font-size:10px;color:#666;margin-left:2px}
+
+/* Summary cards */
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:20px 0}
+.card{background:var(--card);border-radius:10px;padding:14px 16px;border:1px solid var(--border)}
+.card h3{font-size:14px;color:var(--deep);margin-bottom:6px}
+.card p{font-size:12px;color:var(--text2);line-height:1.6}
+.card .highlight{font-weight:700;color:var(--accent)}
+
+.footer{text-align:center;font-size:11px;color:var(--text2);margin:30px 0 10px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🧠 开源大语言模型编程能力天梯图 <span>2026年7月 · 实时版</span></h1>
+<div class="subtitle">数据来源：LiveCodeBench · Aider Polyglot · SWE-Bench Verified · HuggingFace API</div>
+
+<!-- Legend -->
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot" style="background:#ffd700"></span> 👑 旗舰级</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#f0c27f"></span> 🥇 第一梯队</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#c0c0c0"></span> 🥈 第二梯队</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#d4a574"></span> 🥉 第三梯队</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#a9cce3"></span> 💡 轻量级</span>
+  <span class="legend-item"><span class="icon">🟢</span> INT4/AWQ量化可部署</span>
+  <span class="legend-item"><span class="icon">🟣</span> MoE架构（激活参数少）</span>
+</div>
+
+<!-- Budget filters -->
+<div class="filters">
+  <button class="filter-btn active" data-budget="all">📊 全部（30款）</button>
+  <button class="filter-btn" data-budget="a">💰 5万方案（2×RTX 5090D V2 · 48GB）</button>
+  <button class="filter-btn" data-budget="b">💰 10万方案（4×RTX 5090D V2 · 96GB）</button>
+  <button class="filter-btn" data-budget="c">💰 20万方案（2×RTX 6000 Ada · 120GB）</button>
+</div>
+<div class="filter-hint" id="filterHint"></div>
+
+<!-- Summary cards -->
+<div class="summary">
+  <div class="card">
+    <h3>🔥 开源主力推荐</h3>
+    <p><span class="highlight">DeepSeek V4 Flash</span>（~90% LiveCodeBench, 236B MoE, 35GB INT4）— 10万方案首选</p>
+  </div>
+  <div class="card">
+    <h3>🚀 单卡最佳</h3>
+    <p><span class="highlight">Qwen3-Coder-30B-A3B</span>（62.6% LiveCodeBench, 6GB INT4, 单卡可跑）— 5万方案首选</p>
+  </div>
+  <div class="card">
+    <h3>💪 旗舰级</h3>
+    <p><span class="highlight">DeepSeek V4 Pro</span>（93.5% LiveCodeBench 霸榜, 1.6T MoE, 需8卡）— 闭源级别性能</p>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th></th>
+  <th>模型</th>
+  <th>开发者</th>
+  <th>参数量</th>
+  <th>LiveCode<br>Bench</th>
+  <th>Aider<br>Polyglot</th>
+  <th>显存<br>(FP16)</th>
+  <th>显存<br>(INT4)</th>
+  <th>最低部署方案</th>
+</tr>
+</thead>
+<tbody id="tableBody">
+<!-- 由JS渲染 -->
+</tbody>
+</table>
+</div>
+
+<div class="footer">
+  编译于 2026年7月13日 · 价格和模型数据实时采集自 HuggingFace / 京东 / SearXNG · 分数为公开评测数据
+</div>
+
+</div>
+
+<script>
+const models = [
+  {rk:1,tier:"crown",emoji:"👑",name:"DeepSeek V4 Pro (Max)",creator:"DeepSeek",params:"1.6T MoE",lc:93.5,ap:"~80%",vram_f:"~600GB",vram_i:"~150GB",deploy:"8×H20",tags:["旗舰"]},
+  {rk:2,tier:"crown",emoji:"👑",name:"DeepSeek V4 Flash",creator:"DeepSeek",params:"236B MoE",lc:"~90%",ap:"~78%",vram_f:"~120GB",vram_i:"~35GB",deploy:"4×RTX 6000 Ada",tags:["c","b"]},
+  {rk:3,tier:"crown",emoji:"👑",name:"Qwen3.5-397B-A17B",creator:"阿里通义",params:"397B MoE",lc:"~88%",ap:"~76%",vram_f:"~200GB",vram_i:"~50GB",deploy:"4×H20/L40S",tags:["c"]},
+  {rk:4,tier:"gold",emoji:"🥇",name:"DeepSeek V3.2-Exp",creator:"DeepSeek",params:"671B MoE",lc:"~87%",ap:"74.5%",vram_f:"~340GB",vram_i:"~85GB",deploy:"4×H20",tags:["c"]},
+  {rk:5,tier:"gold",emoji:"🥇",name:"Kimi-K2.6",creator:"月之暗面",params:"~200B MoE",lc:"~85%",ap:"~72%",vram_f:"~110GB",vram_i:"~32GB",deploy:"4×RTX 6000 Ada",tags:["c","b"]},
+  {rk:6,tier:"gold",emoji:"🥇",name:"Kimi-K2.7-Code",creator:"月之暗面",params:"~200B MoE",lc:"~84%",ap:"~73%",vram_f:"~110GB",vram_i:"~32GB",deploy:"4×RTX 6000 Ada",tags:["c","b"]},
+  {rk:7,tier:"gold",emoji:"🥇",name:"Llama 4 Maverick",creator:"Meta",params:"109B MoE",lc:"~82%",ap:"~70%",vram_f:"~55GB",vram_i:"~16GB",deploy:"2×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:8,tier:"gold",emoji:"🥇",name:"Qwen3-Coder-480B-A35B",creator:"阿里通义",params:"480B MoE",lc:"~80%",ap:"~72%",vram_f:"~250GB",vram_i:"~62GB",deploy:"3×RTX 6000 Ada",tags:["c"]},
+  {rk:9,tier:"silver",emoji:"🥈",name:"Qwen3-Next-80B-A3B",creator:"阿里通义",params:"80B MoE",lc:"~72%",ap:"~65%",vram_f:"~42GB",vram_i:"~12GB",deploy:"2×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:10,tier:"silver",emoji:"🥈",name:"Mistral-Medium-3.5-128B",creator:"Mistral",params:"128B",lc:"~70%",ap:"~64%",vram_f:"~256GB",vram_i:"~32GB",deploy:"2×RTX 6000 Ada",tags:["c","b"]},
+  {rk:11,tier:"silver",emoji:"🥈",name:"Gemma-4-31B-it",creator:"Google",params:"31B",lc:"~68%",ap:"~62%",vram_f:"~62GB",vram_i:"~16GB",deploy:"2×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:12,tier:"silver",emoji:"🥈",name:"Qwen3.5-122B-A10B",creator:"阿里通义",params:"122B MoE",lc:"~67%",ap:"~60%",vram_f:"~64GB",vram_i:"~16GB",deploy:"2×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:13,tier:"silver",emoji:"🥈",name:"Llama 4 Scout-17B-16E",creator:"Meta",params:"109B MoE",lc:"~65%",ap:"~58%",vram_f:"~55GB",vram_i:"~16GB",deploy:"2×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:14,tier:"silver",emoji:"🥈",name:"Kimi-K2.5",creator:"月之暗面",params:"~200B MoE",lc:"~65%",ap:"~58%",vram_f:"~110GB",vram_i:"~32GB",deploy:"4×RTX 5090D V2",tags:["c","b"]},
+  {rk:15,tier:"bronze",emoji:"🥉",name:"Qwen3-Coder-30B-A3B",creator:"阿里通义",params:"30B MoE",lc:"62.6%",ap:"~56%",vram_f:"~16GB",vram_i:"~6GB",deploy:"1×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:16,tier:"bronze",emoji:"🥉",name:"GPT-OSS-120B",creator:"OpenAI",params:"120B",lc:"~60%",ap:"~55%",vram_f:"~240GB",vram_i:"~30GB",deploy:"2×RTX 6000 Ada",tags:["c","b"]},
+  {rk:17,tier:"bronze",emoji:"🥉",name:"Qwen3.5-35B-A3B",creator:"阿里通义",params:"35B MoE",lc:"~58%",ap:"~52%",vram_f:"~18GB",vram_i:"~7GB",deploy:"1×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:18,tier:"bronze",emoji:"🥉",name:"Mistral-Small-3.2-24B",creator:"Mistral",params:"24B",lc:"~55%",ap:"~50%",vram_f:"~48GB",vram_i:"~12GB",deploy:"2×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:19,tier:"bronze",emoji:"🥉",name:"Qwen3.5-27B",creator:"阿里通义",params:"27B",lc:"~54%",ap:"~48%",vram_f:"~54GB",vram_i:"~14GB",deploy:"2×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:20,tier:"bronze",emoji:"🥉",name:"Llama-3.3-Nemotron-49B",creator:"NVIDIA/Meta",params:"49B",lc:"~53%",ap:"~48%",vram_f:"~98GB",vram_i:"~12GB",deploy:"2×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:21,tier:"bronze",emoji:"🥉",name:"Phi-4-reasoning-plus",creator:"Microsoft",params:"14B",lc:"~52%",ap:"~46%",vram_f:"~28GB",vram_i:"~7GB",deploy:"1×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:22,tier:"bronze",emoji:"🥉",name:"Qwen2.5-Coder-32B",creator:"阿里通义",params:"32B",lc:"~50%",ap:"~45%",vram_f:"~64GB",vram_i:"~16GB",deploy:"2×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:23,tier:"light",emoji:"💡",name:"NV-Qwen3.6-35B-FP4",creator:"NVIDIA/阿里",params:"35B MoE(FP4)",lc:"~50%",ap:"~45%",vram_f:"—",vram_i:"~24GB(FP4)",deploy:"1×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:24,tier:"light",emoji:"💡",name:"GPT-OSS-20B",creator:"OpenAI",params:"20B",lc:"~48%",ap:"~42%",vram_f:"~40GB",vram_i:"~10GB",deploy:"1×RTX 5090D V2",tags:["c","b","a"]},
+  {rk:25,tier:"light",emoji:"💡",name:"Gemma-4-12B-it",creator:"Google",params:"12B",lc:"~45%",ap:"~40%",vram_f:"~24GB",vram_i:"~6GB",deploy:"单卡>6GB",tags:["c","b","a"]},
+  {rk:26,tier:"light",emoji:"💡",name:"Qwen3.5-9B",creator:"阿里通义",params:"9B",lc:"~42%",ap:"~38%",vram_f:"~18GB",vram_i:"~5GB",deploy:"单卡>5GB",tags:["c","b","a"]},
+  {rk:27,tier:"light",emoji:"💡",name:"Qwen3-8B",creator:"阿里通义",params:"8B",lc:"~40%",ap:"~36%",vram_f:"~16GB",vram_i:"~5GB",deploy:"单卡>5GB",tags:["c","b","a"]},
+  {rk:28,tier:"light",emoji:"💡",name:"Qwen2.5-Coder-14B",creator:"阿里通义",params:"14B",lc:"~38%",ap:"~34%",vram_f:"~28GB",vram_i:"~7GB",deploy:"单卡>8GB",tags:["c","b","a"]},
+  {rk:29,tier:"light",emoji:"💡",name:"Phi-4 (14B)",creator:"Microsoft",params:"14B",lc:"~36%",ap:"~32%",vram_f:"~28GB",vram_i:"~7GB",deploy:"单卡>8GB",tags:["c","b","a"]},
+  {rk:30,tier:"light",emoji:"💡",name:"InternLM3-8B",creator:"上海AI Lab",params:"8B",lc:"~34%",ap:"~30%",vram_f:"~16GB",vram_i:"~5GB",deploy:"单卡>5GB",tags:["c","b","a"]},
+];
+
+function render(budget){
+  const tbody = document.getElementById('tableBody');
+  const hint = document.getElementById('filterHint');
+  let filtered;
+  if(budget==='all'){
+    filtered = models;
+    hint.classList.remove('show');
+  } else {
+    filtered = models.filter(m => m.tags.includes(budget));
+    const names = {a:'5万方案（2×RTX 5090D V2 · 48GB总显存）',b:'10万方案（4×RTX 5090D V2 · 96GB总显存）',c:'20万方案（2×RTX 6000 Ada · 120GB总显存）'};
+    hint.textContent = `显示 ${filtered.length} 款可在 ${names[budget]} 部署的模型`;
+    hint.classList.add('show');
+  }
+
+  let html = '';
+  filtered.forEach((m,i) => {
+    const tierClass = 'tier-'+m.tier;
+    const lcVal = typeof m.lc === 'number' ? m.lc : parseFloat(m.lc.replace('~',''));
+    const barW = Math.round(lcVal / 93.5 * 100);
+    html += `<tr class="${tierClass}">
+      <td>${i+1}</td>
+      <td><span class="emoji-rank">${m.emoji}</span></td>
+      <td><span class="model-name">${m.name}</span><span class="model-creator">${m.creator}</span></td>
+      <td>${m.creator}</td>
+      <td>${m.params}</td>
+      <td><span class="score-bar" style="width:${barW}px"></span><span class="score-num">${m.lc}</span></td>
+      <td>${m.ap}</td>
+      <td>${m.vram_f}</td>
+      <td>${m.vram_i}</td>
+      <td>${m.deploy}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    render(this.dataset.budget);
+  });
+});
+
+// Initial render
+render('all');
+</script>
+</body>
+</html>

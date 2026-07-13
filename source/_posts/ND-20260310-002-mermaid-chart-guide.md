@@ -1,7 +1,7 @@
 ---
 title: 'Mermaid 图表全攻略：哪个客户端最懂你？'
 date: 2026-03-10 10:00:00
-tags: []
+tags: [Mermaid, AI客户端, 图表渲染, Markdown]
 categories: [技术笔记]
 ---
 

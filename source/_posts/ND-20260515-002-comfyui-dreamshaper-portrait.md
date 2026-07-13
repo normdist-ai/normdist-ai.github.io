@@ -1,8 +1,8 @@
 ---
 title: '用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大'
 date: 2026-05-15 10:00:00
-tags: []
-categories: [技术笔记]
+tags: [ComfyUI, DreamShaper8, 人像生成, Hi-Res Fix, 提示词优化, 模型选择]
+categories: [AI创作]
 ---
 
 > 

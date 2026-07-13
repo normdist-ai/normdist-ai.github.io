@@ -1,8 +1,8 @@
 ---
 title: 'ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践'
 date: 2026-05-15 10:00:00
-tags: []
-categories: [技术笔记]
+tags: [ComfyUI, Hi-Res Fix, 提示词, 知乎, AI绘画, 实践]
+categories: [AI创作]
 ---
 
 

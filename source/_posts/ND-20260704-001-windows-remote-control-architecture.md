@@ -1,7 +1,7 @@
 ---
 title: 'AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型'
 date: 2026-07-04 10:00:00
-tags: []
+tags: [AI Agent, Windows 远程控制, SSH, MCP, CDP, 架构设计]
 categories: [技术笔记]
 ---
 

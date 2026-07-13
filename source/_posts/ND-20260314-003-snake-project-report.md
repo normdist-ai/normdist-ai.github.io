@@ -1,7 +1,7 @@
 ---
 title: '贪吃蛇项目试运行报告'
 date: 2026-03-14 10:00:00
-tags: []
+tags: [OpenClaw, 多Agent协作, 贪吃蛇, AI编程, 项目管理]
 categories: [技术笔记]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: '免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码'
 date: 2026-07-05 10:00:00
-tags: []
+tags: [AI 编程, OpenCode, 免费模型, 编程工具链, 约束策略, 生产级代码]
 categories: [技术笔记]
 ---
 

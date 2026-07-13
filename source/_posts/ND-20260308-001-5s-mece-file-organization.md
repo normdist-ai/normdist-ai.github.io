@@ -1,7 +1,7 @@
 ---
 title: '5S和MECE方法在文件整理中的应用实践'
 date: 2026-03-08 10:00:00
-tags: []
+tags: [5S, MECE, 文件管理, 结构化思维]
 categories: [技术笔记]
 ---
 

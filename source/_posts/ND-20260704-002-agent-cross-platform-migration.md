@@ -1,7 +1,7 @@
 ---
 title: 'AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家'
 date: 2026-07-04 10:00:00
-tags: []
+tags: [AI Agent, 跨平台迁移, Linux, Windows, 环境适配, 迁移方案]
 categories: [技术笔记]
 ---
 

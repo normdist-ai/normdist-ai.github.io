@@ -1,11 +1,7 @@
 ---
 title: 为什么要用 Hermes：一个 AI Agent 实践者的选型复盘
 date: 2026-07-13 10:00:00
-tags:
-  - Hermes
-  - AI Agent
-  - 选型对比
-  - 自动化
+tags: [Hermes, "AI Agent", 选型对比, 自动化]
 categories:
   - 技术笔记
 ---

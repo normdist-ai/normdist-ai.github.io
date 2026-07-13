@@ -1,7 +1,7 @@
 ---
 title: '博客系统优化实战：从配置踩坑到稳定发布'
 date: 2026-03-15 10:00:00
-tags: []
+tags: [Hexo, Fluid主题, 博客优化, Git, SCSS, 踩坑记录]
 categories: [技术笔记]
 ---
 

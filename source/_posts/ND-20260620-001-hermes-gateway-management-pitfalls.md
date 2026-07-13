@@ -1,7 +1,7 @@
 ---
 title: 'Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管'
 date: 2026-06-20 10:00:00
-tags: []
+tags: [Hermes Agent, 网关, systemd, Web UI, 踩坑记录, 多Profile]
 categories: [技术笔记]
 ---
 

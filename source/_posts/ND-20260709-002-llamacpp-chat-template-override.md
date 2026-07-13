@@ -1,7 +1,7 @@
 ---
 title: '不改 GGUF 文件，用 chat-template-file 修复 llama.cpp Jinja 模板错误'
 date: 2026-07-09 10:00:00
-tags: []
+tags: [llama.cpp, chat-template, GGUF, 对话模板, Jinja模板]
 categories: [技术笔记]
 ---
 

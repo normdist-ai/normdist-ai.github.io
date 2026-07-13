@@ -1,7 +1,7 @@
 ---
 title: 'OpenClaw v2026.3.11 更新内容'
 date: 2026-03-12 10:00:00
-tags: []
+tags: [OpenClaw, 性能优化, 代理配置, 版本更新]
 categories: [技术笔记]
 ---
 

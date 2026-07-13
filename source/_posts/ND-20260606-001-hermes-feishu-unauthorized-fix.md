@@ -1,7 +1,7 @@
 ---
 title: 'Hermes 多代理飞书鉴权失败排查实录'
 date: 2026-06-06 10:00:00
-tags: []
+tags: [Hermes Agent, 飞书, 鉴权, OAuth, 多代理, 故障排查]
 categories: [技术笔记]
 ---
 

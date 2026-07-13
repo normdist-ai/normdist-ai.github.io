@@ -1,7 +1,7 @@
 ---
 title: 'CLIProxyAPIPlus：扩展你的 API 代理能力'
 date: 2026-03-19 10:00:00
-tags: []
+tags: [CLIProxyAPIPlus, API代理, 命令行工具, 代理转发]
 categories: [技术笔记]
 ---
 

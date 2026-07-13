@@ -1,7 +1,7 @@
 ---
 title: 'Hermes 如何快乐联网'
 date: 2026-05-06 10:00:00
-tags: []
+tags: [Hermes Agent, 联网, 搜索引擎, 网页抓取, 信息检索]
 categories: [技术笔记]
 ---
 

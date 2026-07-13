@@ -1,7 +1,7 @@
 ---
 title: '从交易记录重建每日资产快照：daily_summaries 历史回填实战'
 date: 2026-07-05 10:00:00
-tags: []
+tags: [量化交易, 数据回填, 资产快照, daily_summaries, 数据补全, 净值曲线]
 categories: [技术笔记]
 ---
 

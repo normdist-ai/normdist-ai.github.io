@@ -1,8 +1,8 @@
 ---
 title: 'llama.cpp 从零安装配置指南：编译、systemd 服务、models.ini 详解'
 date: 2026-06-17 10:00:00
-tags: []
-categories: [技术笔记]
+tags: [llama.cpp, 安装配置, systemd, models.ini, GPU加速, 编译指南]
+categories: [技术教程]
 ---
 
 > 

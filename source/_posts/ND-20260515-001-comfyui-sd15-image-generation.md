@@ -1,10 +1,9 @@
 ---
 title: '用 ComfyUI 生成第一张 AI 图片：从踩坑到成功'
 date: 2026-05-15 10:00:00
-tags: []
-categories: [技术笔记]
+tags: [ComfyUI, SD1.5, AI绘画, 入门教程, 踩坑记录, 环境搭建]
+categories: [AI创作]
 ---
-
 > 
 
 **作者:** 小美

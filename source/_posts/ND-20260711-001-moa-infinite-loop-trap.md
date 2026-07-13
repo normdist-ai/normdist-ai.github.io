@@ -1,7 +1,7 @@
 ---
 title: 'MoA 踩坑实录：多模型协同推理的"无限循环"陷阱'
 date: 2026-07-11 10:00:00
-tags: []
+tags: [MoA, Mixture-of-Agents, 多模型协同, 无限循环, 踩坑记录]
 categories: [技术笔记]
 ---
 

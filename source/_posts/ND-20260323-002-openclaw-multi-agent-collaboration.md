@@ -1,7 +1,7 @@
 ---
 title: 'OpenClaw多Agent协作实战研究'
 date: 2026-03-23 10:00:00
-tags: []
+tags: [OpenClaw, 多Agent协作, 通信协议, 任务分配, 人工智能]
 categories: [技术笔记]
 ---
 

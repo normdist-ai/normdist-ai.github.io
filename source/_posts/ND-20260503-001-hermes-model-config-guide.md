@@ -1,7 +1,7 @@
 ---
 title: 'Hermes Agent 模型配置完全指南——从单模型到多模型路由'
 date: 2026-05-03 10:00:00
-tags: []
+tags: [Hermes Agent, 模型配置, provider, 模型路由, fallback]
 categories: [技术笔记]
 ---
 

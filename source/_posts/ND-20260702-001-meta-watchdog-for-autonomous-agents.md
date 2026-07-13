@@ -1,7 +1,7 @@
 ---
 title: '谁来看守看守——自治 AI Agent 系统的静默故障与元监控设计'
 date: 2026-07-02 10:00:00
-tags: []
+tags: [AI Agent, 元监控, 静默故障, 自治系统, Meta Watchdog, 系统可靠性]
 categories: [技术笔记]
 ---
 

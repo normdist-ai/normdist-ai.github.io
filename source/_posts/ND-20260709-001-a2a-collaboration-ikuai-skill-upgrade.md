@@ -1,7 +1,7 @@
 ---
 title: 'A2A 协议实战：两个 AI Agent 协作升级路由器技能'
 date: 2026-07-09 10:00:00
-tags: []
+tags: [A2A协议, AI Agent, 多Agent协作, MCP桥接, 路由器管理]
 categories: [技术笔记]
 ---
 

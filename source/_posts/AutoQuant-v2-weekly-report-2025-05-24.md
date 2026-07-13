@@ -1,11 +1,7 @@
 ---
 title: AutoQuant 开发周报 - 2025/05/24
 date: 2025-05-24
-tags:
-  - AutoQuant
-  - 开发周报
-  - 量化交易
-  - v2.0
+tags: [AutoQuant, 开发周报, 量化交易, v2.0]
 categories:
   - 技术笔记
 ---

@@ -1,7 +1,7 @@
 ---
 title: 'TRAE SOLO 必装的 14 个 Skill：从开发到创作的全能武器库'
 date: 2026-05-05 10:00:00
-tags: []
+tags: [TRAE SOLO, Skill, AI创作, 开发工具, 插件]
 categories: [技术笔记]
 ---
 

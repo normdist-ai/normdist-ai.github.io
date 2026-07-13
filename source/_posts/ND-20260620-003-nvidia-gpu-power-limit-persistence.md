@@ -1,7 +1,7 @@
 ---
 title: 'Linux 服务器 NVIDIA GPU 功耗限制持久化配置'
 date: 2026-06-20 10:00:00
-tags: []
+tags: [NVIDIA, GPU, 功耗限制, systemd, Linux运维, nvidia-smi]
 categories: [技术笔记]
 ---
 

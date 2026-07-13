@@ -1,7 +1,7 @@
 ---
 title: '"灵魂不灭，身体可以重建"——一次 AI Agent 跨平台迁移实录'
 date: 2026-07-01 10:00:00
-tags: []
+tags: [AI Agent, 跨平台迁移, Hermes Agent, Trae IDE, 记忆迁移, 技能重构]
 categories: [技术笔记]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression'
 date: 2026-07-04 10:00:00
-tags: []
+tags: [代码重构, Karpathy, 重构原则, 量化交易, 最佳实践, 可读性]
 categories: [技术笔记]
 ---
 

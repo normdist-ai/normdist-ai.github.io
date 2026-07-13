@@ -1,7 +1,7 @@
 ---
 title: 'SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法'
 date: 2026-07-05 10:00:00
-tags: []
+tags: [Windows, SSH, Session 0, 跨会话启动, 远程控制, 桌面应用, 故障排查]
 categories: [技术笔记]
 ---
 

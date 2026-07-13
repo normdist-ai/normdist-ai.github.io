@@ -1,7 +1,7 @@
 ---
 title: 'AI Agent 协作：技术实现与应用'
 date: 2026-03-12 10:00:00
-tags: []
+tags: [AI Agent, 多代理协作, 通信协议, 任务分配]
 categories: [技术笔记]
 ---
 

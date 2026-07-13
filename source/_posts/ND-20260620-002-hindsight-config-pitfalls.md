@@ -1,7 +1,7 @@
 ---
 title: 'Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突'
 date: 2026-06-20 10:00:00
-tags: []
+tags: [Hindsight, 长期记忆, Hermes Agent, Embedding, 向量数据库, 配置踩坑]
 categories: [技术笔记]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'Krea2 Turbo 在 2080 Ti 上部署全记录：六层踩坑与修复'
 date: 2026-07-10 10:00:00
-tags: []
+tags: [Krea2, 2080 Ti, ComfyUI, 本地部署, 踩坑记录]
 categories: [技术笔记]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'OpenClaw2026.3 发布：AI代理能力再升级'
 date: 2026-03-08 10:00:00
-tags: []
+tags: [OpenClaw, AI代理, 安全模块, 版本更新]
 categories: [技术笔记]
 ---
 

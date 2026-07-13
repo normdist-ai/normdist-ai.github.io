@@ -1,7 +1,7 @@
 ---
 title: '量化系统 Docker→裸跑迁移：一份踩坑笔记'
 date: 2026-07-04 10:00:00
-tags: []
+tags: [Docker, 裸机部署, 量化交易, 迁移踩坑, systemd, 环境一致性]
 categories: [技术笔记]
 ---
 

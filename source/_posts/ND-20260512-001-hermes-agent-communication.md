@@ -1,7 +1,7 @@
 ---
 title: 'Hermes 多代理通讯架构实践'
 date: 2026-05-12 10:00:00
-tags: []
+tags: [Hermes Agent, 多代理, 通讯架构, 任务委派, 状态同步]
 categories: [技术笔记]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: 'MCP Playwright：AI 驱动的浏览器自动化调试革命'
 date: 2026-04-06 10:00:00
-tags: []
+tags: [MCP, Playwright, AI, 浏览器自动化, 调试]
 categories: [技术笔记]
 ---
 

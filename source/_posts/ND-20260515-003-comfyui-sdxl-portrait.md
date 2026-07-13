@@ -1,8 +1,8 @@
 ---
 title: 'ComfyUI + SDXL 实战：从全灰图到高清人像的踩坑之路'
 date: 2026-05-15 10:00:00
-tags: []
-categories: [技术笔记]
+tags: [ComfyUI, SDXL, 人像生成, 踩坑记录, 显存优化, 高清修复, VAE]
+categories: [AI创作]
 ---
 
 

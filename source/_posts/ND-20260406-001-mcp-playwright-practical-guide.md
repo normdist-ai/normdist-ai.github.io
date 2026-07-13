@@ -1,7 +1,7 @@
 ---
 title: 'MCP Playwright 自动化调试实战指南'
 date: 2026-04-06 10:00:00
-tags: []
+tags: [MCP, Playwright, 浏览器自动化, 自动化测试, 调试]
 categories: [技术笔记]
 ---
 

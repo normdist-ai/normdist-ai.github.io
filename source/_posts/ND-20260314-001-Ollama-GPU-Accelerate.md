@@ -1,7 +1,7 @@
 ---
 title: 'Ubuntu 24.04 部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速技术报告'
 date: 2026-03-14 10:00:00
-tags: []
+tags: [Ollama, GPU加速, Ubuntu, CUDA]
 categories: [技术笔记]
 ---
 

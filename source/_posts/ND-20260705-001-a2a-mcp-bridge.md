@@ -1,7 +1,7 @@
 ---
 title: 'Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具'
 date: 2026-07-05 10:00:00
-tags: []
+tags: [AI Agent, MCP, Agent 间通信, 工具共享, 桥接方案, 跨平台]
 categories: [技术笔记]
 ---
 

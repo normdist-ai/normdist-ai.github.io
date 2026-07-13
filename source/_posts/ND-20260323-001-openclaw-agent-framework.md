@@ -1,7 +1,7 @@
 ---
 title: 'OpenClaw Agent框架与插件系统深度解析'
 date: 2026-03-23 10:00:00
-tags: []
+tags: [OpenClaw, Agent框架, 插件系统, 技能系统, 架构设计]
 categories: [技术笔记]
 ---
 

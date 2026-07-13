@@ -1,7 +1,7 @@
 ---
 title: 'llama.cpp Router 模式：切换模型时自动卸载前一个模型'
 date: 2026-06-14 10:00:00
-tags: []
+tags: [llama.cpp, Router模式, 显存管理, GGUF, 模型切换]
 categories: [技术笔记]
 ---
 

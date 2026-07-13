@@ -1,7 +1,7 @@
 ---
 title: '解决 OpenClaw 技能 blocked 状态：BlogWatcher 案例分析'
 date: 2026-03-11 10:00:00
-tags: []
+tags: [OpenClaw, 技能排错, BlogWatcher, 配置修复]
 categories: [技术笔记]
 ---
 
