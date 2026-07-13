@@ -54,7 +54,7 @@
   .col-btn{padding:5px 14px;border:1px solid #27272a;border-radius:20px;background:transparent;color:#a1a1aa;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
   .col-btn:hover{border-color:#52525b;color:#e8e8ed;background:rgba(99,102,241,.05)}
   .col-btn .arrow{font-size:9px;margin-left:2px}
-  .col-panel{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#18181b;border:1px solid #27272a;border-radius:10px;padding:12px 0;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:100;min-width:180px;max-height:400px;overflow-y:auto}
+  .col-panel{display:none;position:fixed;background:#18181b;border:1px solid #27272a;border-radius:10px;padding:12px 0;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:100;min-width:180px;max-height:400px;overflow-y:auto}
   .col-panel.open{display:block}
   .col-panel-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#52525b;padding:0 16px 8px;border-bottom:1px solid #27272a;margin-bottom:4px}
   .col-item{display:flex;align-items:center;gap:8px;padding:6px 16px;cursor:pointer;font-size:13px;color:#a1a1aa;transition:background .1s}
@@ -996,7 +996,12 @@ function hideCol(col) {
 
 // ========== 列选择器 ==========
 function toggleColPanel(){
-  document.getElementById('colPanel').classList.toggle('open');
+  const panel = document.getElementById('colPanel');
+  const btn = document.querySelector('.col-btn');
+  const rect = btn.getBoundingClientRect();
+  panel.style.left = Math.max(10, rect.right - 180) + 'px';
+  panel.style.top = (rect.bottom + 6) + 'px';
+  panel.classList.toggle('open');
 }
 function toggleCol(col){
   const checked = document.querySelector(`input[data-col="${col}"]`).checked;
