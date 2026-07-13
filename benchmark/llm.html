@@ -152,12 +152,33 @@
       <span>🔍</span>
       <input type="text" id="search" placeholder="搜索模型..." oninput="filterTable()">
     </div>
-    <span id="model-count" style="color:#52525b;font-size:12px;white-space:nowrap"></span>
-  </div>
-  <div class="toolbar">
-    <div class="col-toggle-wrap">
-      <button class="col-btn" onclick="toggleColPanel()">⚙ 表头 <span class="arrow">▾</span></button>
-      <div class="col-panel" id="colPanel">
+    </div>
+  <div class="filter-row">
+    <div class="filter-group">
+          <span class="filter-label">快速</span>
+          <button class="chip active" data-filter="all">全部</button>
+          <button class="chip" data-filter="top10">🏆 Top 10</button>
+          <button class="chip" data-filter="dense">Dense</button>
+          <button class="chip" data-filter="moe">MoE</button>
+        </div>
+        <div class="chip-sep"></div>
+        <div class="filter-group">
+          <span class="filter-label">参数</span>
+          <button class="chip" data-filter="small">≤7B</button>
+          <button class="chip" data-filter="medium">7-35B</button>
+          <button class="chip" data-filter="large">35B+</button>
+        </div>
+        <div class="chip-sep"></div>
+        <div class="filter-group">
+          <span class="filter-label">年份</span>
+          <button class="chip" data-filter="y2026">2026</button>
+          <button class="chip" data-filter="y2025">2025</button>
+          <button class="chip" data-filter="y2024">2024</button>
+          <button class="chip" data-filter="y2023">2023</button>
+        </div>
+        <div class="col-toggle-wrap" style="margin-left:auto">
+          <button class="col-btn" onclick="toggleColPanel()">⚙ 表头 <span class="arrow">▾</span></button>
+          <div class="col-panel" id="colPanel">
         <div class="col-panel-title">显示列</div>
         <div class="col-item"><input type="checkbox" data-col="rank" checked onchange="toggleCol('rank')"><label onclick="this.previousElementSibling.click()">排名 #</label></div>
         <div class="col-item"><input type="checkbox" data-col="model" checked onchange="toggleCol('model')"><label onclick="this.previousElementSibling.click()">模型</label></div>
@@ -170,32 +191,6 @@
         <div class="col-item"><input type="checkbox" data-col="vram" checked onchange="toggleCol('vram')"><label onclick="this.previousElementSibling.click()">VRAM</label></div>
       </div>
     </div>
-    <span id="model-count" style="color:#52525b;font-size:12px;white-space:nowrap"></span>
-  </div>
-  <div class="filter-row">
-    <div class="filter-group">
-      <span class="filter-label">快速</span>
-      <button class="chip active" data-filter="all">全部</button>
-      <button class="chip" data-filter="top10">🏆 Top 10</button>
-      <button class="chip" data-filter="dense">Dense</button>
-      <button class="chip" data-filter="moe">MoE</button>
-    </div>
-    <div class="chip-sep"></div>
-    <div class="filter-group">
-      <span class="filter-label">参数</span>
-      <button class="chip" data-filter="small">≤7B</button>
-      <button class="chip" data-filter="medium">7-35B</button>
-      <button class="chip" data-filter="large">35B+</button>
-    </div>
-    <div class="chip-sep"></div>
-    <div class="filter-group">
-      <span class="filter-label">年份</span>
-      <button class="chip" data-filter="y2026">2026</button>
-      <button class="chip" data-filter="y2025">2025</button>
-      <button class="chip" data-filter="y2024">2024</button>
-      <button class="chip" data-filter="y2023">2023</button>
-    </div>
-  </div>
   <div class="filter-row">
     <div class="filter-group">
       <span class="filter-label">厂商</span>
