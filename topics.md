@@ -29,6 +29,90 @@
 - **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-13.md（今日 TOP 3）
 - **优先级**: P1
 
+### [pending] AI Agent 日记三层筛选：从 Bug 追踪器到人类日记
+- **来源日期**: 2026-07-09
+- **技术核心**: 日志=什么都记→日记=值得记→博客=值得分享。三层分离+7信号价值判断+5维度评分。从"选题不是找Bug是找价值"认知升级到系统化筛选框架
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-09.md（TOP 3 #1 + 教训记录）
+- **优先级**: P0
+
+### [pending] 心跳任务队列 FIFO 陷阱：P1 被 3 天挡住
+- **来源日期**: 2026-07-08
+- **技术核心**: NaN/Infinity 防护任务连续3天被低优先级任务挡住。FIFO队列无优先级抢占机制的缺陷与修复方案
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-08.md
+- **优先级**: P1
+
+### [pending] 跨代理协作感知：让 AI Agent 知道别人在干什么
+- **来源日期**: 2026-07-13
+- **技术核心**: 多Agent(韩梅梅/李雷/露西/小美/波莉)各自独立运行cron但互不感知。activity-check.py跨profile检测+协作模式心跳架构
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-08.md, 2026-07-13.md
+- **优先级**: P1
+
+### [pending] 断路器模式：让 AI 数据管道不怕外部源抽风
+- **来源日期**: 2026-07-10
+- **技术核心**: OpenCode实现断路器(连续3次失败→跳过300秒)+HTTP 429/5xx重试+yfinance超时兜底+缓存日志。+92/-48行
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-10.md（TOP 3 #2）
+- **优先级**: P1
+
+### [pending] collect_cron_results 假阴性：删症状≠修根因
+- **来源日期**: 2026-06-24
+- **技术核心**: 4个cron并发触发，运行中的session被误判为失败。06-23错误"修复"(删空session)→06-24真正根因修复(区分运行中/失败状态)
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-06-24.md, 2026-06-23.md
+- **优先级**: P1
+
+### [pending] 小样本过拟合：4 次交易 75% 胜率凭什么不能信
+- **来源日期**: 2026-06-26
+- **技术核心**: 601318 keltner策略仅4次交易得116分，过拟合被评分公式掩盖。修复：<5次交易扣30分(git c62121f)
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-06-26.md, 2026-06-28.md
+- **优先级**: P1
+
+### [pending] 零成本运维：5 人 AI Agent 团队的 cron 治理
+- **来源日期**: 2026-07-10
+- **技术核心**: 夜间无人值守流水线8/8全绿(00:00→03:11)。全部免费额度(GLM-5自部署+DeepSeek免费+OpenCode免费)。5个Agent的cron编排/任务派发/健康检查
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-10.md（TOP 3 #1）
+- **优先级**: P1
+
+### [pending] QFII 跟庄策略 +32.20%：从设计到回测验证全链路
+- **来源日期**: 2026-07-11
+- **技术核心**: 策略设计→6个月回测(+32.20%,胜率58%,盈亏比1.79)→4种策略(TA/ETF轮动/网格/QFII)全部上线→cron定时执行
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-11.md
+- **优先级**: P1
+
+### [pending] 博客标签丢失恢复 + .nojekyll 铁律
+- **来源日期**: 2026-07-13
+- **技术核心**: 84篇文章标签数据丢失→从备份恢复16篇+AI生成63篇。.nojekyll缺失导致GitHub Pages用Jekyll覆盖Hexo的tags页
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-13.md
+- **优先级**: P2
+
+### [pending] 压缩风暴：Session 过多饿死关键 Cron
+- **来源日期**: 2026-06-27
+- **技术核心**: 日间大量重复会话消耗内存→夜间关键cron(AutoQuant/Round2/产业链)全部被压缩截断。从偶发→系统性缺陷演进
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-06-27.md（TOP 3 #1）
+- **优先级**: P2
+
+### [pending] 非定时任务衰减律："记得做"等于"不会做"
+- **来源日期**: 2026-06-24~07-02
+- **技术核心**: 无cron绑定的任务连续4-7天零执行率。手机端UI改进拖延9天。解决方案：确认2次未done→自动升级为cron强制执行
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-06-24.md~2026-07-02.md
+- **优先级**: P2
+
+### [pending] ReShare 数据库迁移合并：8887+1511→8908
+- **来源日期**: 2026-07-11
+- **技术核心**: 裸金属迁移导致DATA_DIR路径变更(data/→data/db/)，旧数据未迁移。合并策略：交集1490+旧库独有7397+新库独有21=8908
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-11.md
+- **优先级**: P2
+
+### [pending] 懒加载架构：从方案设计到 420 倍提速
+- **来源日期**: 2026-07-11
+- **技术核心**: QFII价格懒加载。用户提出4步流程→POST /qfii/prices端点→BackgroundTasks异步拉取→批量SQL优化(5.5s→0.013s)
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-11.md
+- **优先级**: P2
+
+### [pending] 日记 cron 断层 2 天：自省系统的可靠性盲区
+- **来源日期**: 2026-07-01
+- **技术核心**: 06-29/06-30日记完全缺失(系统迁移日)，PDCA闭环断裂2天。监控系统本身也需要被监控
+- **素材文件**: ~/.hermes/profiles/hanmeimei/diary/2026-07-01.md
+- **优先级**: P2
+
 ---
 
 ## 已发布（从此处转出）
@@ -181,4 +265,10 @@
 ### [published] 为什么要用 Hermes：一个 AI Agent 实践者的选型复盘
 - **文章**: ND-20260713-002-why-hermes-agent-comparison.md
 - **发布日期**: 2026-07-13
+- **状态**: ✅ 已发布
+| 开源大模型天梯图开发全记录 | 从零构建独立HTML数据页面，覆盖数据采集/筛选交互/响应式/部署 | 2026-07-13 | 准备 |  |  |
+
+### [published] 开源大模型天梯图开发全记录
+- **发布日期**: 2026-07-14
+- **文件路径**: /home/tony/projects/blog/source/_posts/ND-20260713-003-llm-leaderboard-dev.md
 - **状态**: ✅ 已发布
