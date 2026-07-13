@@ -33,9 +33,12 @@
   .search-box{display:flex;align-items:center;gap:6px;background:#18181b;border:1px solid #27272a;border-radius:8px;padding:5px 12px;flex-shrink:0}
   .search-box input{background:transparent;border:none;outline:none;color:#e8e8ed;font-size:12px;width:140px}
   .search-box input::placeholder{color:#52525b}
-  .toolbar{max-width:1280px;margin:0 auto 10px;padding:0 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .toolbar{max-width:1280px;margin:0 auto 10px;padding:0 24px;display:flex;align-items:center;gap:12px;justify-content:flex-end}
+  .search-row{max-width:1280px;margin:0 auto 14px;padding:0 24px;display:flex;align-items:center;gap:12px}
   /* 列选择器 */
   .col-toggle-wrap{position:relative;flex-shrink:0}
+  .chip-logo{width:14px;height:14px;object-fit:contain;flex-shrink:0}
+  .chip-badge{width:14px;height:14px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0}
   .col-btn{padding:5px 14px;border:1px solid #27272a;border-radius:20px;background:transparent;color:#a1a1aa;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
   .col-btn:hover{border-color:#52525b;color:#e8e8ed;background:rgba(99,102,241,.05)}
   .col-btn .arrow{font-size:9px;margin-left:2px}
@@ -132,11 +135,14 @@
   </div>
 </div>
 <div class="controls">
-  <div class="toolbar">
+  <div class="search-row">
     <div class="search-box">
       <span>🔍</span>
       <input type="text" id="search" placeholder="搜索模型..." oninput="filterTable()">
     </div>
+    <span id="model-count" style="color:#52525b;font-size:12px;white-space:nowrap"></span>
+  </div>
+  <div class="toolbar">
     <div class="col-toggle-wrap">
       <button class="col-btn" onclick="toggleColPanel()">⚙ 表头 <span class="arrow">▾</span></button>
       <div class="col-panel" id="colPanel">
@@ -181,15 +187,15 @@
   <div class="filter-row">
     <div class="filter-group">
       <span class="filter-label">厂商</span>
-      <button class="chip" data-filter="org:DeepSeek">DeepSeek</button>
-      <button class="chip" data-filter="org:Alibaba">Alibaba</button>
-      <button class="chip" data-filter="org:Zhipu AI">Zhipu</button>
-      <button class="chip" data-filter="org:Moonshot AI">Moonshot</button>
-      <button class="chip" data-filter="org:Meta">Meta</button>
-      <button class="chip" data-filter="org:Google">Google</button>
-      <button class="chip" data-filter="org:Mistral">Mistral</button>
-      <button class="chip" data-filter="org:OpenAI">OpenAI</button>
-      <button class="chip" data-filter="org:DeepReinforce">DeepReinforce</button>
+      <button class="chip" data-filter="org:DeepSeek"><img class="chip-logo" src="logos/deepseek.svg" alt="">DeepSeek</button>
+      <button class="chip" data-filter="org:Alibaba"><img class="chip-logo" src="logos/qwen.png" alt="">Qwen</button>
+      <button class="chip" data-filter="org:Zhipu AI"><span class="chip-badge" style="background:#3b82f6">智</span>Zhipu</button>
+      <button class="chip" data-filter="org:Moonshot AI"><span class="chip-badge" style="background:#8b5cf6">K</span>Moonshot</button>
+      <button class="chip" data-filter="org:Meta"><img class="chip-logo" src="logos/meta.svg" alt="">Meta</button>
+      <button class="chip" data-filter="org:Google"><img class="chip-logo" src="logos/google.svg" alt="">Google</button>
+      <button class="chip" data-filter="org:Mistral"><img class="chip-logo" src="logos/mistral.svg" alt="">Mistral</button>
+      <button class="chip" data-filter="org:OpenAI"><img class="chip-logo" src="logos/openai.png" alt="">OpenAI</button>
+      <button class="chip" data-filter="org:DeepReinforce"><span class="chip-badge" style="background:#ef4444">DR</span>DeepReinforce</button>
     </div>
   </div>
 </div>
