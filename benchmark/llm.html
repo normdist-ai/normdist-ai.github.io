@@ -873,7 +873,8 @@ function getParamBucket(td){
   return 'large';
 }
 
-let activeChips = {}; // {category: value}
+// 每组用一个 Set 存多选值
+let activeChips = { quick:new Set(['all']), param:new Set(), year:new Set(), org:new Set() };
 
 function filterTable() {
   const search = document.getElementById('search').value.toLowerCase().trim();
@@ -887,23 +888,31 @@ function filterTable() {
     const paramBucket = getParamBucket(row.querySelector('.params'));
     let show = true;
 
-    // 快速筛选
+    // 快速筛选（Set 有值才过滤，all=不过滤）
     const q = activeChips.quick;
-    if(q === 'top10' && rank > 10) show = false;
-    if(q === 'moe' && arch !== 'MoE') show = false;
-    if(q === 'dense' && arch !== 'Dense') show = false;
+    if(q.size > 0 && !q.has('all')){
+      let qMatch = false;
+      if(q.has('top10') && rank <= 10) qMatch = true;
+      if(q.has('moe') && arch === 'MoE') qMatch = true;
+      if(q.has('dense') && arch === 'Dense') qMatch = true;
+      if(!qMatch) show = false;
+    }
 
-    // 参数筛选
+    // 参数筛选（多选 OR）
     const p = activeChips.param;
-    if(p && paramBucket !== p) show = false;
+    if(p.size > 0 && !p.has(paramBucket)) show = false;
 
-    // 年份筛选
+    // 年份筛选（多选 OR）
     const y = activeChips.year;
-    if(y && year !== y.replace('y','')) show = false;
+    if(y.size > 0){
+      let yMatch = false;
+      y.forEach(yv => { if(year === yv.replace('y','')) yMatch = true; });
+      if(!yMatch) show = false;
+    }
 
-    // 厂商筛选
+    // 厂商筛选（多选 OR）
     const o = activeChips.org;
-    if(o && org !== o) show = false;
+    if(o.size > 0 && !o.has(org)) show = false;
 
     // 搜索
     if(search){
@@ -929,33 +938,41 @@ document.querySelectorAll('.chip').forEach(btn => {
   btn.addEventListener('click', function() {
     const f = this.dataset.filter;
     const cat = getChipCategory(f);
+    let val = (cat === 'org') ? f.replace('org:','') : f;
 
-    if(cat === 'org'){
-      f_val = f.replace('org:','');
-    } else {
-      f_val = f;
-    }
-
-    // 同组内 toggle
-    if(activeChips[cat] === f_val || (cat==='quick' && activeChips[cat] === f)){
-      delete activeChips[cat];
-      this.classList.remove('active');
-      // 如果quick组被清空，恢复"全部"
-      if(cat === 'quick'){
-        const allBtn = document.querySelector('.chip[data-filter="all"]');
-        allBtn.classList.add('active');
-        activeChips.quick = 'all';
+    // quick 组：选了非 all 的，自动移除 all；选 all，清空其他
+    if(cat === 'quick'){
+      if(val === 'all'){
+        activeChips.quick = new Set(['all']);
+        document.querySelectorAll('.chip[data-filter]').forEach(b => {
+          if(getChipCategory(b.dataset.filter) === 'quick') b.classList.remove('active');
+        });
+        this.classList.add('active');
+      } else {
+        activeChips.quick.delete('all');
+        document.querySelector('.chip[data-filter="all"]').classList.remove('active');
+        // toggle
+        if(activeChips.quick.has(val)){
+          activeChips.quick.delete(val);
+          this.classList.remove('active');
+        } else {
+          activeChips.quick.add(val);
+          this.classList.add('active');
+        }
+        // 全空了恢复 all
+        if(activeChips.quick.size === 0){
+          activeChips.quick.add('all');
+          document.querySelector('.chip[data-filter="all"]').classList.add('active');
+        }
       }
     } else {
-      // 清除同组其他active
-      document.querySelectorAll('.chip').forEach(b => {
-        if(getChipCategory(b.dataset.filter) === cat) b.classList.remove('active');
-      });
-      this.classList.add('active');
-      if(cat === 'org'){
-        activeChips.org = f_val;
+      // 其他组：纯 toggle
+      if(activeChips[cat].has(val)){
+        activeChips[cat].delete(val);
+        this.classList.remove('active');
       } else {
-        activeChips[cat] = f_val;
+        activeChips[cat].add(val);
+        this.classList.add('active');
       }
     }
 
@@ -963,7 +980,6 @@ document.querySelectorAll('.chip').forEach(btn => {
   });
 });
 
-activeChips.quick = 'all';
 document.getElementById('model-count').textContent = document.querySelectorAll('#leaderboard tbody tr').length + ' 个模型';
 </script>
 </body>
