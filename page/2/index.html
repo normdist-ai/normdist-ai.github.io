@@ -389,6 +389,75 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/07/ND-20260707-001-ghost-deviation/" target="_self">
+          幽灵偏差：当你的日报系统开始对自己撒谎
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/07/ND-20260707-001-ghost-deviation/" target="_self">
+        <div>
+          一个连续 4 天的”未闭环”Bug一套量化交易系统配备了一个 AI 日记系统，每天凌晨自动反省：做了什么、哪些计划没落地、怎么改进。这个自省机制基于 PDCA 循环——计划（Plan）、执行（Do）、检查（Check）、处置（Act），每天对账。 某天，日记系统记录了一个偏差：宏观分析模块依赖的 GPR Index（地缘政治风险指数）外部数据源下载超时，看板上的地缘风险字段显示为问号。改进措施是：
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-07 10:00" pubdate>
+              2026-07-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/%E6%97%A5%E6%8A%A5%E7%B3%BB%E7%BB%9F/">#日报系统</a>
+            
+              <a href="/tags/%E5%B9%BD%E7%81%B5%E5%81%8F%E5%B7%AE/">#幽灵偏差</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%81%8F%E5%B7%AE%E6%A3%80%E6%B5%8B/">#数据偏差检测</a>
+            
+              <a href="/tags/AI%E8%87%AA%E7%9C%81/">#AI自省</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/06/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
           外部数据源不稳定的标准修复模式：HTTP重试 + 缓存兜底
         </a>
@@ -1015,77 +1084,6 @@
               <a href="/tags/%E9%87%8D%E6%9E%84%E5%8E%9F%E5%88%99/">#重构原则</a>
             
               <a href="/tags/%E5%8F%AF%E8%AF%BB%E6%80%A7/">#可读性</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/03/ND-20260703-001-api-positions-60x-speedup/" target="_self">
-          一个 60 倍的接口提速：两层隐藏 Bug 如何让 API 延迟从 10 秒降到 0.16 秒
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/03/ND-20260703-001-api-positions-60x-speedup/" target="_self">
-        <div>
-          持仓接口 /api/positions 冷查询要 10 秒，热缓存 3 秒。目标是 &lt; 1 秒。 修复后冷查询 0.16 秒，热缓存 0.035 秒，提升 60 倍。 根因不是 N+1 查询，不是数据库缺索引，而是两层 bug 叠加。 现象一个量化记账平台，后端 FastAPI + SQLAlchemy + SQLite，数据源是自建的行情服务（ReShare）。持仓列表端点 /api/po
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-03 10:00" pubdate>
-              2026-07-03
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
-              <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#性能优化</a>
-            
-              <a href="/tags/API-%E4%BC%98%E5%8C%96/">#API 优化</a>
-            
-              <a href="/tags/N-1-%E6%9F%A5%E8%AF%A2/">#N+1 查询</a>
-            
-              <a href="/tags/Bug-%E6%8E%92%E6%9F%A5/">#Bug 排查</a>
-            
-              <a href="/tags/%E6%8E%A5%E5%8F%A3%E6%8F%90%E9%80%9F/">#接口提速</a>
             
           </div>
         

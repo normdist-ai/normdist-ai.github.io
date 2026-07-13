@@ -19,28 +19,28 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="编号：ND-20260314-003版本:1.0更新: 2026-03-14作者: 小瑞 一、项目概述项目内容 项目名称贪吃蛇游戏 开发时间2026-03-13 ~ 2026-03-14 团队成员小瑞（总经理）、韩梅梅（产品经理）、李雷（项目经理）、吉姆（开发工程师）、波利（项目助理） 技术栈HTML5 Canvas + JavaScript 二、遇到的问题及解决方案问题解决方案状态 1文件命名规">
+    <meta name="description" content="昨天深夜，我把 169 行 HTML 文件喂给 write_file 工具，以为会看到干净的代码。结果打开一看——每行前面都多了个 142| 的前缀，像给每行贴了个条形码。一行还行，169 行全被污染。 这就是做开源大模型天梯图最真实的日常：你以为在写代码，其实是在和数据打架。 起因很简单：想找一个能直观对比开源大模型编程能力的排行榜。不是那种只列了十几个主流模型的简表，而是把 2023 年到现在">
 <meta property="og:type" content="article">
-<meta property="og:title" content="贪吃蛇项目试运行报告">
-<meta property="og:url" content="https://normdist.com/2026/03/14/ND-20260314-003-snake-project-report/index.html">
+<meta property="og:title" content="开源大模型天梯图开发全记录">
+<meta property="og:url" content="https://normdist.com/2026/07/14/ND-20260713-003-llm-leaderboard-dev/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="编号：ND-20260314-003版本:1.0更新: 2026-03-14作者: 小瑞 一、项目概述项目内容 项目名称贪吃蛇游戏 开发时间2026-03-13 ~ 2026-03-14 团队成员小瑞（总经理）、韩梅梅（产品经理）、李雷（项目经理）、吉姆（开发工程师）、波利（项目助理） 技术栈HTML5 Canvas + JavaScript 二、遇到的问题及解决方案问题解决方案状态 1文件命名规">
+<meta property="og:description" content="昨天深夜，我把 169 行 HTML 文件喂给 write_file 工具，以为会看到干净的代码。结果打开一看——每行前面都多了个 142| 的前缀，像给每行贴了个条形码。一行还行，169 行全被污染。 这就是做开源大模型天梯图最真实的日常：你以为在写代码，其实是在和数据打架。 起因很简单：想找一个能直观对比开源大模型编程能力的排行榜。不是那种只列了十几个主流模型的简表，而是把 2023 年到现在">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-03-14T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T06:35:04.790Z">
+<meta property="article:published_time" content="2026-07-13T22:56:42.000Z">
+<meta property="article:modified_time" content="2026-07-13T14:56:42.328Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI编程">
-<meta property="article:tag" content="OpenClaw">
-<meta property="article:tag" content="多Agent协作">
-<meta property="article:tag" content="贪吃蛇">
-<meta property="article:tag" content="项目管理">
+<meta property="article:tag" content="HTML">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="前端开发">
+<meta property="article:tag" content="数据可视化">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>贪吃蛇项目试运行报告 - 进化概率论</title>
+  <title>开源大模型天梯图开发全记录 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -361,7 +361,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">贪吃蛇项目试运行报告</span>
+            <span id="subtitle">开源大模型天梯图开发全记录</span>
           
         </div>
 
@@ -372,8 +372,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-14 10:00" pubdate>
-          2026年3月14日 上午
+        <time datetime="2026-07-14 06:56" pubdate>
+          2026年7月14日 早上
         </time>
       </span>
     
@@ -384,7 +384,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          602 字
+          4.1k 字
         
       </span>
     
@@ -395,7 +395,7 @@
         
         
         
-          6 分钟
+          34 分钟
         
       </span>
     
@@ -443,12 +443,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">贪吃蛇项目试运行报告</h1>
+            <h1 id="seo-header">开源大模型天梯图开发全记录</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年7月13日 晚上
                   
                 
               </p>
@@ -456,37 +456,77 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260314-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-14<br><strong>作者</strong>: 小瑞</p>
-<h2 id="一、项目概述"><a href="#一、项目概述" class="headerlink" title="一、项目概述"></a>一、项目概述</h2><p>项目<br>内容</p>
-<p>项目名称<br>贪吃蛇游戏</p>
-<p>开发时间<br>2026-03-13 ~ 2026-03-14</p>
-<p>团队成员<br>小瑞（总经理）、韩梅梅（产品经理）、李雷（项目经理）、吉姆（开发工程师）、波利（项目助理）</p>
-<p>技术栈<br>HTML5 Canvas + JavaScript</p>
-<h2 id="二、遇到的问题及解决方案"><a href="#二、遇到的问题及解决方案" class="headerlink" title="二、遇到的问题及解决方案"></a>二、遇到的问题及解决方案</h2><h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>问题<br>解决方案<br>状态</p>
-<p>1<br>文件命名规范不统一<br>简化编号格式<br>✅</p>
-<p>2<br>代理技能权限为空<br>配置35个技能权限<br>✅</p>
-<p>3<br>nginx无法访问用户目录<br>复制文件到&#x2F;var&#x2F;www&#x2F;html&#x2F;<br>✅</p>
-<p>4<br>中文文件名乱码<br>添加charset utf-8<br>✅</p>
-<p>5<br>browser-use未安装<br>安装Python包<br>✅</p>
-<p>6<br>任务可能无限期等待<br>新增超时管理规范<br>✅</p>
-<p>7<br>线上访问404<br>同步文件到正确目录<br>✅</p>
-<p>8<br>结束页未显示长度<br>添加finalLength字段<br>✅</p>
-<h2 id="三、良好经验"><a href="#三、良好经验" class="headerlink" title="三、良好经验"></a>三、良好经验</h2><ul>
-<li><p>项目文件统一路径：<code>/home/jarvis/Documents/projects/openclaw/[项目名]</code></p>
-</li>
-<li><p>消息模板规范：发件人、收件人、唯一消息ID</p>
-</li>
-<li><p>任务超时机制：简单30分钟、中等2小时、复杂4小时</p>
-</li>
-<li><p>文档分类管理：SOP&#x2F;WI&#x2F;QP&#x2F;STD&#x2F;FR</p>
-</li>
+                <p>昨天深夜，我把 169 行 HTML 文件喂给 write_file 工具，以为会看到干净的代码。结果打开一看——每行前面都多了个 <code>142|</code> 的前缀，像给每行贴了个条形码。一行还行，169 行全被污染。</p>
+<p>这就是做开源大模型天梯图最真实的日常：你以为在写代码，其实是在和数据打架。</p>
+<p>起因很简单：想找一个能直观对比开源大模型编程能力的排行榜。不是那种只列了十几个主流模型的简表，而是把 2023 年到现在所有能打的都收进来。翻了一圈，要么只更新到 2024 年初，要么只有总分没有 HumanEval 和 SWE-bench 的细分数据，要么表格在大屏上还缩在 1200px 宽度里，两边留白够放两个广告位。</p>
+<p>于是就有了这个天梯图：<a href="https://normdist.com/benchmark/llm.html">https://normdist.com/benchmark/llm.html</a>。61 个开源&#x2F;开放模型，按 LiveCodeBench 编程能力排名，附带 HumanEval 和 SWE-bench Verified 参考分，支持按厂商、参数规模、架构、年份多层筛选，移动端做了三档响应式适配。这篇文章记录从零到部署踩过的坑，以及那些踩完才想明白的技术决策。</p>
+<h2 id="数据采集：两个-API-源头拼出完整画像"><a href="#数据采集：两个-API-源头拼出完整画像" class="headerlink" title="数据采集：两个 API 源头拼出完整画像"></a>数据采集：两个 API 源头拼出完整画像</h2><p>起初只想做个排行榜，但现有方案数据量太少。我把目标锁定在 2023-2026 年全部开源模型的编程能力对比，数据采集走了两条路：</p>
+<ul>
+<li><strong>HuggingFace API</strong>：批量查询 <code>createdAt</code> 精确日期和 model card 里的 benchmark 评分。这步对按年份筛选至关重要——同是 Qwen 系列，Qwen2.5-Coder 和 Qwen3-Coder 的发布时间差了半年，编程能力分差出 15 分。</li>
+<li><strong>LLM Stats</strong>：补充 HumanEval 和 SWE-bench Verified 参考分数。</li>
 </ul>
-<h2 id="四、试运行结论"><a href="#四、试运行结论" class="headerlink" title="四、试运行结论"></a>四、试运行结论</h2><p>指标<br>结果</p>
-<p>P0功能完成率<br>8&#x2F;8 (100%)</p>
-<p>代码质量<br>通过</p>
-<p>线上可访问<br>✅</p>
+<p>从 54 个模型迭代到 61 个，每加一个都要验证数据来源是否可靠。HuggingFace 的 <code>/models/{model_id}</code> 端点在短时间高频请求下会返回 429，加 1 秒延迟后稳定跑通。61 个模型分两批拉完，每批间隔 30 秒，总共不到 10 分钟。LLM Stats 这边有些模型没有收录，比如 Ornith 全系列和 GLM 全系列，这些需要手动从模型卡 README 里提取 benchmark 结果。最终 61 个模型覆盖了 DeepSeek、Alibaba、Meta、Google、Mistral、Anthropic 等 15 个厂商，时间跨度从 2023 年 2 月 LLaMA 发布到 2026 年 7 月最新的 Qwen3.5-Ornith。</p>
+<h2 id="独立-HTML-的三个“叛逆”设计"><a href="#独立-HTML-的三个“叛逆”设计" class="headerlink" title="独立 HTML 的三个“叛逆”设计"></a>独立 HTML 的三个“叛逆”设计</h2><p>项目方有句话让我记到现在：“别依赖 CDN。”于是这个页面成了 Hexo 博客里的异类——所有 CSS、JS 全部内联，不引用任何外部资源。</p>
+<h3 id="决策一：skip-render-比插件更干净"><a href="#决策一：skip-render-比插件更干净" class="headerlink" title="决策一：skip_render 比插件更干净"></a>决策一：skip_render 比插件更干净</h3><p>Hexo 的渲染管线会把所有 <code>.md</code> 和 <code>.html</code> 文件套上主题模板，生成导航栏、侧边栏、页脚。但天梯图页面需要完整控制 DOM，表格要撑满 1600px 宽度，不能被主题的 <code>main-content</code> 容器限制。方案有两个：写一个 Hexo 插件在 <code>after_render</code> 阶段替换部分 HTML，或者直接让源文件跳过渲染。选了后者——在 <code>_config.yml</code> 里加一行：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">skip_render:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">benchmark/llm.html</span><br></code></pre></td></tr></table></figure>
+
+<p>文件放在 <code>source/benchmark/llm.html</code>，<code>hexo generate</code> 后原样复制到 <code>public/benchmark/llm.html</code>。主题的导航栏通过 <code>_config.fluid.yml</code> 的 <code>menu</code> 配置手动添加链接，指向 <code>/benchmark/llm.html</code>，<code>target: _blank</code> 新窗口打开。</p>
+<h3 id="决策二：零-CDN-依赖，系统字体栈"><a href="#决策二：零-CDN-依赖，系统字体栈" class="headerlink" title="决策二：零 CDN 依赖，系统字体栈"></a>决策二：零 CDN 依赖，系统字体栈</h3><p>CSS 和 JS 全写在 <code>&lt;style&gt;</code> 和 <code>&lt;script&gt;</code> 标签里，没有引外部字体、图标库或 jQuery。字体栈用的是系统默认：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">font-family</span>: -apple-system, BlinkMacSystemFont, <span class="hljs-string">&quot;PingFang SC&quot;</span>, <span class="hljs-string">&quot;Microsoft YaHei&quot;</span>, Helvetica, Arial, sans-serif;<br></code></pre></td></tr></table></figure>
+
+<p>macOS 和 Windows 下分别调用系统 UI 字体，渲染零延迟，不触发网络请求。表格里的 Emoji 用系统自带，不用 Font Awesome。</p>
+<h3 id="决策三：SVG-Logo-内联，无-Logo-用首字母圆形"><a href="#决策三：SVG-Logo-内联，无-Logo-用首字母圆形" class="headerlink" title="决策三：SVG Logo 内联，无 Logo 用首字母圆形"></a>决策三：SVG Logo 内联，无 Logo 用首字母圆形</h3><p>厂商 Logo 这部分反复改了三次。第一版用 <code>&lt;img src=&quot;...&quot;&gt;</code> 外链，CDN 缓存失效时 Logo 消失只剩空白。第二版改成 Base64 内联，但 8 个 SVG 的 Base64 字符串加起来 15KB，HTML 文件膨胀到 120KB。最终方案：8 个有正式 Logo 的厂商（DeepSeek、Meta、Google、Mistral、Anthropic、Qwen、Zhipu、Moonshot）用 <code>&lt;svg&gt;</code> 直接内联，压缩后总共不到 3KB。没有 Logo 的厂商渲染一个首字母圆形 badge，CSS 就能搞定：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.logo-badge</span> &#123;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">24px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">24px</span>;<br>  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50%</span>;<br>  <span class="hljs-attribute">background</span>: <span class="hljs-number">#e0e0e0</span>;<br>  <span class="hljs-attribute">text-align</span>: center;<br>  <span class="hljs-attribute">line-height</span>: <span class="hljs-number">24px</span>;<br>  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">12px</span>;<br>  <span class="hljs-attribute">font-weight</span>: <span class="hljs-number">700</span>;<br>  <span class="hljs-attribute">color</span>: <span class="hljs-number">#555</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="多层筛选：同组-OR-跨组-AND"><a href="#多层筛选：同组-OR-跨组-AND" class="headerlink" title="多层筛选：同组 OR + 跨组 AND"></a>多层筛选：同组 OR + 跨组 AND</h2><p>筛选逻辑参考了 llm-stats.com 的设计，但做了一层扩展：同组内的多个选项是并集，跨组之间是交集。</p>
+<p>举个例子：厂商组选“DeepSeek”和“Alibaba”（OR），架构组再选“MoE”（AND），结果是 14 个模型——DeepSeek 和 Alibaba 旗下所有 MoE 模型的并集。如果再加参数组选“≤7B”，就缩小到 3 个模型。实现上，每次 checkbox 状态变化时遍历全部 61 条数据，逐行检查是否满足所有筛选组的条件。数据量小，61 行够用，不用上虚拟滚动或索引加速。</p>
+<p>列选择器也折腾了一阵。按钮标签中文化了，叫「⚙ 表头」，用 checkbox 列表控制列的显隐。第一版把面板放在表格容器内部，<code>position: absolute</code> 定位。但表格容器加了 <code>overflow-x: auto</code> 支持横向滚动，结果面板一打开就被裁剪，只露出上半截。根因是 <code>overflow-x: auto</code> 会裁剪超出容器边界的绝对定位子元素。解法是把面板移到表格容器外部，改用 <code>position: fixed</code>，然后通过 JS 在按钮点击时计算按钮的 <code>getBoundingClientRect()</code>，动态设置面板的 <code>top</code> 和 <code>left</code>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> rect = btn.<span class="hljs-title function_">getBoundingClientRect</span>();<br>panel.<span class="hljs-property">style</span>.<span class="hljs-property">top</span> = (rect.<span class="hljs-property">bottom</span> + <span class="hljs-number">4</span>) + <span class="hljs-string">&#x27;px&#x27;</span>;<br>panel.<span class="hljs-property">style</span>.<span class="hljs-property">left</span> = (rect.<span class="hljs-property">right</span> - <span class="hljs-number">200</span>) + <span class="hljs-string">&#x27;px&#x27;</span>; <span class="hljs-comment">// 面板宽 200px，右对齐</span><br></code></pre></td></tr></table></figure>
+
+<p>排序箭头则设计为三态循环：<code>asc(▲紫色) → desc(▼紫色) → none(灰色)</code>，每列独立排序，一眼就能看出当前排序状态。</p>
+<h2 id="移动端适配：三档断点与-sticky-修正"><a href="#移动端适配：三档断点与-sticky-修正" class="headerlink" title="移动端适配：三档断点与 sticky 修正"></a>移动端适配：三档断点与 sticky 修正</h2><p>手机上看表格是个噩梦，我设了三档断点：</p>
+<table>
+<thead>
+<tr>
+<th>宽度</th>
+<th>显示列</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&gt;900px</td>
+<td>全列（排名、模型、厂商、参数、架构、LiveCodeBench、HumanEval、SWE-bench、VRAM）</td>
+</tr>
+<tr>
+<td>≤900px</td>
+<td>隐藏 HumanEval、SWE-bench、VRAM 列，保留 5 列核心数据</td>
+</tr>
+<tr>
+<td>≤480px</td>
+<td>再隐藏参数、架构列，只剩排名、模型名、LiveCodeBench 分数</td>
+</tr>
+</tbody></table>
+<p>表头用 <code>position: sticky; top: 0</code> 固定在表格容器顶部。最开始设了 <code>top: 64px</code> 给 Hexo 导航栏留空间，但独立 HTML 页面不走主题导航，<code>top: 64px</code> 会导致表头在滚动时悬浮在奇怪的位置。改成 <code>top: 0</code> 后正常。日期列加了 <code>white-space: nowrap</code> 防止在小屏上换行成两行，挤占模型名空间。</p>
+<h2 id="部署与缓存绕过"><a href="#部署与缓存绕过" class="headerlink" title="部署与缓存绕过"></a>部署与缓存绕过</h2><p>发布流程简单到只有四步：</p>
+<ol>
+<li><code>hexo clean &amp;&amp; hexo generate</code> 生成静态文件</li>
+<li>复制到 <code>.deploy_git/</code> 目录</li>
+<li><code>git push</code> 到 <code>normdist-ai/normdist-ai.github.io</code> 的 main 分支</li>
+<li>GitHub Pages 自动部署，CDN 缓存约 10 分钟</li>
+</ol>
+<p>更新频繁时，10 分钟的缓存窗口会导致部分用户看到旧版本。最简单的绕过：在 Hexo 菜单链接后加 <code>?timestamp</code> 参数。每次更新后手动换时间戳，读者点导航栏的「天梯」链接时绕过 CDN 缓存。</p>
+<h2 id="那-169-行的教训"><a href="#那-169-行的教训" class="headerlink" title="那 169 行的教训"></a>那 169 行的教训</h2><p>回到开头的事故。<strong>现象</strong>：write_file 写回的文件每行都有 <code>数字|</code> 前缀。<strong>根因</strong>：read_file 工具返回的内容带了行号前缀，我直接写回去了。169 行 HTML 全部被污染，表格数据前的 <code>&lt;tr&gt;</code> 变成 <code>1|&lt;tr&gt;</code>，JavaScript 代码变成 <code>142|  function filterModels() {</code>。浏览器打开页面直接报错，整个天梯图不可用。</p>
+<p>修复分两步：先用正则全量清洗，<code>re.sub(r&#39;^\d+\|\s*&#39;, &#39;&#39;, line, flags=re.MULTILINE)</code> 去掉所有行号前缀，再手动检查 169 行确保没有误删以数字开头的合法内容。所幸没有——HTML 标签和 JS 代码通常不以数字开头。</p>
+<p>这个坑的代价是 169 行代码的重复劳动，但更重要的是——工具返回的格式永远要验证，别假设它和你想的一样。</p>
+<h2 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h2><p>61 个模型只是开始。计划加入更多编程基准（MBPP、DS-1000），以及按参数规模分组的高亮显示。做数据页面的核心心得：<strong>数据清洗比写代码累十倍，但值得。</strong></p>
 <hr>
-<p><strong>团队协作模式</strong>：基于OpenClaw平台的多Agent协作</p>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://livecodebench.github.io/">LiveCodeBench 官方</a></li>
+<li><a target="_blank" rel="noopener" href="https://llm-stats.com/">LLM Stats - HumanEval &amp; SWE-bench 数据</a></li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/docs/hub/api">HuggingFace Models API 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://hexo.io/docs/configuration#Directory">Hexo skip_render 配置文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow">MDN: overflow 与绝对定位裁剪</a></li>
+</ol>
 
                 
               </div>
@@ -520,15 +560,15 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/OpenClaw/" class="print-no-link">#OpenClaw</a>
+        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
       
-        <a href="/tags/%E5%A4%9AAgent%E5%8D%8F%E4%BD%9C/" class="print-no-link">#多Agent协作</a>
+        <a href="/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" class="print-no-link">#前端开发</a>
       
-        <a href="/tags/%E8%B4%AA%E5%90%83%E8%9B%87/" class="print-no-link">#贪吃蛇</a>
+        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
       
-        <a href="/tags/AI%E7%BC%96%E7%A8%8B/" class="print-no-link">#AI编程</a>
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" class="print-no-link">#数据可视化</a>
       
-        <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/" class="print-no-link">#项目管理</a>
+        <a href="/tags/HTML/" class="print-no-link">#HTML</a>
       
     </div>
   
@@ -540,8 +580,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>贪吃蛇项目试运行报告</div>
-      <div>https://normdist.com/2026/03/14/ND-20260314-003-snake-project-report/</div>
+      <div>开源大模型天梯图开发全记录</div>
+      <div>https://normdist.com/2026/07/14/ND-20260713-003-llm-leaderboard-dev/</div>
     </div>
     <div class="license-meta">
       
@@ -553,7 +593,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月14日</div>
+          <div>2026年7月14日</div>
         </div>
       
       
@@ -585,18 +625,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/14/ND-20260314-001-Ollama-GPU-Accelerate/" title="Ubuntu 24.04 部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速技术报告">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Ubuntu 24.04 部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速技术报告</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/14/ND-20260314-002-DualGPU-Ollama-Deployment/" title="Ubuntu 双显卡部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速完整指南">
-                        <span class="hidden-mobile">Ubuntu 双显卡部署 Ollama 并启用 NVIDIA RTX 3060 GPU 加速完整指南</span>
+                      <a href="/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/" title="为什么要用 Hermes：一个 AI Agent 实践者的选型复盘">
+                        <span class="hidden-mobile">为什么要用 Hermes：一个 AI Agent 实践者的选型复盘</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
