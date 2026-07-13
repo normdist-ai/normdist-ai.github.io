@@ -20,13 +20,18 @@
   .hero p{color:#71717a;font-size:15px;line-height:1.5;max-width:720px}
   .hero .meta{margin-top:12px;display:flex;gap:24px;font-size:13px;color:#52525b;flex-wrap:wrap}
   .hero .meta em{font-style:normal;color:#a1a1aa}
-  .controls{max-width:1280px;margin:0 auto 28px;padding:0 24px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .controls label{font-size:13px;color:#71717a}
-  .filter-btn{padding:6px 16px;border:1px solid #27272a;border-radius:20px;background:transparent;color:#a1a1aa;font-size:13px;cursor:pointer;transition:all .2s}
-  .filter-btn:hover{border-color:#52525b;color:#e8e8ed}
-  .filter-btn.active{background:#6366f1;border-color:#6366f1;color:#fff}
-  .search-box{margin-left:auto;display:flex;align-items:center;gap:8px;background:#18181b;border:1px solid #27272a;border-radius:8px;padding:6px 12px}
-  .search-box input{background:transparent;border:none;outline:none;color:#e8e8ed;font-size:13px;width:180px}
+  .controls{max-width:1280px;margin:0 auto 28px;padding:0 24px}
+  .filter-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .filter-row::-webkit-scrollbar{height:3px}
+  .filter-row::-webkit-scrollbar-thumb{background:#27272a;border-radius:2px}
+  .filter-group{display:flex;gap:6px;align-items:center;flex-shrink:0}
+  .filter-label{font-size:11px;color:#52525b;text-transform:uppercase;letter-spacing:.5px;margin-right:4px;flex-shrink:0}
+  .chip{padding:5px 14px;border:1px solid #27272a;border-radius:20px;background:transparent;color:#a1a1aa;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:5px}
+  .chip:hover{border-color:#52525b;color:#e8e8ed;background:rgba(99,102,241,.05)}
+  .chip.active{background:#6366f1;border-color:#6366f1;color:#fff}
+  .chip-sep{width:1px;height:20px;background:#27272a;flex-shrink:0;margin:0 4px}
+  .search-box{margin-left:auto;display:flex;align-items:center;gap:6px;background:#18181b;border:1px solid #27272a;border-radius:8px;padding:5px 12px;flex-shrink:0}
+  .search-box input{background:transparent;border:none;outline:none;color:#e8e8ed;font-size:12px;width:140px}
   .search-box input::placeholder{color:#52525b}
   .table-wrap{max-width:1280px;margin:0 auto 48px;padding:0 24px;overflow-x:auto;-webkit-overflow-scrolling:touch}
   table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;min-width:780px}
@@ -114,16 +119,47 @@
   </div>
 </div>
 <div class="controls">
-  <label>筛选:</label>
-  <button class="filter-btn active" data-filter="all">全部</button>
-  <button class="filter-btn" data-filter="top10">Top 10</button>
-  <button class="filter-btn" data-filter="moe">MoE 架构</button>
-  <button class="filter-btn" data-filter="y2026">2026年</button>
-  <button class="filter-btn" data-filter="y2024">2024年经典</button>
-  <button class="filter-btn" data-filter="y2023">2023年起点</button>
-  <div class="search-box">
-    <span>🔍</span>
-    <input type="text" id="search" placeholder="搜索模型..." oninput="filterTable()">
+  <div class="filter-row">
+    <div class="filter-group">
+      <span class="filter-label">快速</span>
+      <button class="chip active" data-filter="all">全部</button>
+      <button class="chip" data-filter="top10">🏆 Top 10</button>
+      <button class="chip" data-filter="dense">Dense</button>
+      <button class="chip" data-filter="moe">MoE</button>
+    </div>
+    <div class="chip-sep"></div>
+    <div class="filter-group">
+      <span class="filter-label">参数</span>
+      <button class="chip" data-filter="small">≤7B</button>
+      <button class="chip" data-filter="medium">7-35B</button>
+      <button class="chip" data-filter="large">35B+</button>
+    </div>
+    <div class="chip-sep"></div>
+    <div class="filter-group">
+      <span class="filter-label">年份</span>
+      <button class="chip" data-filter="y2026">2026</button>
+      <button class="chip" data-filter="y2025">2025</button>
+      <button class="chip" data-filter="y2024">2024</button>
+      <button class="chip" data-filter="y2023">2023</button>
+    </div>
+  </div>
+  <div class="filter-row">
+    <div class="filter-group">
+      <span class="filter-label">厂商</span>
+      <button class="chip" data-filter="org:DeepSeek">DeepSeek</button>
+      <button class="chip" data-filter="org:Alibaba">Alibaba</button>
+      <button class="chip" data-filter="org:Zhipu AI">Zhipu</button>
+      <button class="chip" data-filter="org:Moonshot AI">Moonshot</button>
+      <button class="chip" data-filter="org:Meta">Meta</button>
+      <button class="chip" data-filter="org:Google">Google</button>
+      <button class="chip" data-filter="org:Mistral">Mistral</button>
+      <button class="chip" data-filter="org:OpenAI">OpenAI</button>
+      <button class="chip" data-filter="org:DeepReinforce">DeepReinforce</button>
+    </div>
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="search" placeholder="搜索模型..." oninput="filterTable()">
+    </div>
   </div>
 </div>
 <div class="legend">
@@ -147,7 +183,7 @@
       </tr>
     </thead>
     <tbody>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="DeepSeek">
           <td class="rank rank-1">1</td>
           <td><div class="model-name">DeepSeek V4 Pro Max</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">~660B MoE</td>
@@ -158,7 +194,7 @@
           <td class="num">—</td>
           <td class="vram">~700GB</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="DeepSeek">
           <td class="rank rank-2">2</td>
           <td><div class="model-name">DeepSeek V4 Flash Max</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">~660B MoE</td>
@@ -169,7 +205,7 @@
           <td class="num">—</td>
           <td class="vram">~700GB</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="Zhipu AI">
           <td class="rank rank-3">3</td>
           <td><div class="model-name">GLM-5.2</div><div class="model-org">Zhipu AI</div></td>
           <td class="params hide-small">~744B MoE</td>
@@ -180,7 +216,7 @@
           <td class="num">—</td>
           <td class="vram">~1.5TB</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="Moonshot AI">
           <td class="rank ">4</td>
           <td><div class="model-name">Kimi K2.7-Code</div><div class="model-org">Moonshot AI</div></td>
           <td class="params hide-small">~500B MoE</td>
@@ -191,7 +227,7 @@
           <td class="num">—</td>
           <td class="vram">—</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="Alibaba">
           <td class="rank ">5</td>
           <td><div class="model-name">Qwen3.5-397B-A17B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">397B/17B act</td>
@@ -202,7 +238,7 @@
           <td class="num">76.4%</td>
           <td class="vram">~800GB</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="DeepReinforce">
           <td class="rank ">6</td>
           <td><div class="model-name">Ornith-1.0-397B</div><div class="model-org">DeepReinforce</div></td>
           <td class="params hide-small">397B MoE</td>
@@ -213,7 +249,7 @@
           <td class="num">82.4%</td>
           <td class="vram">~800GB</td>
         </tr>
-        <tr data-year="2026" data-arch="Dense">
+        <tr data-year="2026" data-arch="Dense" data-org="Zhipu AI">
           <td class="rank ">7</td>
           <td><div class="model-name">GLM-5.1</div><div class="model-org">Zhipu AI</div></td>
           <td class="params hide-small">~355B</td>
@@ -224,7 +260,7 @@
           <td class="num">—</td>
           <td class="vram">~710GB</td>
         </tr>
-        <tr data-year="2025" data-arch="MoE">
+        <tr data-year="2025" data-arch="MoE" data-org="DeepSeek">
           <td class="rank ">8</td>
           <td><div class="model-name">DeepSeek V3.2</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">671B MoE</td>
@@ -235,7 +271,7 @@
           <td class="num">~70%</td>
           <td class="vram">~700GB</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="MiniMax">
           <td class="rank ">9</td>
           <td><div class="model-name">MiniMax M2</div><div class="model-org">MiniMax</div></td>
           <td class="params hide-small">230B/10B act</td>
@@ -246,7 +282,7 @@
           <td class="num">69.4%</td>
           <td class="vram">~460GB</td>
         </tr>
-        <tr data-year="2025" data-arch="MoE">
+        <tr data-year="2025" data-arch="MoE" data-org="Alibaba">
           <td class="rank ">10</td>
           <td><div class="model-name">Qwen3-Coder-480B-A35B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">480B/35B act</td>
@@ -257,7 +293,7 @@
           <td class="num">69.6%</td>
           <td class="vram">~960GB</td>
         </tr>
-        <tr data-year="2025" data-arch="MoE">
+        <tr data-year="2025" data-arch="MoE" data-org="Meta">
           <td class="rank ">11</td>
           <td><div class="model-name">Llama 4 Maverick</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">17B active</td>
@@ -268,7 +304,7 @@
           <td class="num">—</td>
           <td class="vram">~130GB</td>
         </tr>
-        <tr data-year="2026" data-arch="Dense">
+        <tr data-year="2026" data-arch="Dense" data-org="Zhipu AI">
           <td class="rank ">12</td>
           <td><div class="model-name">GLM-5</div><div class="model-org">Zhipu AI</div></td>
           <td class="params hide-small">~355B</td>
@@ -279,7 +315,7 @@
           <td class="num">77.8%</td>
           <td class="vram">~710GB</td>
         </tr>
-        <tr data-year="2025" data-arch="MoE">
+        <tr data-year="2025" data-arch="MoE" data-org="Alibaba">
           <td class="rank ">13</td>
           <td><div class="model-name">Qwen3-235B-A22B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">235B/22B act</td>
@@ -290,7 +326,7 @@
           <td class="num">—</td>
           <td class="vram">~470GB</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="Alibaba">
           <td class="rank ">14</td>
           <td><div class="model-name">Qwen3.5-122B-A10B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">122B/10B act</td>
@@ -301,7 +337,7 @@
           <td class="num">—</td>
           <td class="vram">~244GB</td>
         </tr>
-        <tr data-year="2025" data-arch="MoE">
+        <tr data-year="2025" data-arch="MoE" data-org="DeepSeek">
           <td class="rank ">15</td>
           <td><div class="model-name">DeepSeek R1-0528</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">660B MoE</td>
@@ -312,7 +348,7 @@
           <td class="num">~70%</td>
           <td class="vram">~700GB</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="Moonshot AI">
           <td class="rank ">16</td>
           <td><div class="model-name">Kimi K2.6</div><div class="model-org">Moonshot AI</div></td>
           <td class="params hide-small">~500B MoE</td>
@@ -323,7 +359,7 @@
           <td class="num">—</td>
           <td class="vram">—</td>
         </tr>
-        <tr data-year="2026" data-arch="Dense">
+        <tr data-year="2026" data-arch="Dense" data-org="Alibaba">
           <td class="rank ">17</td>
           <td><div class="model-name">Qwen3.6-27B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">27B</td>
@@ -334,7 +370,7 @@
           <td class="num">77.2%</td>
           <td class="vram">~54GB</td>
         </tr>
-        <tr data-year="2025" data-arch="MoE">
+        <tr data-year="2025" data-arch="MoE" data-org="DeepSeek">
           <td class="rank ">18</td>
           <td><div class="model-name">DeepSeek V3.1</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">671B MoE</td>
@@ -345,7 +381,7 @@
           <td class="num">—</td>
           <td class="vram">~700GB</td>
         </tr>
-        <tr data-year="2025" data-arch="Dense">
+        <tr data-year="2025" data-arch="Dense" data-org="Zhipu AI">
           <td class="rank ">19</td>
           <td><div class="model-name">GLM-4.7</div><div class="model-org">Zhipu AI</div></td>
           <td class="params hide-small">~355B</td>
@@ -356,7 +392,7 @@
           <td class="num">73.8%</td>
           <td class="vram">~710GB</td>
         </tr>
-        <tr data-year="2025" data-arch="Dense">
+        <tr data-year="2025" data-arch="Dense" data-org="OpenAI">
           <td class="rank ">20</td>
           <td><div class="model-name">GPT-OSS-120B</div><div class="model-org">OpenAI</div></td>
           <td class="params hide-small">120B</td>
@@ -367,7 +403,7 @@
           <td class="num">—</td>
           <td class="vram">~240GB</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="DeepReinforce">
           <td class="rank ">21</td>
           <td><div class="model-name">Ornith-1.0-35B</div><div class="model-org">DeepReinforce</div></td>
           <td class="params hide-small">35B/3B act</td>
@@ -378,7 +414,7 @@
           <td class="num">75.6%</td>
           <td class="vram">~70GB</td>
         </tr>
-        <tr data-year="2024" data-arch="MoE">
+        <tr data-year="2024" data-arch="MoE" data-org="DeepSeek">
           <td class="rank ">22</td>
           <td><div class="model-name">DeepSeek V3</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">671B MoE</td>
@@ -389,7 +425,7 @@
           <td class="num">—</td>
           <td class="vram">~700GB</td>
         </tr>
-        <tr data-year="2026" data-arch="MoE">
+        <tr data-year="2026" data-arch="MoE" data-org="Alibaba">
           <td class="rank ">23</td>
           <td><div class="model-name">Qwen3.6-35B-A3B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">35B/3B act</td>
@@ -400,7 +436,7 @@
           <td class="num">73.4%</td>
           <td class="vram">~70GB</td>
         </tr>
-        <tr data-year="2025" data-arch="MoE">
+        <tr data-year="2025" data-arch="MoE" data-org="Moonshot AI">
           <td class="rank ">24</td>
           <td><div class="model-name">Kimi K2</div><div class="model-org">Moonshot AI</div></td>
           <td class="params hide-small">~500B MoE</td>
@@ -411,7 +447,7 @@
           <td class="num">65.5%</td>
           <td class="vram">—</td>
         </tr>
-        <tr data-year="2025" data-arch="MoE">
+        <tr data-year="2025" data-arch="MoE" data-org="Meta">
           <td class="rank ">25</td>
           <td><div class="model-name">Llama 4 Scout</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">17B active</td>
@@ -422,7 +458,7 @@
           <td class="num">—</td>
           <td class="vram">~130GB</td>
         </tr>
-        <tr data-year="2025" data-arch="Dense">
+        <tr data-year="2025" data-arch="Dense" data-org="OpenAI">
           <td class="rank ">26</td>
           <td><div class="model-name">GPT-OSS-20B</div><div class="model-org">OpenAI</div></td>
           <td class="params hide-small">20B</td>
@@ -433,7 +469,7 @@
           <td class="num">—</td>
           <td class="vram">~40GB</td>
         </tr>
-        <tr data-year="2026" data-arch="Dense">
+        <tr data-year="2026" data-arch="Dense" data-org="Google">
           <td class="rank ">27</td>
           <td><div class="model-name">Gemma 4 31B</div><div class="model-org">Google</div></td>
           <td class="params hide-small">31B</td>
@@ -444,7 +480,7 @@
           <td class="num">—</td>
           <td class="vram">~62GB</td>
         </tr>
-        <tr data-year="2025" data-arch="Dense">
+        <tr data-year="2025" data-arch="Dense" data-org="Zhipu AI">
           <td class="rank ">28</td>
           <td><div class="model-name">GLM-4.6</div><div class="model-org">Zhipu AI</div></td>
           <td class="params hide-small">~355B</td>
@@ -455,7 +491,7 @@
           <td class="num">~70%</td>
           <td class="vram">~710GB</td>
         </tr>
-        <tr data-year="2025" data-arch="MoE">
+        <tr data-year="2025" data-arch="MoE" data-org="DeepSeek">
           <td class="rank ">29</td>
           <td><div class="model-name">DeepSeek R1</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">660B MoE</td>
@@ -466,7 +502,7 @@
           <td class="num">—</td>
           <td class="vram">~700GB</td>
         </tr>
-        <tr data-year="2025" data-arch="Dense">
+        <tr data-year="2025" data-arch="Dense" data-org="Microsoft">
           <td class="rank ">30</td>
           <td><div class="model-name">Phi-4-reasoning-plus</div><div class="model-org">Microsoft</div></td>
           <td class="params hide-small">14B</td>
@@ -477,7 +513,7 @@
           <td class="num">—</td>
           <td class="vram">~28GB</td>
         </tr>
-        <tr data-year="2025" data-arch="Dense">
+        <tr data-year="2025" data-arch="Dense" data-org="Alibaba">
           <td class="rank ">31</td>
           <td><div class="model-name">Qwen3-72B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">72B</td>
@@ -488,7 +524,7 @@
           <td class="num">—</td>
           <td class="vram">~144GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Alibaba">
           <td class="rank ">32</td>
           <td><div class="model-name">Qwen2.5-72B-Coder</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">72B</td>
@@ -499,7 +535,7 @@
           <td class="num">—</td>
           <td class="vram">~144GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Alibaba">
           <td class="rank ">33</td>
           <td><div class="model-name">Qwen2.5-Coder-32B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">32B</td>
@@ -510,7 +546,7 @@
           <td class="num">—</td>
           <td class="vram">~64GB</td>
         </tr>
-        <tr data-year="2025" data-arch="Dense">
+        <tr data-year="2025" data-arch="Dense" data-org="Zhipu AI">
           <td class="rank ">34</td>
           <td><div class="model-name">GLM-4.5</div><div class="model-org">Zhipu AI</div></td>
           <td class="params hide-small">~355B</td>
@@ -521,7 +557,7 @@
           <td class="num">67%</td>
           <td class="vram">~710GB</td>
         </tr>
-        <tr data-year="2026" data-arch="Dense">
+        <tr data-year="2026" data-arch="Dense" data-org="DeepReinforce">
           <td class="rank ">35</td>
           <td><div class="model-name">Ornith-1.0-9B</div><div class="model-org">DeepReinforce</div></td>
           <td class="params hide-small">9B</td>
@@ -532,7 +568,7 @@
           <td class="num">69.4%</td>
           <td class="vram">~18GB</td>
         </tr>
-        <tr data-year="2024" data-arch="MoE">
+        <tr data-year="2024" data-arch="MoE" data-org="DeepSeek">
           <td class="rank ">36</td>
           <td><div class="model-name">DeepSeek-Coder-V2</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">236B/21B act</td>
@@ -543,7 +579,7 @@
           <td class="num">—</td>
           <td class="vram">~472GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Meta">
           <td class="rank ">37</td>
           <td><div class="model-name">Llama 3.1 405B</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">405B</td>
@@ -554,7 +590,7 @@
           <td class="num">—</td>
           <td class="vram">~810GB</td>
         </tr>
-        <tr data-year="2024" data-arch="MoE">
+        <tr data-year="2024" data-arch="MoE" data-org="Mistral">
           <td class="rank ">38</td>
           <td><div class="model-name">Mixtral 8x22B</div><div class="model-org">Mistral</div></td>
           <td class="params hide-small">141B/39B act</td>
@@ -565,7 +601,7 @@
           <td class="num">—</td>
           <td class="vram">~280GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Meta">
           <td class="rank ">39</td>
           <td><div class="model-name">Llama 3.3 70B</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">70B</td>
@@ -576,7 +612,7 @@
           <td class="num">—</td>
           <td class="vram">~140GB</td>
         </tr>
-        <tr data-year="2025" data-arch="Dense">
+        <tr data-year="2025" data-arch="Dense" data-org="Alibaba">
           <td class="rank ">40</td>
           <td><div class="model-name">Qwen3-32B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">32B</td>
@@ -587,7 +623,7 @@
           <td class="num">—</td>
           <td class="vram">~64GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Alibaba">
           <td class="rank ">41</td>
           <td><div class="model-name">Qwen2-72B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">72B</td>
@@ -598,7 +634,7 @@
           <td class="num">—</td>
           <td class="vram">~144GB</td>
         </tr>
-        <tr data-year="2023" data-arch="Dense">
+        <tr data-year="2023" data-arch="Dense" data-org="DeepSeek">
           <td class="rank ">42</td>
           <td><div class="model-name">DeepSeek-Coder-33B</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">33B</td>
@@ -609,7 +645,7 @@
           <td class="num">—</td>
           <td class="vram">~66GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Meta">
           <td class="rank ">43</td>
           <td><div class="model-name">Llama 3 70B</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">70B</td>
@@ -620,7 +656,7 @@
           <td class="num">—</td>
           <td class="vram">~140GB</td>
         </tr>
-        <tr data-year="2024" data-arch="MoE">
+        <tr data-year="2024" data-arch="MoE" data-org="DeepSeek">
           <td class="rank ">44</td>
           <td><div class="model-name">DeepSeek V2</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">236B/21B act</td>
@@ -631,7 +667,7 @@
           <td class="num">—</td>
           <td class="vram">~472GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Google">
           <td class="rank ">45</td>
           <td><div class="model-name">Gemma 2 27B</div><div class="model-org">Google</div></td>
           <td class="params hide-small">27B</td>
@@ -642,7 +678,7 @@
           <td class="num">—</td>
           <td class="vram">~54GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="01.AI">
           <td class="rank ">46</td>
           <td><div class="model-name">Yi-Coder 9B</div><div class="model-org">01.AI</div></td>
           <td class="params hide-small">9B</td>
@@ -653,7 +689,7 @@
           <td class="num">—</td>
           <td class="vram">~18GB</td>
         </tr>
-        <tr data-year="2023" data-arch="MoE">
+        <tr data-year="2023" data-arch="MoE" data-org="Mistral">
           <td class="rank ">47</td>
           <td><div class="model-name">Mixtral 8x7B</div><div class="model-org">Mistral</div></td>
           <td class="params hide-small">47B/13B act</td>
@@ -664,7 +700,7 @@
           <td class="num">—</td>
           <td class="vram">~94GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Meta">
           <td class="rank ">48</td>
           <td><div class="model-name">CodeLlama 34B</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">34B</td>
@@ -675,7 +711,7 @@
           <td class="num">—</td>
           <td class="vram">~68GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Google">
           <td class="rank ">49</td>
           <td><div class="model-name">Gemma 2 9B</div><div class="model-org">Google</div></td>
           <td class="params hide-small">9B</td>
@@ -686,7 +722,7 @@
           <td class="num">—</td>
           <td class="vram">~18GB</td>
         </tr>
-        <tr data-year="2023" data-arch="Dense">
+        <tr data-year="2023" data-arch="Dense" data-org="WizardLM">
           <td class="rank ">50</td>
           <td><div class="model-name">WizardCoder 33B V1.1</div><div class="model-org">WizardLM</div></td>
           <td class="params hide-small">33B</td>
@@ -697,7 +733,7 @@
           <td class="num">—</td>
           <td class="vram">~66GB</td>
         </tr>
-        <tr data-year="2023" data-arch="Dense">
+        <tr data-year="2023" data-arch="Dense" data-org="DeepSeek">
           <td class="rank ">51</td>
           <td><div class="model-name">DeepSeek LLM 67B</div><div class="model-org">DeepSeek</div></td>
           <td class="params hide-small">67B</td>
@@ -708,7 +744,7 @@
           <td class="num">—</td>
           <td class="vram">~134GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Meta">
           <td class="rank ">52</td>
           <td><div class="model-name">CodeLlama 13B</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">13B</td>
@@ -719,7 +755,7 @@
           <td class="num">—</td>
           <td class="vram">~26GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="BigCode">
           <td class="rank ">53</td>
           <td><div class="model-name">StarCoder2 15B</div><div class="model-org">BigCode</div></td>
           <td class="params hide-small">15B</td>
@@ -730,7 +766,7 @@
           <td class="num">—</td>
           <td class="vram">~30GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Meta">
           <td class="rank ">54</td>
           <td><div class="model-name">Llama 3 8B</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">8B</td>
@@ -741,7 +777,7 @@
           <td class="num">—</td>
           <td class="vram">~16GB</td>
         </tr>
-        <tr data-year="2023" data-arch="Dense">
+        <tr data-year="2023" data-arch="Dense" data-org="Alibaba">
           <td class="rank ">55</td>
           <td><div class="model-name">Qwen-72B</div><div class="model-org">Alibaba</div></td>
           <td class="params hide-small">72B</td>
@@ -752,7 +788,7 @@
           <td class="num">—</td>
           <td class="vram">~144GB</td>
         </tr>
-        <tr data-year="2024" data-arch="Dense">
+        <tr data-year="2024" data-arch="Dense" data-org="Meta">
           <td class="rank ">56</td>
           <td><div class="model-name">CodeLlama 7B</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">7B</td>
@@ -763,7 +799,7 @@
           <td class="num">—</td>
           <td class="vram">~14GB</td>
         </tr>
-        <tr data-year="2023" data-arch="Dense">
+        <tr data-year="2023" data-arch="Dense" data-org="Meta">
           <td class="rank ">57</td>
           <td><div class="model-name">Llama 2 70B</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">70B</td>
@@ -774,7 +810,7 @@
           <td class="num">—</td>
           <td class="vram">~140GB</td>
         </tr>
-        <tr data-year="2023" data-arch="Dense">
+        <tr data-year="2023" data-arch="Dense" data-org="Mistral">
           <td class="rank ">58</td>
           <td><div class="model-name">Mistral 7B v0.1</div><div class="model-org">Mistral</div></td>
           <td class="params hide-small">7B</td>
@@ -785,7 +821,7 @@
           <td class="num">—</td>
           <td class="vram">~14GB</td>
         </tr>
-        <tr data-year="2023" data-arch="Dense">
+        <tr data-year="2023" data-arch="Dense" data-org="TII">
           <td class="rank ">59</td>
           <td><div class="model-name">Falcon 40B</div><div class="model-org">TII</div></td>
           <td class="params hide-small">40B</td>
@@ -796,7 +832,7 @@
           <td class="num">—</td>
           <td class="vram">~80GB</td>
         </tr>
-        <tr data-year="2023" data-arch="Dense">
+        <tr data-year="2023" data-arch="Dense" data-org="Meta">
           <td class="rank ">60</td>
           <td><div class="model-name">Llama 2 13B</div><div class="model-org">Meta</div></td>
           <td class="params hide-small">13B</td>
@@ -807,7 +843,7 @@
           <td class="num">—</td>
           <td class="vram">~26GB</td>
         </tr>
-        <tr data-year="2023" data-arch="Dense">
+        <tr data-year="2023" data-arch="Dense" data-org="TII">
           <td class="rank ">61</td>
           <td><div class="model-name">Falcon 7B</div><div class="model-org">TII</div></td>
           <td class="params hide-small">7B</td>
@@ -826,9 +862,20 @@
   <p>由 <a href="https://www.normdist.com">进化概率论</a> 维护 · 数据持续更新 · * 标注为替代基准分数</p>
 </div>
 <script>
+function getParamBucket(td){
+  if(!td) return '';
+  const t = td.textContent.trim();
+  const m = t.match(/([\d.]+)\s*B/);
+  if(!m) return '';
+  const n = parseFloat(m[1]);
+  if(n <= 7) return 'small';
+  if(n <= 35) return 'medium';
+  return 'large';
+}
+
+let activeChips = {}; // {category: value}
+
 function filterTable() {
-  const active = document.querySelector('.filter-btn.active');
-  const filter = active ? active.dataset.filter : 'all';
   const search = document.getElementById('search').value.toLowerCase().trim();
   const rows = document.querySelectorAll('#leaderboard tbody tr');
   let visible = 0;
@@ -836,31 +883,87 @@ function filterTable() {
     const rank = parseInt(row.dataset.rank);
     const year = row.dataset.year.substring(0, 4);
     const arch = row.dataset.arch;
+    const org = row.dataset.org || '';
+    const paramBucket = getParamBucket(row.querySelector('.params'));
     let show = true;
-    if (filter === 'top10' && rank > 10) show = false;
-    if (filter === 'moe' && arch !== 'MoE') show = false;
-    if (filter === 'y2026' && year !== '2026') show = false;
-    if (filter === 'y2024' && year !== '2024') show = false;
-    if (filter === 'y2023' && year !== '2023') show = false;
-    if (search) {
+
+    // 快速筛选
+    const q = activeChips.quick;
+    if(q === 'top10' && rank > 10) show = false;
+    if(q === 'moe' && arch !== 'MoE') show = false;
+    if(q === 'dense' && arch !== 'Dense') show = false;
+
+    // 参数筛选
+    const p = activeChips.param;
+    if(p && paramBucket !== p) show = false;
+
+    // 年份筛选
+    const y = activeChips.year;
+    if(y && year !== y.replace('y','')) show = false;
+
+    // 厂商筛选
+    const o = activeChips.org;
+    if(o && org !== o) show = false;
+
+    // 搜索
+    if(search){
       const name = (row.querySelector('.model-name')?.textContent || '').toLowerCase();
-      const org = (row.querySelector('.model-org')?.textContent || '').toLowerCase();
-      if (!name.includes(search) && !org.includes(search)) show = false;
+      const orgName = (row.querySelector('.model-org')?.textContent || '').toLowerCase();
+      if(!name.includes(search) && !orgName.includes(search)) show = false;
     }
     row.style.display = show ? '' : 'none';
-    if (show) visible++;
+    if(show) visible++;
   });
   document.getElementById('model-count').textContent = visible + ' 个模型';
 }
-document.querySelectorAll('.filter-btn').forEach(btn => {
+
+function getChipCategory(f){
+  if(f === 'all' || f === 'top10' || f === 'moe' || f === 'dense') return 'quick';
+  if(['small','medium','large'].includes(f)) return 'param';
+  if(f.startsWith('y')) return 'year';
+  if(f.startsWith('org:')) return 'org';
+  return 'other';
+}
+
+document.querySelectorAll('.chip').forEach(btn => {
   btn.addEventListener('click', function() {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    const si = document.getElementById('search');
-    if (this.dataset.filter !== 'all') si.value = '';
+    const f = this.dataset.filter;
+    const cat = getChipCategory(f);
+
+    if(cat === 'org'){
+      f_val = f.replace('org:','');
+    } else {
+      f_val = f;
+    }
+
+    // 同组内 toggle
+    if(activeChips[cat] === f_val || (cat==='quick' && activeChips[cat] === f)){
+      delete activeChips[cat];
+      this.classList.remove('active');
+      // 如果quick组被清空，恢复"全部"
+      if(cat === 'quick'){
+        const allBtn = document.querySelector('.chip[data-filter="all"]');
+        allBtn.classList.add('active');
+        activeChips.quick = 'all';
+      }
+    } else {
+      // 清除同组其他active
+      document.querySelectorAll('.chip').forEach(b => {
+        if(getChipCategory(b.dataset.filter) === cat) b.classList.remove('active');
+      });
+      this.classList.add('active');
+      if(cat === 'org'){
+        activeChips.org = f_val;
+      } else {
+        activeChips[cat] = f_val;
+      }
+    }
+
     filterTable();
   });
 });
+
+activeChips.quick = 'all';
 document.getElementById('model-count').textContent = document.querySelectorAll('#leaderboard tbody tr').length + ' 个模型';
 </script>
 </body>
