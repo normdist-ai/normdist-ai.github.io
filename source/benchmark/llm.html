@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>开源大模型编程能力天梯图 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0f;color:#e8e8ed;min-height:100vh}
+  .header{border-bottom:1px solid #1a1a2e;padding:0 24px;background:rgba(10,10,15,.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+  .header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:-.3px}
+  .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
+  .logo span{color:#a5b4fc}
+  .header-nav{display:flex;gap:20px;font-size:14px}
+  .header-nav a{color:#71717a;text-decoration:none;transition:color .2s}
+  .header-nav a:hover,.header-nav a.active{color:#a5b4fc}
+  .hero{max-width:1280px;margin:40px auto 32px;padding:0 24px}
+  .hero h1{font-size:36px;font-weight:800;letter-spacing:-1px;margin-bottom:8px;background:linear-gradient(135deg,#e8e8ed 30%,#a5b4fc 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p{color:#71717a;font-size:15px;line-height:1.5;max-width:720px}
+  .hero .meta{margin-top:12px;display:flex;gap:24px;font-size:13px;color:#52525b;flex-wrap:wrap}
+  .hero .meta em{font-style:normal;color:#a1a1aa}
+  .controls{max-width:1280px;margin:0 auto 24px;padding:0 24px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .controls label{font-size:13px;color:#71717a}
+  .filter-btn{padding:6px 16px;border:1px solid #27272a;border-radius:20px;background:transparent;color:#a1a1aa;font-size:13px;cursor:pointer;transition:all .2s}
+  .filter-btn:hover{border-color:#52525b;color:#e8e8ed}
+  .filter-btn.active{background:#6366f1;border-color:#6366f1;color:#fff}
+  .search-box{margin-left:auto;display:flex;align-items:center;gap:8px;background:#18181b;border:1px solid #27272a;border-radius:8px;padding:6px 12px}
+  .search-box input{background:transparent;border:none;outline:none;color:#e8e8ed;font-size:13px;width:180px}
+  .search-box input::placeholder{color:#52525b}
+  .table-wrap{max-width:1280px;margin:0 auto 48px;padding:0 24px;overflow-x:auto}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;min-width:780px}
+  thead th{text-align:left;padding:12px 16px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#71717a;border-bottom:1px solid #27272a;position:sticky;top:64px;background:rgba(10,10,15,.97);backdrop-filter:blur(8px);z-index:50}
+  thead th:first-child{border-radius:8px 0 0 0}
+  thead th:last-child{border-radius:0 8px 0 0}
+  tbody tr{transition:background .15s}
+  tbody tr:hover{background:rgba(99,102,241,.04)}
+  tbody td{padding:10px 16px;border-bottom:1px solid #18181b;vertical-align:middle}
+  .rank{font-weight:700;font-size:13px;color:#52525b;width:32px;text-align:center}
+  .rank-1{color:#fbbf24;font-size:14px}
+  .rank-2{color:#94a3b8;font-size:14px}
+  .rank-3{color:#d97706;font-size:14px}
+  .model-name{font-weight:600}
+  .model-org{font-size:12px;color:#71717a;font-weight:400}
+  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+  .tag-moe{background:rgba(139,92,246,.15);color:#a78bfa}
+  .tag-dense{background:rgba(99,102,241,.15);color:#818cf8}
+  .year{color:#52525b;font-size:12px}
+  .score-bar-wrap{display:flex;align-items:center;gap:10px}
+  .score-bar-bg{flex:1;height:6px;background:#18181b;border-radius:3px;overflow:hidden;min-width:60px}
+  .score-bar{height:100%;border-radius:3px;transition:width .8s ease}
+  .score-value{font-weight:600;font-size:13px;min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
+  .score-na{color:#52525b;font-size:12px}
+  .bar-t1{background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+  .bar-t2{background:linear-gradient(90deg,#6366f1,#818cf8)}
+  .bar-t3{background:linear-gradient(90deg,#4f46e5,#6366f1)}
+  .bar-t4{background:linear-gradient(90deg,#3730a3,#4f46e5)}
+  .bar-t5{background:linear-gradient(90deg,#2563eb,#3b82f6)}
+  .bar-t6{background:linear-gradient(90deg,#1e40af,#2563eb)}
+  .vram{color:#71717a;font-size:12px}
+  .footer{max-width:1280px;margin:0 auto;padding:24px;border-top:1px solid #18181b;font-size:12px;color:#52525b;text-align:center;line-height:1.6}
+  .footer a{color:#6366f1;text-decoration:none}
+  @media(max-width:900px){.hero h1{font-size:26px}.hide-mobile{display:none}.search-box input{width:120px}thead th,tbody td{padding:8px 10px;font-size:13px}}
+  .legend{max-width:1280px;margin:0 auto 20px;padding:0 24px;display:flex;gap:20px;flex-wrap:wrap;font-size:12px;color:#71717a}
+  .legend-item{display:flex;align-items:center;gap:6px}
+  .legend-dot{width:10px;height:10px;border-radius:50%}
+  .highlight{border-left:3px solid #6366f1}
+  @keyframes barGrow{from{width:0!important}}
+  .score-bar{animation:barGrow 1.2s ease-out}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-inner">
+    <div class="logo"><div class="logo-icon">⌨</div><div>LLM <span>Coding</span></div></div>
+    <div class="header-nav"><a href="#" class="active">天梯图</a><a href="https://www.normdist.com">博客</a></div>
+  </div>
+</div>
+<div class="hero">
+  <h1>开源大模型编程能力天梯图</h1>
+  <p>收录 2023–2026 年全部开源/开放大语言模型，按编程能力（LiveCodeBench / HumanEval / SWE-bench Verified）综合排序。</p>
+  <div class="meta">
+    <span>📅 <em>2026年7月13日更新</em></span>
+    <span>📊 <em id="model-count"></em></span>
+    <span>🏷️ <em>来源: HuggingFace / LLM Stats / 官方报告</em></span>
+  </div>
+</div>
+<div class="controls">
+  <label>筛选:</label>
+  <button class="filter-btn active" data-filter="all">全部</button>
+  <button class="filter-btn" data-filter="top10">Top 10</button>
+  <button class="filter-btn" data-filter="moe">MoE 架构</button>
+  <button class="filter-btn" data-filter="y2026">2026年</button>
+  <button class="filter-btn" data-filter="y2024">2024年经典</button>
+  <button class="filter-btn" data-filter="y2023">2023年起点</button>
+  <div class="search-box">
+    <span>🔍</span>
+    <input type="text" id="search" placeholder="搜索模型..." oninput="filterTable()">
+  </div>
+</div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#6366f1"></div> LiveCodeBench（权威代码生成评测）</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div> HumanEval（经典基准）</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#818cf8"></div> SWE-bench Verified（真实工程修复）</div>
+</div>
+<div class="table-wrap">
+  <table id="leaderboard">
+    <thead>
+      <tr>
+        <th style="width:40px">#</th>
+        <th>模型</th>
+        <th style="width:80px">参数</th>
+        <th style="width:60px">架构</th>
+        <th style="width:70px">发布</th>
+        <th style="min-width:130px">编程能力</th>
+        <th class="hide-mobile" style="width:100px">HumanEval</th>
+        <th class="hide-mobile" style="width:110px">SWE-bench</th>
+        <th class="hide-mobile" style="width:90px">VRAM</th>
+      </tr>
+    </thead>
+    <tbody>
+<tr class="highlight" data-rank="1" data-year="2026" data-arch="MoE"><td><span class="rank rank-1">1</span></td><td><div class="model-name">DeepSeek V4 Pro Max</div><div class="model-org">DeepSeek</div></td><td style="font-size:12px;color:#a1a1aa">~660B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:93.5%"></div></div><span class="score-value" style="color:#a5b4fc">93.5</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">~72%</td><td class="hide-mobile"><span class="vram">—</span></td></tr>
+<tr class="highlight" data-rank="2" data-year="2026" data-arch="MoE"><td><span class="rank rank-2">2</span></td><td><div class="model-name">DeepSeek V4 Flash Max</div><div class="model-org">DeepSeek</div></td><td style="font-size:12px;color:#a1a1aa">~660B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-05</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:91.6%"></div></div><span class="score-value" style="color:#a5b4fc">91.6</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">—</span></td></tr>
+<tr data-rank="3" data-year="2026" data-arch="MoE"><td><span class="rank rank-3">3</span></td><td><div class="model-name">Kimi K2.7-Code</div><div class="model-org">Moonshot AI</div></td><td style="font-size:12px;color:#a1a1aa">~500B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:86.0%"></div></div><span class="score-value" style="color:#a5b4fc">86.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">—</span></td></tr>
+<tr data-rank="4" data-year="2026" data-arch="MoE"><td><span class="rank ">4</span></td><td><div class="model-name">Kimi K2-0905</div><div class="model-org">Moonshot AI</div></td><td style="font-size:12px;color:#a1a1aa">~500B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-05</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:85.0%"></div></div><span class="score-value" style="color:#a5b4fc">85.0</span></div></td><td class="hide-mobile">94.5%</td><td class="hide-mobile">71.6%</td><td class="hide-mobile"><span class="vram">—</span></td></tr>
+<tr data-rank="5" data-year="2026" data-arch="MoE"><td><span class="rank ">5</span></td><td><div class="model-name">Qwen3.5-397B-A17B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">397B/17B act</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:85.0%"></div></div><span class="score-value" style="color:#a5b4fc">85.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~800GB</span></td></tr>
+<tr data-rank="6" data-year="2026" data-arch="MoE"><td><span class="rank ">6</span></td><td><div class="model-name">DeepSeek V3.2</div><div class="model-org">DeepSeek</div></td><td style="font-size:12px;color:#a1a1aa">671B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-03</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:83.3%"></div></div><span class="score-value" style="color:#a5b4fc">83.3</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">~70%</td><td class="hide-mobile"><span class="vram">~700GB</span></td></tr>
+<tr data-rank="7" data-year="2026" data-arch="MoE"><td><span class="rank ">7</span></td><td><div class="model-name">MiniMax M2</div><div class="model-org">MiniMax</div></td><td style="font-size:12px;color:#a1a1aa">230B/10B act</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-05</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:83.0%"></div></div><span class="score-value" style="color:#a5b4fc">83.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">69.4%</td><td class="hide-mobile"><span class="vram">~460GB</span></td></tr>
+<tr class="highlight" data-rank="8" data-year="2026" data-arch="MoE"><td><span class="rank ">8</span></td><td><div class="model-name">Qwen3-Coder-480B-A35B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">480B/35B act</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:82.0%"></div></div><span class="score-value" style="color:#a5b4fc">82.0</span></div></td><td class="hide-mobile">~92%</td><td class="hide-mobile">69.6%</td><td class="hide-mobile"><span class="vram">~960GB</span></td></tr>
+<tr data-rank="9" data-year="2026" data-arch="MoE"><td><span class="rank ">9</span></td><td><div class="model-name">Llama 4 Maverick</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">17B active</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:82.0%"></div></div><span class="score-value" style="color:#a5b4fc">82.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~130GB</span></td></tr>
+<tr data-rank="10" data-year="2025" data-arch="MoE"><td><span class="rank ">10</span></td><td><div class="model-name">Qwen3-235B-A22B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">235B/22B act</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2025-12</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:82.0%"></div></div><span class="score-value" style="color:#a5b4fc">82.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~470GB</span></td></tr>
+<tr data-rank="11" data-year="2026" data-arch="MoE"><td><span class="rank ">11</span></td><td><div class="model-name">Qwen3.5-122B-A10B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">122B/10B act</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-05</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:80.0%"></div></div><span class="score-value" style="color:#a5b4fc">80.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~244GB</span></td></tr>
+<tr data-rank="12" data-year="2025" data-arch="MoE"><td><span class="rank ">12</span></td><td><div class="model-name">DeepSeek R1-0528</div><div class="model-org">DeepSeek</div></td><td style="font-size:12px;color:#a1a1aa">660B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2025-12</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t1" style="width:80.0%"></div></div><span class="score-value" style="color:#a5b4fc">80.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">~70%</td><td class="hide-mobile"><span class="vram">~700GB</span></td></tr>
+<tr class="highlight" data-rank="13" data-year="2025" data-arch="Dense"><td><span class="rank ">13</span></td><td><div class="model-name">Qwen3-Coder-Next</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">~30B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2025-11</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:78.0%"></div></div><span class="score-value" style="color:#a5b4fc">78.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~60GB</span></td></tr>
+<tr data-rank="14" data-year="2025" data-arch="MoE"><td><span class="rank ">14</span></td><td><div class="model-name">DeepSeek V3.1</div><div class="model-org">DeepSeek</div></td><td style="font-size:12px;color:#a1a1aa">671B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2025-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:78.0%"></div></div><span class="score-value" style="color:#a5b4fc">78.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~700GB</span></td></tr>
+<tr data-rank="15" data-year="2025" data-arch="Dense"><td><span class="rank ">15</span></td><td><div class="model-name">GPT-OSS-120B</div><div class="model-org">OpenAI</div></td><td style="font-size:12px;color:#a1a1aa">120B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2025-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:76.5%"></div></div><span class="score-value" style="color:#a5b4fc">76.5</span></div></td><td class="hide-mobile">~90%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~240GB</span></td></tr>
+<tr data-rank="16" data-year="2024" data-arch="MoE"><td><span class="rank ">16</span></td><td><div class="model-name">DeepSeek V3</div><div class="model-org">DeepSeek</div></td><td style="font-size:12px;color:#a1a1aa">671B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2024-12</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:75.9%"></div></div><span class="score-value" style="color:#a5b4fc">75.9</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~700GB</span></td></tr>
+<tr data-rank="17" data-year="2025" data-arch="MoE"><td><span class="rank ">17</span></td><td><div class="model-name">Kimi K2</div><div class="model-org">Moonshot AI</div></td><td style="font-size:12px;color:#a1a1aa">~500B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2025-07</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:75.0%"></div></div><span class="score-value" style="color:#a5b4fc">75.0</span></div></td><td class="hide-mobile">93.3%</td><td class="hide-mobile">65.5%</td><td class="hide-mobile"><span class="vram">—</span></td></tr>
+<tr data-rank="18" data-year="2026" data-arch="MoE"><td><span class="rank ">18</span></td><td><div class="model-name">Llama 4 Scout</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">17B active</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2026-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:75.0%"></div></div><span class="score-value" style="color:#a5b4fc">75.0</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~130GB</span></td></tr>
+<tr data-rank="19" data-year="2025" data-arch="Dense"><td><span class="rank ">19</span></td><td><div class="model-name">GPT-OSS-20B</div><div class="model-org">OpenAI</div></td><td style="font-size:12px;color:#a1a1aa">20B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2025-03</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:74.8%"></div></div><span class="score-value" style="color:#a5b4fc">74.8</span></div></td><td class="hide-mobile">~88%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~40GB</span></td></tr>
+<tr data-rank="20" data-year="2026" data-arch="Dense"><td><span class="rank ">20</span></td><td><div class="model-name">Gemma 4 31B</div><div class="model-org">Google</div></td><td style="font-size:12px;color:#a1a1aa">31B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2026-03</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:74.8%"></div></div><span class="score-value" style="color:#a5b4fc">74.8</span></div></td><td class="hide-mobile">~88%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~62GB</span></td></tr>
+<tr data-rank="21" data-year="2025" data-arch="MoE"><td><span class="rank ">21</span></td><td><div class="model-name">Qwen3.6-35B-A3B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">35B/3B act</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2025-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:74.8%"></div></div><span class="score-value" style="color:#a5b4fc">74.8</span></div></td><td class="hide-mobile">~88%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~70GB</span></td></tr>
+<tr data-rank="22" data-year="2025" data-arch="MoE"><td><span class="rank ">22</span></td><td><div class="model-name">DeepSeek R1</div><div class="model-org">DeepSeek</div></td><td style="font-size:12px;color:#a1a1aa">660B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2025-01</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:72.6%"></div></div><span class="score-value" style="color:#a5b4fc">72.6</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~700GB</span></td></tr>
+<tr data-rank="23" data-year="2025" data-arch="Dense"><td><span class="rank ">23</span></td><td><div class="model-name">Phi-4-reasoning-plus</div><div class="model-org">Microsoft</div></td><td style="font-size:12px;color:#a1a1aa">14B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2025-10</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:72.25%"></div></div><span class="score-value" style="color:#a5b4fc">72.2</span></div></td><td class="hide-mobile">~85%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~28GB</span></td></tr>
+<tr data-rank="24" data-year="2025" data-arch="Dense"><td><span class="rank ">24</span></td><td><div class="model-name">Qwen3-72B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">72B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2025-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:72.25%"></div></div><span class="score-value" style="color:#a5b4fc">72.2</span></div></td><td class="hide-mobile">~85%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~144GB</span></td></tr>
+<tr class="highlight" data-rank="25" data-year="2024" data-arch="Dense"><td><span class="rank ">25</span></td><td><div class="model-name">Qwen2.5-72B-Coder</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">72B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-09</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:72.25%"></div></div><span class="score-value" style="color:#a5b4fc">72.2</span></div></td><td class="hide-mobile">~85%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~144GB</span></td></tr>
+<tr data-rank="26" data-year="2024" data-arch="Dense"><td><span class="rank ">26</span></td><td><div class="model-name">Llama 3.1 405B</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">405B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-07</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t2" style="width:70.80499999999999%"></div></div><span class="score-value" style="color:#a5b4fc">70.8</span></div></td><td class="hide-mobile">83.3%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~810GB</span></td></tr>
+<tr data-rank="27" data-year="2025" data-arch="Dense"><td><span class="rank ">27</span></td><td><div class="model-name">Qwen3-32B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">32B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2025-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t3" style="width:69.7%"></div></div><span class="score-value" style="color:#a1a1aa">69.7</span></div></td><td class="hide-mobile">~82%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~64GB</span></td></tr>
+<tr data-rank="28" data-year="2024" data-arch="Dense"><td><span class="rank ">28</span></td><td><div class="model-name">Llama 3.3 70B</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">70B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-12</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t3" style="width:69.27499999999999%"></div></div><span class="score-value" style="color:#a1a1aa">69.3</span></div></td><td class="hide-mobile">81.5%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~140GB</span></td></tr>
+<tr class="highlight" data-rank="29" data-year="2024" data-arch="Dense"><td><span class="rank ">29</span></td><td><div class="model-name">WizardCoder 33B V1.1</div><div class="model-org">Microsoft</div></td><td style="font-size:12px;color:#a1a1aa">33B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-01</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t3" style="width:67.915%"></div></div><span class="score-value" style="color:#a1a1aa">67.9</span></div></td><td class="hide-mobile">79.9%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~66GB</span></td></tr>
+<tr class="highlight" data-rank="30" data-year="2024" data-arch="Dense"><td><span class="rank ">30</span></td><td><div class="model-name">StarCoder2 15B</div><div class="model-org">BigCode</div></td><td style="font-size:12px;color:#a1a1aa">15B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-03</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t3" style="width:65.79%"></div></div><span class="score-value" style="color:#a1a1aa">65.8</span></div></td><td class="hide-mobile">77.4%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~30GB</span></td></tr>
+<tr data-rank="31" data-year="2024" data-arch="MoE"><td><span class="rank ">31</span></td><td><div class="model-name">DeepSeek V2</div><div class="model-org">DeepSeek</div></td><td style="font-size:12px;color:#a1a1aa">236B MoE</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2024-05</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t3" style="width:63.75%"></div></div><span class="score-value" style="color:#a1a1aa">63.8</span></div></td><td class="hide-mobile">~75%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~240GB</span></td></tr>
+<tr data-rank="32" data-year="2024" data-arch="Dense"><td><span class="rank ">32</span></td><td><div class="model-name">Llama 3 70B</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">70B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t3" style="width:61.199999999999996%"></div></div><span class="score-value" style="color:#a1a1aa">61.2</span></div></td><td class="hide-mobile">~72%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~140GB</span></td></tr>
+<tr data-rank="33" data-year="2024" data-arch="Dense"><td><span class="rank ">33</span></td><td><div class="model-name">Qwen2.5-72B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">72B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-09</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t3" style="width:61.199999999999996%"></div></div><span class="score-value" style="color:#a1a1aa">61.2</span></div></td><td class="hide-mobile">~72%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~144GB</span></td></tr>
+<tr data-rank="34" data-year="2024" data-arch="MoE"><td><span class="rank ">34</span></td><td><div class="model-name">Mixtral 8x22B</div><div class="model-org">Mistral</div></td><td style="font-size:12px;color:#a1a1aa">141B/39B act</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2024-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t4" style="width:59.5%"></div></div><span class="score-value" style="color:#a1a1aa">59.5</span></div></td><td class="hide-mobile">~70%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~280GB</span></td></tr>
+<tr data-rank="35" data-year="2024" data-arch="Dense"><td><span class="rank ">35</span></td><td><div class="model-name">Mistral Nemo</div><div class="model-org">Mistral</div></td><td style="font-size:12px;color:#a1a1aa">12B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-07</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t4" style="width:57.8%"></div></div><span class="score-value" style="color:#a1a1aa">57.8</span></div></td><td class="hide-mobile">~68%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~24GB</span></td></tr>
+<tr data-rank="36" data-year="2024" data-arch="Dense"><td><span class="rank ">36</span></td><td><div class="model-name">Qwen2-72B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">72B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t4" style="width:56.1%"></div></div><span class="score-value" style="color:#a1a1aa">56.1</span></div></td><td class="hide-mobile">~66%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~144GB</span></td></tr>
+<tr data-rank="37" data-year="2024" data-arch="Dense"><td><span class="rank ">37</span></td><td><div class="model-name">Llama 3 8B</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">8B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t4" style="width:52.699999999999996%"></div></div><span class="score-value" style="color:#a1a1aa">52.7</span></div></td><td class="hide-mobile">~62%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~16GB</span></td></tr>
+<tr data-rank="38" data-year="2026" data-arch="Dense"><td><span class="rank ">38</span></td><td><div class="model-name">GLM-5.2</div><div class="model-org">Zhipu AI</div></td><td style="font-size:12px;color:#a1a1aa">~100B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2026-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t5" style="width:49.68000000000001%"></div></div><span class="score-value" style="color:#a1a1aa">49.7</span></div></td><td class="hide-mobile">—</td><td class="hide-mobile">62.1%*</td><td class="hide-mobile"><span class="vram">~200GB</span></td></tr>
+<tr data-rank="39" data-year="2023" data-arch="MoE"><td><span class="rank ">39</span></td><td><div class="model-name">Mixtral 8x7B</div><div class="model-org">Mistral</div></td><td style="font-size:12px;color:#a1a1aa">47B/13B act</td><td><span class="tag tag-moe">MoE</span></td><td><span class="year">2023-12</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t5" style="width:49.3%"></div></div><span class="score-value" style="color:#a1a1aa">49.3</span></div></td><td class="hide-mobile">~58%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~94GB</span></td></tr>
+<tr data-rank="40" data-year="2023" data-arch="Dense"><td><span class="rank ">40</span></td><td><div class="model-name">Qwen-72B</div><div class="model-org">Alibaba</div></td><td style="font-size:12px;color:#a1a1aa">72B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-12</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t5" style="width:49.3%"></div></div><span class="score-value" style="color:#a1a1aa">49.3</span></div></td><td class="hide-mobile">~58%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~144GB</span></td></tr>
+<tr class="highlight" data-rank="41" data-year="2023" data-arch="Dense"><td><span class="rank ">41</span></td><td><div class="model-name">WizardCoder 15B</div><div class="model-org">Microsoft</div></td><td style="font-size:12px;color:#a1a1aa">15B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t5" style="width:48.705%"></div></div><span class="score-value" style="color:#a1a1aa">48.7</span></div></td><td class="hide-mobile">57.3%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~30GB</span></td></tr>
+<tr data-rank="42" data-year="2024" data-arch="Dense"><td><span class="rank ">42</span></td><td><div class="model-name">Phi-3 14B Medium</div><div class="model-org">Microsoft</div></td><td style="font-size:12px;color:#a1a1aa">14B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t5" style="width:47.175%"></div></div><span class="score-value" style="color:#a1a1aa">47.2</span></div></td><td class="hide-mobile">55.5%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~28GB</span></td></tr>
+<tr data-rank="43" data-year="2024" data-arch="Dense"><td><span class="rank ">43</span></td><td><div class="model-name">Gemma 2 27B</div><div class="model-org">Google</div></td><td style="font-size:12px;color:#a1a1aa">27B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t5" style="width:44.199999999999996%"></div></div><span class="score-value" style="color:#a1a1aa">44.2</span></div></td><td class="hide-mobile">~52%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~54GB</span></td></tr>
+<tr data-rank="44" data-year="2023" data-arch="Dense"><td><span class="rank ">44</span></td><td><div class="model-name">DeepSeek LLM 67B</div><div class="model-org">DeepSeek</div></td><td style="font-size:12px;color:#a1a1aa">67B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-11</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t5" style="width:42.5%"></div></div><span class="score-value" style="color:#a1a1aa">42.5</span></div></td><td class="hide-mobile">~50%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~134GB</span></td></tr>
+<tr data-rank="45" data-year="2023" data-arch="Dense"><td><span class="rank ">45</span></td><td><div class="model-name">CodeLlama 34B</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">34B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-08</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t5" style="width:41.48%"></div></div><span class="score-value" style="color:#a1a1aa">41.5</span></div></td><td class="hide-mobile">48.8%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~68GB</span></td></tr>
+<tr data-rank="46" data-year="2024" data-arch="Dense"><td><span class="rank ">46</span></td><td><div class="model-name">Gemma 2 9B</div><div class="model-org">Google</div></td><td style="font-size:12px;color:#a1a1aa">9B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-06</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t6" style="width:34.0%"></div></div><span class="score-value" style="color:#a1a1aa">34.0</span></div></td><td class="hide-mobile">~40%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~18GB</span></td></tr>
+<tr data-rank="47" data-year="2024" data-arch="Dense"><td><span class="rank ">47</span></td><td><div class="model-name">Phi-3 3.8B Mini</div><div class="model-org">Microsoft</div></td><td style="font-size:12px;color:#a1a1aa">3.8B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2024-04</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t6" style="width:32.3%"></div></div><span class="score-value" style="color:#a1a1aa">32.3</span></div></td><td class="hide-mobile">~38%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~8GB</span></td></tr>
+<tr data-rank="48" data-year="2023" data-arch="Dense"><td><span class="rank ">48</span></td><td><div class="model-name">CodeLlama 13B</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">13B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-08</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t6" style="width:30.599999999999998%"></div></div><span class="score-value" style="color:#a1a1aa">30.6</span></div></td><td class="hide-mobile">~36%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~26GB</span></td></tr>
+<tr data-rank="49" data-year="2023" data-arch="Dense"><td><span class="rank ">49</span></td><td><div class="model-name">CodeLlama 7B</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">7B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-08</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t6" style="width:28.05%"></div></div><span class="score-value" style="color:#a1a1aa">28.1</span></div></td><td class="hide-mobile">~33%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~14GB</span></td></tr>
+<tr data-rank="50" data-year="2023" data-arch="Dense"><td><span class="rank ">50</span></td><td><div class="model-name">Llama 2 70B</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">70B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-07</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t6" style="width:25.5%"></div></div><span class="score-value" style="color:#a1a1aa">25.5</span></div></td><td class="hide-mobile">~30%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~140GB</span></td></tr>
+<tr data-rank="51" data-year="2023" data-arch="Dense"><td><span class="rank ">51</span></td><td><div class="model-name">Mistral 7B v0.1</div><div class="model-org">Mistral</div></td><td style="font-size:12px;color:#a1a1aa">7B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-09</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t6" style="width:25.5%"></div></div><span class="score-value" style="color:#a1a1aa">25.5</span></div></td><td class="hide-mobile">~30%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~14GB</span></td></tr>
+<tr data-rank="52" data-year="2023" data-arch="Dense"><td><span class="rank ">52</span></td><td><div class="model-name">Falcon 40B</div><div class="model-org">TII</div></td><td style="font-size:12px;color:#a1a1aa">40B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-05</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t6" style="width:23.8%"></div></div><span class="score-value" style="color:#a1a1aa">23.8</span></div></td><td class="hide-mobile">~28%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~80GB</span></td></tr>
+<tr data-rank="53" data-year="2023" data-arch="Dense"><td><span class="rank ">53</span></td><td><div class="model-name">Llama 2 13B</div><div class="model-org">Meta</div></td><td style="font-size:12px;color:#a1a1aa">13B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-07</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t6" style="width:22.099999999999998%"></div></div><span class="score-value" style="color:#a1a1aa">22.1</span></div></td><td class="hide-mobile">~26%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~26GB</span></td></tr>
+<tr data-rank="54" data-year="2023" data-arch="Dense"><td><span class="rank ">54</span></td><td><div class="model-name">Falcon 7B</div><div class="model-org">TII</div></td><td style="font-size:12px;color:#a1a1aa">7B</td><td><span class="tag tag-dense">Dense</span></td><td><span class="year">2023-05</span></td><td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar bar-t6" style="width:20.4%"></div></div><span class="score-value" style="color:#a1a1aa">20.4</span></div></td><td class="hide-mobile">~24%</td><td class="hide-mobile">—</td><td class="hide-mobile"><span class="vram">~14GB</span></td></tr>
+
+    </tbody>
+  </table>
+</div>
+<div class="footer">
+  <p>数据来源: HuggingFace API · LiveCodeBench · HumanEval · SWE-bench Verified · 各模型官方技术报告</p>
+  <p>由 <a href="https://www.normdist.com">进化概率论</a> 维护 · 数据持续更新 · * 标注为替代基准分数</p>
+</div>
+<script>
+function filterTable() {
+  const active = document.querySelector('.filter-btn.active');
+  const filter = active ? active.dataset.filter : 'all';
+  const search = document.getElementById('search').value.toLowerCase().trim();
+  const rows = document.querySelectorAll('#leaderboard tbody tr');
+  let visible = 0;
+  rows.forEach(row => {
+    const rank = parseInt(row.dataset.rank);
+    const year = row.dataset.year;
+    const arch = row.dataset.arch;
+    let show = true;
+    if (filter === 'top10' && rank > 10) show = false;
+    if (filter === 'moe' && arch !== 'MoE') show = false;
+    if (filter === 'y2026' && year !== '2026') show = false;
+    if (filter === 'y2024' && year !== '2024') show = false;
+    if (filter === 'y2023' && year !== '2023') show = false;
+    if (search) {
+      const name = (row.querySelector('.model-name')?.textContent || '').toLowerCase();
+      const org = (row.querySelector('.model-org')?.textContent || '').toLowerCase();
+      if (!name.includes(search) && !org.includes(search)) show = false;
+    }
+    row.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('model-count').textContent = visible + ' 个模型';
+}
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const si = document.getElementById('search');
+    if (this.dataset.filter !== 'all') si.value = '';
+    filterTable();
+  });
+});
+document.getElementById('model-count').textContent = document.querySelectorAll('#leaderboard tbody tr').length + ' 个模型';
+</script>
+</body>
+</html>
