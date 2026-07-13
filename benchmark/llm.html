@@ -70,9 +70,17 @@
 70|  .legend-dot{width:10px;height:10px;border-radius:50%}
 71|  .highlight{border-left:3px solid #6366f1}
 72|  @keyframes barGrow{from{width:0!important}}
-73|  .score-bar{animation:barGrow 1.2s ease-out}
-74|</style>
-75|</head>
+.score-bar{animation:barGrow 1.2s ease-out}
+/* 新结构兼容 */
+td .score-bar{display:flex;align-items:center;gap:10px;height:auto;animation:none}
+td .score-bar .bar{height:6px;border-radius:3px;transition:width .8s ease;min-width:0}
+td .score-bar .score-val{font-weight:600;font-size:13px;min-width:36px;text-align:right;font-variant-numeric:tabular-nums;color:#e4e4e7}
+.bar-90{background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+.bar-80{background:linear-gradient(90deg,#6366f1,#818cf8)}
+.bar-70{background:linear-gradient(90deg,#2563eb,#3b82f6)}
+.bar-low{background:linear-gradient(90deg,#1e40af,#2563eb)}
+</style>
+</head>
 76|<body>
 77|<div class="header">
 78|  <div class="header-inner">
