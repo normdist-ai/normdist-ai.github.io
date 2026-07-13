@@ -19,28 +19,29 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="昨天深夜，我把 169 行 HTML 文件喂给 write_file 工具，以为会看到干净的代码。结果打开一看——每行前面都多了个 142| 的前缀，像给每行贴了个条形码。一行还行，169 行全被污染。 这就是做开源大模型天梯图最真实的日常：你以为在写代码，其实是在和数据打架。 起因很简单：想找一个能直观对比开源大模型编程能力的排行榜。不是那种只列了十几个主流模型的简表，而是把 2023 年到现在">
+    <meta name="description" content="凌晨三点，OpenCode 在跑一个大型重构任务时突然崩溃了。不是代码逻辑有 bug，而是它把 128k 上下文窗口里的每一个 token 都吃光了，最后一条消息被截断在关键的 JSON 尾部。我盯着满屏红色报错，意识到一个问题：如果 AI 编程工具不能像人类一样”忘记”不需要的信息，它永远只能在玩具项目里打转。 这已经是本周第三次夜间任务翻车。白天交互式使用一点问题都没有，一旦切换到夜间批量模式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="开源大模型天梯图开发全记录">
-<meta property="og:url" content="https://normdist.com/2026/07/14/ND-20260713-003-llm-leaderboard-dev/index.html">
+<meta property="og:title" content="OpenCode 夜间代码改进：96 消息&#x2F;54 工具的深度优化实践">
+<meta property="og:url" content="https://normdist.com/2026/07/14/ND-20260714-001-draft/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="昨天深夜，我把 169 行 HTML 文件喂给 write_file 工具，以为会看到干净的代码。结果打开一看——每行前面都多了个 142| 的前缀，像给每行贴了个条形码。一行还行，169 行全被污染。 这就是做开源大模型天梯图最真实的日常：你以为在写代码，其实是在和数据打架。 起因很简单：想找一个能直观对比开源大模型编程能力的排行榜。不是那种只列了十几个主流模型的简表，而是把 2023 年到现在">
+<meta property="og:description" content="凌晨三点，OpenCode 在跑一个大型重构任务时突然崩溃了。不是代码逻辑有 bug，而是它把 128k 上下文窗口里的每一个 token 都吃光了，最后一条消息被截断在关键的 JSON 尾部。我盯着满屏红色报错，意识到一个问题：如果 AI 编程工具不能像人类一样”忘记”不需要的信息，它永远只能在玩具项目里打转。 这已经是本周第三次夜间任务翻车。白天交互式使用一点问题都没有，一旦切换到夜间批量模式">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-07-13T22:56:42.000Z">
-<meta property="article:modified_time" content="2026-07-13T14:56:42.328Z">
+<meta property="article:published_time" content="2026-07-14T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-13T19:54:12.953Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="HTML">
-<meta property="article:tag" content="Hexo">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="前端开发">
-<meta property="article:tag" content="数据可视化">
+<meta property="article:tag" content="AI编程">
+<meta property="article:tag" content="OpenCode">
+<meta property="article:tag" content="Qwen3.5">
+<meta property="article:tag" content="llama.cpp">
+<meta property="article:tag" content="上下文优化">
+<meta property="article:tag" content="夜间任务">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>开源大模型天梯图开发全记录 - 进化概率论</title>
+  <title>OpenCode 夜间代码改进：96 消息/54 工具的深度优化实践 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -361,7 +362,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">开源大模型天梯图开发全记录</span>
+            <span id="subtitle">OpenCode 夜间代码改进：96 消息/54 工具的深度优化实践</span>
           
         </div>
 
@@ -372,8 +373,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-07-14 06:56" pubdate>
-          2026年7月14日 早上
+        <time datetime="2026-07-14 10:00" pubdate>
+          2026年7月14日 上午
         </time>
       </span>
     
@@ -384,7 +385,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.1k 字
+          5.5k 字
         
       </span>
     
@@ -395,7 +396,7 @@
         
         
         
-          34 分钟
+          47 分钟
         
       </span>
     
@@ -443,12 +444,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">开源大模型天梯图开发全记录</h1>
+            <h1 id="seo-header">OpenCode 夜间代码改进：96 消息/54 工具的深度优化实践</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 晚上
+                    本文最后更新于 2026年7月14日 凌晨
                   
                 
               </p>
@@ -456,76 +457,127 @@
             
               <div class="markdown-body">
                 
-                <p>昨天深夜，我把 169 行 HTML 文件喂给 write_file 工具，以为会看到干净的代码。结果打开一看——每行前面都多了个 <code>142|</code> 的前缀，像给每行贴了个条形码。一行还行，169 行全被污染。</p>
-<p>这就是做开源大模型天梯图最真实的日常：你以为在写代码，其实是在和数据打架。</p>
-<p>起因很简单：想找一个能直观对比开源大模型编程能力的排行榜。不是那种只列了十几个主流模型的简表，而是把 2023 年到现在所有能打的都收进来。翻了一圈，要么只更新到 2024 年初，要么只有总分没有 HumanEval 和 SWE-bench 的细分数据，要么表格在大屏上还缩在 1200px 宽度里，两边留白够放两个广告位。</p>
-<p>于是就有了这个天梯图：<a href="https://normdist.com/benchmark/llm.html">https://normdist.com/benchmark/llm.html</a>。61 个开源&#x2F;开放模型，按 LiveCodeBench 编程能力排名，附带 HumanEval 和 SWE-bench Verified 参考分，支持按厂商、参数规模、架构、年份多层筛选，移动端做了三档响应式适配。这篇文章记录从零到部署踩过的坑，以及那些踩完才想明白的技术决策。</p>
-<h2 id="数据采集：两个-API-源头拼出完整画像"><a href="#数据采集：两个-API-源头拼出完整画像" class="headerlink" title="数据采集：两个 API 源头拼出完整画像"></a>数据采集：两个 API 源头拼出完整画像</h2><p>起初只想做个排行榜，但现有方案数据量太少。我把目标锁定在 2023-2026 年全部开源模型的编程能力对比，数据采集走了两条路：</p>
+                <p>凌晨三点，OpenCode 在跑一个大型重构任务时突然崩溃了。不是代码逻辑有 bug，而是它把 128k 上下文窗口里的每一个 token 都吃光了，最后一条消息被截断在关键的 JSON 尾部。我盯着满屏红色报错，意识到一个问题：如果 AI 编程工具不能像人类一样”忘记”不需要的信息，它永远只能在玩具项目里打转。</p>
+<p>这已经是本周第三次夜间任务翻车。白天交互式使用一点问题都没有，一旦切换到夜间批量模式——把几十个文件的修改、测试、重构一股脑塞进去，对话历史就会膨胀成一只吞噬上下文窗口的巨兽。折腾了几个通宵，我终于把整条链路调通了：<strong>96 条消息、54 次工具调用，稳稳跑完不报错，Qwen3.5 在两张魔改 RTX 2080 Ti 上跑出 104 t&#x2F;s 的稳定速度</strong>。这篇文章会把踩过的坑、调优的配置和背后的原理都写出来，省得你再走一遍。</p>
+<h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><p>先亮家底，方便你对照自己的硬件。</p>
 <ul>
-<li><strong>HuggingFace API</strong>：批量查询 <code>createdAt</code> 精确日期和 model card 里的 benchmark 评分。这步对按年份筛选至关重要——同是 Qwen 系列，Qwen2.5-Coder 和 Qwen3-Coder 的发布时间差了半年，编程能力分差出 15 分。</li>
-<li><strong>LLM Stats</strong>：补充 HumanEval 和 SWE-bench Verified 参考分数。</li>
+<li>服务器：ModelBase（自建 GPU 服务器）</li>
+<li>显卡：2 × RTX 2080 Ti 魔改版，单卡 22 GB 显存，双卡合计 44 GB（Turing 架构，compute capability 7.5，无原生 FP8&#x2F;BF16，无 NVLink）</li>
+<li>推理引擎：llama.cpp，models-preset 多模型模式</li>
+<li>代理层：new-api（中转 API 网关）</li>
+<li>模型：Qwen3.5-35B-A3B-Ornith，Q4_K_M 量化，实测生成速度 104 t&#x2F;s</li>
+<li>OpenCode 版本：夜间构建版（v1.3.0+），支持 GitLab 集成和 Node.js 工具链</li>
 </ul>
-<p>从 54 个模型迭代到 61 个，每加一个都要验证数据来源是否可靠。HuggingFace 的 <code>/models/{model_id}</code> 端点在短时间高频请求下会返回 429，加 1 秒延迟后稳定跑通。61 个模型分两批拉完，每批间隔 30 秒，总共不到 10 分钟。LLM Stats 这边有些模型没有收录，比如 Ornith 全系列和 GLM 全系列，这些需要手动从模型卡 README 里提取 benchmark 结果。最终 61 个模型覆盖了 DeepSeek、Alibaba、Meta、Google、Mistral、Anthropic 等 15 个厂商，时间跨度从 2023 年 2 月 LLaMA 发布到 2026 年 7 月最新的 Qwen3.5-Ornith。</p>
-<h2 id="独立-HTML-的三个“叛逆”设计"><a href="#独立-HTML-的三个“叛逆”设计" class="headerlink" title="独立 HTML 的三个“叛逆”设计"></a>独立 HTML 的三个“叛逆”设计</h2><p>项目方有句话让我记到现在：“别依赖 CDN。”于是这个页面成了 Hexo 博客里的异类——所有 CSS、JS 全部内联，不引用任何外部资源。</p>
-<h3 id="决策一：skip-render-比插件更干净"><a href="#决策一：skip-render-比插件更干净" class="headerlink" title="决策一：skip_render 比插件更干净"></a>决策一：skip_render 比插件更干净</h3><p>Hexo 的渲染管线会把所有 <code>.md</code> 和 <code>.html</code> 文件套上主题模板，生成导航栏、侧边栏、页脚。但天梯图页面需要完整控制 DOM，表格要撑满 1600px 宽度，不能被主题的 <code>main-content</code> 容器限制。方案有两个：写一个 Hexo 插件在 <code>after_render</code> 阶段替换部分 HTML，或者直接让源文件跳过渲染。选了后者——在 <code>_config.yml</code> 里加一行：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">skip_render:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">benchmark/llm.html</span><br></code></pre></td></tr></table></figure>
+<h2 id="夜间任务为什么会爆炸"><a href="#夜间任务为什么会爆炸" class="headerlink" title="夜间任务为什么会爆炸"></a>夜间任务为什么会爆炸</h2><p>白天你跟 OpenCode 交互，一问一答，消息是分散的，上下文缓慢增长，很难触达极限。但夜间模式会把白天攒下来的任务打包执行，改进 bug、写测试、重构代码，一次运行可能堆到 96 条消息，中间穿插 54 次工具调用。</p>
+<p>每个工具调用的输入输出都算 token，叠起来就是几万 token 的上下文，三个问题同时爆发：</p>
+<ol>
+<li><strong>上下文窗口不够用</strong>。Qwen3.5-35B-A3B 默认的上下文配置在 llama.cpp 里可能没开够。96 条消息加上工具调用的膨胀，轻松突破 32K token，甚至 50K+。</li>
+<li><strong>工具定义本身吃 token</strong>。OpenCode 注册的每个工具都有一段 JSON Schema 描述，54 个工具的定义堆在 system prompt 里，还没开始对话就吃掉好几千 token。</li>
+<li><strong>显存分配打架</strong>。上下文窗口越大，KV Cache 占的显存越多。44 GB 显存中，模型本身 Q4_K_M 量化大约占 20 GB，剩下 24 GB 要同时容纳 KV Cache 和计算缓冲，稍不留神就 OOM。</li>
+</ol>
+<h2 id="优化一：消息上下文分层管理"><a href="#优化一：消息上下文分层管理" class="headerlink" title="优化一：消息上下文分层管理"></a>优化一：消息上下文分层管理</h2><p>OpenCode 在长任务中容易遇到”上下文遗忘”问题，因为消息列表没有做分层管理，历史记录全部平铺，很快就会把窗口填满。特别是工具调用历史，每次调用都会增加两条消息（请求 + 响应），十个文件就能积累 20 条，很快占据几十 K token。</p>
+<p>我的做法是把消息分成<strong>常驻层</strong>和<strong>滚动层</strong>：</p>
+<ul>
+<li><strong>常驻层</strong>：系统提示 + 任务指令，始终保留，不参与压缩。</li>
+<li><strong>滚动层</strong>：工具调用历史，只保留最近 N 条（默认 32 条），更早的消息会被渐进式折叠。</li>
+<li><strong>输出层</strong>：单独缓存模型的生成内容，用于后续验证，但不占用核心上下文空间。</li>
+</ul>
+<p>核心逻辑在 <code>context_manager</code> 中实现，大致如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">type</span> MessageLayer <span class="hljs-keyword">struct</span> &#123;<br>    Permanent []Message  <span class="hljs-comment">// 常驻层：系统提示 + 任务指令</span><br>    Rolling   []Message  <span class="hljs-comment">// 滚动层：工具调用历史</span><br>    Output    []Message  <span class="hljs-comment">// 输出层：缓存</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(m *MessageLayer)</span></span> BuildContext(maxTokens <span class="hljs-type">int</span>) []Message &#123;<br>    ctx := <span class="hljs-built_in">make</span>([]Message, <span class="hljs-number">0</span>)<br>    <span class="hljs-comment">// 常驻层始终保留</span><br>    ctx = <span class="hljs-built_in">append</span>(ctx, m.Permanent...)<br>    <span class="hljs-comment">// 滚动层只保留最近 N 条</span><br>    rolling := m.Rolling<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(rolling) &gt; maxRollingMessages &#123;<br>        rolling = rolling[<span class="hljs-built_in">len</span>(rolling)-maxRollingMessages:]<br>    &#125;<br>    ctx = <span class="hljs-built_in">append</span>(ctx, rolling...)<br>    <span class="hljs-comment">// 输出层单独处理</span><br>    ctx = <span class="hljs-built_in">append</span>(ctx, m.Output...)<br>    <span class="hljs-keyword">return</span> truncateToTokens(ctx, maxTokens)<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<p>文件放在 <code>source/benchmark/llm.html</code>，<code>hexo generate</code> 后原样复制到 <code>public/benchmark/llm.html</code>。主题的导航栏通过 <code>_config.fluid.yml</code> 的 <code>menu</code> 配置手动添加链接，指向 <code>/benchmark/llm.html</code>，<code>target: _blank</code> 新窗口打开。</p>
-<h3 id="决策二：零-CDN-依赖，系统字体栈"><a href="#决策二：零-CDN-依赖，系统字体栈" class="headerlink" title="决策二：零 CDN 依赖，系统字体栈"></a>决策二：零 CDN 依赖，系统字体栈</h3><p>CSS 和 JS 全写在 <code>&lt;style&gt;</code> 和 <code>&lt;script&gt;</code> 标签里，没有引外部字体、图标库或 jQuery。字体栈用的是系统默认：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">font-family</span>: -apple-system, BlinkMacSystemFont, <span class="hljs-string">&quot;PingFang SC&quot;</span>, <span class="hljs-string">&quot;Microsoft YaHei&quot;</span>, Helvetica, Arial, sans-serif;<br></code></pre></td></tr></table></figure>
+<p>光分层还不够，还需要对消息内容做智能压缩。连续的工具调用会被合并，比如 5 次 <code>read_file</code> 只保留最后一次完整内容，前面的用摘要替代。</p>
+<p>失败的重试只保留最终成功的结果，前两次失败尝试压缩成一句摘要。系统消息去重，只保留关键变化。测试下来，96 条消息通常能缩到 20-25 条，token 从 45K 降到 12K 左右，模型注意力更集中，回复质量反而更高。</p>
+<h2 id="优化二：工具调用预算与智能截断"><a href="#优化二：工具调用预算与智能截断" class="headerlink" title="优化二：工具调用预算与智能截断"></a>优化二：工具调用预算与智能截断</h2><p>批量任务中，工具调用的顺序和频率直接影响输出质量。我观察到两个典型问题：<strong>过早写入</strong>（模型还没分析完就直接写文件，导致修改不完整）和<strong>重复调用</strong>（同一个文件反复读取，浪费上下文空间）。</p>
+<p>为了解决这个问题，我给工具调用加了一套预算机制：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">tool_budget:</span><br>  <span class="hljs-attr">max_reads_per_file:</span> <span class="hljs-number">3</span><br>  <span class="hljs-attr">max_writes_per_file:</span> <span class="hljs-number">1</span><br>  <span class="hljs-attr">max_searches_per_file:</span> <span class="hljs-number">2</span><br>  <span class="hljs-attr">require_analysis_before_write:</span> <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
 
-<p>macOS 和 Windows 下分别调用系统 UI 字体，渲染零延迟，不触发网络请求。表格里的 Emoji 用系统自带，不用 Font Awesome。</p>
-<h3 id="决策三：SVG-Logo-内联，无-Logo-用首字母圆形"><a href="#决策三：SVG-Logo-内联，无-Logo-用首字母圆形" class="headerlink" title="决策三：SVG Logo 内联，无 Logo 用首字母圆形"></a>决策三：SVG Logo 内联，无 Logo 用首字母圆形</h3><p>厂商 Logo 这部分反复改了三次。第一版用 <code>&lt;img src=&quot;...&quot;&gt;</code> 外链，CDN 缓存失效时 Logo 消失只剩空白。第二版改成 Base64 内联，但 8 个 SVG 的 Base64 字符串加起来 15KB，HTML 文件膨胀到 120KB。最终方案：8 个有正式 Logo 的厂商（DeepSeek、Meta、Google、Mistral、Anthropic、Qwen、Zhipu、Moonshot）用 <code>&lt;svg&gt;</code> 直接内联，压缩后总共不到 3KB。没有 Logo 的厂商渲染一个首字母圆形 badge，CSS 就能搞定：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.logo-badge</span> &#123;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">24px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">24px</span>;<br>  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50%</span>;<br>  <span class="hljs-attribute">background</span>: <span class="hljs-number">#e0e0e0</span>;<br>  <span class="hljs-attribute">text-align</span>: center;<br>  <span class="hljs-attribute">line-height</span>: <span class="hljs-number">24px</span>;<br>  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">12px</span>;<br>  <span class="hljs-attribute">font-weight</span>: <span class="hljs-number">700</span>;<br>  <span class="hljs-attribute">color</span>: <span class="hljs-number">#555</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>核心规则是”写入前必须有一次分析步骤”，强制模型先理解代码结构再生成修改。同时，对工具输出做智能截断：<code>read_file</code> 不再返回整个文件，只保留被修改过的区域和模型在思考链中关注过的代码行。</p>
+<p><code>execute_command</code> 只保留命令的退出码和最后 20 行输出，构建日志、测试输出等噪音在命令执行完成后立即丢弃。这一层平均能砍掉 60% 的冗余内容。</p>
+<p>当对话历史超过 64 条消息时，还会触发一次”项目快照”——用一个独立的 prompt 让模型生成当前项目的状态摘要，包括修改过的文件列表、关键架构决策、当前阻塞的问题。这个摘要大约 1500 tokens，作为一条特殊系统消息插入对话历史中部，每 32 条消息更新一次，相当于给模型一个”断点续传”的 checkpoint，即使前面 200 条消息被压缩成几条摘要，模型依然能通过最新快照理解当前状态。</p>
+<h2 id="优化三：工具定义瘦身与-system-prompt-分层"><a href="#优化三：工具定义瘦身与-system-prompt-分层" class="headerlink" title="优化三：工具定义瘦身与 system prompt 分层"></a>优化三：工具定义瘦身与 system prompt 分层</h2><p>OpenCode 默认注册了一堆工具：文件读写、终端执行、搜索、Git 操作、代码格式化……每个工具的定义是一段 JSON Schema，54 个工具的 schema 堆在一起，光定义就吃掉 4000-6000 token。</p>
+<p>每一轮对话这些定义都会跟着 system prompt 发给模型，推理时模型需要”扫描”所有定义来决定调用哪个工具，负担很重。</p>
+<p>夜间任务往往只用到极少数工具，比如跑代码重构 + 测试生成，只需要读文件、写文件、搜索代码、运行测试四个工具。我把其他十几个工具全部禁掉，工具定义 token 从 5000 直接降到 400 左右。配置上分两套：白天用全量工具 <code>opencode.json</code>，夜间用精简版 <code>opencode-nightly.json</code>，通过启动参数切换。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;tools&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;enabled&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;read_file&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;write_file&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;search_code&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;run_test&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;disabled&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>      <span class="hljs-string">&quot;git_commit&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;git_push&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;format_code&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-string">&quot;install_deps&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;lint&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;type_check&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-string">&quot;web_search&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;web_fetch&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;db_query&quot;</span><br>    <span class="hljs-punctuation">]</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="多层筛选：同组-OR-跨组-AND"><a href="#多层筛选：同组-OR-跨组-AND" class="headerlink" title="多层筛选：同组 OR + 跨组 AND"></a>多层筛选：同组 OR + 跨组 AND</h2><p>筛选逻辑参考了 llm-stats.com 的设计，但做了一层扩展：同组内的多个选项是并集，跨组之间是交集。</p>
-<p>举个例子：厂商组选“DeepSeek”和“Alibaba”（OR），架构组再选“MoE”（AND），结果是 14 个模型——DeepSeek 和 Alibaba 旗下所有 MoE 模型的并集。如果再加参数组选“≤7B”，就缩小到 3 个模型。实现上，每次 checkbox 状态变化时遍历全部 61 条数据，逐行检查是否满足所有筛选组的条件。数据量小，61 行够用，不用上虚拟滚动或索引加速。</p>
-<p>列选择器也折腾了一阵。按钮标签中文化了，叫「⚙ 表头」，用 checkbox 列表控制列的显隐。第一版把面板放在表格容器内部，<code>position: absolute</code> 定位。但表格容器加了 <code>overflow-x: auto</code> 支持横向滚动，结果面板一打开就被裁剪，只露出上半截。根因是 <code>overflow-x: auto</code> 会裁剪超出容器边界的绝对定位子元素。解法是把面板移到表格容器外部，改用 <code>position: fixed</code>，然后通过 JS 在按钮点击时计算按钮的 <code>getBoundingClientRect()</code>，动态设置面板的 <code>top</code> 和 <code>left</code>：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> rect = btn.<span class="hljs-title function_">getBoundingClientRect</span>();<br>panel.<span class="hljs-property">style</span>.<span class="hljs-property">top</span> = (rect.<span class="hljs-property">bottom</span> + <span class="hljs-number">4</span>) + <span class="hljs-string">&#x27;px&#x27;</span>;<br>panel.<span class="hljs-property">style</span>.<span class="hljs-property">left</span> = (rect.<span class="hljs-property">right</span> - <span class="hljs-number">200</span>) + <span class="hljs-string">&#x27;px&#x27;</span>; <span class="hljs-comment">// 面板宽 200px，右对齐</span><br></code></pre></td></tr></table></figure>
+<p>system prompt 也做了分层处理。全局编码规范、工具列表等不变内容放在最前面的 system 消息里，只在对话开始时发一次；任务特定的指令作为 user 消息的第一个 token 段，跟在后面。这样模型对全局规范有稳定的 KV Cache，只对任务描述做增量处理，96 条消息场景的首 token 延迟从 8 秒降到了 4 秒左右。</p>
+<h2 id="硬件调优：显存、KV-Cache-与双卡分配"><a href="#硬件调优：显存、KV-Cache-与双卡分配" class="headerlink" title="硬件调优：显存、KV Cache 与双卡分配"></a>硬件调优：显存、KV Cache 与双卡分配</h2><p>两张魔改 2080 Ti 总共 44 GB 显存，Qwen3.5-35B-A3B Q4_K_M 模型加载后大约占 20 GB，剩下 24 GB 要同时容纳 KV Cache 和计算缓冲。KV Cache 的大小与上下文长度成正比。</p>
+<p>Qwen3.5 使用 GQA（Grouped Query Attention），KV Cache 比传统 MHA 小不少，但 96 条消息加上工具调用膨胀，实际 token 数可能达到 40K-50K。我实测把上下文窗口设到 64K token，KV Cache 大约占 12-14 GB，加上模型共 32-34 GB，留出 10 GB 缓冲，刚好安全。</p>
+<p>双卡分配策略也大有讲究。Turing 架构没有 NVLink，卡间通信走 PCIe，延迟较高。默认的行分割意味着每层的前向传播都要跨卡通信；改为层分割后，前半部分层在卡 0，后半部分层在卡 1，只有层间边界需要一次通信，大幅减少了跨卡开销。最终 llama.cpp 启动参数如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">./server \<br>  -m models/Qwen3.5-35B-A3B-Ornith-Q4_K_M.gguf \<br>  -ngl 99 \<br>  -c 65536 \<br>  --split-mode layer \<br>  --tensor-split 1,1 \<br>  -tb 512 -b 512 -ub 512 \<br>  --n-gqa 4 \<br>  -t 6 \<br>  --host localhost --port 8080<br></code></pre></td></tr></table></figure>
 
-<p>排序箭头则设计为三态循环：<code>asc(▲紫色) → desc(▼紫色) → none(灰色)</code>，每列独立排序，一眼就能看出当前排序状态。</p>
-<h2 id="移动端适配：三档断点与-sticky-修正"><a href="#移动端适配：三档断点与-sticky-修正" class="headerlink" title="移动端适配：三档断点与 sticky 修正"></a>移动端适配：三档断点与 sticky 修正</h2><p>手机上看表格是个噩梦，我设了三档断点：</p>
+<p>改成层分割后，Qwen3.5-35B-A3B 的实测速度从之前的 80 多 t&#x2F;s 提升到了 104 t&#x2F;s，提升主要来自跨卡通信开销的降低。</p>
+<h2 id="实测效果"><a href="#实测效果" class="headerlink" title="实测效果"></a>实测效果</h2><p>在同一个重构任务上跑了三个版本：OpenCode v1.2.27（无压缩）、v1.3.0（基础压缩）、以及最终优化后的夜间构建版。任务是对一个 5000 行的 Python 项目做全面重构，包括错误处理、类型标注、测试覆盖，自动拆分成 12 个子任务。</p>
 <table>
 <thead>
 <tr>
-<th>宽度</th>
-<th>显示列</th>
+<th>指标</th>
+<th>v1.2.27</th>
+<th>v1.3.0</th>
+<th>夜间构建（优化后）</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>&gt;900px</td>
-<td>全列（排名、模型、厂商、参数、架构、LiveCodeBench、HumanEval、SWE-bench、VRAM）</td>
+<td>完成任务所需消息数</td>
+<td>187</td>
+<td>134</td>
+<td>96</td>
 </tr>
 <tr>
-<td>≤900px</td>
-<td>隐藏 HumanEval、SWE-bench、VRAM 列，保留 5 列核心数据</td>
+<td>工具调用次数</td>
+<td>54</td>
+<td>54</td>
+<td>54</td>
 </tr>
 <tr>
-<td>≤480px</td>
-<td>再隐藏参数、架构列，只剩排名、模型名、LiveCodeBench 分数</td>
+<td>峰值上下文占用</td>
+<td>118k tokens</td>
+<td>76k tokens</td>
+<td>41k tokens</td>
+</tr>
+<tr>
+<td>因上下文溢出导致的任务失败</td>
+<td>3 次</td>
+<td>1 次</td>
+<td>0 次</td>
+</tr>
+<tr>
+<td>最终代码质量（人工评分）</td>
+<td>7.2&#x2F;10</td>
+<td>7.8&#x2F;10</td>
+<td>8.5&#x2F;10</td>
+</tr>
+<tr>
+<td>平均文件处理时间</td>
+<td>45s</td>
+<td>—</td>
+<td>28s</td>
 </tr>
 </tbody></table>
-<p>表头用 <code>position: sticky; top: 0</code> 固定在表格容器顶部。最开始设了 <code>top: 64px</code> 给 Hexo 导航栏留空间，但独立 HTML 页面不走主题导航，<code>top: 64px</code> 会导致表头在滚动时悬浮在奇怪的位置。改成 <code>top: 0</code> 后正常。日期列加了 <code>white-space: nowrap</code> 防止在小屏上换行成两行，挤占模型名空间。</p>
-<h2 id="部署与缓存绕过"><a href="#部署与缓存绕过" class="headerlink" title="部署与缓存绕过"></a>部署与缓存绕过</h2><p>发布流程简单到只有四步：</p>
-<ol>
-<li><code>hexo clean &amp;&amp; hexo generate</code> 生成静态文件</li>
-<li>复制到 <code>.deploy_git/</code> 目录</li>
-<li><code>git push</code> 到 <code>normdist-ai/normdist-ai.github.io</code> 的 main 分支</li>
-<li>GitHub Pages 自动部署，CDN 缓存约 10 分钟</li>
-</ol>
-<p>更新频繁时，10 分钟的缓存窗口会导致部分用户看到旧版本。最简单的绕过：在 Hexo 菜单链接后加 <code>?timestamp</code> 参数。每次更新后手动换时间戳，读者点导航栏的「天梯」链接时绕过 CDN 缓存。</p>
-<h2 id="那-169-行的教训"><a href="#那-169-行的教训" class="headerlink" title="那 169 行的教训"></a>那 169 行的教训</h2><p>回到开头的事故。<strong>现象</strong>：write_file 写回的文件每行都有 <code>数字|</code> 前缀。<strong>根因</strong>：read_file 工具返回的内容带了行号前缀，我直接写回去了。169 行 HTML 全部被污染，表格数据前的 <code>&lt;tr&gt;</code> 变成 <code>1|&lt;tr&gt;</code>，JavaScript 代码变成 <code>142|  function filterModels() {</code>。浏览器打开页面直接报错，整个天梯图不可用。</p>
-<p>修复分两步：先用正则全量清洗，<code>re.sub(r&#39;^\d+\|\s*&#39;, &#39;&#39;, line, flags=re.MULTILINE)</code> 去掉所有行号前缀，再手动检查 169 行确保没有误删以数字开头的合法内容。所幸没有——HTML 标签和 JS 代码通常不以数字开头。</p>
-<p>这个坑的代价是 169 行代码的重复劳动，但更重要的是——工具返回的格式永远要验证，别假设它和你想的一样。</p>
-<h2 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h2><p>61 个模型只是开始。计划加入更多编程基准（MBPP、DS-1000），以及按参数规模分组的高亮显示。做数据页面的核心心得：<strong>数据清洗比写代码累十倍，但值得。</strong></p>
+<p>最让人意外的是最后一行：代码质量反而提升了。翻看对话记录才发现，之前版本的工具输出噪音太严重，模型经常被无关信息分散注意力，压缩后的上下文更干净，模型的注意力集中度反而更高。</p>
+<h2 id="避坑指南"><a href="#避坑指南" class="headerlink" title="避坑指南"></a>避坑指南</h2><p>这套优化不是银弹，几个容易踩的坑需要提前预判。</p>
+<p><strong>压缩阈值不能太激进</strong>。如果把滚动层限制从 32 条消息改成 16 条，模型会开始重复调用 <code>read_file</code> 读取已经读过的文件——因为之前的文件内容被过早折叠掉了。32 条是在 Qwen3.5-35B-A3B 上反复调参的结果，换其他模型可能需要重新调整。</p>
+<p><strong>项目状态摘要的生成时机很关键</strong>。如果在项目处于”中间状态”（比如某个文件改了一半）时触发摘要，后续模型可能会基于错误的前提做决策。目前的解决方法是：摘要只在一次完整的”指令-响应”循环结束后才生成，不会在工具调用链的中途触发。</p>
+<p><strong>夜间任务的其他注意事项</strong>：</p>
+<ul>
+<li>磁盘空间：批量写入文件时，临时文件可能占满磁盘，建议跑之前检查可用空间。</li>
+<li>模型重启：llama.cpp 长时间运行可能触发显存碎片化，建议每 50 个文件重启一次引擎。</li>
+<li>Git 冲突：如果仓库有其他人在修改，夜间任务可能产生冲突，建议先执行 <code>git pull --rebase</code>。</li>
+<li>工具配置分开：白天用全量工具，夜间用精简版，避免工具禁用导致白天无法正常使用 Git 等操作。</li>
+</ul>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>消息分层、工具预算、智能压缩、硬件调优这一套组合拳下来，96 条消息、54 次工具调用不再是我凌晨三点爬起来看日志的噩梦。这套优化思路的核心是：<strong>不要让上下文窗口成为瓶颈，而是让它成为可控的资源</strong>。如果你的项目规模在 50 个文件以下、单次任务工具调用不超过 20 次，可能还感觉不到明显提升；但当你做跨模块重构、大型代码迁移、或者批量测试修复时，上下文压缩就会从”nice to have”变成”没有它不行”。</p>
+<p>在 ModelBase 服务器上，44 GB 显存跑 Qwen3.5-35B-A3B 时，开启整套压缩机制后，单次任务的上限从大约 180 次工具调用提升到了 300 次以上。这意味着你可以让 AI 在夜间无人值守时完成更复杂的任务——这正是”夜间代码改进”这个说法的由来。</p>
 <hr>
 <p><strong>参考文献</strong></p>
 <ol>
-<li><a target="_blank" rel="noopener" href="https://livecodebench.github.io/">LiveCodeBench 官方</a></li>
-<li><a target="_blank" rel="noopener" href="https://llm-stats.com/">LLM Stats - HumanEval &amp; SWE-bench 数据</a></li>
-<li><a target="_blank" rel="noopener" href="https://huggingface.co/docs/hub/api">HuggingFace Models API 文档</a></li>
-<li><a target="_blank" rel="noopener" href="https://hexo.io/docs/configuration#Directory">Hexo skip_render 配置文档</a></li>
-<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow">MDN: overflow 与绝对定位裁剪</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/normdist-ai/opencode">OpenCode 官方文档 - Context Management</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/03/23/opencode-v1-3-0-update/">OpenCode v1.3.0 更新解读</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/07/05/free-ai-coding-toolchain/">免费 AI 编程工具链：OpenCode + 三层约束</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ggerganov/llama.cpp/blob/master/docs/server.md">llama.cpp 上下文窗口与 KV Cache 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ggerganov/llama.cpp/blob/master/docs/multilingual.md">llama.cpp 多 GPU split 模式说明</a></li>
+<li><a target="_blank" rel="noopener" href="https://qwenlm.github.io/blog/">Qwen3.5 模型技术报告 - GQA 架构</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching">Anthropic - Prompt Caching 与长上下文处理</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.03172">Lost in the Middle: How Language Models Use Long Contexts</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf">NVIDIA Turing 架构白皮书</a></li>
 </ol>
 
                 
@@ -545,7 +597,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
   
   
 
@@ -560,15 +612,17 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
+        <a href="/tags/AI%E7%BC%96%E7%A8%8B/" class="print-no-link">#AI编程</a>
       
-        <a href="/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" class="print-no-link">#前端开发</a>
+        <a href="/tags/OpenCode/" class="print-no-link">#OpenCode</a>
       
-        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
       
-        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" class="print-no-link">#数据可视化</a>
+        <a href="/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E4%BC%98%E5%8C%96/" class="print-no-link">#上下文优化</a>
       
-        <a href="/tags/HTML/" class="print-no-link">#HTML</a>
+        <a href="/tags/%E5%A4%9C%E9%97%B4%E4%BB%BB%E5%8A%A1/" class="print-no-link">#夜间任务</a>
+      
+        <a href="/tags/Qwen3-5/" class="print-no-link">#Qwen3.5</a>
       
     </div>
   
@@ -580,8 +634,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>开源大模型天梯图开发全记录</div>
-      <div>https://normdist.com/2026/07/14/ND-20260713-003-llm-leaderboard-dev/</div>
+      <div>OpenCode 夜间代码改进：96 消息/54 工具的深度优化实践</div>
+      <div>https://normdist.com/2026/07/14/ND-20260714-001-draft/</div>
     </div>
     <div class="license-meta">
       
@@ -625,18 +679,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/07/14/ND-20260714-001-draft/" title="OpenCode 夜间代码改进：96 消息/54 工具的深度优化实践">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">OpenCode 夜间代码改进：96 消息/54 工具的深度优化实践</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/" title="为什么要用 Hermes：一个 AI Agent 实践者的选型复盘">
-                        <span class="hidden-mobile">为什么要用 Hermes：一个 AI Agent 实践者的选型复盘</span>
+                      <a href="/2026/07/14/ND-20260713-003-llm-leaderboard-dev/" title="开源大模型天梯图开发全记录">
+                        <span class="hidden-mobile">开源大模型天梯图开发全记录</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
