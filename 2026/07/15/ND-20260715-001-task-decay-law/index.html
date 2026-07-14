@@ -1,0 +1,1010 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="凌晨三点，运维群里有人喊了一声：“完了。”我们的 AI Agent 没有在半小时后补发健康检查——工程师 A 记得要改那个心跳偏差修复逻辑，觉得发行版更新完再搞也不迟。结果两周后，Agent 把-1 发给了生产数据库。 “记得做”等于“不会做”——这是我们掏了真金白银买来的教训。 AI Agent 系统里，最优先级的任务从来不是定时任务，而是那些“回头处理一下”的事情。而恰恰是这些不定时任务，会以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="非定时任务衰减律：&#39;记得做&#39;等于&#39;不会做&#39;">
+<meta property="og:url" content="https://normdist.com/2026/07/15/ND-20260715-001-task-decay-law/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="凌晨三点，运维群里有人喊了一声：“完了。”我们的 AI Agent 没有在半小时后补发健康检查——工程师 A 记得要改那个心跳偏差修复逻辑，觉得发行版更新完再搞也不迟。结果两周后，Agent 把-1 发给了生产数据库。 “记得做”等于“不会做”——这是我们掏了真金白银买来的教训。 AI Agent 系统里，最优先级的任务从来不是定时任务，而是那些“回头处理一下”的事情。而恰恰是这些不定时任务，会以">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-15T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-14T19:52:49.770Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="任务管理">
+<meta property="article:tag" content="踩坑">
+<meta property="article:tag" content="高可用">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>非定时任务衰减律：&#39;记得做&#39;等于&#39;不会做&#39; - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">非定时任务衰减律：'记得做'等于'不会做'</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-15 10:00" pubdate>
+          2026年7月15日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">非定时任务衰减律：&#39;记得做&#39;等于&#39;不会做&#39;</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月15日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>凌晨三点，运维群里有人喊了一声：“完了。”我们的 AI Agent 没有在半小时后补发健康检查——工程师 A 记得要改那个心跳偏差修复逻辑，觉得发行版更新完再搞也不迟。结果两周后，Agent 把-1 发给了生产数据库。</p>
+<p><strong>“记得做”等于“不会做”</strong>——这是我们掏了真金白银买来的教训。</p>
+<p>AI Agent 系统里，最优先级的任务从来不是定时任务，而是那些“回头处理一下”的事情。而恰恰是这些不定时任务，会以一种极其隐蔽的方式，自动消失。我管这叫 <strong>非定时任务衰减律</strong>：任务被记住的那一刻，就开始衰减。</p>
+<hr>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><p>本文场景发生在我们的 AI Agent 生产系统上，环境如下：</p>
+<ul>
+<li>Agent 框架：自研 + 开源组件（Hermes Agent Gateway）</li>
+<li>后端：Python 3.10 + FastAPI</li>
+<li>数据库：PostgreSQL 15 + Redis 7</li>
+<li>硬件：ModelBase 服务器，双卡 RTX 2080 Ti 魔改版（单卡 22 GB，总显存 44 GB）</li>
+<li>推理引擎：llama.cpp，加载 Qwen 系列模型</li>
+</ul>
+<blockquote>
+<p>硬件是老伙计了：RTX 2080 Ti 是魔改版，单卡显存 22 GB，双卡共 44 GB。Turing 架构不支持原生 FP8&#x2F;BF16，均靠模拟实现。</p>
+</blockquote>
+<hr>
+<h2 id="最终方案：建立持续跟踪机制"><a href="#最终方案：建立持续跟踪机制" class="headerlink" title="最终方案：建立持续跟踪机制"></a>最终方案：建立持续跟踪机制</h2><p>先看我们怎么把这个问题堵上的。</p>
+<p>核心思路是：<strong>把“记得做”硬编码进状态机，不依赖人的记忆，也不依赖 Agent 的短期上下文。</strong></p>
+<h3 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h3><h4 id="1-任务分级，明确定义“衰减风险任务”"><a href="#1-任务分级，明确定义“衰减风险任务”" class="headerlink" title="1. 任务分级，明确定义“衰减风险任务”"></a>1. 任务分级，明确定义“衰减风险任务”</h4><p>把任务按触发方式分成三类：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>触发条件</th>
+<th>衰减风险</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定时任务</td>
+<td>固定 Cron&#x2F;Crontab</td>
+<td>低</td>
+</tr>
+<tr>
+<td>事件驱动任务</td>
+<td>实时事件触发</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>非定时任务</strong></td>
+<td>人为判断“回头做”</td>
+<td><strong>高</strong></td>
+</tr>
+</tbody></table>
+<p>非定时任务必须单独进入一个<strong>硬跟踪表</strong>。</p>
+<h4 id="2-创建持续跟踪表"><a href="#2-创建持续跟踪表" class="headerlink" title="2. 创建持续跟踪表"></a>2. 创建持续跟踪表</h4><p>在 PostgreSQL 里劈一张专门的表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> pending_tasks (<br>  id UUID <span class="hljs-keyword">PRIMARY KEY</span> <span class="hljs-keyword">DEFAULT</span> gen_random_uuid(),<br>  task_name TEXT <span class="hljs-keyword">NOT NULL</span>,<br>  description TEXT,<br>  created_by TEXT,<br>  deadline TIMESTAMPTZ,<br>  next_reminder_at TIMESTAMPTZ <span class="hljs-keyword">DEFAULT</span> NOW() <span class="hljs-operator">+</span> <span class="hljs-type">INTERVAL</span> <span class="hljs-string">&#x27;30 minutes&#x27;</span>,<br>  status TEXT <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;pending&#x27;</span>,<br>  reminder_interval <span class="hljs-type">INTERVAL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;30 minutes&#x27;</span>,<br>  max_reminder_count <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-number">10</span>,<br>  reminder_count <span class="hljs-type">INTEGER</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-number">0</span><br>);<br></code></pre></td></tr></table></figure>
+
+<p>重点不是建表，是 <strong>每 30 分钟提醒一次</strong> 这个逻辑。这不是人性话术，是系统逻辑。</p>
+<h4 id="3-专有一个提醒-Worker"><a href="#3-专有一个提醒-Worker" class="headerlink" title="3. 专有一个提醒 Worker"></a>3. 专有一个提醒 Worker</h4><p>启用一个后台 worker，轮询 <code>pending_tasks</code> 表：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># reminder_worker.py 核心逻辑（简化）</span><br><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">import</span> asyncpg<br><span class="hljs-keyword">from</span> hermes_agent <span class="hljs-keyword">import</span> notify_agent<br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">reminder_loop</span>():<br>    conn = <span class="hljs-keyword">await</span> asyncpg.connect(DATABASE_URL)<br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        rows = <span class="hljs-keyword">await</span> conn.fetch(<br>            <span class="hljs-string">&quot;SELECT * FROM pending_tasks WHERE status = &#x27;pending&#x27; AND next_reminder_at &lt; NOW()&quot;</span><br>        )<br>        <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> rows:<br>            <span class="hljs-comment"># 发送提醒给对应 Agent 或工程师</span><br>            <span class="hljs-keyword">await</span> notify_agent(row[<span class="hljs-string">&#x27;task_name&#x27;</span>], row[<span class="hljs-string">&#x27;description&#x27;</span>])<br>            <span class="hljs-comment"># 更新提醒计次</span><br>            <span class="hljs-keyword">await</span> conn.execute(<br>                <span class="hljs-string">&quot;UPDATE pending_tasks SET next_reminder_at = NOW() + reminder_interval, reminder_count = reminder_count + 1 WHERE id = $1&quot;</span>,<br>                row[<span class="hljs-string">&#x27;id&#x27;</span>]<br>            )<br>            <span class="hljs-keyword">if</span> row[<span class="hljs-string">&#x27;reminder_count&#x27;</span>] &gt;= row[<span class="hljs-string">&#x27;max_reminder_count&#x27;</span>]:<br>                <span class="hljs-keyword">await</span> conn.execute(<br>                    <span class="hljs-string">&quot;UPDATE pending_tasks SET status = &#x27;escalated&#x27; WHERE id = $1&quot;</span>,<br>                    row[<span class="hljs-string">&#x27;id&#x27;</span>]<br>                )<br>        <span class="hljs-keyword">await</span> asyncio.sleep(<span class="hljs-number">60</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="4-Agent-内部也注册一个“遗忘检查”"><a href="#4-Agent-内部也注册一个“遗忘检查”" class="headerlink" title="4. Agent 内部也注册一个“遗忘检查”"></a>4. Agent 内部也注册一个“遗忘检查”</h4><p>在 Agent 的顶层决策循环里加一条规则——如果某项任务存在超过 6 小时且未进入下一步，自动报给人类监督员：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># Agent 决策层</span><br><span class="hljs-keyword">if</span> task.age_hours &gt; <span class="hljs-number">6</span> <span class="hljs-keyword">and</span> task.status == <span class="hljs-string">&#x27;pending&#x27;</span>:<br>    <span class="hljs-variable language_">self</span>.escalate_to_human(task)<br></code></pre></td></tr></table></figure>
+
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>用了一个周末去验证效果。注入 30 个“假装非定时任务”，跟踪一周：</p>
+<ul>
+<li><strong>无跟踪机制</strong>：27 个被遗忘（90% 衰减率）</li>
+<li><strong>有跟踪机制</strong>：29 个被正常处理（3% 衰减率）</li>
+</ul>
+<p>实际跑了一周生产，只漏了一个——原因是那条任务创建时 deadline 设到了下个月。</p>
+<hr>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：任务复核——“回头确认”就再也回不了头"><a href="#坑一：任务复核——“回头确认”就再也回不了头" class="headerlink" title="坑一：任务复核——“回头确认”就再也回不了头"></a>坑一：任务复核——“回头确认”就再也回不了头</h3><p><strong>现象</strong>：Agent 在处理完定时任务后，收到了一个“顺便帮我看一下日志里这条异常”的请求。它把异常记录到了上下文，标记为“待复核”。然后它切换到了另一个用户对话。等到切换回来，那个上下文已经丢了，日志异常自动沉没了。</p>
+<p><strong>报错</strong>：无。一切看起来正常，只是任务消失了。</p>
+<p><strong>根因</strong>：Agent 的上下文窗口受限于 Token 数量和历史长度。当新对话进来，旧对话的“待复核”标记被清理了。这本质上是 <strong>短期记忆的必然衰减</strong>。</p>
+<p><strong>解法</strong>：把“待复核”这类非定时任务，也插入到 <code>pending_tasks</code> 表中。Agent 每次决策前先查这张表。这样任务不只活在上下文里，也活在数据库里。</p>
+<h3 id="坑二：日志排查——“我记得刚才看了日志”"><a href="#坑二：日志排查——“我记得刚才看了日志”" class="headerlink" title="坑二：日志排查——“我记得刚才看了日志”"></a>坑二：日志排查——“我记得刚才看了日志”</h3><p><strong>现象</strong>：有一次调试心跳偏差，工程师 A 在 Agent 的 Web 界面上看到了告警，口头说“我回头修这个”。他确实也把命令记在了笔记里。一周后，告警再次弹出。他懵了——明明记得修过。</p>
+<p><strong>根因</strong>：工程师 A 的“修过”是指“看过日志，确认了根因”。但在他的工作流中，“看了日志”和“修复代码”之间，隔着两顿饭、一次代码 review、一次非计划会议。两顿饭之后的记忆，比两行代码更不可靠。</p>
+<p><strong>解法</strong>：哪怕只看了一眼日志，也要在系统里创建一个 <code>pending_task</code> ——“调心跳偏差修复，状态：<em>尝试中</em>”。这比任何笔记都靠谱。</p>
+<hr>
+<h2 id="为什么“记得做”等于“不会做”"><a href="#为什么“记得做”等于“不会做”" class="headerlink" title="为什么“记得做”等于“不会做”"></a>为什么“记得做”等于“不会做”</h2><p>这个规律背后有一个简单的原理：<strong>定时任务有外部触发器（时钟），非定时任务只有内部记忆（人脑或 Agent 上下文）。而内部记忆是单向衰减的。</strong></p>
+<p>你在某个时刻决定“回头做”——那一刻，你实际上在等另一个外部事件来触达它（比如“修完这个 feature 后”、“发行版上线后”）。但外部事件不会识别“修完后该做 A”这个关联，除非你把关联写进系统。</p>
+<p>回到我们的 Agent 系统。Agent 没有“我明天记得调那个参数”的能力——它只有上下文。当你让它“记一下那个参数 alpha 要调成 0.8”，它会在当前会话里记住。一旦你换了一个窗口，或者重启了服务，那个参数就消失在 Token 序列的阴影里了。</p>
+<p><strong>不是 Agent 不靠谱，是人觉得 Agent 会记住一切——但 Agent 只记住了你最后说的三句话。</strong></p>
+<p>所以，解决方案不是让 Agent 记住更多，而是让系统自己追踪所有的“非定时任务”。就像你给陌生人发了一条消息，他不是“记得回复”，而是你设了一个闹钟“10分钟后催一次”。</p>
+<hr>
+<p>让系统记住比让人记住更可靠。让时钟工作，而不是让记忆工作。</p>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/">ND-20260627-001: “记得做”等于“没做”——AI Agent自主任务执行通道的断裂与修复</a> — 本文的姊妹篇，详细拆解 Agent 执行通道的断裂案例。</li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/">ND-20260520-001: Hermes Agent Gateway 多实例配置实践</a> — 本文的 Agent 网关配置参考。</li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/">ND-20260312-001: AI Agent 协作：技术实现与应用</a> — 本文的 Agent 协作背景参考。</li>
+<li>PostgreSQL 文档：<code>CREATE TABLE</code> with default values and intervals. — 数据库表结构参考。</li>
+<li>Hermes Agent 项目文档（内部）：Agent 决策循环与上下文管理。 — Agent 上下文衰减机制的技术背景。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+      
+        <a href="/tags/%E8%B8%A9%E5%9D%91/" class="print-no-link">#踩坑</a>
+      
+        <a href="/tags/%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86/" class="print-no-link">#任务管理</a>
+      
+        <a href="/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/" class="print-no-link">#高可用</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>非定时任务衰减律：&#39;记得做&#39;等于&#39;不会做&#39;</div>
+      <div>https://normdist.com/2026/07/15/ND-20260715-001-task-decay-law/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/15/ND-20260715-002-reshare-db-merge/" title="ReShare 数据库迁移合并：8887+1511→8908">
+                        <span class="hidden-mobile">ReShare 数据库迁移合并：8887+1511→8908</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
