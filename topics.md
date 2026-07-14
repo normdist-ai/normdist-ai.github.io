@@ -17,7 +17,7 @@
 | 6 | pending | 断路器模式：让 AI 数据管道不怕外部源抽风 | 2026-07-14 | | V0 | |
 | 7 | pending | collect_cron_results 假阴性：删症状≠修根因 | 2026-07-14 | | V0 | |
 | 8 | pending | 小样本过拟合：4 次交易 75% 胜率凭什么不能信 | 2026-07-14 | | V0 | |
-| 9 | queued | 零成本运维：5 人 AI Agent 团队的 cron 治理 | | | V0 | |
+| 9 | pending | 零成本运维：5 人 AI Agent 团队的 cron 治理 | 2026-07-14 | | V0 | archive/ND-20260714-001/ND-20260714-001-draft.md |
 | 10 | queued | QFII 跟庄策略 +32.20%：从设计到回测验证全链路 | | | V0 | |
 | 11 | queued | 博客标签丢失恢复 + .nojekyll 铁律 | | | V0 | |
 | 12 | queued | 压缩风暴：Session 过多饿死关键 Cron | | | V0 | |
