@@ -389,75 +389,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/" target="_self">
-          不改 GGUF 文件，用 chat-template-file 修复 llama.cpp Jinja 模板错误
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/09/ND-20260709-002-llamacpp-chat-template-override/" target="_self">
-        <div>
-          问题：HTTP 400 “Unable to generate parser for this template”本地部署的 Qwen3.5-35B-A3B 模型（Ornith 微调版），通过 llama.cpp server 提供 API 服务。某天发现部分请求稳定返回 400 错误： 1234567891011121314151617181920212223242526271234567891
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-09 10:00" pubdate>
-              2026-07-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/GGUF/">#GGUF</a>
-            
-              <a href="/tags/llama-cpp/">#llama.cpp</a>
-            
-              <a href="/tags/chat-template/">#chat-template</a>
-            
-              <a href="/tags/%E5%AF%B9%E8%AF%9D%E6%A8%A1%E6%9D%BF/">#对话模板</a>
-            
-              <a href="/tags/Jinja%E6%A8%A1%E6%9D%BF/">#Jinja模板</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2026/07/08/ND-20260708-001-ai-agent-autonomous-refactoring/" target="_self">
           AI Agent 自主重构之路：从响应式审查到全自动修复
         </a>
@@ -665,6 +596,148 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
+          Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
+        <div>
+          背景：一个 Linux Agent，一个 Windows Agent一个运行在 Linux 上的 AI Agent（下称”主 Agent”），已经有了完整工具链：文件读写、代码执行、定时任务、数据库查询。但它够不到隔壁一台 Windows 主机——那台机器上有另一个 Agent（下称”远程 Agent”），能做主 Agent 做不了的事：控制 Edge 浏览器登录态、操作 Windows 桌面应用
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-05 10:00" pubdate>
+              2026-07-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/MCP/">#MCP</a>
+            
+              <a href="/tags/Agent-%E9%97%B4%E9%80%9A%E4%BF%A1/">#Agent 间通信</a>
+            
+              <a href="/tags/%E5%B7%A5%E5%85%B7%E5%85%B1%E4%BA%AB/">#工具共享</a>
+            
+              <a href="/tags/%E6%A1%A5%E6%8E%A5%E6%96%B9%E6%A1%88/">#桥接方案</a>
+            
+              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0/">#跨平台</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
+          从交易记录重建每日资产快照：daily_summaries 历史回填实战
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
+        <div>
+          问题：权益曲线只有 4 个点一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 daily_summaries 表只有 8 行数据，集中在短短几天内。 后端的 generate-summary 端点功能完全正常，手动调用能正确生成当日快照。问题是：从来没有定时任务调用它。 功能存在，但不运转。 这是一个典型的”
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-05 10:00" pubdate>
+              2026-07-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%9B%9E%E5%A1%AB/">#数据回填</a>
+            
+              <a href="/tags/%E8%B5%84%E4%BA%A7%E5%BF%AB%E7%85%A7/">#资产快照</a>
+            
+              <a href="/tags/daily-summaries/">#daily_summaries</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E8%A1%A5%E5%85%A8/">#数据补全</a>
+            
+              <a href="/tags/%E5%87%80%E5%80%BC%E6%9B%B2%E7%BA%BF/">#净值曲线</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" target="_self">
           SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法
         </a>
@@ -809,15 +882,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
-          从交易记录重建每日资产快照：daily_summaries 历史回填实战
+        <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
+          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
         <div>
-          问题：权益曲线只有 4 个点一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 daily_summaries 表只有 8 行数据，集中在短短几天内。 后端的 generate-summary 端点功能完全正常，手动调用能正确生成当日快照。问题是：从来没有定时任务调用它。 功能存在，但不运转。 这是一个典型的”
+          背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累
         </div>
       </a>
 
@@ -825,79 +898,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-05 10:00" pubdate>
-              2026-07-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%9B%9E%E5%A1%AB/">#数据回填</a>
-            
-              <a href="/tags/%E8%B5%84%E4%BA%A7%E5%BF%AB%E7%85%A7/">#资产快照</a>
-            
-              <a href="/tags/daily-summaries/">#daily_summaries</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E8%A1%A5%E5%85%A8/">#数据补全</a>
-            
-              <a href="/tags/%E5%87%80%E5%80%BC%E6%9B%B2%E7%BA%BF/">#净值曲线</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
-          Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
-        <div>
-          背景：一个 Linux Agent，一个 Windows Agent一个运行在 Linux 上的 AI Agent（下称”主 Agent”），已经有了完整工具链：文件读写、代码执行、定时任务、数据库查询。但它够不到隔壁一台 Windows 主机——那台机器上有另一个 Agent（下称”远程 Agent”），能做主 Agent 做不了的事：控制 Edge 浏览器登录态、操作 Windows 桌面应用
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-05 10:00" pubdate>
-              2026-07-05
+            <time datetime="2026-07-04 10:00" pubdate>
+              2026-07-04
             </time>
           </div>
         
@@ -929,15 +931,15 @@
             
               <a href="/tags/AI-Agent/">#AI Agent</a>
             
-              <a href="/tags/MCP/">#MCP</a>
+              <a href="/tags/Linux/">#Linux</a>
             
-              <a href="/tags/Agent-%E9%97%B4%E9%80%9A%E4%BF%A1/">#Agent 间通信</a>
+              <a href="/tags/Windows/">#Windows</a>
             
-              <a href="/tags/%E5%B7%A5%E5%85%B7%E5%85%B1%E4%BA%AB/">#工具共享</a>
+              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%81%E7%A7%BB/">#跨平台迁移</a>
             
-              <a href="/tags/%E6%A1%A5%E6%8E%A5%E6%96%B9%E6%A1%88/">#桥接方案</a>
+              <a href="/tags/%E7%8E%AF%E5%A2%83%E9%80%82%E9%85%8D/">#环境适配</a>
             
-              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0/">#跨平台</a>
+              <a href="/tags/%E8%BF%81%E7%A7%BB%E6%96%B9%E6%A1%88/">#迁移方案</a>
             
           </div>
         
@@ -1022,15 +1024,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
-          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家
+        <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
+          量化系统 Docker→裸跑迁移：一份踩坑笔记
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
         <div>
-          背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累
+          背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，周期数据自动更新的 cron 任务触发——全盘
         </div>
       </a>
 
@@ -1069,17 +1071,17 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/AI-Agent/">#AI Agent</a>
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
             
-              <a href="/tags/Linux/">#Linux</a>
+              <a href="/tags/systemd/">#systemd</a>
             
-              <a href="/tags/Windows/">#Windows</a>
+              <a href="/tags/Docker/">#Docker</a>
             
-              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%81%E7%A7%BB/">#跨平台迁移</a>
+              <a href="/tags/%E8%A3%B8%E6%9C%BA%E9%83%A8%E7%BD%B2/">#裸机部署</a>
             
-              <a href="/tags/%E7%8E%AF%E5%A2%83%E9%80%82%E9%85%8D/">#环境适配</a>
+              <a href="/tags/%E8%BF%81%E7%A7%BB%E8%B8%A9%E5%9D%91/">#迁移踩坑</a>
             
-              <a href="/tags/%E8%BF%81%E7%A7%BB%E6%96%B9%E6%A1%88/">#迁移方案</a>
+              <a href="/tags/%E7%8E%AF%E5%A2%83%E4%B8%80%E8%87%B4%E6%80%A7/">#环境一致性</a>
             
           </div>
         
