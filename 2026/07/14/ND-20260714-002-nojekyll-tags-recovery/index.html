@@ -1,0 +1,1000 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="昨晚发了篇新文章，顺手点进标签页想检查分类效果。浏览器转了半天，甩给我一个 404。分类页也一样，白板一块。但首页好好的，文章也能正常打开。 刚推上去的新文章，怎么标签和分类就没了？ 我是韩梅梅，AI 量化交易团队的负责人，平时维护着团队的技术博客。这个博客用 Hexo 搭的，部署在 GitHub Pages 上。排查了两个小时，最后发现问题根本不在我的代码里——是 GitHub Pages 在背">
+<meta property="og:type" content="article">
+<meta property="og:title" content="博客标签页突然 404？一个 .nojekyll 文件搞定">
+<meta property="og:url" content="https://normdist.com/2026/07/14/ND-20260714-002-nojekyll-tags-recovery/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="昨晚发了篇新文章，顺手点进标签页想检查分类效果。浏览器转了半天，甩给我一个 404。分类页也一样，白板一块。但首页好好的，文章也能正常打开。 刚推上去的新文章，怎么标签和分类就没了？ 我是韩梅梅，AI 量化交易团队的负责人，平时维护着团队的技术博客。这个博客用 Hexo 搭的，部署在 GitHub Pages 上。排查了两个小时，最后发现问题根本不在我的代码里——是 GitHub Pages 在背">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-14T14:30:00.000Z">
+<meta property="article:modified_time" content="2026-07-14T15:07:47.312Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content=".nojekyll">
+<meta property="article:tag" content="GitHub Pages">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="Jekyll">
+<meta property="article:tag" content="踩坑">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>博客标签页突然 404？一个 .nojekyll 文件搞定 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">博客标签页突然 404？一个 .nojekyll 文件搞定</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-14 22:30" pubdate>
+          2026年7月14日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">博客标签页突然 404？一个 .nojekyll 文件搞定</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月14日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>昨晚发了篇新文章，顺手点进标签页想检查分类效果。浏览器转了半天，甩给我一个 404。分类页也一样，白板一块。但首页好好的，文章也能正常打开。</p>
+<p>刚推上去的新文章，怎么标签和分类就没了？</p>
+<p>我是韩梅梅，AI 量化交易团队的负责人，平时维护着团队的技术博客。这个博客用 Hexo 搭的，部署在 GitHub Pages 上。排查了两个小时，最后发现问题根本不在我的代码里——是 GitHub Pages 在背后偷偷用 Jekyll 处理静态文件，把以下划线开头的目录全吃了。</p>
+<h2 id="出问题的环境"><a href="#出问题的环境" class="headerlink" title="出问题的环境"></a>出问题的环境</h2><p>先列一下环境，方便对照：</p>
+<ul>
+<li>博客平台：Hexo 7.x + Fluid 主题</li>
+<li>部署目标：GitHub Pages（normdist-ai&#x2F;normdist-ai.github.io.git，main 分支）</li>
+<li>本地目录：~&#x2F;projects&#x2F;blog</li>
+<li>站点地址：<a target="_blank" rel="noopener" href="https://www.normdist.com/">https://www.normdist.com</a></li>
+<li>部署方式：hexo-deployer-git 插件</li>
+</ul>
+<h2 id="标签页恢复：三行命令搞定"><a href="#标签页恢复：三行命令搞定" class="headerlink" title="标签页恢复：三行命令搞定"></a>标签页恢复：三行命令搞定</h2><p>直接说结论。在 Hexo 的 <code>source/</code> 目录下添加一个 <code>.nojekyll</code> 空文件，重新部署就行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> ~/projects/blog<br><span class="hljs-built_in">touch</span> <span class="hljs-built_in">source</span>/.nojekyll<br>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo deploy<br></code></pre></td></tr></table></figure>
+
+<p><code>.nojekyll</code> 这个文件的作用很简单：告诉 GitHub Pages 别用 Jekyll 处理这个仓库，把它当纯静态文件服务器用。Hexo 生成的所有文件，包括下划线开头的目录，都会原样保留。</p>
+<blockquote>
+<p><strong>为什么放在 <code>source/</code> 而不是 <code>.deploy_git/</code>？</strong><br>因为 <code>hexo clean</code> 会清空 <code>.deploy_git/</code> 目录。如果直接手动往 <code>.deploy_git/</code> 放文件，下次部署就没了。放在 <code>source/</code> 下，<code>hexo generate</code> 会自动把它复制到 <code>public/</code>，再由 <code>hexo deploy</code> 推到 GitHub 仓库根目录，每次部署都会带上。</p>
+</blockquote>
+<h3 id="验证修复效果"><a href="#验证修复效果" class="headerlink" title="验证修复效果"></a>验证修复效果</h3><p>部署完成后，等一两分钟让 GitHub Pages 缓存刷新，然后检查：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 检查 .nojekyll 是否真的推上去了</span><br>curl -sI https://www.normdist.com/.nojekyll<br><span class="hljs-comment"># 预期：HTTP/2 200</span><br><br><span class="hljs-comment"># 检查标签页</span><br>curl -sI https://www.normdist.com/tags/<br><span class="hljs-comment"># 预期：HTTP/2 200</span><br><br><span class="hljs-comment"># 检查分类页</span><br>curl -sI https://www.normdist.com/categories/<br><span class="hljs-comment"># 预期：HTTP/2 200</span><br></code></pre></td></tr></table></figure>
+
+<p>三个都是 200，标签页和分类页恢复正常。</p>
+<h2 id="排查过程：我绕了哪些弯路"><a href="#排查过程：我绕了哪些弯路" class="headerlink" title="排查过程：我绕了哪些弯路"></a>排查过程：我绕了哪些弯路</h2><h3 id="第一站：怀疑-Hexo-生成有-bug"><a href="#第一站：怀疑-Hexo-生成有-bug" class="headerlink" title="第一站：怀疑 Hexo 生成有 bug"></a>第一站：怀疑 Hexo 生成有 bug</h3><p>第一反应是 Hexo 没生成标签页。直接检查 <code>public/</code> 目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ls</span> -la ~/projects/blog/public/tags/<br><span class="hljs-comment"># 输出：index.html  确实在</span><br></code></pre></td></tr></table></figure>
+
+<p><code>hexo generate</code> 的控制台输出也正常，INFO 行里清清楚楚写着标签页的生成记录。本地 <code>hexo server</code> 跑起来，标签页访问毫无问题。Hexo 这边是干净的。</p>
+<h3 id="第二站：怀疑部署没推上去"><a href="#第二站：怀疑部署没推上去" class="headerlink" title="第二站：怀疑部署没推上去"></a>第二站：怀疑部署没推上去</h3><p>接着检查 <code>.deploy_git/</code> 目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ls</span> -la ~/projects/blog/.deploy_git/tags/<br><span class="hljs-comment"># 输出：index.html  也在</span><br></code></pre></td></tr></table></figure>
+
+<p>查 <code>git log</code>，push 记录没问题。跑到 GitHub 仓库的 main 分支上看，<code>tags/index.html</code> 就躺在那儿。</p>
+<p>文件在本地有，推上去了，GitHub 仓库里也有——但线上访问就是 404。到这一步，我排除了所有”我的文件有问题”的可能性，开始怀疑中间环节。</p>
+<h3 id="第三站：Jekyll-这个幕后黑手"><a href="#第三站：Jekyll-这个幕后黑手" class="headerlink" title="第三站：Jekyll 这个幕后黑手"></a>第三站：Jekyll 这个幕后黑手</h3><p>GitHub Pages 不是单纯的静态文件托管。它默认会用 Jekyll 处理推送上来的文件。Jekyll 有个规矩：<strong>以 <code>_</code> 开头的文件和目录会被当作内部文件，不输出到最终站点</strong>。</p>
+<p>Hexo 在生成过程中会创建一些辅助目录和文件，其中部分路径包含下划线前缀。当 Jekyll 处理 Hexo 生成的 <code>public/</code> 目录时，它会忽略那些不符合 Jekyll 约定的文件，导致标签和分类相关的索引页在最终渲染中丢失。线上自然就 404。</p>
+<p>翻了 GitHub Pages 的官方文档，白纸黑字写着：</p>
+<blockquote>
+<p>GitHub Pages uses Jekyll to process your site by default. To bypass Jekyll processing, add a <code>.nojekyll</code> file to the root of your publish source.</p>
+</blockquote>
+<p>这就是答案。</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：误以为是-Hexo-生成问题"><a href="#坑一：误以为是-Hexo-生成问题" class="headerlink" title="坑一：误以为是 Hexo 生成问题"></a>坑一：误以为是 Hexo 生成问题</h3><p><strong>现象</strong>：标签页 404，分类页 404。</p>
+<p><strong>根因</strong>：不是 <code>hexo generate</code> 的问题，生成产物完全正常，问题在部署后的渲染环节。</p>
+<p><strong>解法</strong>：本地生成正常但线上异常时，优先排查部署和渲染层，而不是反复检查生成配置。</p>
+<h3 id="坑二：误以为是-Git-推送问题"><a href="#坑二：误以为是-Git-推送问题" class="headerlink" title="坑二：误以为是 Git 推送问题"></a>坑二：误以为是 Git 推送问题</h3><p><strong>现象</strong>：<code>git push</code> 成功，但线上文件似乎缺失。</p>
+<p><strong>根因</strong>：文件确实存在于仓库中，GitHub Pages 仓库里能看到，但被 Jekyll 在渲染时忽略。</p>
+<p><strong>教训</strong>：GitHub Pages 不是简单的文件托管，它默认会运行 Jekyll 构建。部署成功不等于页面正常。</p>
+<h3 id="坑三：-nojekyll-放错位置"><a href="#坑三：-nojekyll-放错位置" class="headerlink" title="坑三：.nojekyll 放错位置"></a>坑三：.nojekyll 放错位置</h3><p><strong>现象</strong>：添加了 <code>.nojekyll</code> 文件，但标签页仍然 404。</p>
+<p><strong>根因</strong>：<code>.nojekyll</code> 放在了 <code>.deploy_git/</code> 根目录但没放进 <code>source/</code>。<code>hexo clean</code> 会清空 <code>.deploy_git/</code>，下次部署文件就没了。或者放进了 <code>public/</code> 但 <code>hexo clean</code> 也会清空它。</p>
+<p><strong>解法</strong>：放在 <code>source/</code> 目录下，让 Hexo 每次生成时自动带上：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 正确位置</span><br><span class="hljs-built_in">touch</span> ~/projects/blog/source/.nojekyll<br></code></pre></td></tr></table></figure>
+
+<h2 id="预防措施：部署脚本里的铁律"><a href="#预防措施：部署脚本里的铁律" class="headerlink" title="预防措施：部署脚本里的铁律"></a>预防措施：部署脚本里的铁律</h2><p>手动加一次 <code>.nojekyll</code> 容易忘。换台机器、重新初始化项目，可能又踩一遍。</p>
+<p>我的做法是在部署脚本里加一行强制检查，每次部署自动验证——<strong>这是部署流水线的铁律</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-comment"># ~/projects/blog/deploy.sh</span><br><br><span class="hljs-built_in">cd</span> ~/projects/blog<br><br><span class="hljs-comment"># 铁律：检查 .nojekyll 是否存在</span><br><span class="hljs-keyword">if</span> [ ! -f <span class="hljs-string">&quot;source/.nojekyll&quot;</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;⚠️  source/.nojekyll 不存在！GitHub Pages 会用 Jekyll 处理，标签页会 404&quot;</span><br>    <span class="hljs-built_in">touch</span> <span class="hljs-built_in">source</span>/.nojekyll<br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;✅ 已自动创建 .nojekyll&quot;</span><br><span class="hljs-keyword">fi</span><br><br>hexo clean<br>hexo generate<br>hexo deploy<br><br><span class="hljs-comment"># 部署后验证</span><br><span class="hljs-built_in">sleep</span> 10<br>HTTP_CODE=$(curl -sI https://www.normdist.com/tags/ | <span class="hljs-built_in">head</span> -1)<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;标签页状态：<span class="hljs-variable">$HTTP_CODE</span>&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>每次部署自动检查，没有就补上。不管谁操作，都不会漏掉这个文件。</p>
+<p>对于使用 Hexo + GitHub Pages 的站点，<code>.nojekyll</code> 不是可选项，是必选项。GitHub Pages 默认启用 Jekyll，而 Jekyll 和 Hexo 的目录结构不兼容。只要你在用 Hexo，就必须告诉 GitHub Pages 不要动你的文件。</p>
+<h2 id="这个坑的通用教训"><a href="#这个坑的通用教训" class="headerlink" title="这个坑的通用教训"></a>这个坑的通用教训</h2><p>这个问题不限于 Hexo。任何静态站点生成器（Hugo、VuePress、Jekyll 本身之外的工具）部署到 GitHub Pages，都可能遇到同样的坑。只要生成的目录结构里有下划线开头的路径，Jekyll 就会吃掉它。</p>
+<p>记一条规则：<strong>部署到 GitHub Pages 的静态站点，第一件事就是加 <code>.nojekyll</code></strong>。</p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/about-github-pages-and-jekyll">GitHub Pages 官方文档：About GitHub Pages and Jekyll</a></li>
+<li><a target="_blank" rel="noopener" href="https://hexo.io/docs/github-pages.html">Hexo 文档：部署到 GitHub Pages</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.blog/2009-12-29-bypassing-jekyll-on-github-pages/">GitHub Blog: Bypassing Jekyll on GitHub Pages</a></li>
+<li><a target="_blank" rel="noopener" href="https://jekyllrb.com/docs/structure/">Jekyll 官方文档：Directory structure</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
+      
+        <a href="/tags/GitHub-Pages/" class="print-no-link">#GitHub Pages</a>
+      
+        <a href="/tags/%E8%B8%A9%E5%9D%91/" class="print-no-link">#踩坑</a>
+      
+        <a href="/tags/Jekyll/" class="print-no-link">#Jekyll</a>
+      
+        <a href="/tags/nojekyll/" class="print-no-link">#.nojekyll</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>博客标签页突然 404？一个 .nojekyll 文件搞定</div>
+      <div>https://normdist.com/2026/07/14/ND-20260714-002-nojekyll-tags-recovery/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/15/ND-20260715-002-reshare-db-merge/" title="ReShare 数据库迁移合并：8887+1511→8908">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ReShare 数据库迁移合并：8887+1511→8908</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/14/ND-20260714-001-super-brain-moa/" title="超级大脑：让多个大模型协作思考">
+                        <span class="hidden-mobile">超级大脑：让多个大模型协作思考</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
