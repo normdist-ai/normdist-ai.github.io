@@ -389,6 +389,75 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/11/ND-20260711-001-moa-infinite-loop-trap/" target="_self">
+          MoA 踩坑实录：多模型协同推理的&#34;无限循环&#34;陷阱
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/11/ND-20260711-001-moa-infinite-loop-trap/" target="_self">
+        <div>
+          背景：什么是 MoA？MoA（Mixture of Agents）是一种多模型协同推理架构。不同于传统 MoE（Mixture of Experts）在单个模型内部路由专家，MoA 在多个独立模型之间进行路由和聚合。 核心流程： 12345678910111213141516171234567用户输入   │   ├──→ 参考模型 1（生成独立回答）   ├──→ 参考模型 2（生成独立回答）
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-11 10:00" pubdate>
+              2026-07-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">#踩坑记录</a>
+            
+              <a href="/tags/MoA/">#MoA</a>
+            
+              <a href="/tags/Mixture-of-Agents/">#Mixture-of-Agents</a>
+            
+              <a href="/tags/%E5%A4%9A%E6%A8%A1%E5%9E%8B%E5%8D%8F%E5%90%8C/">#多模型协同</a>
+            
+              <a href="/tags/%E6%97%A0%E9%99%90%E5%BE%AA%E7%8E%AF/">#无限循环</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/10/ND-20260710-001-ornith-local-deployment/" target="_self">
           Ornith 开源模型本地部署：替代 Qwen3.6 的完整实战
         </a>
@@ -943,77 +1012,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
-          从交易记录重建每日资产快照：daily_summaries 历史回填实战
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
-        <div>
-          问题：权益曲线只有 4 个点一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 daily_summaries 表只有 8 行数据，集中在短短几天内。 后端的 generate-summary 端点功能完全正常，手动调用能正确生成当日快照。问题是：从来没有定时任务调用它。 功能存在，但不运转。 这是一个典型的”
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-05 10:00" pubdate>
-              2026-07-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%9B%9E%E5%A1%AB/">#数据回填</a>
-            
-              <a href="/tags/%E8%B5%84%E4%BA%A7%E5%BF%AB%E7%85%A7/">#资产快照</a>
-            
-              <a href="/tags/daily-summaries/">#daily_summaries</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E8%A1%A5%E5%85%A8/">#数据补全</a>
-            
-              <a href="/tags/%E5%87%80%E5%80%BC%E6%9B%B2%E7%BA%BF/">#净值曲线</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" target="_self">
           SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法
         </a>
@@ -1085,7 +1083,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/#board">9</a><a class="extend next" rel="next" href="/page/3/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/#board">10</a><a class="extend next" rel="next" href="/page/3/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
