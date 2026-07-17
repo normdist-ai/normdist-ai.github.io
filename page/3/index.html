@@ -389,6 +389,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/05/ND-20260705-004-free-ai-coding-toolchain/" target="_self">
+          免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-004-free-ai-coding-toolchain/" target="_self">
+        <div>
+          背景：免费模型能写代码吗？市面上有大量”免费 AI 编程工具”——Cursor、Windsurf、Trae-CN……它们提供免费的模型额度，让开发者零成本用 AI 写代码。但免费模型（GLM、DeepSeek、MiniMax 等）的代码能力参差不齐，直接用经常翻车：改了不该改的文件、删除已有功能、留下半成品代码。 问题不是模型不够强，而是没有给模型足够的约束。同一个免费模型，没有约束时改出 bug
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-05 10:00" pubdate>
+              2026-07-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/OpenCode/">#OpenCode</a>
+            
+              <a href="/tags/AI-%E7%BC%96%E7%A8%8B/">#AI 编程</a>
+            
+              <a href="/tags/%E5%85%8D%E8%B4%B9%E6%A8%A1%E5%9E%8B/">#免费模型</a>
+            
+              <a href="/tags/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7%E9%93%BE/">#编程工具链</a>
+            
+              <a href="/tags/%E7%BA%A6%E6%9D%9F%E7%AD%96%E7%95%A5/">#约束策略</a>
+            
+              <a href="/tags/%E7%94%9F%E4%BA%A7%E7%BA%A7%E4%BB%A3%E7%A0%81/">#生产级代码</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/04/ND-20260704-001-windows-remote-control-architecture/" target="_self">
           AI Agent 如何远程控制 Windows：SSH + MCP + CDP 三层方案选型
         </a>
@@ -815,77 +886,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
-          东方财富北向资金双接口同时坏死——一个降级+迁移方案
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
-        <div>
-          某套量化系统的北向资金模块在例行巡检中遭遇了一次”教科书级”的接口故障：东方财富的两个北向资金 API 同时坏死——一个返回空结果，一个返回全 NaN。如果系统只依赖其中一个接口，故障会在当天收盘后才会暴露；但因为两个接口在同一时段同时挂了，数据断档直接触发了告警。 本文记录从发现故障、定位根因到设计降级方案的完整过程，重点讨论：如何在多源数据管道中优雅地处理”主备同时失效”的场景。 一、问题：两
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-01 10:00" pubdate>
-              2026-07-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%87%8F%E5%8C%96%E6%8A%80%E6%9C%AF/" class="category-chain-item">量化技术</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
-              <a href="/tags/%E5%8C%97%E5%90%91%E8%B5%84%E9%87%91/">#北向资金</a>
-            
-              <a href="/tags/%E4%B8%9C%E6%96%B9%E8%B4%A2%E5%AF%8C/">#东方财富</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A5%E5%8F%A3/">#数据接口</a>
-            
-              <a href="/tags/%E9%99%8D%E7%BA%A7%E6%96%B9%E6%A1%88/">#降级方案</a>
-            
-              <a href="/tags/%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/">#故障处理</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" target="_self">
           &#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录
         </a>
@@ -957,6 +957,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
+          东方财富北向资金双接口同时坏死——一个降级+迁移方案
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
+        <div>
+          某套量化系统的北向资金模块在例行巡检中遭遇了一次”教科书级”的接口故障：东方财富的两个北向资金 API 同时坏死——一个返回空结果，一个返回全 NaN。如果系统只依赖其中一个接口，故障会在当天收盘后才会暴露；但因为两个接口在同一时段同时挂了，数据断档直接触发了告警。 本文记录从发现故障、定位根因到设计降级方案的完整过程，重点讨论：如何在多源数据管道中优雅地处理”主备同时失效”的场景。 一、问题：两
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-01 10:00" pubdate>
+              2026-07-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E6%8A%80%E6%9C%AF/" class="category-chain-item">量化技术</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+            
+              <a href="/tags/%E5%8C%97%E5%90%91%E8%B5%84%E9%87%91/">#北向资金</a>
+            
+              <a href="/tags/%E4%B8%9C%E6%96%B9%E8%B4%A2%E5%AF%8C/">#东方财富</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A5%E5%8F%A3/">#数据接口</a>
+            
+              <a href="/tags/%E9%99%8D%E7%BA%A7%E6%96%B9%E6%A1%88/">#降级方案</a>
+            
+              <a href="/tags/%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/">#故障处理</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/06/28/ND-20260628-001-dollar-credit-scoring/" target="_self">
           用 5 个公开指标量化&#34;美元信用健康度&#34;——一套可复用的宏观打分系统
         </a>
@@ -1015,75 +1086,6 @@
               <a href="/tags/%E7%BE%8E%E5%85%83%E4%BF%A1%E7%94%A8/">#美元信用</a>
             
               <a href="/tags/%E8%AF%84%E5%88%86%E6%A8%A1%E5%9E%8B/">#评分模型</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/06/27/ND-20260627-001-agent-execution-channel/" target="_self">
-          「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/27/ND-20260627-001-agent-execution-channel/" target="_self">
-        <div>
-          当一个任务连续五天出现在计划表里，却从未被执行过——问题不在于”忘了”，而在于它根本没有到达执行层的通道。 一个 0% 的执行率某套自主 AI Agent 系统每天凌晨会执行一轮 PDCA 反省。Plan 环节产出次日的任务清单——数据管道排查、技能补丁、接口修复、方案设计。清单写进日记文件，结构清晰，优先级明确，看起来一切正常。 但翻开连续五天的执行数据，一个规律浮出水面： 日期非 cron
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-06-27 10:00" pubdate>
-              2026-06-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/PDCA/">#PDCA</a>
-            
-              <a href="/tags/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/">#任务调度</a>
-            
-              <a href="/tags/Cron/">#Cron</a>
-            
-              <a href="/tags/%E8%87%AA%E4%B8%BB%E7%B3%BB%E7%BB%9F/">#自主系统</a>
             
           </div>
         
