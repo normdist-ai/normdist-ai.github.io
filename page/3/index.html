@@ -460,6 +460,79 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" target="_self">
+          SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" target="_self">
+        <div>
+          问题：SSH 能执行命令，但启动的应用”看不见”一个 AI Agent 通过 SSH 连接到 Windows 主机，执行 powershell.exe Start-Process notepad.exe，命令返回成功，任务管理器里能看到 notepad.exe 进程。但 RDP 连上去看桌面——什么都没有。记事本窗口没出现在屏幕上。 同样的问题出现在：启动 IDE、启动浏览器、启动任何带 GUI
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-05 10:00" pubdate>
+              2026-07-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
+            
+              <a href="/tags/Windows/">#Windows</a>
+            
+              <a href="/tags/SSH/">#SSH</a>
+            
+              <a href="/tags/Session-0/">#Session 0</a>
+            
+              <a href="/tags/%E8%B7%A8%E4%BC%9A%E8%AF%9D%E5%90%AF%E5%8A%A8/">#跨会话启动</a>
+            
+              <a href="/tags/%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6/">#远程控制</a>
+            
+              <a href="/tags/%E6%A1%8C%E9%9D%A2%E5%BA%94%E7%94%A8/">#桌面应用</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/05/ND-20260705-004-free-ai-coding-toolchain/" target="_self">
           免费 AI 编程工具链：OpenCode + 三层约束让免费模型写出生产级代码
         </a>
@@ -673,77 +746,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
-          量化系统 Docker→裸跑迁移：一份踩坑笔记
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
-        <div>
-          背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，周期数据自动更新的 cron 任务触发——全盘
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-04 10:00" pubdate>
-              2026-07-04
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
-              <a href="/tags/systemd/">#systemd</a>
-            
-              <a href="/tags/Docker/">#Docker</a>
-            
-              <a href="/tags/%E8%A3%B8%E6%9C%BA%E9%83%A8%E7%BD%B2/">#裸机部署</a>
-            
-              <a href="/tags/%E8%BF%81%E7%A7%BB%E8%B8%A9%E5%9D%91/">#迁移踩坑</a>
-            
-              <a href="/tags/%E7%8E%AF%E5%A2%83%E4%B8%80%E8%87%B4%E6%80%A7/">#环境一致性</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2026/07/04/ND-20260704-004-karpathy-four-principles-refactor/" target="_self">
           Karpathy 四原则驱动代码重构：3 文件 1 小时零 regression
         </a>
@@ -802,6 +804,77 @@
               <a href="/tags/%E9%87%8D%E6%9E%84%E5%8E%9F%E5%88%99/">#重构原则</a>
             
               <a href="/tags/%E5%8F%AF%E8%AF%BB%E6%80%A7/">#可读性</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
+          量化系统 Docker→裸跑迁移：一份踩坑笔记
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
+        <div>
+          背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，周期数据自动更新的 cron 任务触发——全盘
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-04 10:00" pubdate>
+              2026-07-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+            
+              <a href="/tags/systemd/">#systemd</a>
+            
+              <a href="/tags/Docker/">#Docker</a>
+            
+              <a href="/tags/%E8%A3%B8%E6%9C%BA%E9%83%A8%E7%BD%B2/">#裸机部署</a>
+            
+              <a href="/tags/%E8%BF%81%E7%A7%BB%E8%B8%A9%E5%9D%91/">#迁移踩坑</a>
+            
+              <a href="/tags/%E7%8E%AF%E5%A2%83%E4%B8%80%E8%87%B4%E6%80%A7/">#环境一致性</a>
             
           </div>
         
@@ -1015,77 +1088,6 @@
               <a href="/tags/%E9%99%8D%E7%BA%A7%E6%96%B9%E6%A1%88/">#降级方案</a>
             
               <a href="/tags/%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/">#故障处理</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" target="_self">
-          &#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" target="_self">
-        <div>
-          某天，用户的 AI 系统经历了一次极端测试——跨越物理机器、跨越操作系统、跨越技术栈的完整迁移。 旧机器：一台运行 Ubuntu 24.04 的 Linux 主机（10.28.9.66）。新机器：Windows 10 + WSL2 + Ubuntu 24.04。 核心问题很简单：一个由 5 个 AI Agent profile、37 个自定义技能、431 段对话记忆构成的智能系统，如何在换一台电脑
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-01 10:00" pubdate>
-              2026-07-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
-            
-              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%81%E7%A7%BB/">#跨平台迁移</a>
-            
-              <a href="/tags/Trae-IDE/">#Trae IDE</a>
-            
-              <a href="/tags/%E8%AE%B0%E5%BF%86%E8%BF%81%E7%A7%BB/">#记忆迁移</a>
-            
-              <a href="/tags/%E6%8A%80%E8%83%BD%E9%87%8D%E6%9E%84/">#技能重构</a>
             
           </div>
         
