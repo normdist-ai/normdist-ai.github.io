@@ -389,6 +389,73 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/" target="_self">
+          为什么要用 Hermes：一个 AI Agent 实践者的选型复盘
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/" target="_self">
+        <div>
+          去年这个时候，我还在用 ChatGPT 手动粘贴代码、用 Cursor 在 IDE 里补全函数。工具不错，但每次开新会话，AI 忘记昨天讨论了什么；换一台电脑，所有上下文归零。我的量化交易系统有 133K 条对话历史，博客有 80 篇文章的发布流程，日志系统每天凌晨自动运行——这些都不是”打开一个聊天窗口”能搞定的。 折腾了小半年，我把团队迁移到了 Hermes Agent 上。这篇文章不是评测，
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-13 10:00" pubdate>
+              2026-07-13
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
+            
+              <a href="/tags/%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94/">#选型对比</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/13/ND-20260713-001-direct-data-source-rule/" target="_self">
           直接数据源铁律：三次博客产出率误报事故的通用规则
         </a>
@@ -505,9 +572,9 @@
             
               <a href="/tags/AI-Agent/">#AI Agent</a>
             
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
-            
               <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
             
               <a href="/tags/%E5%8D%9A%E5%AE%A2/">#博客</a>
             
@@ -708,9 +775,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/">#本地部署</a>
-            
               <a href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">#踩坑记录</a>
+            
+              <a href="/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/">#本地部署</a>
             
               <a href="/tags/ComfyUI/">#ComfyUI</a>
             
@@ -993,75 +1060,6 @@
               <a href="/tags/%E6%95%B0%E6%8D%AE%E5%81%8F%E5%B7%AE%E6%A3%80%E6%B5%8B/">#数据偏差检测</a>
             
               <a href="/tags/AI%E8%87%AA%E7%9C%81/">#AI自省</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/06/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
-          外部数据源不稳定的标准修复模式：HTTP重试 + 缓存兜底
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/06/ND-20260706-001-external-data-source-resilience-pattern/" target="_self">
-        <div>
-          问题背景一个量化交易系统的宏观周期分析模块依赖外部学术机构发布的 GPR Index（地缘政治风险指数）Excel 文件。该文件由第三方研究者维护，托管在个人学术网站上，通过固定的 HTTPS URL 提供下载。 系统每天凌晨自动执行宏观数据采集管道，其中一个脚本负责下载 GPR Index 并生成风险评分。某次采集周期中，该步骤开始频繁超时失败： 123456789123Traceback (m
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-06 10:00" pubdate>
-              2026-07-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/HTTP%E9%87%8D%E8%AF%95/">#HTTP重试</a>
-            
-              <a href="/tags/%E7%BC%93%E5%AD%98%E5%85%9C%E5%BA%95/">#缓存兜底</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90%E7%A8%B3%E5%AE%9A%E6%80%A7/">#数据源稳定性</a>
-            
-              <a href="/tags/%E7%B3%BB%E7%BB%9F%E9%9F%A7%E6%80%A7/">#系统韧性</a>
-            
-              <a href="/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">#异常处理</a>
             
           </div>
         

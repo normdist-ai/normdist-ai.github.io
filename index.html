@@ -437,6 +437,75 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/19/ND-20260719-004-heartbeat-task-queue-fifo-trap/" target="_self">
+          心跳任务队列 FIFO 陷阱：P1 被 3 天挡住
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/19/ND-20260719-004-heartbeat-task-queue-fifo-trap/" target="_self">
+        <div>
+          一个 P1 被 3 天的老任务挡住心跳任务队列是系统自动化的心脏——每天定时处理一堆待办：清理日志、回传结果、更新看板。我一开始用的是最简单的 FIFO（先入先出）：按提交时间排，先来的先处理。 简单，优雅，完美。 直到一个 P1 任务（高优先级，影响主流程）在队列里躺了整整 16 小时——前面压着 3 个 3 天前的批量任务，它们一个个执行完，才轮到它。 FIFO 的优雅，在混合负载下变成了灾难
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-19 22:00" pubdate>
+              2026-07-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI-Agent/" class="category-chain-item">AI Agent</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/%E5%BF%83%E8%B7%B3%E4%BB%BB%E5%8A%A1/">#心跳任务</a>
+            
+              <a href="/tags/FIFO/">#FIFO</a>
+            
+              <a href="/tags/%E4%BC%98%E5%85%88%E7%BA%A7%E9%98%9F%E5%88%97/">#优先级队列</a>
+            
+              <a href="/tags/%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5/">#调度策略</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/19/ND-20260719-001-ai-agent-diary-three-layer-filter/" target="_self">
           AI Agent 日记三层筛选：从 Bug 追踪器到人类日记
         </a>
@@ -636,6 +705,73 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/15/ND-20260715-001-task-decay-law/" target="_self">
+          非定时任务衰减律：&#39;记得做&#39;等于&#39;不会做&#39;
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/15/ND-20260715-001-task-decay-law/" target="_self">
+        <div>
+          凌晨三点，运维群里有人喊了一声：“完了。”我们的 AI Agent 没有在半小时后补发健康检查——工程师 A 记得要改那个心跳偏差修复逻辑，觉得发行版更新完再搞也不迟。结果两周后，Agent 把-1 发给了生产数据库。 “记得做”等于“不会做”——这是我们掏了真金白银买来的教训。 AI Agent 系统里，最优先级的任务从来不是定时任务，而是那些“回头处理一下”的事情。而恰恰是这些不定时任务，会以
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-15 10:00" pubdate>
+              2026-07-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
+            
+              <a href="/tags/%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86/">#任务管理</a>
+            
+              <a href="/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/">#高可用</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/15/ND-20260715-002-reshare-db-merge/" target="_self">
           ReShare 数据库迁移合并：8887+1511→8908
         </a>
@@ -692,73 +828,6 @@
               <a href="/tags/ReShare/">#ReShare</a>
             
               <a href="/tags/%E5%8E%BB%E9%87%8D/">#去重</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/15/ND-20260715-001-task-decay-law/" target="_self">
-          非定时任务衰减律：&#39;记得做&#39;等于&#39;不会做&#39;
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/15/ND-20260715-001-task-decay-law/" target="_self">
-        <div>
-          凌晨三点，运维群里有人喊了一声：“完了。”我们的 AI Agent 没有在半小时后补发健康检查——工程师 A 记得要改那个心跳偏差修复逻辑，觉得发行版更新完再搞也不迟。结果两周后，Agent 把-1 发给了生产数据库。 “记得做”等于“不会做”——这是我们掏了真金白银买来的教训。 AI Agent 系统里，最优先级的任务从来不是定时任务，而是那些“回头处理一下”的事情。而恰恰是这些不定时任务，会以
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-15 10:00" pubdate>
-              2026-07-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
-            
-              <a href="/tags/%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86/">#任务管理</a>
-            
-              <a href="/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/">#高可用</a>
             
           </div>
         
@@ -966,73 +1035,6 @@
               <a href="/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/">#数据可视化</a>
             
               <a href="/tags/HTML/">#HTML</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/" target="_self">
-          为什么要用 Hermes：一个 AI Agent 实践者的选型复盘
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/13/ND-20260713-002-why-hermes-agent-comparison/" target="_self">
-        <div>
-          去年这个时候，我还在用 ChatGPT 手动粘贴代码、用 Cursor 在 IDE 里补全函数。工具不错，但每次开新会话，AI 忘记昨天讨论了什么；换一台电脑，所有上下文归零。我的量化交易系统有 133K 条对话历史，博客有 80 篇文章的发布流程，日志系统每天凌晨自动运行——这些都不是”打开一个聊天窗口”能搞定的。 折腾了小半年，我把团队迁移到了 Hermes Agent 上。这篇文章不是评测，
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-13 10:00" pubdate>
-              2026-07-13
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94/">#选型对比</a>
             
           </div>
         
