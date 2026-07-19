@@ -389,6 +389,54 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/19/ND-20260719-001-blog-assistant-self-evolution/" target="_self">
+          博客助手自我进化：技能解耦与三层回退链设计
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/19/ND-20260719-001-blog-assistant-self-evolution/" target="_self">
+        <div>
+          重命名了一下 moa-plus 技能，blog-helper 直接罢工——init.sh 报错说找不到路径，draft.py 和 review.py 也跟着挂。代码里埋了一个硬编码的定时炸弹。 问题：技能之间不该拉拉扯扯blog-helper 是博客创作与发布流水线技能，需要调用 MOA 类深度思考能力来审稿和写稿。但改造前，代码里到处都是对 moa-plus 路径的硬编码依赖：  init.sh
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-19 23:58" pubdate>
+              2026-07-19
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">#架构设计</a>
+            
+              <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/">#技能开发</a>
+            
+              <a href="/tags/MOA/">#MOA</a>
+            
+              <a href="/tags/%E5%9B%9E%E9%80%80%E9%93%BE/">#回退链</a>
+            
+              <a href="/tags/blog-helper/">#blog-helper</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/19/ND-20260719-001-ai-agent-diary-three-layer-filter/" target="_self">
           AI Agent 日记三层筛选：从 Bug 追踪器到人类日记
         </a>
@@ -980,78 +1028,11 @@
             
               <a href="/tags/AI-Agent/">#AI Agent</a>
             
-              <a href="/tags/Hermes/">#Hermes</a>
-            
               <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
             
+              <a href="/tags/Hermes/">#Hermes</a>
+            
               <a href="/tags/%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94/">#选型对比</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/13/ND-20260713-001-direct-data-source-rule/" target="_self">
-          直接数据源铁律：三次博客产出率误报事故的通用规则
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/13/ND-20260713-001-direct-data-source-rule/" target="_self">
-        <div>
-          一句话总结验证任何系统状态时，必须直接查询产生该状态的原始数据源（文件系统、Git 历史、HTTP 响应），而不是依赖任何中间层的状态记录、登记表或缓存。 这条规则看起来显而易见，但在 AI Agent 自主运维的实际场景中，连续踩了三次坑才真正落地。  背景：一个 AI Agent 团队的博客自动发布系统某个 AI Agent 团队运行着一套博客自动发布系统，结构如下： 1234567选题池 (
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-13 03:48" pubdate>
-              2026-07-13
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7/">#可观测性</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%81/">#数据验证</a>
-            
-              <a href="/tags/%E8%BF%90%E7%BB%B4/">#运维</a>
             
           </div>
         

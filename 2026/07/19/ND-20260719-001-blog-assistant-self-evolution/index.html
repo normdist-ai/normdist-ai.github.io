@@ -19,28 +19,28 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="背景突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。 排查后发现东方财富的数据接口发生了更迭： 原接口状态问题 stock_hsgt_individual_em(symbol&#x3D;&quot;北上&quot;)❌ 完全坏死返回 NoneType 错误 stock_hsgt_hist_em(symbol&#x3D;&quot;沪股通&quot;)⚠️ 结构">
+    <meta name="description" content="重命名了一下 moa-plus 技能，blog-helper 直接罢工——init.sh 报错说找不到路径，draft.py 和 review.py 也跟着挂。代码里埋了一个硬编码的定时炸弹。 问题：技能之间不该拉拉扯扯blog-helper 是博客创作与发布流水线技能，需要调用 MOA 类深度思考能力来审稿和写稿。但改造前，代码里到处都是对 moa-plus 路径的硬编码依赖：  init.sh">
 <meta property="og:type" content="article">
-<meta property="og:title" content="东方财富北向资金接口迁移实战">
-<meta property="og:url" content="https://normdist.com/2026/06/25/ND-20260625-001-northbound-fund-migration/index.html">
+<meta property="og:title" content="博客助手自我进化：技能解耦与三层回退链设计">
+<meta property="og:url" content="https://normdist.com/2026/07/19/ND-20260719-001-blog-assistant-self-evolution/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="背景突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。 排查后发现东方财富的数据接口发生了更迭： 原接口状态问题 stock_hsgt_individual_em(symbol&#x3D;&quot;北上&quot;)❌ 完全坏死返回 NoneType 错误 stock_hsgt_hist_em(symbol&#x3D;&quot;沪股通&quot;)⚠️ 结构">
+<meta property="og:description" content="重命名了一下 moa-plus 技能，blog-helper 直接罢工——init.sh 报错说找不到路径，draft.py 和 review.py 也跟着挂。代码里埋了一个硬编码的定时炸弹。 问题：技能之间不该拉拉扯扯blog-helper 是博客创作与发布流水线技能，需要调用 MOA 类深度思考能力来审稿和写稿。但改造前，代码里到处都是对 moa-plus 路径的硬编码依赖：  init.sh">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-25T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T05:29:29.106Z">
+<meta property="article:published_time" content="2026-07-19T15:58:32.000Z">
+<meta property="article:modified_time" content="2026-07-19T16:02:36.346Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="akshare">
-<meta property="article:tag" content="python">
-<meta property="article:tag" content="北向资金">
-<meta property="article:tag" content="数据源">
-<meta property="article:tag" content="量化">
+<meta property="article:tag" content="MOA">
+<meta property="article:tag" content="blog-helper">
+<meta property="article:tag" content="回退链">
+<meta property="article:tag" content="技能开发">
+<meta property="article:tag" content="架构设计">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>东方财富北向资金接口迁移实战 - 进化概率论</title>
+  <title>博客助手自我进化：技能解耦与三层回退链设计 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -361,7 +361,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">东方财富北向资金接口迁移实战</span>
+            <span id="subtitle">博客助手自我进化：技能解耦与三层回退链设计</span>
           
         </div>
 
@@ -372,8 +372,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-25 10:00" pubdate>
-          2026年6月25日 上午
+        <time datetime="2026-07-19 23:58" pubdate>
+          2026年7月19日 晚上
         </time>
       </span>
     
@@ -384,7 +384,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.7k 字
+          2.8k 字
         
       </span>
     
@@ -395,7 +395,7 @@
         
         
         
-          23 分钟
+          24 分钟
         
       </span>
     
@@ -443,12 +443,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">东方财富北向资金接口迁移实战</h1>
+            <h1 id="seo-header">博客助手自我进化：技能解耦与三层回退链设计</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年7月20日 凌晨
                   
                 
               </p>
@@ -456,62 +456,122 @@
             
               <div class="markdown-body">
                 
-                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>突然发现北向资金接口的数据全挂了。当日数据返回 None，历史数据全 NaN，整个监控面板的数据都是空的。</p>
-<p>排查后发现东方财富的数据接口发生了更迭：</p>
-<p>原接口<br>状态<br>问题</p>
-<p><code>stock_hsgt_individual_em(symbol=&quot;北上&quot;)</code><br>❌ 完全坏死<br>返回 NoneType 错误</p>
-<p><code>stock_hsgt_hist_em(symbol=&quot;沪股通&quot;)</code><br>⚠️ 结构在但数据空<br>6月起成交净买额全 NaN</p>
-<p>两个接口同时坏死，说明不是临时故障，而是数据源端的接口迁移。</p>
-<h2 id="数据源架构"><a href="#数据源架构" class="headerlink" title="数据源架构"></a>数据源架构</h2><p>整个量化系统使用四层降级数据获取链：</p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><br><span class="hljs-attribute">1</span><br><br><span class="hljs-attribute">ReShare</span> <span class="hljs-number">8200</span>（自建数据服务）→ yfinance → AkShare → Mock<br><br></code></pre></td></tr></table></figure>
-
-<p>AkShare 在链上处于第三层。理想情况下，ReShare 8200 应该直接覆盖北向资金数据，但当时 ReShare 还只支持股票行情和 ETF 数据，北向资金这种特殊品种需要直接对接 AkShare。</p>
-<h2 id="问题诊断"><a href="#问题诊断" class="headerlink" title="问题诊断"></a>问题诊断</h2><p><code>stock_hsgt_individual_em</code> 是东方财富的北向资金个股排行接口，返回当日各只股票的北向资金买入&#x2F;卖出明细。调用后发现接口返回了 <code>None</code>——没有有效的 DataFrame。</p>
-<p><code>stock_hsgt_hist_em</code> 是沪&#x2F;深股通的历史成交净买额接口，用来做趋势分析。接口调用虽然返回了结构数据，但 6 月起所有字段的值为 NaN，说明源端不再更新这个字段。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="近-7-天数据"><a href="#近-7-天数据" class="headerlink" title="近 7 天数据"></a>近 7 天数据</h3><p>用 <code>stock_hsgt_fund_flow_summary_em()</code> 替代原来的个股排行接口。这个接口的差异：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><br><span class="hljs-comment"># 旧的（已坏死）</span><br>df = ak.stock_hsgt_individual_em(symbol=<span class="hljs-string">&quot;北上&quot;</span>)<br><br><span class="hljs-comment"># 新的</span><br>df = ak.stock_hsgt_fund_flow_summary_em(market=<span class="hljs-string">&quot;沪股通&quot;</span>)<br><br></code></pre></td></tr></table></figure>
-
-<p>新接口有几个注意事项：</p>
+                <p>重命名了一下 <code>moa-plus</code> 技能，<code>blog-helper</code> 直接罢工——<code>init.sh</code> 报错说找不到路径，<code>draft.py</code> 和 <code>review.py</code> 也跟着挂。代码里埋了一个硬编码的定时炸弹。</p>
+<h2 id="问题：技能之间不该拉拉扯扯"><a href="#问题：技能之间不该拉拉扯扯" class="headerlink" title="问题：技能之间不该拉拉扯扯"></a>问题：技能之间不该拉拉扯扯</h2><p><code>blog-helper</code> 是博客创作与发布流水线技能，需要调用 MOA 类深度思考能力来审稿和写稿。但改造前，代码里到处都是对 <code>moa-plus</code> 路径的硬编码依赖：</p>
 <ul>
-<li><p><strong>返回的是汇总数据</strong>，不是个股明细。如果需要逐股分析，需要额外拆解</p>
-</li>
-<li><p><strong>market 参数</strong>支持 <code>&quot;沪股通&quot;</code> 和 <code>&quot;深股通&quot;</code> 两个市场</p>
-</li>
-<li><p><strong>数据源</strong>是腾讯实时报价系统，当天数据可用，延迟约 5-10 分钟</p>
-</li>
-<li><p><strong>列名不同</strong>，需要重新做列映射</p>
-</li>
+<li><code>init.sh</code> 检查 <code>~/.hermes/skills/devops/moa-plus/scripts/moa_plus.py</code> 是否存在</li>
+<li><code>draft.py</code> 和 <code>review.py</code> 里直接写死 <code>Path.home() / &quot;.hermes&quot; / &quot;skills&quot; / &quot;devops&quot; / &quot;moa-plus&quot; / &quot;scripts&quot; / &quot;moa_plus.py&quot;</code></li>
+<li><code>SKILL.md</code> 的标题写着”写稿+审核：超级大脑 (moa-plus)”</li>
 </ul>
-<h3 id="历史数据"><a href="#历史数据" class="headerlink" title="历史数据"></a>历史数据</h3><p>历史数据保留 <code>stock_hsgt_hist_em</code> 接口，但做了降级处理：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><span class="hljs-number">9</span><br><span class="hljs-number">10</span><br><span class="hljs-number">11</span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><br><span class="hljs-number">16</span><br><span class="hljs-number">17</span><br><span class="hljs-number">18</span><br><span class="hljs-number">19</span><br><span class="hljs-number">20</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">fetch_northbound_history</span>(<span class="hljs-params">market=<span class="hljs-string">&quot;沪股通&quot;</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;北向资金历史数据，含降级处理&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">try</span>:<br>        df = ak.stock_hsgt_hist_em(symbol=market)<br>        <span class="hljs-keyword">if</span> df <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> df.empty:<br>            logger.warning(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;market&#125;</span> 历史数据为空&quot;</span>)<br>            <span class="hljs-keyword">return</span> pd.DataFrame()<br>        <span class="hljs-comment"># 标准化列名</span><br>        df = df.rename(columns=&#123;<br>            <span class="hljs-string">&quot;日期&quot;</span>: <span class="hljs-string">&quot;date&quot;</span>,<br>            <span class="hljs-string">&quot;成交净买额&quot;</span>: <span class="hljs-string">&quot;net_buy_amount&quot;</span>,<br>            <span class="hljs-string">&quot;买入成交额&quot;</span>: <span class="hljs-string">&quot;buy_amount&quot;</span>,<br>            <span class="hljs-string">&quot;卖出成交额&quot;</span>: <span class="hljs-string">&quot;sell_amount&quot;</span>,<br>        &#125;)<br>        <span class="hljs-comment"># 处理 NaN 值</span><br>        df = df.dropna(subset=[<span class="hljs-string">&quot;net_buy_amount&quot;</span>])<br>        <span class="hljs-keyword">return</span> df<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        logger.error(<span class="hljs-string">f&quot;获取<span class="hljs-subst">&#123;market&#125;</span>历史数据失败: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">return</span> pd.DataFrame()<br><br></code></pre></td></tr></table></figure>
-
-<p>关键点是<strong>列名标准化</strong>和<strong>NaN 值清洗</strong>。新版本的数据格式和旧版本不完全一致，直接覆盖原有逻辑会导致下游解析失败。</p>
-<h3 id="列映射适配"><a href="#列映射适配" class="headerlink" title="列映射适配"></a>列映射适配</h3><p>新接口的列名与旧接口不同，需要在数据获取策略层做映射：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><span class="hljs-number">7</span><br><span class="hljs-number">8</span><br><br>COLUMN_MAPPING = &#123;<br>    <span class="hljs-comment"># 新接口列名 → 统一内部列名</span><br>    <span class="hljs-string">&quot;成交净买额&quot;</span>: <span class="hljs-string">&quot;net_buy_amount&quot;</span>, <br>    <span class="hljs-string">&quot;沪股通/深股通&quot;</span>: <span class="hljs-string">&quot;market&quot;</span>,<br>    <span class="hljs-string">&quot;日期&quot;</span>: <span class="hljs-string">&quot;date&quot;</span>,<br>    <span class="hljs-comment"># 旧接口列名（兼容）</span><br>    <span class="hljs-string">&quot;成交净买入额&quot;</span>: <span class="hljs-string">&quot;net_buy_amount&quot;</span>,<br>&#125;<br><br></code></pre></td></tr></table></figure>
-
-<p>同时处理了 <code>total_inflow=0</code> 时误判为 None 的边界情况：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><br><span class="hljs-keyword">if</span> value <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">and</span> value == <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">isinstance</span>(value, (<span class="hljs-built_in">int</span>, <span class="hljs-built_in">float</span>)):<br>    <span class="hljs-comment"># 0 是有效值，不是空</span><br>    <span class="hljs-keyword">pass</span><br><br></code></pre></td></tr></table></figure>
-
-<h3 id="Docker-部署"><a href="#Docker-部署" class="headerlink" title="Docker 部署"></a>Docker 部署</h3><p>修改完成后推送到 Docker 容器的 ReShare 服务：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br>docker restart reshare-backend<br><br></code></pre></td></tr></table></figure>
-
-<p>验证健康检查：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br><br>curl http://localhost:8200/health<br><span class="hljs-comment"># → status: connected, database: connected</span><br><br></code></pre></td></tr></table></figure>
-
-<h2 id="验证结果"><a href="#验证结果" class="headerlink" title="验证结果"></a>验证结果</h2><p>修复后三个维度验证全部通过：</p>
-<p>检查项<br>结果</p>
-<p>当日数据<br>status&#x3D;success，2条记录 ✅</p>
-<p>历史数据<br>2024年数据正确返回（10条&#x2F;5天）✅</p>
-<p>健康检查<br>status&#x3D;healthy, database&#x3D;connected ✅</p>
-<p>北向资金监控面板恢复可用，后续 cron 定时采集也正常执行。</p>
-<h2 id="后续改进方向"><a href="#后续改进方向" class="headerlink" title="后续改进方向"></a>后续改进方向</h2><ul>
-<li><p><strong>告警机制</strong>：北向资金坏死到发现之间隔了多少天？需要添加数据新鲜度告警——如果某数据源连续 N 天返回空&#x2F;NaN，自动触发飞书通知</p>
-</li>
-<li><p><strong>自动化开关</strong>：类似接口迁移场景，可配置 fallback 优先级，AkShare 接口失效时自动切换到数据链的下一层（yfinance 或 Mock）</p>
-</li>
-<li><p><strong>监控数据源模式</strong>：当前架构是被动修复（发现坏死→改代码→重启），理想状态是主动探测（cron 定时检查各数据源的健康状态，异常时自动切换）</p>
-</li>
+<p>这种设计违反 Hermes Agent 的核心原则：<strong>每个技能都应该是相对独立的，串联它们的是代理，而不是技能内部的硬编码依赖</strong>。一旦 <code>moa-plus</code> 迁移路径、重命名或升级结构，<code>blog-helper</code> 就会直接挂掉，没有回旋余地。</p>
+<p>另外还混淆了两个概念。MOA（Mixture of Agents，混合代理）是多 LLM 代理协作；MoE（Mixture of Experts，混合专家）是单模型内部稀疏激活。<strong>blog-helper 调用的是 MOA，不是 MoE</strong>。概念混淆间接导致了硬编码思维——把它当成一个固定”组件”而非”可替换技能”。</p>
+<h2 id="解决方案：三层回退链-技能独立性"><a href="#解决方案：三层回退链-技能独立性" class="headerlink" title="解决方案：三层回退链 + 技能独立性"></a>解决方案：三层回退链 + 技能独立性</h2><p>一句话点醒设计者：”<code>init.sh</code> 为什么要去找 <code>moa-plus</code> 的路径？它不应该。MOA 调用应该是可选项：检测到就调，没有要回退，不能卡死。”</p>
+<p>改造分三步走。</p>
+<h3 id="第一步：描述层解耦"><a href="#第一步：描述层解耦" class="headerlink" title="第一步：描述层解耦"></a>第一步：描述层解耦</h3><p><code>SKILL.md</code> 不再具名 <code>moa-plus</code>，改为描述”调用 MOA 类深度思考能力”。代理在编排时根据实际可用技能灵活匹配，而不是绑死一个特定技能名。</p>
+<p>同时，把审稿和校对的标准固化成两份独立的指南文件：</p>
+<ul>
+<li><code>references/review-guide.md</code>：4 类问题（事实&#x2F;逻辑&#x2F;计算&#x2F;无来源）+ 3 级严重度</li>
+<li><code>references/proofreading-guide.md</code>：6 类检查项（AI 味&#x2F;隐私&#x2F;格式&#x2F;front matter&#x2F;命名&#x2F;参考文献）</li>
 </ul>
+<p>模型在没有 MOA 的情况下也能按指南独立工作——相当于把”大脑”的决策逻辑外置到文档中，而不是依赖外部技能。</p>
+<h3 id="第二步：代码层解耦"><a href="#第二步：代码层解耦" class="headerlink" title="第二步：代码层解耦"></a>第二步：代码层解耦</h3><p>脚本运行时通过 <code>_find_moa_script()</code> 函数动态检测 MOA 路径，不再硬编码。检测逻辑有三层，优先级递减：</p>
+<ol>
+<li><strong>用户显式配置</strong>：<code>config.yaml</code> 的 <code>llm.thinking_script</code> 字段，最灵活</li>
+<li><strong>默认搜索路径</strong>：<code>~/.hermes/skills/*/moa-plus/scripts/moa_plus.py</code>，兼容旧位置</li>
+<li><strong>模糊匹配兜底</strong>：<code>*/*moa*/scripts/*.py</code>，并检查文件内容是否包含 <code>&quot;generate&quot;</code> 函数签名，确保找到的是真正的 MOA 脚本而非同名文件</li>
+</ol>
+<p>即使技能迁移或改名，只要符合基本模式就能自动发现。</p>
+<h3 id="第三步：三层回退链设计"><a href="#第三步：三层回退链设计" class="headerlink" title="第三步：三层回退链设计"></a>第三步：三层回退链设计</h3><p>这是整个改造的骨架，保证助手在任何情况下都能运行而不是崩溃：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">主路径：MOA 类思考技能（运行时检测到 → 调用）<br>   ↓ 如果不可用或调用失败<br>回退 1：单模型直调（按审稿/校对指南独立工作）<br>   ↓ 如果配置缺失或调用失败<br>兜底  ：输出 prompt 到文件，提示代理按指南人工处理<br></code></pre></td></tr></table></figure>
+
+<p>每个层级都独立且可降级，不依赖上一层。具体实现上，<code>draft.py</code> 和 <code>review.py</code> 各自封装三个函数（主路径&#x2F;单模型&#x2F;兜底），按策略顺序调用。单模型回退时读取 <code>config.yaml</code> 中的 <code>fallback_base_url</code>&#x2F;<code>fallback_model</code> 配置；兜底时生成 <code>.txt</code> prompt 文件，内容包含当前任务、指南引用和指令，控制台打印提示让代理人工编排。</p>
+<p>兜底层输出的是结构化 prompt 文件，不是简单的错误日志。代理拿到文件后可以直接喂给任何可用的模型，不影响后续流程。</p>
+<h2 id="实测验证：三层都跑通了"><a href="#实测验证：三层都跑通了" class="headerlink" title="实测验证：三层都跑通了"></a>实测验证：三层都跑通了</h2><p>改完后在临时 HOME 全新环境分别测试每条路径。</p>
+<h3 id="draft-py-三层回退"><a href="#draft-py-三层回退" class="headerlink" title="draft.py 三层回退"></a>draft.py 三层回退</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主路径 MOA</td>
+<td>正常生成草稿 3573 字符</td>
+</tr>
+<tr>
+<td>单模型回退（故意指向不存在的 MOA 路径）</td>
+<td><code>deepseek-v4-flash</code> 生成 1691 字符草稿，逻辑完整</td>
+</tr>
+<tr>
+<td>兜底（删除 fallback 配置）</td>
+<td>输出 <code>writing-prompt-*.txt</code> 文件，包含全部上下文和指令</td>
+</tr>
+</tbody></table>
+<h3 id="review-py-三层回退"><a href="#review-py-三层回退" class="headerlink" title="review.py 三层回退"></a>review.py 三层回退</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主路径 MOA</td>
+<td>正常审稿</td>
+</tr>
+<tr>
+<td>单模型回退</td>
+<td><code>deepseek-v4-flash</code> 按审稿指南审稿，返回 0 问题</td>
+</tr>
+<tr>
+<td>兜底</td>
+<td>仅输出预检规则结果和指引，提示代理按 <code>review-guide.md</code> 人工审稿</td>
+</tr>
+</tbody></table>
+<h3 id="init-sh-实测"><a href="#init-sh-实测" class="headerlink" title="init.sh 实测"></a>init.sh 实测</h3><ul>
+<li>临时 HOME 全新环境下通过，不再检查 <code>moa-plus</code> 路径</li>
+<li>config 模板新增 <code>writing_mode</code> 和 <code>review_mode</code> 字段</li>
+</ul>
+<h2 id="改动清单"><a href="#改动清单" class="headerlink" title="改动清单"></a>改动清单</h2><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>改动</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SKILL.md</code></td>
+<td>标题去 <code>moa-plus</code> 具名；新增代理调用指引；references 索引加两份指南</td>
+</tr>
+<tr>
+<td><code>references/review-guide.md</code></td>
+<td>新建审稿指南（4 类问题 + 3 级严重度）</td>
+</tr>
+<tr>
+<td><code>references/proofreading-guide.md</code></td>
+<td>新建校对指南（6 类检查项）</td>
+</tr>
+<tr>
+<td><code>scripts/init.sh</code></td>
+<td>删 <code>moa-plus</code> 路径检查；config 模板新增 <code>writing_mode</code>&#x2F;<code>review_mode</code></td>
+</tr>
+<tr>
+<td><code>scripts/draft.py</code></td>
+<td>硬编码路径 → <code>_find_moa_script()</code>；单函数 → 三层回退链</td>
+</tr>
+<tr>
+<td><code>scripts/review.py</code></td>
+<td>同上</td>
+</tr>
+</tbody></table>
+<h2 id="韧性设计的本质"><a href="#韧性设计的本质" class="headerlink" title="韧性设计的本质"></a>韧性设计的本质</h2><p>这次改造重新理解了”技能独立性”——<strong>技能是乐高积木，不是拼图</strong>。每块积木不依赖其他积木的形状，代理负责把它们拼成想要的样子。而不是像拼图那样，每块只能配特定的邻居。</p>
+<p>三层回退链的设计哲学是：<strong>永远假设外部依赖不可靠</strong>。MOA 可能升级、迁移、甚至被移除，但 <code>blog-helper</code> 不能因此崩溃。每一层都是独立的”逃生通道”，越往下越简单、越可靠。</p>
+<p>审稿指南和校对指南的引入，本质上是<strong>把专家知识固化到文档层级</strong>，让模型在没有 MOA 时也能按规则工作——类似”知识蒸馏”，把外部技能的逻辑写进 prompt，让模型自己推理。</p>
+<p>下一步打算把回退链的配置抽象成通用的 YAML 声明，让每个技能都能声明自己的回退策略，而不用在代码里写死 fallback 逻辑。这或许会成为 Hermes Agent 技能系统的一个通用模式。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>Hermes Agent 技能系统设计原则</li>
+<li>blog-helper 技能源码（本次改造）</li>
+<li>本次开发会话中的口头指导：技能独立性、MOA vs MoE 概念区分、回退链设计（2026-07-19）</li>
+</ol>
 
                 
               </div>
@@ -520,40 +580,19 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/python/" class="print-no-link">#python</a>
+        <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" class="print-no-link">#架构设计</a>
       
-        <a href="/tags/akshare/" class="print-no-link">#akshare</a>
+        <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/" class="print-no-link">#技能开发</a>
       
-        <a href="/tags/%E9%87%8F%E5%8C%96/" class="print-no-link">#量化</a>
+        <a href="/tags/MOA/" class="print-no-link">#MOA</a>
       
-        <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90/" class="print-no-link">#数据源</a>
+        <a href="/tags/%E5%9B%9E%E9%80%80%E9%93%BE/" class="print-no-link">#回退链</a>
       
-        <a href="/tags/%E5%8C%97%E5%90%91%E8%B5%84%E9%87%91/" class="print-no-link">#北向资金</a>
+        <a href="/tags/blog-helper/" class="print-no-link">#blog-helper</a>
       
     </div>
   
@@ -565,8 +604,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>东方财富北向资金接口迁移实战</div>
-      <div>https://normdist.com/2026/06/25/ND-20260625-001-northbound-fund-migration/</div>
+      <div>博客助手自我进化：技能解耦与三层回退链设计</div>
+      <div>https://normdist.com/2026/07/19/ND-20260719-001-blog-assistant-self-evolution/</div>
     </div>
     <div class="license-meta">
       
@@ -578,7 +617,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年6月25日</div>
+          <div>2026年7月19日</div>
         </div>
       
       
@@ -610,18 +649,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/20/ND-20260620-001-hermes-gateway-management-pitfalls/" title="Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管">
-                        <span class="hidden-mobile">Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管</span>
+                      <a href="/2026/07/19/ND-20260719-001-ai-agent-diary-three-layer-filter/" title="AI Agent 日记三层筛选：从 Bug 追踪器到人类日记">
+                        <span class="hidden-mobile">AI Agent 日记三层筛选：从 Bug 追踪器到人类日记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

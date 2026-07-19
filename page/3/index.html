@@ -460,6 +460,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
+          Agent-to-Agent MCP 桥接：让两个 AI Agent 互相调用工具
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-001-a2a-mcp-bridge/" target="_self">
+        <div>
+          背景：一个 Linux Agent，一个 Windows Agent一个运行在 Linux 上的 AI Agent（下称”主 Agent”），已经有了完整工具链：文件读写、代码执行、定时任务、数据库查询。但它够不到隔壁一台 Windows 主机——那台机器上有另一个 Agent（下称”远程 Agent”），能做主 Agent 做不了的事：控制 Edge 浏览器登录态、操作 Windows 桌面应用
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-05 10:00" pubdate>
+              2026-07-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/MCP/">#MCP</a>
+            
+              <a href="/tags/Agent-%E9%97%B4%E9%80%9A%E4%BF%A1/">#Agent 间通信</a>
+            
+              <a href="/tags/%E5%B7%A5%E5%85%B7%E5%85%B1%E4%BA%AB/">#工具共享</a>
+            
+              <a href="/tags/%E6%A1%A5%E6%8E%A5%E6%96%B9%E6%A1%88/">#桥接方案</a>
+            
+              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0/">#跨平台</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" target="_self">
           SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法
         </a>
@@ -675,15 +746,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
-          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家
+        <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
+          量化系统 Docker→裸跑迁移：一份踩坑笔记
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
         <div>
-          背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累
+          背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，周期数据自动更新的 cron 任务触发——全盘
         </div>
       </a>
 
@@ -722,17 +793,17 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/AI-Agent/">#AI Agent</a>
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
             
-              <a href="/tags/Linux/">#Linux</a>
+              <a href="/tags/systemd/">#systemd</a>
             
-              <a href="/tags/Windows/">#Windows</a>
+              <a href="/tags/Docker/">#Docker</a>
             
-              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%81%E7%A7%BB/">#跨平台迁移</a>
+              <a href="/tags/%E8%A3%B8%E6%9C%BA%E9%83%A8%E7%BD%B2/">#裸机部署</a>
             
-              <a href="/tags/%E7%8E%AF%E5%A2%83%E9%80%82%E9%85%8D/">#环境适配</a>
+              <a href="/tags/%E8%BF%81%E7%A7%BB%E8%B8%A9%E5%9D%91/">#迁移踩坑</a>
             
-              <a href="/tags/%E8%BF%81%E7%A7%BB%E6%96%B9%E6%A1%88/">#迁移方案</a>
+              <a href="/tags/%E7%8E%AF%E5%A2%83%E4%B8%80%E8%87%B4%E6%80%A7/">#环境一致性</a>
             
           </div>
         
@@ -817,15 +888,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
-          量化系统 Docker→裸跑迁移：一份踩坑笔记
+        <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
+          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
         <div>
-          背景：Docker 卸载后，谁还在偷偷调用它？一套量化交易系统（AutoQuant），原本跑在 Docker 容器里。2026-06-30 做了一次基础设施迁移：从 Docker 搬到 systemd 裸跑服务，docker 命令已从系统中卸载。 迁移文档记录了核心服务已就绪，systemd 服务正常运行。一切看起来没问题。 直到周六凌晨 03:00，周期数据自动更新的 cron 任务触发——全盘
+          背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累
         </div>
       </a>
 
@@ -864,17 +935,17 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+              <a href="/tags/AI-Agent/">#AI Agent</a>
             
-              <a href="/tags/systemd/">#systemd</a>
+              <a href="/tags/Linux/">#Linux</a>
             
-              <a href="/tags/Docker/">#Docker</a>
+              <a href="/tags/Windows/">#Windows</a>
             
-              <a href="/tags/%E8%A3%B8%E6%9C%BA%E9%83%A8%E7%BD%B2/">#裸机部署</a>
+              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%81%E7%A7%BB/">#跨平台迁移</a>
             
-              <a href="/tags/%E8%BF%81%E7%A7%BB%E8%B8%A9%E5%9D%91/">#迁移踩坑</a>
+              <a href="/tags/%E7%8E%AF%E5%A2%83%E9%80%82%E9%85%8D/">#环境适配</a>
             
-              <a href="/tags/%E7%8E%AF%E5%A2%83%E4%B8%80%E8%87%B4%E6%80%A7/">#环境一致性</a>
+              <a href="/tags/%E8%BF%81%E7%A7%BB%E6%96%B9%E6%A1%88/">#迁移方案</a>
             
           </div>
         
@@ -1017,77 +1088,6 @@
               <a href="/tags/Meta-Watchdog/">#Meta Watchdog</a>
             
               <a href="/tags/%E7%B3%BB%E7%BB%9F%E5%8F%AF%E9%9D%A0%E6%80%A7/">#系统可靠性</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
-          东方财富北向资金双接口同时坏死——一个降级+迁移方案
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
-        <div>
-          某套量化系统的北向资金模块在例行巡检中遭遇了一次”教科书级”的接口故障：东方财富的两个北向资金 API 同时坏死——一个返回空结果，一个返回全 NaN。如果系统只依赖其中一个接口，故障会在当天收盘后才会暴露；但因为两个接口在同一时段同时挂了，数据断档直接触发了告警。 本文记录从发现故障、定位根因到设计降级方案的完整过程，重点讨论：如何在多源数据管道中优雅地处理”主备同时失效”的场景。 一、问题：两
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-01 10:00" pubdate>
-              2026-07-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%87%8F%E5%8C%96%E6%8A%80%E6%9C%AF/" class="category-chain-item">量化技术</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
-              <a href="/tags/%E5%8C%97%E5%90%91%E8%B5%84%E9%87%91/">#北向资金</a>
-            
-              <a href="/tags/%E4%B8%9C%E6%96%B9%E8%B4%A2%E5%AF%8C/">#东方财富</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A5%E5%8F%A3/">#数据接口</a>
-            
-              <a href="/tags/%E9%99%8D%E7%BA%A7%E6%96%B9%E6%A1%88/">#降级方案</a>
-            
-              <a href="/tags/%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/">#故障处理</a>
             
           </div>
         
