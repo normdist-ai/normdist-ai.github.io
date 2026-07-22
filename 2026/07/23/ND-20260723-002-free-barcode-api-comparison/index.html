@@ -1,0 +1,997 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="超市货架前，你拿出手机扫了一下商品包装上的条形码——屏幕跳出了商品名称、品牌、价格甚至配料表。这个体验很自然，但背后的问题不简单：这些数据从哪来？如果你是个开发者，想给自己的 App 加上扫码查询功能，有哪些免费 API 可以用？ 我花了一个下午实测了互联网上能找到的 7 个免费商品条码查询 API，用真实的条码逐个请求，记录返回的字段、额度限制和响应质量。结果有些出乎意料。 先搞清楚：商品条码不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="免费商品条码 API 横评：7个数据库实测对比">
+<meta property="og:url" content="https://normdist.com/2026/07/23/ND-20260723-002-free-barcode-api-comparison/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="超市货架前，你拿出手机扫了一下商品包装上的条形码——屏幕跳出了商品名称、品牌、价格甚至配料表。这个体验很自然，但背后的问题不简单：这些数据从哪来？如果你是个开发者，想给自己的 App 加上扫码查询功能，有哪些免费 API 可以用？ 我花了一个下午实测了互联网上能找到的 7 个免费商品条码查询 API，用真实的条码逐个请求，记录返回的字段、额度限制和响应质量。结果有些出乎意料。 先搞清楚：商品条码不">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://normdist.com/barcode-api-comparison.png">
+<meta property="article:published_time" content="2026-07-23T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-22T17:32:49.653Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="API">
+<meta property="article:tag" content="GS1">
+<meta property="article:tag" content="barcode">
+<meta property="article:tag" content="条码">
+<meta property="article:tag" content="调研">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://normdist.com/barcode-api-comparison.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>免费商品条码 API 横评：7个数据库实测对比 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">免费商品条码 API 横评：7个数据库实测对比</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-23 09:00" pubdate>
+          2026年7月23日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">免费商品条码 API 横评：7个数据库实测对比</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月23日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>超市货架前，你拿出手机扫了一下商品包装上的条形码——屏幕跳出了商品名称、品牌、价格甚至配料表。这个体验很自然，但背后的问题不简单：这些数据从哪来？如果你是个开发者，想给自己的 App 加上扫码查询功能，有哪些免费 API 可以用？</p>
+<p>我花了一个下午实测了互联网上能找到的 7 个免费商品条码查询 API，用真实的条码逐个请求，记录返回的字段、额度限制和响应质量。结果有些出乎意料。</p>
+<h2 id="先搞清楚：商品条码不是一种东西"><a href="#先搞清楚：商品条码不是一种东西" class="headerlink" title="先搞清楚：商品条码不是一种东西"></a>先搞清楚：商品条码不是一种东西</h2><p>我们日常说的”条形码”其实是好几种东西的统称：</p>
+<ul>
+<li><strong>EAN-13</strong>：13位数字，中国和欧洲通用，比如 <code>6901234567892</code>。前3位是国家&#x2F;地区代码，<code>690-699</code> 开头的是中国。</li>
+<li><strong>UPC-A</strong>：12位数字，北美地区使用，比如 <code>049000028904</code>。</li>
+<li><strong>ISBN</strong>：书的条码，13位（ISBN-13）或10位（ISBN-10），本质上是 EAN 的子集，<code>978</code>&#x2F;<code>979</code> 开头。</li>
+</ul>
+<p>大多数 API 接受 EAN 和 UPC，部分还支持 ISBN。了解这一点很重要——如果你查的是中国商品（<code>690</code> 开头），数据库里有没有收录中国前缀的条码，直接决定了它对你有没有用。</p>
+<h2 id="7-个-API-实测"><a href="#7-个-API-实测" class="headerlink" title="7 个 API 实测"></a>7 个 API 实测</h2><h3 id="1-Open-Food-Facts-—-食品类最强免费方案"><a href="#1-Open-Food-Facts-—-食品类最强免费方案" class="headerlink" title="1. Open Food Facts — 食品类最强免费方案"></a>1. Open Food Facts — 食品类最强免费方案</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">GET https://world.openfoodfacts.org/api/v2/product/3017620422003.json<br></code></pre></td></tr></table></figure>
+
+<p>用 Nutella（费列罗巧克力酱）的条码测试，返回了 <strong>365 个字段</strong>。</p>
+<p>除了商品名称和品牌，还有完整的营养成分、配料表、过敏原、添加剂、营养评分、碳足迹、包装材料信息。数据量令人震惊。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;product&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;product_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Nutella&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;brands&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Nutella, Ferrero, Yum yum&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;categories&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;en:Confectionary based spreads, en:Petit-déjeuners&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;quantity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;400 g&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;image_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://images.openfoodfacts.org/images/products/...&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;countries&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;France,Belgium,...&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;allergens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;milk,soy,hazelnut&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;additives_n&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;nutrition_grades&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;c&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>优点</strong>：完全免费，无需 API Key，没有速率限制，数据量极大，开源项目。</p>
+<p><strong>缺点</strong>：只覆盖食品饮料。我测试了3个中国前缀条码（<code>690</code>&#x2F;<code>692</code> 开头），全部返回 404。数据众包模式意味着欧美商品覆盖率高，亚洲商品稀缺。</p>
+<h3 id="2-UPCitemdb-—-通用商品的免费-trial"><a href="#2-UPCitemdb-—-通用商品的免费-trial" class="headerlink" title="2. UPCitemdb — 通用商品的免费 trial"></a>2. UPCitemdb — 通用商品的免费 trial</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">GET https://api.upcitemdb.com/prod/trial/lookup?upc=049000028904<br></code></pre></td></tr></table></figure>
+
+<p>用可口可乐的条码测试，返回了 18 个字段：商品名称、品牌、类目、颜色、尺寸、重量、描述、图片。</p>
+<p>还有一个最实用的——<strong>商家报价链接</strong>（offers）和历史最低&#x2F;最高价格。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;OK&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;total&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;items&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Coca-Cola Classic Soda Pop Fridge Pack 12 fl oz Cans 12 Pack&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;brand&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Coca-Cola&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;category&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Food, Beverages &amp; Tobacco &gt; Beverages &gt; Soda&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;color&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Burgundy&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;lowest_recorded_price&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5.99</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;highest_recorded_price&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12.99</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;images&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;https://pics.walgreens.com/prodimg/416805/450.jpg&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;offers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-comment">/* 10个商家报价 */</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;asin&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;B00812...&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>从响应头可以明确看到免费额度：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">X-RateLimit-Limit: 100<br>X-RateLimit-Remaining: 72<br>X-RateLimit-Reset: 1784768403<br></code></pre></td></tr></table></figure>
+
+<p><strong>100 次&#x2F;天</strong>，无需 API Key（trial 端点），覆盖通用商品不限品类。</p>
+<p><strong>缺点</strong>：100次&#x2F;天对于生产环境不够用。付费版 $0.001&#x2F;次起。</p>
+<h3 id="3-Google-Books-API-—-ISBN-查询图书"><a href="#3-Google-Books-API-—-ISBN-查询图书" class="headerlink" title="3. Google Books API — ISBN 查询图书"></a>3. Google Books API — ISBN 查询图书</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">GET https://www.googleapis.com/books/v1/volumes?q=isbn:9787111421900<br></code></pre></td></tr></table></figure>
+
+<p>免费额度 <strong>1000 次&#x2F;天</strong>，无需 Key。返回书名、作者、出版社、出版日期、分类、页数、语言、封面图等。</p>
+<p>但有两个问题：一是只覆盖图书，不是通用商品条码；二是实测过程中频繁请求会触发 <strong>429 Too Many Requests</strong>，需要注意请求间隔。</p>
+<h3 id="4-Open-Library-—-另一个免费图书数据库"><a href="#4-Open-Library-—-另一个免费图书数据库" class="headerlink" title="4. Open Library — 另一个免费图书数据库"></a>4. Open Library — 另一个免费图书数据库</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">GET https://openlibrary.org/api/books?bibkeys=ISBN:9780132350884&amp;format=json&amp;jscmd=data<br></code></pre></td></tr></table></figure>
+
+<p>用《Clean Code》的 ISBN 测试，返回了书名、作者、出版社、出版日期、页数、主题分类、封面。完全免费，无需 Key，无速率限制。</p>
+<p>字段比 Google Books 少一些（没有描述和语言字段），但作为备选数据库是合格的。</p>
+<h3 id="5-UPC-Database-—-需要注册的通用查询"><a href="#5-UPC-Database-—-需要注册的通用查询" class="headerlink" title="5. UPC Database — 需要注册的通用查询"></a>5. UPC Database — 需要注册的通用查询</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">GET https://api.upcdatabase.org/prod/v1/lookup?upc=3017620422003<br></code></pre></td></tr></table></figure>
+
+<p>需要免费注册获取 API Key。不带 Key 测试返回 <code>&quot;Your API Key is invalid&quot;</code>。</p>
+<p>注册后免费额度 <strong>100 次&#x2F;天</strong>，覆盖通用商品。功能和 UPCitemdb 类似，但多了一个注册步骤。</p>
+<h3 id="6-GS1-GEPIR-—-标准源头但不好用"><a href="#6-GS1-GEPIR-—-标准源头但不好用" class="headerlink" title="6. GS1 GEPIR — 标准源头但不好用"></a>6. GS1 GEPIR — 标准源头但不好用</h3><p>GS1 是全球条码标准的制定组织，理论上应该拥有最权威的数据。但实测：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs http">GET https://www.gs1.org/services/validated-registry/3017620422003<br>→ HTTP 403<br></code></pre></td></tr></table></figure>
+
+<p>不提供公开 API。中国 GS1（ancc.org.cn）返回 HTTP 530，也不可用。</p>
+<p>GS1 只能查到条码注册公司信息，查不到商品详情（名称、图片、价格这些）。作为数据源头它很权威，但作为产品 API 它不合格。</p>
+<h3 id="7-DataKick-—-已停止服务"><a href="#7-DataKick-—-已停止服务" class="headerlink" title="7. DataKick — 已停止服务"></a>7. DataKick — 已停止服务</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs http">GET https://www.datakick.org/api/items/3017620422003<br>→ HTTP 404<br></code></pre></td></tr></table></figure>
+
+<p>DataKick 曾经是一个社区驱动的产品数据库，现在已经停止服务。在网上搜索时还能找到一些文章推荐它，但实际已不可用。<strong>如果你看到有教程推荐 DataKick，请跳过。</strong></p>
+<h2 id="横向对比"><a href="#横向对比" class="headerlink" title="横向对比"></a>横向对比</h2><p><img src="/barcode-api-comparison.png" srcset="/img/loading.gif" lazyload alt="免费商品条码 API 实测对比"></p>
+<h2 id="怎么选"><a href="#怎么选" class="headerlink" title="怎么选"></a>怎么选</h2><p><strong>查食品饮料</strong> → <strong>Open Food Facts</strong>。无限免费，数据最丰富，欧美商品覆盖率极高。唯一的问题是中文食品收录太少。</p>
+<p><strong>查通用商品</strong> → <strong>UPCitemdb</strong>。100次&#x2F;天免费不需要 Key，返回字段实用（尤其价格区间和报价链接），通用品类全覆盖。</p>
+<p><strong>查图书</strong> → <strong>Google Books</strong>（1000次&#x2F;天）或 <strong>Open Library</strong>（无限）。两个互补使用效果更好。</p>
+<p><strong>中国商品</strong> → 这是最尴尬的场景。GS1 中国不开放，Open Food Facts 对 <code>690</code>&#x2F;<code>692</code> 前缀条码几乎没有收录，UPCitemdb 有一些但不完整。目前没有好的免费方案，可能需要考虑国内的商业条码服务或者自己建库。</p>
+<h2 id="关于中国商品条码的困境"><a href="#关于中国商品条码的困境" class="headerlink" title="关于中国商品条码的困境"></a>关于中国商品条码的困境</h2><p>这次测试最深的感受是：<strong>中国的商品条码数据生态几乎是空白的。</strong></p>
+<p>全球条码标准由 GS1 管理，中国 GS1（中国物品编码中心，ancc.org.cn）负责国内条码分配。但中国 GS1 的数据不对外开放查询——它的网站甚至返回 530 错误。</p>
+<p>这意味着超过 1000 万个中国注册的商品条码（<code>690</code>-<code>699</code> 前缀）的详细信息，对于开发者来说几乎是黑箱。社区数据库（如 Open Food Facts）靠志愿者众包录入，中国商品覆盖率极低。</p>
+<p>这不是技术问题，是数据开放问题。在欧美，开放数据运动推动了 Open Food Facts 等项目的繁荣；在中国，商品条码数据被视为商业资源，不轻易免费开放。</p>
+<p>如果你确实需要查中国商品条码，目前可行的路径是：京东&#x2F;淘宝的开放平台（需企业资质），或者第三方商业条码服务（按量计费）。免费的午餐，暂时还没有。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://world.openfoodfacts.org/data">Open Food Facts API 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.upcitemdb.com/wpdocs/main/development/overview">UPCitemdb API</a></li>
+<li><a target="_blank" rel="noopener" href="https://developers.google.com/books">Google Books API</a></li>
+<li><a target="_blank" rel="noopener" href="https://openlibrary.org/developers/api">Open Library API</a></li>
+<li><a target="_blank" rel="noopener" href="https://upcdatabase.org/documentation">UPC Database API</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.gs1.org/services/gepir">GS1 GEPIR</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E8%B0%83%E7%A0%94/" class="category-chain-item">技术调研</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%9D%A1%E7%A0%81/" class="print-no-link">#条码</a>
+      
+        <a href="/tags/API/" class="print-no-link">#API</a>
+      
+        <a href="/tags/%E8%B0%83%E7%A0%94/" class="print-no-link">#调研</a>
+      
+        <a href="/tags/barcode/" class="print-no-link">#barcode</a>
+      
+        <a href="/tags/GS1/" class="print-no-link">#GS1</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>免费商品条码 API 横评：7个数据库实测对比</div>
+      <div>https://normdist.com/2026/07/23/ND-20260723-002-free-barcode-api-comparison/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/22/ND-20260722-001-cross-agent-collaboration-awareness/" title="跨代理协作感知：让 AI Agent 知道别人在干什么">
+                        <span class="hidden-mobile">跨代理协作感知：让 AI Agent 知道别人在干什么</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
