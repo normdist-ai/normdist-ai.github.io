@@ -1,0 +1,1077 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="当数据源开始”抽风”凌晨三点，你的量化交易系统准时启动。一切看起来很正常——直到日志里开始刷屏： 12345WARNING - akshare 新浪渠道获取数据失败: ConnectionErrorWARNING - 重试 1&#x2F;3...WARNING - 重试 2&#x2F;3...WARNING - 重试 3&#x2F;3...ERROR - 所有数据源不可用  北向资金数据没拉到，龙虎榜数据没拉到，融资融券数据也">
+<meta property="og:type" content="article">
+<meta property="og:title" content="断路器模式：让 AI 数据管道不怕外部源抽风">
+<meta property="og:url" content="https://normdist.com/2026/07/22/ND-20260722-001-circuit-breaker-for-data-pipeline/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="当数据源开始”抽风”凌晨三点，你的量化交易系统准时启动。一切看起来很正常——直到日志里开始刷屏： 12345WARNING - akshare 新浪渠道获取数据失败: ConnectionErrorWARNING - 重试 1&#x2F;3...WARNING - 重试 2&#x2F;3...WARNING - 重试 3&#x2F;3...ERROR - 所有数据源不可用  北向资金数据没拉到，龙虎榜数据没拉到，融资融券数据也">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-22T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-22T01:11:44.863Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="ReShare">
+<meta property="article:tag" content="数据管道">
+<meta property="article:tag" content="断路器模式">
+<meta property="article:tag" content="架构设计">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>断路器模式：让 AI 数据管道不怕外部源抽风 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">断路器模式：让 AI 数据管道不怕外部源抽风</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-22 10:00" pubdate>
+          2026年7月22日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          71 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">断路器模式：让 AI 数据管道不怕外部源抽风</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月22日 上午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="当数据源开始”抽风”"><a href="#当数据源开始”抽风”" class="headerlink" title="当数据源开始”抽风”"></a>当数据源开始”抽风”</h2><p>凌晨三点，你的量化交易系统准时启动。一切看起来很正常——直到日志里开始刷屏：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">WARNING</span> - akshare 新浪渠道获取数据失败: ConnectionError<br><span class="hljs-built_in">WARNING</span> - 重试 1/3<span class="hljs-built_in">..</span>.<br><span class="hljs-built_in">WARNING</span> - 重试 2/3<span class="hljs-built_in">..</span>.<br><span class="hljs-built_in">WARNING</span> - 重试 3/3<span class="hljs-built_in">..</span>.<br><span class="hljs-built_in">ERROR</span> - 所有数据源不可用<br></code></pre></td></tr></table></figure>
+
+<p>北向资金数据没拉到，龙虎榜数据没拉到，融资融券数据也没拉到。等你在早上七点打开终端，发现整个情绪面分析模块已经瘫痪了四个小时。</p>
+<p>这不是假设场景。在我们的 ReShare 量化数据中台项目中，外部数据源的不可靠性是每天都要面对的现实：新浪财经的 API 间歇性超时，东方财富的反爬策略随时升级，BaoStock 的自有服务器偶尔也会宕机。一个”抽风”的外部源，如果没有保护机制，可以像传染病一样拖垮整个数据管道。</p>
+<p>这篇文章分享我们在 ReShare 项目中实践的断路器模式（Circuit Breaker Pattern）——如何让数据管道在外部源”抽风”时自动降级、自动隔离、自动恢复，而不是一路报错到底。</p>
+<h2 id="问题：没有断路器的世界"><a href="#问题：没有断路器的世界" class="headerlink" title="问题：没有断路器的世界"></a>问题：没有断路器的世界</h2><p>先看看没有保护机制时会发生什么。一个典型的数据获取调用链：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">用户请求 → API 路由 → MarketDataService → AKShare → 新浪财经 API<br></code></pre></td></tr></table></figure>
+
+<p>当新浪财经 API 超时时，如果没有断路器，每次请求都会：</p>
+<ol>
+<li><strong>等待超时</strong>：默认 30 秒连接超时，大量请求堆积</li>
+<li><strong>盲目重试</strong>：同一个已经挂掉的 API 被反复调用，加剧对方服务器压力</li>
+<li><strong>连锁故障</strong>：线程池被阻塞，新请求无法处理，整个服务假死</li>
+<li><strong>无降级路径</strong>：要么拿到数据，要么报错，没有中间态</li>
+</ol>
+<p>更麻烦的是，外部数据源的故障往往是”半死不活”的——不是完全不可用，而是时好时坏。你的重试逻辑每一次都心存侥幸，结果就是系统在”尝试-失败-重试-再失败”的循环中空耗资源。</p>
+<p>我们需要的是一种机制，能够<strong>记住哪些数据源已经不可靠了，暂时不再去碰它，过一段时间再试探性看看恢复了没有</strong>。</p>
+<h2 id="断路器模式：三态状态机"><a href="#断路器模式：三态状态机" class="headerlink" title="断路器模式：三态状态机"></a>断路器模式：三态状态机</h2><p>断路器的核心思想来自电气工程：当电流过载时，断路器自动跳闸，切断电路，防止设备烧毁。在软件中，它是一个三态状态机：</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs excel">CLOSED（正常）─── 连续失败 <span class="hljs-built_in">N</span> 次 ───→ OPEN（熔断）<br>   ↑                                    │<br>   │                              等待 <span class="hljs-built_in">T</span> 秒<br>   │                                    ↓<br>   └── 连续成功 M 次 ── HALF_OPEN（半开）<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>行为</th>
+<th>迁移条件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CLOSED</strong>（关闭）</td>
+<td>正常放行所有请求</td>
+<td>连续失败达到阈值 → OPEN</td>
+</tr>
+<tr>
+<td><strong>OPEN</strong>（打开）</td>
+<td>直接拒绝所有请求</td>
+<td>超时时间到 → HALF_OPEN</td>
+</tr>
+<tr>
+<td><strong>HALF_OPEN</strong>（半开）</td>
+<td>放行少量探测请求</td>
+<td>成功达标 → CLOSED；任意失败 → OPEN</td>
+</tr>
+</tbody></table>
+<p>关键设计点：</p>
+<ul>
+<li><strong>CLOSED 到 OPEN</strong>：不是一次失败就熔断，而是<strong>连续失败</strong>达到阈值。偶发错误不会触发熔断。</li>
+<li><strong>OPEN 到 HALF_OPEN</strong>：熔断不是永久的。超时后进入半开状态，允许少量探测请求验证是否恢复。</li>
+<li><strong>HALF_OPEN 到 CLOSED</strong>：需要连续成功达到阈值才能完全恢复。这防止了”假恢复”——偶尔成功一次但整体仍不稳定。</li>
+</ul>
+<h2 id="ReShare-的四层防御体系"><a href="#ReShare-的四层防御体系" class="headerlink" title="ReShare 的四层防御体系"></a>ReShare 的四层防御体系</h2><p>在实际项目中，单靠断路器是不够的。ReShare 构建了四层防御体系，从内到外逐层兜底：</p>
+<figure class="highlight nestedtext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext"><span class="hljs-attribute">Layer 1</span><span class="hljs-punctuation">:</span> <span class="hljs-string">断路器（CircuitBreaker）</span><br>         <span class="hljs-attribute">── 按数据源隔离，连续失败 5 次熔断，30 秒后半开探测</span><br><span class="hljs-attribute">              ↓ 熔断器打开则跳过</span><br><span class="hljs-attribute">Layer 2</span><span class="hljs-punctuation">:</span> <span class="hljs-string">优先级降级（DataFetchStrategy）</span><br>         <span class="hljs-attribute">── 按优先级遍历数据源，A 挂了试 B，B 挂了试 C</span><br><span class="hljs-attribute">              ↓ 所有源都失败</span><br><span class="hljs-attribute">Layer 3</span><span class="hljs-punctuation">:</span> <span class="hljs-string">缓存兜底（EnhancedCache + PersistentCache）</span><br>         <span class="hljs-attribute">── 热缓存 TTL 1 小时，冷缓存持久化到磁盘</span><br><span class="hljs-attribute">              ↓ 连缓存都没有</span><br><span class="hljs-attribute">Layer 4</span><span class="hljs-punctuation">:</span> <span class="hljs-string">优雅降级响应</span><br>         ── 返回空数据 + status=&quot;unavailable&quot; + last_success 时间戳<br></code></pre></td></tr></table></figure>
+
+<h3 id="第一层：断路器"><a href="#第一层：断路器" class="headerlink" title="第一层：断路器"></a>第一层：断路器</h3><p>这是最内层的防线，实现在 <code>data_source_exceptions.py</code> 中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">CircuitState</span>(<span class="hljs-title class_ inherited__">Enum</span>):<br>    CLOSED = <span class="hljs-string">&quot;closed&quot;</span>        <span class="hljs-comment"># 正常状态，允许请求</span><br>    OPEN = <span class="hljs-string">&quot;open&quot;</span>            <span class="hljs-comment"># 熔断状态，拒绝请求</span><br>    HALF_OPEN = <span class="hljs-string">&quot;half_open&quot;</span>  <span class="hljs-comment"># 半开状态，允许探测请求</span><br><br><span class="hljs-meta">@dataclass</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">CircuitBreakerConfig</span>:<br>    failure_threshold: <span class="hljs-built_in">int</span> = <span class="hljs-number">5</span>      <span class="hljs-comment"># 触发熔断的失败次数</span><br>    success_threshold: <span class="hljs-built_in">int</span> = <span class="hljs-number">3</span>      <span class="hljs-comment"># 恢复所需的连续成功次数</span><br>    timeout_seconds: <span class="hljs-built_in">int</span> = <span class="hljs-number">30</span>       <span class="hljs-comment"># 熔断超时时间</span><br>    half_open_max_calls: <span class="hljs-built_in">int</span> = <span class="hljs-number">3</span>    <span class="hljs-comment"># 半开状态最大探测次数</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">CircuitBreaker</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">can_execute</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">bool</span>:<br>        <span class="hljs-keyword">with</span> <span class="hljs-variable language_">self</span>._lock:<br>            <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._stats.state == CircuitState.CLOSED:<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span><br>            <span class="hljs-keyword">elif</span> <span class="hljs-variable language_">self</span>._stats.state == CircuitState.OPEN:<br>                elapsed = (now - <span class="hljs-variable language_">self</span>._stats.last_failure_time).total_seconds()<br>                <span class="hljs-keyword">if</span> elapsed &gt;= <span class="hljs-variable language_">self</span>.config.timeout_seconds:<br>                    <span class="hljs-variable language_">self</span>._update_state(CircuitState.HALF_OPEN)<br>                    <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>  <span class="hljs-comment"># 放行探测请求</span><br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>  <span class="hljs-comment"># 熔断中，直接拒绝</span><br>            <span class="hljs-keyword">elif</span> <span class="hljs-variable language_">self</span>._stats.state == CircuitState.HALF_OPEN:<br>                <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._stats.half_open_calls &lt; <span class="hljs-variable language_">self</span>.config.half_open_max_calls:<br>                    <span class="hljs-variable language_">self</span>._stats.half_open_calls += <span class="hljs-number">1</span><br>                    <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>  <span class="hljs-comment"># 限量探测</span><br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">record_failure</span>(<span class="hljs-params">self, exception=<span class="hljs-literal">None</span></span>):<br>        <span class="hljs-keyword">with</span> <span class="hljs-variable language_">self</span>._lock:<br>            <span class="hljs-variable language_">self</span>._stats.failure_count += <span class="hljs-number">1</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._stats.failure_count &gt;= <span class="hljs-variable language_">self</span>.config.failure_threshold:<br>                <span class="hljs-variable language_">self</span>._update_state(CircuitState.OPEN)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">record_success</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">with</span> <span class="hljs-variable language_">self</span>._lock:<br>            <span class="hljs-variable language_">self</span>._stats.failure_count = <span class="hljs-number">0</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._stats.state == CircuitState.HALF_OPEN:<br>                <span class="hljs-variable language_">self</span>._stats.success_count += <span class="hljs-number">1</span><br>                <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._stats.success_count &gt;= <span class="hljs-variable language_">self</span>.config.success_threshold:<br>                    <span class="hljs-variable language_">self</span>._update_state(CircuitState.CLOSED)<br></code></pre></td></tr></table></figure>
+
+<p>注意几个工程细节：</p>
+<ul>
+<li><strong>线程安全</strong>：所有状态变更都在 <code>threading.Lock</code> 保护下进行。断路器是多线程共享的，不加锁会导致状态混乱。</li>
+<li><strong>原子状态迁移</strong>：<code>_update_state</code> 方法统一处理状态变更和日志记录，避免散落在各处的状态修改。</li>
+<li><strong>半开限流</strong>：HALF_OPEN 状态下不仅放行探测请求，还限制探测次数（<code>half_open_max_calls</code>），防止探测请求洪流。</li>
+</ul>
+<p>每个数据源有自己的断路器实例，由 <code>CircuitBreakerManager</code> 统一管理：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">CircuitBreakerManager</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-variable language_">self</span>._circuit_breakers: <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, CircuitBreaker] = &#123;&#125;<br>        <span class="hljs-variable language_">self</span>._lock = threading.Lock()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_circuit_breaker</span>(<span class="hljs-params">self, source_name: <span class="hljs-built_in">str</span></span>) -&gt; CircuitBreaker:<br>        <span class="hljs-keyword">with</span> <span class="hljs-variable language_">self</span>._lock:<br>            <span class="hljs-keyword">if</span> source_name <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._circuit_breakers:<br>                <span class="hljs-variable language_">self</span>._circuit_breakers[source_name] = CircuitBreaker(source_name)<br>            <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._circuit_breakers[source_name]<br></code></pre></td></tr></table></figure>
+
+<h3 id="第二层：策略模式-优先级降级"><a href="#第二层：策略模式-优先级降级" class="headerlink" title="第二层：策略模式 + 优先级降级"></a>第二层：策略模式 + 优先级降级</h3><p>断路器解决的是”不要再调用已经挂掉的源”的问题，但请求还是要拿到数据的。策略模式负责在多个源之间按优先级降级：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">DataFetchStrategy</span>(ABC, <span class="hljs-type">Generic</span>[T, R]):<br>    SOURCE_PRIORITY: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>] = []      <span class="hljs-comment"># 数据源优先级列表</span><br>    CACHE_TTL: <span class="hljs-built_in">int</span> = <span class="hljs-number">3600</span>                <span class="hljs-comment"># 缓存 TTL</span><br>    FALLBACK_CACHE_KEY: <span class="hljs-built_in">str</span> = <span class="hljs-string">&quot;&quot;</span>         <span class="hljs-comment"># 持久化缓存键</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">execute</span>(<span class="hljs-params">self, db, **kwargs</span>) -&gt; R:<br>        <span class="hljs-comment"># 1. 检查热缓存</span><br>        cached = enhanced_cache.get(cache_key)<br>        <span class="hljs-keyword">if</span> cached:<br>            <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.build_response(CACHE_HIT, cached)<br><br>        <span class="hljs-comment"># 2. 按优先级遍历数据源</span><br>        <span class="hljs-keyword">for</span> source_name <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.SOURCE_PRIORITY:<br>            breaker = <span class="hljs-variable language_">self</span>._circuit_breaker_manager.get_circuit_breaker(source_name)<br><br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> breaker.can_execute():<br>                logger.warning(<span class="hljs-string">f&quot;数据源 <span class="hljs-subst">&#123;source_name&#125;</span> 熔断器打开，跳过&quot;</span>)<br>                <span class="hljs-keyword">continue</span><br><br>            <span class="hljs-keyword">try</span>:<br>                raw_data = <span class="hljs-variable language_">self</span>.fetch_from_source(source_name, **kwargs)<br>                breaker.record_success()<br>                <span class="hljs-keyword">break</span><br>            <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>                breaker.record_failure(e)<br>                <span class="hljs-keyword">continue</span>  <span class="hljs-comment"># 试下一个源</span><br><br>        <span class="hljs-comment"># 3. 持久化缓存兜底</span><br>        <span class="hljs-keyword">if</span> data_list <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            fallback = persistent_cache.get(<span class="hljs-variable language_">self</span>.FALLBACK_CACHE_KEY)<br>            <span class="hljs-keyword">if</span> fallback:<br>                <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.build_response(STALE_CACHE, fallback)<br><br>        <span class="hljs-comment"># 4. 优雅降级</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.build_response(UNAVAILABLE, default_data)<br></code></pre></td></tr></table></figure>
+
+<p>以 ReShare 的北向资金策略为例，数据源优先级链是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">NorthFlowFetchStrategy</span>(<span class="hljs-title class_ inherited__">DataFetchStrategy</span>):<br>    SOURCE_PRIORITY = [<span class="hljs-string">&quot;akshare&quot;</span>]           <span class="hljs-comment"># 目前只有一个源</span><br>    CACHE_TTL = <span class="hljs-number">3600</span>                        <span class="hljs-comment"># 1 小时热缓存</span><br>    FALLBACK_CACHE_KEY = <span class="hljs-string">&quot;north_flow_fallback&quot;</span>  <span class="hljs-comment"># 持久化兜底</span><br></code></pre></td></tr></table></figure>
+
+<p>对于股票历史数据，优先级链更长：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">BaoStock（自有服务器）→ </span>AKShare 新浪 → AKShare 东财 → YFinance（全球兜底）<br></code></pre></td></tr></table></figure>
+
+<h3 id="第三层：双层缓存"><a href="#第三层：双层缓存" class="headerlink" title="第三层：双层缓存"></a>第三层：双层缓存</h3><p>即使所有数据源都熔断了，我们也不希望用户看到一片空白。双层缓存提供了最后的兜底：</p>
+<table>
+<thead>
+<tr>
+<th>缓存层</th>
+<th>实现</th>
+<th>TTL</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>热缓存</strong></td>
+<td><code>enhanced_cache</code>（内存 LRU）</td>
+<td>1 小时</td>
+<td>正常加速，减少外部调用</td>
+</tr>
+<tr>
+<td><strong>冷缓存</strong></td>
+<td><code>persistent_cache</code>（JSON 文件）</td>
+<td>无 TTL，永久</td>
+<td>灾难兜底，标记为 <code>stale</code></td>
+</tr>
+</tbody></table>
+<p>冷缓存的核心价值：即使数据过期了，有数据总比没数据好。响应中会标记 <code>stale=true</code> 和 <code>last_success</code> 时间戳，让调用方知道这是旧数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">result = DataFetchResult(<br>    data=cached_data_list,<br>    status=DataFetchStatus.STALE_CACHE,<br>    source=<span class="hljs-string">&quot;fallback_cache&quot;</span>,<br>    stale=<span class="hljs-literal">True</span>,<br>    last_success=last_success,  <span class="hljs-comment"># &quot;2026-07-21T15:30:00&quot;</span><br>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="第四层：优雅降级响应"><a href="#第四层：优雅降级响应" class="headerlink" title="第四层：优雅降级响应"></a>第四层：优雅降级响应</h3><p>当一切兜底都失败时，系统不会崩溃，而是返回一个结构化的降级响应：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;unavailable&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;source&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;none&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;from_cache&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;stale&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;last_success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-07-21T15:30:00&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;error_message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;所有数据源不可用&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>调用方可以根据 <code>status</code> 字段决定如何处理：是展示旧数据、显示”数据暂时不可用”提示，还是触发告警。</p>
+<h2 id="数据源内部的双重保险"><a href="#数据源内部的双重保险" class="headerlink" title="数据源内部的双重保险"></a>数据源内部的双重保险</h2><p>断路器和优先级降级是数据源<strong>之间</strong>的保护。在数据源<strong>内部</strong>，ReShare 还有另一层保险——以 AKShare 新浪渠道为例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># akshare_source.py</span><br><span class="hljs-keyword">for</span> attempt <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-variable language_">self</span>.MAX_RETRIES):<br>    <span class="hljs-keyword">try</span>:<br>        df = ak.stock_zh_a_daily(symbol=akshare_symbol, ...)<br>        <span class="hljs-keyword">if</span> df.empty:<br>            <span class="hljs-comment"># AKShare 返回空 → 直接调用新浪 HTTP API 降级</span><br>            df = <span class="hljs-variable language_">self</span>._sina_http_fallback(symbol, start_str, end_str)<br>        <span class="hljs-keyword">return</span> df<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-keyword">if</span> attempt &lt; <span class="hljs-variable language_">self</span>.MAX_RETRIES - <span class="hljs-number">1</span>:<br>            delay = <span class="hljs-built_in">min</span>(<br>                <span class="hljs-variable language_">self</span>.RETRY_DELAY * (attempt + <span class="hljs-number">1</span>) + random.uniform(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>),<br>                <span class="hljs-number">20</span>  <span class="hljs-comment"># 最大 20 秒</span><br>            )<br>            time.sleep(delay)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-comment"># 最后一次重试失败 → 再次降级</span><br>            df = <span class="hljs-variable language_">self</span>._sina_http_fallback(symbol, start_str, end_str)<br></code></pre></td></tr></table></figure>
+
+<p><code>_sina_http_fallback</code> 绕过 AKShare 库，直接调用新浪财经的 HTTP API。这是一种”降级中的降级”——当库级别的调用失败时，退化到裸 HTTP 请求：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_sina_http_fallback</span>(<span class="hljs-params">self, symbol, start_str, end_str</span>):<br>    sina_url = (<br>        <span class="hljs-string">f&quot;http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/&quot;</span><br>        <span class="hljs-string">f&quot;CN_MarketData.getKLineData?symbol=<span class="hljs-subst">&#123;prefix&#125;</span><span class="hljs-subst">&#123;pure&#125;</span>&amp;scale=240&amp;datalen=1023&quot;</span><br>    )<br>    resp = requests.get(sina_url, timeout=<span class="hljs-number">10</span>)<br>    <span class="hljs-comment"># 解析 JSON → DataFrame</span><br></code></pre></td></tr></table></figure>
+
+<p>重试策略也值得一提：指数退避 + 随机抖动（jitter），避免多个客户端同步重试造成的”惊群效应”：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">delay = <span class="hljs-built_in">min</span>(<br>    <span class="hljs-variable language_">self</span>.RETRY_DELAY * (attempt + <span class="hljs-number">1</span>) + random.uniform(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>),<br>    <span class="hljs-number">20</span><br>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="可观测性：光有断路器不够"><a href="#可观测性：光有断路器不够" class="headerlink" title="可观测性：光有断路器不够"></a>可观测性：光有断路器不够</h2><p>断路器做了自动决策，但运维人员需要知道发生了什么。ReShare 在 <code>MarketDataService</code> 中暴露了断路器状态查询和重置接口：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MarketDataService</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_circuit_breaker_status</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">dict</span>]:<br>        <span class="hljs-string">&quot;&quot;&quot;获取所有数据源的熔断器状态&quot;&quot;&quot;</span><br>        <span class="hljs-keyword">return</span> data_source_manager.get_circuit_breaker_stats()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">reset_circuit_breaker</span>(<span class="hljs-params">self, source_name: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:<br>        <span class="hljs-string">&quot;&quot;&quot;手动重置指定数据源的熔断器&quot;&quot;&quot;</span><br>        data_source_manager.reset_circuit_breaker(source_name)<br></code></pre></td></tr></table></figure>
+
+<p>调用 <code>get_circuit_breaker_status()</code> 返回的状态示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;akshare&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;open&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;failure_count&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;total_calls&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">142</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;total_failures&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">7</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;last_failure_time&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-07-22T03:15:22&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;last_state_change_time&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-07-22T03:15:22&quot;</span><br>    <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;baostock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;closed&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;failure_count&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;total_calls&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">98</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;total_failures&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><br>    <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>同时，<code>DataFetchStrategy</code> 记录了每次数据获取的尝试历史（<code>DataSourceAttempt</code>），包括每个源的尝试结果、响应时间、错误信息，方便事后排查。</p>
+<p>健康检测器（<code>DataSourceHealthChecker</code>）定期后台巡检，自动禁用连续失败的数据源，并在 5 分钟后自动重试——这和断路器的超时恢复机制形成了双保险：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">DataSourceHealthChecker</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, check_interval=<span class="hljs-number">300</span>, max_consecutive_failures=<span class="hljs-number">3</span></span>):<br>        <span class="hljs-comment"># 每 5 分钟定时检测不可用的数据源</span><br>        <span class="hljs-comment"># 连续失败 3 次标记为 UNAVAILABLE</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p><strong>坑 1：阈值设太敏感</strong></p>
+<p>最初 <code>failure_threshold=3</code>，结果偶发的网络抖动就会触发熔断。高峰期数据源响应慢一点，连续三次超时就熔断了，但第四次其实就能成功。后来调到 5 次就好多了。</p>
+<p>教训：阈值要根据数据源的稳定性来调。自有服务可以严格，公共 API 要宽松。</p>
+<p><strong>坑 2：半开状态不限制探测量</strong></p>
+<p>最初半开状态下没有限制探测请求数量，结果大量请求涌入刚恢复的数据源，又把它打挂了。加上 <code>half_open_max_calls=3</code> 后，最多放行 3 个探测请求，其他请求走降级路径。</p>
+<p><strong>坑 3：冷缓存没标记 stale</strong></p>
+<p>最初冷缓存返回的数据和正常数据格式一模一样，调用方分不清是实时数据还是旧数据。后来在响应中加了 <code>stale</code> 标志和 <code>last_success</code> 时间戳，让前端可以显示”数据更新于 2 小时前”。</p>
+<p><strong>坑 4：重试不加 jitter</strong></p>
+<p>多个定时任务同时启动，同时发现数据源失败，同时按固定间隔重试，形成了周期性的请求洪峰。加上 <code>random.uniform(0, 1)</code> 的抖动后，重试自然分散开来。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>断路器模式的本质是<strong>用空间换时间</strong>——用一小段”放弃”的时间，换取系统整体的稳定性。它的核心价值不在于让故障消失（那是不可能的），而在于：</p>
+<ol>
+<li><strong>快速失败</strong>：不浪费时间等一个注定超时的请求</li>
+<li><strong>自动隔离</strong>：把问题源从调度链中暂时摘除</li>
+<li><strong>渐进恢复</strong>：通过半开探测避免二次故障</li>
+<li><strong>多层兜底</strong>：优先级降级 → 缓存兜底 → 优雅降级</li>
+</ol>
+<p>在 AI 数据管道的场景下，外部源的不可靠是常态而非异常。把断路器作为基础设施的标准组件，让每个数据源调用都”有退路可走”，是构建高可用数据管道的第一步。</p>
+<p>ReShare 的四层防御体系——断路器隔离、优先级降级、缓存兜底、优雅响应——并不复杂，但它把”外部源抽风 → 系统瘫痪”的直线关系，变成了”外部源抽风 → 自动降级 → 用户几乎无感”的弹性链路。这中间的差距，就是凌晨三点你被电话叫醒和早上七点自然醒来的区别。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E6%88%98/" class="category-chain-item">技术实战</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" class="print-no-link">#架构设计</a>
+      
+        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
+      
+        <a href="/tags/ReShare/" class="print-no-link">#ReShare</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93/" class="print-no-link">#数据管道</a>
+      
+        <a href="/tags/%E6%96%AD%E8%B7%AF%E5%99%A8%E6%A8%A1%E5%BC%8F/" class="print-no-link">#断路器模式</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>断路器模式：让 AI 数据管道不怕外部源抽风</div>
+      <div>https://normdist.com/2026/07/22/ND-20260722-001-circuit-breaker-for-data-pipeline/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月22日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/23/ND-20260723-002-free-barcode-api-comparison/" title="免费商品条码 API 横评：7个数据库实测对比">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">免费商品条码 API 横评：7个数据库实测对比</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/22/ND-20260722-001-cross-agent-collaboration-awareness/" title="跨代理协作感知：让 AI Agent 知道别人在干什么">
+                        <span class="hidden-mobile">跨代理协作感知：让 AI Agent 知道别人在干什么</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
