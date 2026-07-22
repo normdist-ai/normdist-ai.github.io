@@ -26,9 +26,9 @@
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="超市货架前，你拿出手机扫了一下商品包装上的条形码——屏幕跳出了商品名称、品牌、价格甚至配料表。这个体验很自然，但背后的问题不简单：这些数据从哪来？如果你是个开发者，想给自己的 App 加上扫码查询功能，有哪些免费 API 可以用？ 我花了一个下午实测了互联网上能找到的 7 个免费商品条码查询 API，用真实的条码逐个请求，记录返回的字段、额度限制和响应质量。结果有些出乎意料。 先搞清楚：商品条码不">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://normdist.com/barcode-api-comparison.png">
+<meta property="og:image" content="https://normdist.com/images/barcode-api-comparison.png">
 <meta property="article:published_time" content="2026-07-23T01:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-22T17:32:49.653Z">
+<meta property="article:modified_time" content="2026-07-22T23:30:43.621Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="API">
 <meta property="article:tag" content="GS1">
@@ -36,7 +36,7 @@
 <meta property="article:tag" content="条码">
 <meta property="article:tag" content="调研">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://normdist.com/barcode-api-comparison.png">
+<meta name="twitter:image" content="https://normdist.com/images/barcode-api-comparison.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -450,7 +450,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月23日 凌晨
+                    本文最后更新于 2026年7月23日 早上
                   
                 
               </p>
@@ -506,7 +506,7 @@
 <h3 id="7-DataKick-—-已停止服务"><a href="#7-DataKick-—-已停止服务" class="headerlink" title="7. DataKick — 已停止服务"></a>7. DataKick — 已停止服务</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs http">GET https://www.datakick.org/api/items/3017620422003<br>→ HTTP 404<br></code></pre></td></tr></table></figure>
 
 <p>DataKick 曾经是一个社区驱动的产品数据库，现在已经停止服务。在网上搜索时还能找到一些文章推荐它，但实际已不可用。<strong>如果你看到有教程推荐 DataKick，请跳过。</strong></p>
-<h2 id="横向对比"><a href="#横向对比" class="headerlink" title="横向对比"></a>横向对比</h2><p><img src="/barcode-api-comparison.png" srcset="/img/loading.gif" lazyload alt="免费商品条码 API 实测对比"></p>
+<h2 id="横向对比"><a href="#横向对比" class="headerlink" title="横向对比"></a>横向对比</h2><p><img src="/images/barcode-api-comparison.png" srcset="/img/loading.gif" lazyload alt="免费商品条码 API 实测对比"></p>
 <h2 id="怎么选"><a href="#怎么选" class="headerlink" title="怎么选"></a>怎么选</h2><p><strong>查食品饮料</strong> → <strong>Open Food Facts</strong>。无限免费，数据最丰富，欧美商品覆盖率极高。唯一的问题是中文食品收录太少。</p>
 <p><strong>查通用商品</strong> → <strong>UPCitemdb</strong>。100次&#x2F;天免费不需要 Key，返回字段实用（尤其价格区间和报价链接），通用品类全覆盖。</p>
 <p><strong>查图书</strong> → <strong>Google Books</strong>（1000次&#x2F;天）或 <strong>Open Library</strong>（无限）。两个互补使用效果更好。</p>
