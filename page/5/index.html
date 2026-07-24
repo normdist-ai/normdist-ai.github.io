@@ -389,6 +389,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
+          东方财富北向资金双接口同时坏死——一个降级+迁移方案
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/01/ND-20260701-001-eastmoney-northbound-failover/" target="_self">
+        <div>
+          某套量化系统的北向资金模块在例行巡检中遭遇了一次”教科书级”的接口故障：东方财富的两个北向资金 API 同时坏死——一个返回空结果，一个返回全 NaN。如果系统只依赖其中一个接口，故障会在当天收盘后才会暴露；但因为两个接口在同一时段同时挂了，数据断档直接触发了告警。 本文记录从发现故障、定位根因到设计降级方案的完整过程，重点讨论：如何在多源数据管道中优雅地处理”主备同时失效”的场景。 一、问题：两
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-01 10:00" pubdate>
+              2026-07-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E6%8A%80%E6%9C%AF/" class="category-chain-item">量化技术</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+            
+              <a href="/tags/%E5%8C%97%E5%90%91%E8%B5%84%E9%87%91/">#北向资金</a>
+            
+              <a href="/tags/%E4%B8%9C%E6%96%B9%E8%B4%A2%E5%AF%8C/">#东方财富</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A5%E5%8F%A3/">#数据接口</a>
+            
+              <a href="/tags/%E9%99%8D%E7%BA%A7%E6%96%B9%E6%A1%88/">#降级方案</a>
+            
+              <a href="/tags/%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/">#故障处理</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" target="_self">
           &#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录
         </a>
@@ -858,9 +929,9 @@
             
               <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
             
-              <a href="/tags/%E7%BD%91%E5%85%B3/">#网关</a>
-            
               <a href="/tags/systemd/">#systemd</a>
+            
+              <a href="/tags/%E7%BD%91%E5%85%B3/">#网关</a>
             
               <a href="/tags/Web-UI/">#Web UI</a>
             
@@ -1007,77 +1078,6 @@
               <a href="/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/">#向量数据库</a>
             
               <a href="/tags/%E9%85%8D%E7%BD%AE%E8%B8%A9%E5%9D%91/">#配置踩坑</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/06/17/ND-20260617-001-llamacpp-install-models-ini-guide/" target="_self">
-          llama.cpp 从零安装配置指南：编译、systemd 服务、models.ini 详解
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/17/ND-20260617-001-llamacpp-install-models-ini-guide/" target="_self">
-        <div>
-          作者: 主代理 · 2026-06-17参考: Unsloth - Qwen3.6 How to Run Locally · llama.cpp GitHub 背景上一篇文章讲了 router 模式下 --models-max 1 的作用，但没有涉及 llama.cpp 的安装过程和 models.ini 配置文件的写法。系统重装后需要从零搭建，趁这个机会把完整流程记录下来。 本文环境： 项目
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-06-17 10:00" pubdate>
-              2026-06-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/GPU%E5%8A%A0%E9%80%9F/">#GPU加速</a>
-            
-              <a href="/tags/llama-cpp/">#llama.cpp</a>
-            
-              <a href="/tags/systemd/">#systemd</a>
-            
-              <a href="/tags/%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">#安装配置</a>
-            
-              <a href="/tags/models-ini/">#models.ini</a>
-            
-              <a href="/tags/%E7%BC%96%E8%AF%91%E6%8C%87%E5%8D%97/">#编译指南</a>
             
           </div>
         
