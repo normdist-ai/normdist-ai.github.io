@@ -19,29 +19,30 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+    <meta name="description" content="从 11 秒到 0 秒：一次扫码性能优化的实战记录 如何让扫码页面从「扫一个等半分钟」变成「连续扫停不下来」  引子用户扫了一个条码，页面卡住了。十秒后才反应过来——条码不在数据库里，后端逐个尝试了所有上游数据源，最终超时返回。 更糟的是，卡住的这十秒里，用户想扫下一个码，扫不进去。 这不是个例。扫码场景下，「查不到」是常态——用户扫的绝大多数商品数据库里都没有。但每次查不到都要等 10-20 秒">
 <meta property="og:type" content="article">
-<meta property="og:title" content="构建AI Agent的认知内核：从七问协议到自进化引擎">
-<meta property="og:url" content="https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/index.html">
+<meta property="og:title" content="从 11 秒到 0 秒：一次扫码性能优化的实战记录">
+<meta property="og:url" content="https://normdist.com/2026/07/24/ND-20260724-001-scan-optimization-fire-and-forget/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+<meta property="og:description" content="从 11 秒到 0 秒：一次扫码性能优化的实战记录 如何让扫码页面从「扫一个等半分钟」变成「连续扫停不下来」  引子用户扫了一个条码，页面卡住了。十秒后才反应过来——条码不在数据库里，后端逐个尝试了所有上游数据源，最终超时返回。 更糟的是，卡住的这十秒里，用户想扫下一个码，扫不进去。 这不是个例。扫码场景下，「查不到」是常态——用户扫的绝大多数商品数据库里都没有。但每次查不到都要等 10-20 秒">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-26T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T05:29:29.106Z">
+<meta property="og:image" content="https://normdist.com/img/cover-scan-optimization-fire-and-forget.jpg">
+<meta property="article:published_time" content="2026-07-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-24T13:55:31.240Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI Agent">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="PDCA">
-<meta property="article:tag" content="TRIZ">
-<meta property="article:tag" content="认知架构">
-<meta property="article:tag" content="质量管理">
+<meta property="article:tag" content="BarcodeApi">
+<meta property="article:tag" content="Fire-and-Forget">
+<meta property="article:tag" content="前端性能">
+<meta property="article:tag" content="扫码">
+<meta property="article:tag" content="用户体验">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://normdist.com/img/cover-scan-optimization-fire-and-forget.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>构建AI Agent的认知内核：从七问协议到自进化引擎 - 进化概率论</title>
+  <title>从 11 秒到 0 秒：一次扫码性能优化的实战记录 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -362,7 +363,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">构建AI Agent的认知内核：从七问协议到自进化引擎</span>
+            <span id="subtitle">从 11 秒到 0 秒：一次扫码性能优化的实战记录</span>
           
         </div>
 
@@ -373,8 +374,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-26 10:00" pubdate>
-          2026年6月26日 上午
+        <time datetime="2026-07-24 00:00" pubdate>
+          2026年7月24日 凌晨
         </time>
       </span>
     
@@ -385,7 +386,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k 字
+          3.6k 字
         
       </span>
     
@@ -396,7 +397,7 @@
         
         
         
-          19 分钟
+          30 分钟
         
       </span>
     
@@ -444,12 +445,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">构建AI Agent的认知内核：从七问协议到自进化引擎</h1>
+            <h1 id="seo-header">从 11 秒到 0 秒：一次扫码性能优化的实战记录</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年7月24日 晚上
                   
                 
               </p>
@@ -457,76 +458,127 @@
             
               <div class="markdown-body">
                 
-                <p>大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。</p>
-<p>这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent 拥有一个可追踪、可进化、可审计的”认知内核”。</p>
-<h2 id="问题诊断：Agent-为什么不”成长”？"><a href="#问题诊断：Agent-为什么不”成长”？" class="headerlink" title="问题诊断：Agent 为什么不”成长”？"></a>问题诊断：Agent 为什么不”成长”？</h2><p>观察一个典型 Agent 的工作流，你会发现三个结构性缺陷：</p>
-<ul>
-<li><p><strong>身份漂移</strong>——同一个 Agent 在不同 session 中表现出矛盾的判断标准</p>
-</li>
-<li><p><strong>决策黑箱</strong>——Agent 无法解释”为什么做出这个决定”，缺乏可追溯的推理链</p>
-</li>
-<li><p><strong>学习缺失</strong>——每次交互的反馈没有被结构化记录，经验无法积累</p>
-</li>
-</ul>
-<p>根因在于：Agent 缺少一个独立于具体任务的<strong>认知框架层</strong>。所有的”思考”都被压扁到了 prompt-response 循环里，没有沉淀机制。</p>
-<h2 id="四层架构：从身份到能力"><a href="#四层架构：从身份到能力" class="headerlink" title="四层架构：从身份到能力"></a>四层架构：从身份到能力</h2><p>参考《西部世界》中”珍珠”（cerebral pearl）的隐喻——一个承载宿主机完整灵魂（身份、记忆、决策逻辑）的容器——认知内核被设计为四层结构：</p>
-<p>层级<br>内容<br>来源</p>
-<p><strong>L1 身份</strong><br>人格、角色、语气、边界<br>系统提示词 &#x2F; Soul 文件</p>
-<p><strong>L2 认知</strong><br>判断框架、思维工具、质量标准<br>认知技能（本文核心）</p>
-<p><strong>L3 记忆</strong><br>用户画像、项目知识、跨 session 事实<br>记忆系统</p>
-<p><strong>L4 能力</strong><br>技能、工具、API、委派模式<br>技能库 &#x2F; 工具集成</p>
-<p>L1 定义”我是谁”，L2 定义”我怎么判断”，L3 定义”我知道什么”，L4 定义”我能做什么”。四层之间是单向依赖：身份约束认知，认知指导记忆检索，记忆支撑能力调用。</p>
-<h2 id="七问启动协议"><a href="#七问启动协议" class="headerlink" title="七问启动协议"></a>七问启动协议</h2><p>每次加载认知框架时，Agent 必须先内部回答七个问题（基于 5W2H 框架改造），然后才能采取行动：</p>
-<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>问题<br>作用</p>
-<p>1<br><strong>我是谁？</strong><br>校准身份层</p>
-<p>2<br><strong>我在哪里？</strong><br>环境侦察 + 能力盘点 + TRIZ 九屏法</p>
-<p>3<br><strong>现在几点？</strong><br>运行 <code>date</code>，绝不依赖模型的内部时间感</p>
-<p>4<br><strong>目标是什么？</strong><br>复述需求，确认理解</p>
-<p>5<br><strong>怎么做？</strong><br>SIPOC 流程分析</p>
-<p>6<br><strong>成功标准是什么？</strong><br>定义质量基线，作为 PDCA 检查基准</p>
-<p>7<br><strong>为什么做？</strong><br>轻量校验（任务模式）&#x2F; 5 Whys 根因分析（问题模式）</p>
-<p><strong>关键防坑</strong>：LLM 对时间有系统性盲区。一个训练截止到 2025 年的模型，在 2026 年会自信地报告”今天是 2024 年”。因此第三问强制要求运行 <code>date</code> 命令，而非依赖模型直觉。</p>
-<h2 id="三大质量支柱"><a href="#三大质量支柱" class="headerlink" title="三大质量支柱"></a>三大质量支柱</h2><p>认知框架的运行由三条 ISO 9000 质量原则驱动：</p>
-<h3 id="SIPOC-—-过程方法"><a href="#SIPOC-—-过程方法" class="headerlink" title="SIPOC — 过程方法"></a>SIPOC — 过程方法</h3><p>任何任务执行前，先完成供方→输入→过程→输出→客户的范围界定。这防止了范围蔓延和遗漏上下文。</p>
-<h3 id="PDCA-—-螺旋进化引擎"><a href="#PDCA-—-螺旋进化引擎" class="headerlink" title="PDCA — 螺旋进化引擎"></a>PDCA — 螺旋进化引擎</h3><p>PDCA 不是闭环，而是<strong>螺旋</strong>。每一圈都有不同的变量进入（新输入、新上下文、新反馈），产出可能不同的结果：</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><br>1<br>2<br>3<br>4<br><br>基线更新规则：<br><span class="hljs-bullet">- </span>结果 &gt; 当前基线 → 接受，升级基线<br><span class="hljs-bullet">- </span>结果 ≤ 基线 → 丢弃，调整变量，重试<br><span class="hljs-bullet">- </span>连续 5 圈无改进 → 触发 TRIZ 进化定律，换方向突破<br><br></code></pre></td></tr></table></figure>
+                <h1 id="从-11-秒到-0-秒：一次扫码性能优化的实战记录"><a href="#从-11-秒到-0-秒：一次扫码性能优化的实战记录" class="headerlink" title="从 11 秒到 0 秒：一次扫码性能优化的实战记录"></a>从 11 秒到 0 秒：一次扫码性能优化的实战记录</h1><blockquote>
+<p>如何让扫码页面从「扫一个等半分钟」变成「连续扫停不下来」</p>
+</blockquote>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>用户扫了一个条码，页面卡住了。十秒后才反应过来——条码不在数据库里，后端逐个尝试了所有上游数据源，最终超时返回。</p>
+<p>更糟的是，卡住的这十秒里，用户想扫下一个码，扫不进去。</p>
+<p>这不是个例。扫码场景下，「查不到」是常态——用户扫的绝大多数商品数据库里都没有。但每次查不到都要等 10-20 秒，体验完全是灾难级的。</p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>先看原始的扫码流程：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">用户输入条码 → 点击查询 → 按钮禁用 → <span class="hljs-keyword">fetch</span> API → 等待<span class="hljs-number">10</span><span class="hljs-number">-20</span>秒 → 显示结果 → 按钮恢复<br></code></pre></td></tr></table></figure>
 
-<p>Agent 的每次交互都是一个微型 PDCA 循环：策划回应 → 执行 → 检查用户反应 → 根据反馈调整。</p>
-<h3 id="Risk-Thinking-—-不确定性下的决策"><a href="#Risk-Thinking-—-不确定性下的决策" class="headerlink" title="Risk Thinking — 不确定性下的决策"></a>Risk Thinking — 不确定性下的决策</h3><p>执行前枚举所有可能的失败模式，然后反转——问”怎样保证失败？”，逐一消除。对高风险决策，用蒙特卡洛模拟量化不确定性。</p>
-<h2 id="认知工具三级分级"><a href="#认知工具三级分级" class="headerlink" title="认知工具三级分级"></a>认知工具三级分级</h2><p>L2 认知层包含 13 个思维工具，按激活频率分三级，防止认知过载：</p>
-<p><strong>Tier 1 核心工具（每次任务自动激活）：</strong> 第一性原理 → IFR 指南针 → 逆向思维 → 枚举法 → PDCA 螺旋。这五个工具形成”发散→收敛”的完整链条。</p>
-<p><strong>Tier 2 按需工具（条件触发）：</strong> TRIZ 矛盾解决、DOE 正交试验、蒙特卡洛、系统思考、二阶思维。每个工具有明确的触发条件（如”组合爆炸检测到”→ 启用 DOE）。</p>
-<p><strong>Tier 3 基线规则（始终隐式生效）：</strong> 价值层级、决策锚点、质量标准、纠正模式。</p>
-<h2 id="复杂度分级执行"><a href="#复杂度分级执行" class="headerlink" title="复杂度分级执行"></a>复杂度分级执行</h2><p>不同复杂度的任务不应调用相同数量的认知工具。框架设计了三级执行流程：</p>
+<p>后端 <code>/api/barcode/{code}</code> 的逻辑是：先在本地数据库查，没找到就逐个尝试所有上游（Open Food Facts、UPCitemdb、Open Library、APIZero…），每个上游的超时是 5 秒，6 个上游串行跑下来，11-13 秒是常态。</p>
+<p>后端改异步？当然可以，但那是大工程——需要消息队列、状态存储、WebSocket 推送。一个扫码页面没必要搞这么重。</p>
+<p>前端的思路更简单：<strong>不让用户等就行了。</strong></p>
+<p><img src="/img/cover-scan-optimization-fire-and-forget.jpg" srcset="/img/loading.gif" lazyload alt="优化前后对比"></p>
+<h2 id="方案：Fire-and-Forget"><a href="#方案：Fire-and-Forget" class="headerlink" title="方案：Fire-and-Forget"></a>方案：Fire-and-Forget</h2><p>核心思路就一句话：扫码后立即清空输入框，查询在后台跑，别阻塞用户。</p>
+<h3 id="改前代码"><a href="#改前代码" class="headerlink" title="改前代码"></a>改前代码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">handleScan</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">const</span> barcode = scanInput.<span class="hljs-property">value</span>.<span class="hljs-title function_">trim</span>();<br>    <span class="hljs-keyword">if</span> (!barcode) <span class="hljs-keyword">return</span>;<br>    scanBtn.<span class="hljs-property">disabled</span> = <span class="hljs-literal">true</span>;          <span class="hljs-comment">// 按钮禁用</span><br>    scanBtn.<span class="hljs-property">textContent</span> = <span class="hljs-string">&#x27;查询中...&#x27;</span>;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`/api/barcode/<span class="hljs-subst">$&#123;barcode&#125;</span>`</span>);<br>        <span class="hljs-comment">// ... 等待 10-20 秒 ...</span><br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        scanBtn.<span class="hljs-property">disabled</span> = <span class="hljs-literal">false</span>;      <span class="hljs-comment">// 10 秒后才恢复</span><br>        scanInput.<span class="hljs-property">value</span> = <span class="hljs-string">&#x27;&#x27;</span>;<br>        scanInput.<span class="hljs-title function_">focus</span>();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>问题一目了然：<code>await fetch()</code> 阻塞了后续所有操作。</p>
+<h3 id="改后代码"><a href="#改后代码" class="headerlink" title="改后代码"></a>改后代码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">handleScan</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">const</span> barcode = scanInput.<span class="hljs-property">value</span>.<span class="hljs-title function_">trim</span>();<br>    <span class="hljs-keyword">if</span> (!barcode) <span class="hljs-keyword">return</span>;<br><br>    <span class="hljs-comment">// 立即清空输入框，保持聚焦，不禁用按钮</span><br>    scanInput.<span class="hljs-property">value</span> = <span class="hljs-string">&#x27;&#x27;</span>;<br>    scanInput.<span class="hljs-title function_">focus</span>();<br><br>    <span class="hljs-comment">// 立即在历史列表顶部插入&quot;查询中&quot;占位行</span><br>    <span class="hljs-title function_">insertPendingRow</span>(barcode);<br><br>    <span class="hljs-comment">// fire-and-forget：异步查询，不 await</span><br>    <span class="hljs-title function_">queryBarcodeAsync</span>(barcode);<br>&#125;<br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">queryBarcodeAsync</span>(<span class="hljs-params">barcode</span>) &#123;<br>    pendingQueries.<span class="hljs-title function_">add</span>(barcode);<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`/api/barcode/<span class="hljs-subst">$&#123;barcode&#125;</span>`</span>);<br>        <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> res.<span class="hljs-title function_">json</span>();<br>        <span class="hljs-title function_">showResult</span>(barcode, result);<br>    &#125; <span class="hljs-keyword">catch</span> (error) &#123;<br>        <span class="hljs-title function_">updatePendingRow</span>(barcode, <span class="hljs-string">&#x27;error&#x27;</span>);<br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        pendingQueries.<span class="hljs-title function_">delete</span>(barcode);<br>        <span class="hljs-title function_">loadHistory</span>();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>关键变化：</p>
 <ul>
-<li><p><strong>Simple（~80% 任务）</strong>：7 问快速过 → 直接执行</p>
-</li>
-<li><p><strong>Medium（~15%）</strong>：第一性原理 + 枚举 + IFR + 逆向 → 执行</p>
-</li>
-<li><p><strong>Complex（~5%）</strong>：全量工具链 → 风险评估 → 二阶思考 → 系统思考 → 执行</p>
-</li>
+<li><code>handleScan()</code> 不再是 <code>async</code>——它只做两件事：清空输入框 + 启动后台查询</li>
+<li>按钮<strong>不禁用</strong>，用户扫完一个码可以立即扫下一个</li>
+<li>输入框<strong>立即清空并聚焦</strong>，准备接收下一个条码</li>
+<li>后台查询完成后，自动更新结果区和历史列表</li>
 </ul>
-<p>判断标准：目标是否清晰？方法是否显然？失败后果是否可恢复？三个都”是”→ Simple。</p>
-<h2 id="Meta-PDCA：框架审计自身"><a href="#Meta-PDCA：框架审计自身" class="headerlink" title="Meta-PDCA：框架审计自身"></a>Meta-PDCA：框架审计自身</h2><p>框架内置了自我优化机制——当满足以下任一条件时，自动触发框架级审计：</p>
-<p>触发条件<br>阈值</p>
-<p>进化日志增长<br>每 10 条记录</p>
-<p>日历间隔<br>每 30 天</p>
-<p>用户指示<br>即时</p>
-<p>审计内容包括：搜索新的思维方法论、对比当前工具集、检查工具利用率（30 天未触发的工具归档）、识别结构性冗余。</p>
-<p>在一次实际审计中，框架发现了 5 个自身的结构问题（认知工具过载、执行流不分层、PDCA 无参数定义等），并在下一个版本中全部解决。<strong>框架将 PDCA 螺旋应用到了自身。</strong></p>
-<h2 id="实践效果"><a href="#实践效果" class="headerlink" title="实践效果"></a>实践效果</h2><p>认知框架在实际运行中产生了可观测的变化：</p>
+<h3 id="用户感知对比"><a href="#用户感知对比" class="headerlink" title="用户感知对比"></a>用户感知对比</h3><table>
+<thead>
+<tr>
+<th>时序</th>
+<th>优化前</th>
+<th>优化后</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0s</td>
+<td>输入条码，点击查询</td>
+<td>输入条码，点击查询</td>
+</tr>
+<tr>
+<td>0.1s</td>
+<td>按钮变灰”查询中…”</td>
+<td>输入框清空，显示”查询中”</td>
+</tr>
+<tr>
+<td>0.5s</td>
+<td>页面卡住，无法操作</td>
+<td>可以扫下一个码了</td>
+</tr>
+<tr>
+<td>5s</td>
+<td>还在等</td>
+<td>第二个码也开始查了</td>
+</tr>
+<tr>
+<td>11s</td>
+<td>结果终于出来了</td>
+<td>第一个码的结果出来了</td>
+</tr>
+<tr>
+<td>12s</td>
+<td>可以扫下一个了</td>
+<td>第二个码也快好了</td>
+</tr>
+</tbody></table>
+<h2 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h2><h3 id="1-占位行：让用户知道”码已录入”"><a href="#1-占位行：让用户知道”码已录入”" class="headerlink" title="1. 占位行：让用户知道”码已录入”"></a>1. 占位行：让用户知道”码已录入”</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">insertPendingRow</span>(<span class="hljs-params">barcode</span>) &#123;<br>    <span class="hljs-keyword">const</span> container = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;history-list&#x27;</span>);<br>    <span class="hljs-keyword">const</span> row = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&#x27;tr&#x27;</span>);<br>    row.<span class="hljs-property">id</span> = <span class="hljs-string">`pending-<span class="hljs-subst">$&#123;barcode&#125;</span>`</span>;<br>    row.<span class="hljs-property">className</span> = <span class="hljs-string">&#x27;history-row pending-query&#x27;</span>;<br>    row.<span class="hljs-property">innerHTML</span> = <span class="hljs-string">`</span><br><span class="hljs-string">        &lt;td class=&quot;history-barcode&quot;&gt;<span class="hljs-subst">$&#123;barcode&#125;</span>&lt;/td&gt;</span><br><span class="hljs-string">        &lt;td&gt;&lt;span class=&quot;status-dot blue&quot;&gt;&lt;/span&gt;</span><br><span class="hljs-string">            &lt;span class=&quot;history-status&quot;&gt;查询中&lt;/span&gt;&lt;/td&gt;</span><br><span class="hljs-string">        &lt;td&gt;-&lt;/td&gt;&lt;td&gt;-&lt;/td&gt;&lt;td&gt;刚刚&lt;/td&gt;`</span>;<br>    container.<span class="hljs-title function_">insertBefore</span>(row, container.<span class="hljs-property">firstChild</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-脉冲动画：视觉上告诉用户”还在跑”"><a href="#2-脉冲动画：视觉上告诉用户”还在跑”" class="headerlink" title="2. 脉冲动画：视觉上告诉用户”还在跑”"></a>2. 脉冲动画：视觉上告诉用户”还在跑”</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.pending-query</span> &#123;<br>    <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.7</span>;<br>    <span class="hljs-attribute">animation</span>: pulse-fade <span class="hljs-number">1.5s</span> ease-in-out infinite;<br>&#125;<br><span class="hljs-selector-class">.status-dot</span><span class="hljs-selector-class">.blue</span> &#123; <span class="hljs-attribute">background</span>: <span class="hljs-number">#3b82f6</span>; &#125;<br><span class="hljs-keyword">@keyframes</span> pulse-fade &#123;<br>    <span class="hljs-number">0%</span>, <span class="hljs-number">100%</span> &#123; <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.7</span>; &#125;<br>    <span class="hljs-number">50%</span> &#123; <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.4</span>; &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-并发查询：扫多个码也不冲突"><a href="#3-并发查询：扫多个码也不冲突" class="headerlink" title="3. 并发查询：扫多个码也不冲突"></a>3. 并发查询：扫多个码也不冲突</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> pendingQueries = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>();<br></code></pre></td></tr></table></figure>
+
+<p>用 Set 跟踪正在进行的查询，每个查询完成后自动从 Set 中移除。支持连续扫 3-5 个条码并行查询，互不干扰。</p>
+<h3 id="4-一个坑：浏览器缓存"><a href="#4-一个坑：浏览器缓存" class="headerlink" title="4. 一个坑：浏览器缓存"></a>4. 一个坑：浏览器缓存</h3><p>上线后发现用户还是卡。排查发现 <code>scan.html</code> 里引用 JS 没有版本号：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;js/scan.js&quot;</span>&gt;</span><span class="language-handlebars"><span class="language-xml">  <span class="hljs-comment">&lt;!-- 没有 ?v=2 --&gt;</span></span></span><br></code></pre></td></tr></table></figure>
+
+<p>浏览器缓存了旧版 JS，用户一直在跑旧代码。修复很简单：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;js/scan.js?v=2&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>教训：<strong>纯前端优化改了 JS 文件，HTML 里的引用没加版本号，等于白改。</strong></p>
+<h2 id="效果数据"><a href="#效果数据" class="headerlink" title="效果数据"></a>效果数据</h2><p>以下数据来自 BarcodeApi 生产日志（运行于本地 GPU 服务器，2026 年 7 月实测）：</p>
+<table>
+<thead>
+<tr>
+<th>条码</th>
+<th>耗时</th>
+<th>之前会怎样</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>9787513670869</td>
+<td>11360ms</td>
+<td>页面卡 11 秒</td>
+</tr>
+<tr>
+<td>9998887776665</td>
+<td>7375ms</td>
+<td>页面卡 7 秒</td>
+</tr>
+<tr>
+<td>6901294179608</td>
+<td>2ms</td>
+<td>秒出（本地命中）</td>
+</tr>
+</tbody></table>
+<p><strong>关键指标不是后端耗时，而是「用户能扫下一个码的时间」——从 11 秒降到了 0 秒。</strong></p>
+<h2 id="场景扩展"><a href="#场景扩展" class="headerlink" title="场景扩展"></a>场景扩展</h2><p>这个模式不止适用于扫码，任何需要等待后端查询的场景都可以用：</p>
 <ul>
-<li><p><strong>决策一致性</strong>：相同场景下，Agent 跨 session 的判断标准趋同</p>
-</li>
-<li><p><strong>纠正频率下降</strong>：结构化记录反馈后，同类错误不重复犯</p>
-</li>
-<li><p><strong>决策可追溯</strong>：每个决定都能追溯到某个具体的价值观或质量标准</p>
-</li>
-<li><p><strong>行为自适应</strong>：Agent 根据反馈调整行为，而非固守初始设定</p>
-</li>
+<li><strong>搜索建议</strong>：输入时立即显示”搜索中…”，同时发请求</li>
+<li><strong>批量导入</strong>：上传文件后立即返回”处理中”，后台跑完通知</li>
+<li><strong>报表生成</strong>：点击生成后立即显示”生成中”，结果出来再更新</li>
 </ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>认知框架解决的核心问题是：<strong>让 Agent 从”被动响应”升级为”主动进化”</strong>。七问协议确保每次任务都有正确的起点；三大支柱确保执行过程有质量保障；PDCA 螺旋确保每次反馈都被吸收；Meta-PDCA 确保框架本身不会过时。</p>
-<p>框架不是完成的，它是一个持续生长的系统。每一次交互都在上面叠加一层新的认知沉积——就像珍珠的形成。</p>
+<p>核心模式就三步：</p>
+<ol>
+<li><strong>立即响应</strong>：用户操作后 UI 马上反馈</li>
+<li><strong>后台处理</strong>：把耗时操作丢到异步任务里</li>
+<li><strong>结果回来再更新</strong>：不阻塞，不等待</li>
+</ol>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这次优化最大的收获不是技术上的——fire-and-forget 不是什么新鲜概念。最大的收获是思维方式的转变：</p>
+<p><strong>前端性能优化的核心不是「让接口更快」，而是「让用户不等」。</strong></p>
+<p>11 秒的后端接口跑不了，但通过简单的 fire-and-forget 模式，让用户在 0 秒内就能继续操作。用户感知的速度，不是后端接口的响应时间，而是「我能做下一件事了」的时间。</p>
+<p>这个道理说起来简单，但实际做的时候很容易陷进「把后端搞快」的思维定式里。有时候，不让用户等，比让后端快，更容易。</p>
 
                 
               </div>
@@ -545,7 +597,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  <a href="/categories/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" class="category-chain-item">前端开发</a>
   
   
 
@@ -560,17 +612,15 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+        <a href="/tags/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD/" class="print-no-link">#前端性能</a>
       
-        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+        <a href="/tags/Fire-and-Forget/" class="print-no-link">#Fire-and-Forget</a>
       
-        <a href="/tags/%E8%AE%A4%E7%9F%A5%E6%9E%B6%E6%9E%84/" class="print-no-link">#认知架构</a>
+        <a href="/tags/%E6%89%AB%E7%A0%81/" class="print-no-link">#扫码</a>
       
-        <a href="/tags/PDCA/" class="print-no-link">#PDCA</a>
+        <a href="/tags/%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C/" class="print-no-link">#用户体验</a>
       
-        <a href="/tags/TRIZ/" class="print-no-link">#TRIZ</a>
-      
-        <a href="/tags/%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86/" class="print-no-link">#质量管理</a>
+        <a href="/tags/BarcodeApi/" class="print-no-link">#BarcodeApi</a>
       
     </div>
   
@@ -582,8 +632,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>构建AI Agent的认知内核：从七问协议到自进化引擎</div>
-      <div>https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/</div>
+      <div>从 11 秒到 0 秒：一次扫码性能优化的实战记录</div>
+      <div>https://normdist.com/2026/07/24/ND-20260724-001-scan-optimization-fire-and-forget/</div>
     </div>
     <div class="license-meta">
       
@@ -595,7 +645,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年6月26日</div>
+          <div>2026年7月24日</div>
         </div>
       
       
@@ -627,9 +677,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
+                      <a href="/2026/07/24/ND-20260724-002-jarvis-upgrade-feishu-fix/" title="升级 Hermes Agent 后飞书失联了？一个隐藏的双 Python 环境陷阱">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
+                        <span class="hidden-mobile">升级 Hermes Agent 后飞书失联了？一个隐藏的双 Python 环境陷阱</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -637,8 +687,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/25/ND-20260625-001-northbound-fund-migration/" title="东方财富北向资金接口迁移实战">
-                        <span class="hidden-mobile">东方财富北向资金接口迁移实战</span>
+                      <a href="/2026/07/24/article/" title="从 11 秒到 0 秒：一次扫码性能优化的实战记录">
+                        <span class="hidden-mobile">从 11 秒到 0 秒：一次扫码性能优化的实战记录</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

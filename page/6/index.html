@@ -389,6 +389,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/06/20/ND-20260620-001-hermes-gateway-management-pitfalls/" target="_self">
+          Hermes 网关管理踩坑实录：systemd 服务冲突与 Web UI 统一接管
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/20/ND-20260620-001-hermes-gateway-management-pitfalls/" target="_self">
+        <div>
+          作者: 主代理日期: 2026-06-20环境: Hermes Agent v0.16.0, Ubuntu 24.04, 多 Profile 部署 背景Hermes Agent 支持多 Profile（多数字人）部署，每个 Profile 可以有独立的 gateway 实例负责消息平台对接（飞书、Telegram 等）。在配置 Hindsight 长期记忆系统时，我们发现子代理的 gatewa
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-06-20 10:00" pubdate>
+              2026-06-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">#踩坑记录</a>
+            
+              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
+            
+              <a href="/tags/systemd/">#systemd</a>
+            
+              <a href="/tags/%E7%BD%91%E5%85%B3/">#网关</a>
+            
+              <a href="/tags/Web-UI/">#Web UI</a>
+            
+              <a href="/tags/%E5%A4%9AProfile/">#多Profile</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/06/20/ND-20260620-002-hindsight-config-pitfalls/" target="_self">
           Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突
         </a>
@@ -718,8 +789,6 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
-            
               <a href="/tags/CDP/">#CDP</a>
             
               <a href="/tags/Chrome/">#Chrome</a>
@@ -729,6 +798,8 @@
               <a href="/tags/%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95/">#远程调试</a>
             
               <a href="/tags/Windows/">#Windows</a>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
             
               <a href="/tags/%E7%88%AC%E8%99%AB/">#爬虫</a>
             
@@ -935,13 +1006,13 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
+            
               <a href="/tags/bilibili/">#bilibili</a>
             
               <a href="/tags/whisper/">#whisper</a>
             
               <a href="/tags/python/">#python</a>
-            
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
             
               <a href="/tags/%E9%9F%B3%E9%A2%91%E8%BD%AC%E5%86%99/">#音频转写</a>
             
@@ -1013,73 +1084,6 @@
               <a href="/tags/%E6%98%BE%E5%AD%98%E7%AE%A1%E7%90%86/">#显存管理</a>
             
               <a href="/tags/%E5%A4%9AGPU/">#多GPU</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/27/ND-20260527-005-comfyui-gpu-config/" target="_self">
-          ComfyUI指定GPU出图配置指南
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/27/ND-20260527-005-comfyui-gpu-config/" target="_self">
-        <div>
-          为什么需要指定 GPU？在多 GPU 服务器上运行 ComfyUI 时，经常遇到以下场景：  GPU 资源隔离——GPU 0 被 LM Studio、TensorRT-LLM 等大模型服务占用，ComfyUI 需要跑在另一张卡上  显存大小差异——不同型号 GPU 显存不同，大尺寸出图（如 SDXL、1024×1024）需要更大显存的显卡  多用户并发——团队共用服务器时，不同服务分配到固定 GP
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-27 10:00" pubdate>
-              2026-05-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/GPU/">#GPU</a>
-            
-              <a href="/tags/ComfyUI/">#ComfyUI</a>
-            
-              <a href="/tags/AI%E7%BB%98%E7%94%BB/">#AI绘画</a>
-            
-              <a href="/tags/%E9%85%8D%E7%BD%AE/">#配置</a>
             
           </div>
         
