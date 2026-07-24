@@ -389,15 +389,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" target="_self">
-          SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法
+        <a href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
+          从交易记录重建每日资产快照：daily_summaries 历史回填实战
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-002-daily-summaries-backfill/" target="_self">
         <div>
-          问题：SSH 能执行命令，但启动的应用”看不见”一个 AI Agent 通过 SSH 连接到 Windows 主机，执行 powershell.exe Start-Process notepad.exe，命令返回成功，任务管理器里能看到 notepad.exe 进程。但 RDP 连上去看桌面——什么都没有。记事本窗口没出现在屏幕上。 同样的问题出现在：启动 IDE、启动浏览器、启动任何带 GUI
+          问题：权益曲线只有 4 个点一个量化交易平台的 Dashboard 上，净值曲线（equity curve）只显示了 4 个点。不是数据源断了，不是前端 bug——是 daily_summaries 表只有 8 行数据，集中在短短几天内。 后端的 generate-summary 端点功能完全正常，手动调用能正确生成当日快照。问题是：从来没有定时任务调用它。 功能存在，但不运转。 这是一个典型的”
         </div>
       </a>
 
@@ -436,19 +436,17 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
             
-              <a href="/tags/Windows/">#Windows</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%9B%9E%E5%A1%AB/">#数据回填</a>
             
-              <a href="/tags/SSH/">#SSH</a>
+              <a href="/tags/%E8%B5%84%E4%BA%A7%E5%BF%AB%E7%85%A7/">#资产快照</a>
             
-              <a href="/tags/Session-0/">#Session 0</a>
+              <a href="/tags/daily-summaries/">#daily_summaries</a>
             
-              <a href="/tags/%E8%B7%A8%E4%BC%9A%E8%AF%9D%E5%90%AF%E5%8A%A8/">#跨会话启动</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E8%A1%A5%E5%85%A8/">#数据补全</a>
             
-              <a href="/tags/%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6/">#远程控制</a>
-            
-              <a href="/tags/%E6%A1%8C%E9%9D%A2%E5%BA%94%E7%94%A8/">#桌面应用</a>
+              <a href="/tags/%E5%87%80%E5%80%BC%E6%9B%B2%E7%BA%BF/">#净值曲线</a>
             
           </div>
         
@@ -533,15 +531,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
-          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家
+        <a href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" target="_self">
+          SSH 启动桌面应用失败：Windows Session 0 隔离与跨会话启动解法
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/05/ND-20260705-003-cross-session-gui-launch/" target="_self">
         <div>
-          背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累
+          问题：SSH 能执行命令，但启动的应用”看不见”一个 AI Agent 通过 SSH 连接到 Windows 主机，执行 powershell.exe Start-Process notepad.exe，命令返回成功，任务管理器里能看到 notepad.exe 进程。但 RDP 连上去看桌面——什么都没有。记事本窗口没出现在屏幕上。 同样的问题出现在：启动 IDE、启动浏览器、启动任何带 GUI
         </div>
       </a>
 
@@ -549,8 +547,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-04 10:00" pubdate>
-              2026-07-04
+            <time datetime="2026-07-05 10:00" pubdate>
+              2026-07-05
             </time>
           </div>
         
@@ -580,17 +578,19 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/Linux/">#Linux</a>
+              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
             
               <a href="/tags/Windows/">#Windows</a>
             
-              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%81%E7%A7%BB/">#跨平台迁移</a>
+              <a href="/tags/SSH/">#SSH</a>
             
-              <a href="/tags/%E7%8E%AF%E5%A2%83%E9%80%82%E9%85%8D/">#环境适配</a>
+              <a href="/tags/Session-0/">#Session 0</a>
             
-              <a href="/tags/%E8%BF%81%E7%A7%BB%E6%96%B9%E6%A1%88/">#迁移方案</a>
+              <a href="/tags/%E8%B7%A8%E4%BC%9A%E8%AF%9D%E5%90%AF%E5%8A%A8/">#跨会话启动</a>
+            
+              <a href="/tags/%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6/">#远程控制</a>
+            
+              <a href="/tags/%E6%A1%8C%E9%9D%A2%E5%BA%94%E7%94%A8/">#桌面应用</a>
             
           </div>
         
@@ -662,6 +662,77 @@
               <a href="/tags/Windows-%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6/">#Windows 远程控制</a>
             
               <a href="/tags/SSH/">#SSH</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
+          AI Agent 跨平台迁移实录：从 Linux 到 Windows 的零损失搬家
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/04/ND-20260704-002-agent-cross-platform-migration/" target="_self">
+        <div>
+          背景一个 AI Agent 在 Linux 服务器上稳定运行了数月：定时任务（cron）按节奏执行，长期记忆持续积累，灵魂文件（system prompt）定义了人格和规则。现在，需要把它迁移到一台 Windows 主机上。 这不是简单的文件复制。一个有”记忆”的 Agent，迁移时要回答三个核心问题：  定时任务零损失：十几个 cron job 能否在新平台上 1:1 恢复？  记忆完整性：积累
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-04 10:00" pubdate>
+              2026-07-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/Linux/">#Linux</a>
+            
+              <a href="/tags/Windows/">#Windows</a>
+            
+              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%81%E7%A7%BB/">#跨平台迁移</a>
+            
+              <a href="/tags/%E7%8E%AF%E5%A2%83%E9%80%82%E9%85%8D/">#环境适配</a>
+            
+              <a href="/tags/%E8%BF%81%E7%A7%BB%E6%96%B9%E6%A1%88/">#迁移方案</a>
             
           </div>
         
@@ -864,9 +935,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
               <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#性能优化</a>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
             
               <a href="/tags/API-%E4%BC%98%E5%8C%96/">#API 优化</a>
             
@@ -1017,77 +1088,6 @@
               <a href="/tags/%E9%99%8D%E7%BA%A7%E6%96%B9%E6%A1%88/">#降级方案</a>
             
               <a href="/tags/%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/">#故障处理</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" target="_self">
-          &#34;灵魂不灭，身体可以重建&#34;——一次 AI Agent 跨平台迁移实录
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/01/ND-20260701-002-hermes-soul-migration/" target="_self">
-        <div>
-          某天，用户的 AI 系统经历了一次极端测试——跨越物理机器、跨越操作系统、跨越技术栈的完整迁移。 旧机器：一台运行 Ubuntu 24.04 的 Linux 主机（10.28.9.66）。新机器：Windows 10 + WSL2 + Ubuntu 24.04。 核心问题很简单：一个由 5 个 AI Agent profile、37 个自定义技能、431 段对话记忆构成的智能系统，如何在换一台电脑
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-01 10:00" pubdate>
-              2026-07-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
-            
-              <a href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BF%81%E7%A7%BB/">#跨平台迁移</a>
-            
-              <a href="/tags/Trae-IDE/">#Trae IDE</a>
-            
-              <a href="/tags/%E8%AE%B0%E5%BF%86%E8%BF%81%E7%A7%BB/">#记忆迁移</a>
-            
-              <a href="/tags/%E6%8A%80%E8%83%BD%E9%87%8D%E6%9E%84/">#技能重构</a>
             
           </div>
         
