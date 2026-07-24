@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://normdist.com/img/cover-agents-md-guide.jpg">
 <meta property="article:published_time" content="2026-07-24T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-24T13:19:37.781Z">
+<meta property="article:modified_time" content="2026-07-24T13:24:26.747Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="AGENTS.md">
 <meta property="article:tag" content="AI编程">
@@ -387,7 +387,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.6k 字
+          6.3k 字
         
       </span>
     
@@ -398,7 +398,7 @@
         
         
         
-          47 分钟
+          53 分钟
         
       </span>
     
@@ -635,8 +635,47 @@
 <li>有没有遗漏项目特有的坑点</li>
 </ol>
 <p>还有一个进阶玩法：让 AI 定期审查 AGENTS.md。你可以跟它说「请根据最近三次审稿反馈，总结哪些规则应该沉淀进 AGENTS.md」，让它给你建议，你来决定是否采纳。</p>
+<h2 id="九、学术论文怎么说：意外的发现"><a href="#九、学术论文怎么说：意外的发现" class="headerlink" title="九、学术论文怎么说：意外的发现"></a>九、学术论文怎么说：意外的发现</h2><p>以上都是实践者的经验。学术界怎么看？</p>
+<p>arXiv 论文 2602.11988《Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?》做了一个严谨的对照实验，结论出乎意料：</p>
+<blockquote>
+<p>提供 context file 不会普遍提高任务成功率，但会增加 20% 以上的推理成本。</p>
+</blockquote>
+<p>实验用了两个数据集（SWE-Bench Lite 的 300 个任务 + AGENTBENCH 的 138 个实例），三种对照（无 context &#x2F; LLM 自动生成 &#x2F; 开发者手写），在多个 LLM 和编码代理上均成立。</p>
+<p>但论文有一个重要转折：</p>
+<blockquote>
+<p>context file 中的<strong>指令确实会被遵循</strong>，但<strong>大段的仓库概述虽然流行且被推荐，实际上并无帮助</strong>。</p>
+</blockquote>
+<p>翻译成实操建议就是：<strong>少写废话，多写规则。</strong> 构建命令、编码约束、Never 规则——这些具体的、可执行的指令才是有效的。项目愿景、架构概述、技术栈介绍——这些大段描述只是浪费 token。</p>
+<p>这和我们前面说的「判断标准：这行删掉后 AI 会不会更容易犯错」完全一致。</p>
+<p>知乎博主 @阿晚讲编程 做了 3 周 50+ 次人工抽检，数据也印证了这一点：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>没有 AGENTS.md</th>
+<th>有 AGENTS.md</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>代码规范遵循率</td>
+<td>~60%</td>
+<td>95%+</td>
+</tr>
+<tr>
+<td>一次通过率</td>
+<td>~40%</td>
+<td>80%+</td>
+</tr>
+<tr>
+<td>每次修正时间</td>
+<td>~8 分钟</td>
+<td>~1 分钟</td>
+</tr>
+</tbody></table>
+<p>注意这是小样本自测数据，但趋势足够明显。关键是写的都是具体规则，不是泛泛而谈。</p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>AGENTS.md 的本质，是在 AI 编程时代重新定义「项目文档」。README 给人看，AGENTS.md 给 AI 看，各司其职。</p>
 <p>写好它的关键就三句话：<strong>命令要精确，约束要具体，文档要更新。</strong></p>
+<p>少写概述，多写规则。每一条规则都应该是从真实踩坑中长出来的。</p>
 <p>如果你还没开始用，今天就在项目根目录创建一个吧。</p>
 <hr>
 <p><strong>参考文献</strong></p>
