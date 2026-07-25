@@ -19,29 +19,28 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+    <meta name="description" content="前几天，一个朋友发来一张截图。 是他刚写的一个交易策略回测。4 次交易，3 次盈利，胜率 75%。他挺兴奋，问我能不能上实盘。 我看了看，只说了一句：再跑跑吧。 不是泼冷水。4 次交易的 75%，和 400 次交易的 75%，完全是两回事。 1. 先说一个心理陷阱人天生喜欢找规律。看到连续几次成功，就觉得找到了圣杯。 但样本太小的时候，看到的规律很可能是噪声。 假设这个策略的真实胜率其实只有 50">
 <meta property="og:type" content="article">
-<meta property="og:title" content="构建AI Agent的认知内核：从七问协议到自进化引擎">
-<meta property="og:url" content="https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/index.html">
+<meta property="og:title" content="小样本过拟合：4 次交易 75% 胜率凭什么不能信">
+<meta property="og:url" content="https://normdist.com/2026/07/25/ND-20260725-001-small-sample-overfitting-75-percent-win-rate/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+<meta property="og:description" content="前几天，一个朋友发来一张截图。 是他刚写的一个交易策略回测。4 次交易，3 次盈利，胜率 75%。他挺兴奋，问我能不能上实盘。 我看了看，只说了一句：再跑跑吧。 不是泼冷水。4 次交易的 75%，和 400 次交易的 75%，完全是两回事。 1. 先说一个心理陷阱人天生喜欢找规律。看到连续几次成功，就觉得找到了圣杯。 但样本太小的时候，看到的规律很可能是噪声。 假设这个策略的真实胜率其实只有 50">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-26T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T05:29:29.106Z">
+<meta property="og:image" content="https://normdist.com/img/cover-small-sample-overfitting-75-percent-win-rate.jpg">
+<meta property="article:published_time" content="2026-07-25T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-25T01:41:35.669Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI Agent">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="PDCA">
-<meta property="article:tag" content="TRIZ">
-<meta property="article:tag" content="认知架构">
-<meta property="article:tag" content="质量管理">
+<meta property="article:tag" content="统计推断">
+<meta property="article:tag" content="过拟合">
+<meta property="article:tag" content="量化交易">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://normdist.com/img/cover-small-sample-overfitting-75-percent-win-rate.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>构建AI Agent的认知内核：从七问协议到自进化引擎 - 进化概率论</title>
+  <title>小样本过拟合：4 次交易 75% 胜率凭什么不能信 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -362,7 +361,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">构建AI Agent的认知内核：从七问协议到自进化引擎</span>
+            <span id="subtitle">小样本过拟合：4 次交易 75% 胜率凭什么不能信</span>
           
         </div>
 
@@ -373,8 +372,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-26 10:00" pubdate>
-          2026年6月26日 上午
+        <time datetime="2026-07-25 10:00" pubdate>
+          2026年7月25日 上午
         </time>
       </span>
     
@@ -385,7 +384,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k 字
+          2k 字
         
       </span>
     
@@ -396,7 +395,7 @@
         
         
         
-          19 分钟
+          17 分钟
         
       </span>
     
@@ -444,12 +443,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">构建AI Agent的认知内核：从七问协议到自进化引擎</h1>
+            <h1 id="seo-header">小样本过拟合：4 次交易 75% 胜率凭什么不能信</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年7月25日 上午
                   
                 
               </p>
@@ -457,76 +456,63 @@
             
               <div class="markdown-body">
                 
-                <p>大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。</p>
-<p>这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent 拥有一个可追踪、可进化、可审计的”认知内核”。</p>
-<h2 id="问题诊断：Agent-为什么不”成长”？"><a href="#问题诊断：Agent-为什么不”成长”？" class="headerlink" title="问题诊断：Agent 为什么不”成长”？"></a>问题诊断：Agent 为什么不”成长”？</h2><p>观察一个典型 Agent 的工作流，你会发现三个结构性缺陷：</p>
-<ul>
-<li><p><strong>身份漂移</strong>——同一个 Agent 在不同 session 中表现出矛盾的判断标准</p>
-</li>
-<li><p><strong>决策黑箱</strong>——Agent 无法解释”为什么做出这个决定”，缺乏可追溯的推理链</p>
-</li>
-<li><p><strong>学习缺失</strong>——每次交互的反馈没有被结构化记录，经验无法积累</p>
-</li>
-</ul>
-<p>根因在于：Agent 缺少一个独立于具体任务的<strong>认知框架层</strong>。所有的”思考”都被压扁到了 prompt-response 循环里，没有沉淀机制。</p>
-<h2 id="四层架构：从身份到能力"><a href="#四层架构：从身份到能力" class="headerlink" title="四层架构：从身份到能力"></a>四层架构：从身份到能力</h2><p>参考《西部世界》中”珍珠”（cerebral pearl）的隐喻——一个承载宿主机完整灵魂（身份、记忆、决策逻辑）的容器——认知内核被设计为四层结构：</p>
-<p>层级<br>内容<br>来源</p>
-<p><strong>L1 身份</strong><br>人格、角色、语气、边界<br>系统提示词 &#x2F; Soul 文件</p>
-<p><strong>L2 认知</strong><br>判断框架、思维工具、质量标准<br>认知技能（本文核心）</p>
-<p><strong>L3 记忆</strong><br>用户画像、项目知识、跨 session 事实<br>记忆系统</p>
-<p><strong>L4 能力</strong><br>技能、工具、API、委派模式<br>技能库 &#x2F; 工具集成</p>
-<p>L1 定义”我是谁”，L2 定义”我怎么判断”，L3 定义”我知道什么”，L4 定义”我能做什么”。四层之间是单向依赖：身份约束认知，认知指导记忆检索，记忆支撑能力调用。</p>
-<h2 id="七问启动协议"><a href="#七问启动协议" class="headerlink" title="七问启动协议"></a>七问启动协议</h2><p>每次加载认知框架时，Agent 必须先内部回答七个问题（基于 5W2H 框架改造），然后才能采取行动：</p>
-<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>问题<br>作用</p>
-<p>1<br><strong>我是谁？</strong><br>校准身份层</p>
-<p>2<br><strong>我在哪里？</strong><br>环境侦察 + 能力盘点 + TRIZ 九屏法</p>
-<p>3<br><strong>现在几点？</strong><br>运行 <code>date</code>，绝不依赖模型的内部时间感</p>
-<p>4<br><strong>目标是什么？</strong><br>复述需求，确认理解</p>
-<p>5<br><strong>怎么做？</strong><br>SIPOC 流程分析</p>
-<p>6<br><strong>成功标准是什么？</strong><br>定义质量基线，作为 PDCA 检查基准</p>
-<p>7<br><strong>为什么做？</strong><br>轻量校验（任务模式）&#x2F; 5 Whys 根因分析（问题模式）</p>
-<p><strong>关键防坑</strong>：LLM 对时间有系统性盲区。一个训练截止到 2025 年的模型，在 2026 年会自信地报告”今天是 2024 年”。因此第三问强制要求运行 <code>date</code> 命令，而非依赖模型直觉。</p>
-<h2 id="三大质量支柱"><a href="#三大质量支柱" class="headerlink" title="三大质量支柱"></a>三大质量支柱</h2><p>认知框架的运行由三条 ISO 9000 质量原则驱动：</p>
-<h3 id="SIPOC-—-过程方法"><a href="#SIPOC-—-过程方法" class="headerlink" title="SIPOC — 过程方法"></a>SIPOC — 过程方法</h3><p>任何任务执行前，先完成供方→输入→过程→输出→客户的范围界定。这防止了范围蔓延和遗漏上下文。</p>
-<h3 id="PDCA-—-螺旋进化引擎"><a href="#PDCA-—-螺旋进化引擎" class="headerlink" title="PDCA — 螺旋进化引擎"></a>PDCA — 螺旋进化引擎</h3><p>PDCA 不是闭环，而是<strong>螺旋</strong>。每一圈都有不同的变量进入（新输入、新上下文、新反馈），产出可能不同的结果：</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><br>1<br>2<br>3<br>4<br><br>基线更新规则：<br><span class="hljs-bullet">- </span>结果 &gt; 当前基线 → 接受，升级基线<br><span class="hljs-bullet">- </span>结果 ≤ 基线 → 丢弃，调整变量，重试<br><span class="hljs-bullet">- </span>连续 5 圈无改进 → 触发 TRIZ 进化定律，换方向突破<br><br></code></pre></td></tr></table></figure>
+                <p>前几天，一个朋友发来一张截图。</p>
+<p>是他刚写的一个交易策略回测。4 次交易，3 次盈利，胜率 75%。他挺兴奋，问我能不能上实盘。</p>
+<p>我看了看，只说了一句：再跑跑吧。</p>
+<p>不是泼冷水。4 次交易的 75%，和 400 次交易的 75%，完全是两回事。</p>
+<h2 id="1-先说一个心理陷阱"><a href="#1-先说一个心理陷阱" class="headerlink" title="1. 先说一个心理陷阱"></a>1. 先说一个心理陷阱</h2><p>人天生喜欢找规律。看到连续几次成功，就觉得找到了圣杯。</p>
+<p>但样本太小的时候，看到的规律很可能是噪声。</p>
+<p>假设这个策略的真实胜率其实只有 50%，和抛硬币一样。那么在 4 次独立交易中，盈利 3 次及以上的概率是多少？</p>
+<p>用二项分布算一下：</p>
+<p>[<br>P(X \ge 3) &#x3D; \binom{4}{3}0.5^4 + \binom{4}{4}0.5^4 &#x3D; 0.25 + 0.0625 &#x3D; 0.3125<br>]</p>
+<p>大约 31%。</p>
+<p>也就是说，一个完全无效的策略，也有将近三分之一的机会在 4 次里拿到 75% 以上的胜率。</p>
+<p>为了更直观，下面这张图把”无效策略（真实胜率 50%）在不同样本量下跑出 ≥75% 胜率”的概率列了出来：</p>
+<p><img src="/images/winrate-vs-samples.png" srcset="/img/loading.gif" lazyload alt="不同样本量下无效策略跑出 75% 胜率的概率"></p>
+<p>样本量越大，运气成分越稀释。4 次交易里的 75% 几乎全靠运气，100 次交易里的 75% 才开始像那么回事。</p>
+<p>你愿意拿这个概率押上实盘吗？</p>
+<h2 id="2-置信区间告诉你真相"><a href="#2-置信区间告诉你真相" class="headerlink" title="2. 置信区间告诉你真相"></a>2. 置信区间告诉你真相</h2><p>统计上有一个概念叫置信区间。它告诉你，给定样本数据，真实参数大概落在哪个范围。</p>
+<p>对胜率这种比例来说，样本越小，区间越宽。我们用 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval">Wilson 置信区间</a> 算算 4 次交易 75% 胜率的 95% 置信区间。</p>
+<p>下面是 Python 代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> statsmodels.stats.proportion <span class="hljs-keyword">as</span> smp<br><br>n = <span class="hljs-number">4</span><br>wins = <span class="hljs-number">3</span><br><br>ci = smp.proportion_confint(wins, n, alpha=<span class="hljs-number">0.05</span>, method=<span class="hljs-string">&#x27;wilson&#x27;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;95% Wilson CI: <span class="hljs-subst">&#123;ci&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
 
-<p>Agent 的每次交互都是一个微型 PDCA 循环：策划回应 → 执行 → 检查用户反应 → 根据反馈调整。</p>
-<h3 id="Risk-Thinking-—-不确定性下的决策"><a href="#Risk-Thinking-—-不确定性下的决策" class="headerlink" title="Risk Thinking — 不确定性下的决策"></a>Risk Thinking — 不确定性下的决策</h3><p>执行前枚举所有可能的失败模式，然后反转——问”怎样保证失败？”，逐一消除。对高风险决策，用蒙特卡洛模拟量化不确定性。</p>
-<h2 id="认知工具三级分级"><a href="#认知工具三级分级" class="headerlink" title="认知工具三级分级"></a>认知工具三级分级</h2><p>L2 认知层包含 13 个思维工具，按激活频率分三级，防止认知过载：</p>
-<p><strong>Tier 1 核心工具（每次任务自动激活）：</strong> 第一性原理 → IFR 指南针 → 逆向思维 → 枚举法 → PDCA 螺旋。这五个工具形成”发散→收敛”的完整链条。</p>
-<p><strong>Tier 2 按需工具（条件触发）：</strong> TRIZ 矛盾解决、DOE 正交试验、蒙特卡洛、系统思考、二阶思维。每个工具有明确的触发条件（如”组合爆炸检测到”→ 启用 DOE）。</p>
-<p><strong>Tier 3 基线规则（始终隐式生效）：</strong> 价值层级、决策锚点、质量标准、纠正模式。</p>
-<h2 id="复杂度分级执行"><a href="#复杂度分级执行" class="headerlink" title="复杂度分级执行"></a>复杂度分级执行</h2><p>不同复杂度的任务不应调用相同数量的认知工具。框架设计了三级执行流程：</p>
-<ul>
-<li><p><strong>Simple（~80% 任务）</strong>：7 问快速过 → 直接执行</p>
-</li>
-<li><p><strong>Medium（~15%）</strong>：第一性原理 + 枚举 + IFR + 逆向 → 执行</p>
-</li>
-<li><p><strong>Complex（~5%）</strong>：全量工具链 → 风险评估 → 二阶思考 → 系统思考 → 执行</p>
-</li>
-</ul>
-<p>判断标准：目标是否清晰？方法是否显然？失败后果是否可恢复？三个都”是”→ Simple。</p>
-<h2 id="Meta-PDCA：框架审计自身"><a href="#Meta-PDCA：框架审计自身" class="headerlink" title="Meta-PDCA：框架审计自身"></a>Meta-PDCA：框架审计自身</h2><p>框架内置了自我优化机制——当满足以下任一条件时，自动触发框架级审计：</p>
-<p>触发条件<br>阈值</p>
-<p>进化日志增长<br>每 10 条记录</p>
-<p>日历间隔<br>每 30 天</p>
-<p>用户指示<br>即时</p>
-<p>审计内容包括：搜索新的思维方法论、对比当前工具集、检查工具利用率（30 天未触发的工具归档）、识别结构性冗余。</p>
-<p>在一次实际审计中，框架发现了 5 个自身的结构问题（认知工具过载、执行流不分层、PDCA 无参数定义等），并在下一个版本中全部解决。<strong>框架将 PDCA 螺旋应用到了自身。</strong></p>
-<h2 id="实践效果"><a href="#实践效果" class="headerlink" title="实践效果"></a>实践效果</h2><p>认知框架在实际运行中产生了可观测的变化：</p>
-<ul>
-<li><p><strong>决策一致性</strong>：相同场景下，Agent 跨 session 的判断标准趋同</p>
-</li>
-<li><p><strong>纠正频率下降</strong>：结构化记录反馈后，同类错误不重复犯</p>
-</li>
-<li><p><strong>决策可追溯</strong>：每个决定都能追溯到某个具体的价值观或质量标准</p>
-</li>
-<li><p><strong>行为自适应</strong>：Agent 根据反馈调整行为，而非固守初始设定</p>
-</li>
-</ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>认知框架解决的核心问题是：<strong>让 Agent 从”被动响应”升级为”主动进化”</strong>。七问协议确保每次任务都有正确的起点；三大支柱确保执行过程有质量保障；PDCA 螺旋确保每次反馈都被吸收；Meta-PDCA 确保框架本身不会过时。</p>
-<p>框架不是完成的，它是一个持续生长的系统。每一次交互都在上面叠加一层新的认知沉积——就像珍珠的形成。</p>
+<p>输出大概是 <code>(0.251, 0.987)</code>。</p>
+<p>区间从 25% 到 99%，几乎横跨整个可能范围。这意味着你对真实胜率几乎一无所知。</p>
+<p>对比一下：如果交易次数增加到 100 次，胜率还是 75%，置信区间会缩到大约 (0.65, 0.83)。那时候才能说策略可能比随机好。</p>
+<h2 id="3-样本量要到多少才够"><a href="#3-样本量要到多少才够" class="headerlink" title="3. 样本量要到多少才够"></a>3. 样本量要到多少才够</h2><p>统计学里有一个公式可以估算最小样本量：</p>
+<p>[<br>n &#x3D; \frac{z^2 \cdot p(1-p)}{E^2}<br>]</p>
+<p>其中 (z) 是置信水平对应的值（95% 用 1.96），(p) 是预期胜率（最保守取 0.5），(E) 是允许的误差。</p>
+<p>如果希望误差在 ±10% 以内：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> math <span class="hljs-keyword">import</span> ceil<br><br>z = <span class="hljs-number">1.96</span><br>p = <span class="hljs-number">0.5</span><br>E = <span class="hljs-number">0.10</span><br>n = ceil((z**<span class="hljs-number">2</span> * p * (<span class="hljs-number">1</span>-p)) / E**<span class="hljs-number">2</span>)<br><span class="hljs-built_in">print</span>(n)  <span class="hljs-comment"># 97</span><br></code></pre></td></tr></table></figure>
+
+<p>需要至少 97 笔交易。如果误差要求 ±5%，则需要：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">E = <span class="hljs-number">0.05</span><br>n = ceil((z**<span class="hljs-number">2</span> * p * (<span class="hljs-number">1</span>-p)) / E**<span class="hljs-number">2</span>)<br><span class="hljs-built_in">print</span>(n)  <span class="hljs-comment"># 385</span><br></code></pre></td></tr></table></figure>
+
+<p>385 笔。4 次交易，误差超过 ±40%，根本谈不上可靠估计。</p>
+<h2 id="4-小样本更容易过拟合"><a href="#4-小样本更容易过拟合" class="headerlink" title="4. 小样本更容易过拟合"></a>4. 小样本更容易过拟合</h2><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Overfitting">过拟合</a>是指模型把噪声当成了信号，在样本内表现好，样本外一塌糊涂。</p>
+<p>参数越多，样本越少，过拟合越严重。4 次交易里跑出 75% 胜率，很可能只是恰好匹配了那几天的市场噪声。</p>
+<p>举个例子：假设你有 100 个随机生成的策略，每个都测试 4 次。按照概率，大约有 31 个策略会获得 75% 以上的胜率。但它们只是运气好，并非真的有效。</p>
+<p>这就是<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Survivorship_bias">幸存者偏差</a>。</p>
+<h2 id="5-实盘之前可以怎么做"><a href="#5-实盘之前可以怎么做" class="headerlink" title="5. 实盘之前可以怎么做"></a>5. 实盘之前可以怎么做</h2><p>第一，增加样本量。至少 50 到 100 次交易，才能对胜率有一个基本靠谱的估计。</p>
+<p>第二，做样本外测试。把数据分成训练集和验证集，看看策略在验证集上是否依然有效。如果掉得厉害，多半是过拟合。</p>
+<p>第三，控制参数数量。逻辑越简单，过拟合风险越低。</p>
+<p>第四，不要只看胜率，要结合盈亏比看期望收益。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">win_rate = <span class="hljs-number">0.75</span><br>avg_win = <span class="hljs-number">0.01</span><br>avg_loss = <span class="hljs-number">0.10</span><br><br>expected_return = win_rate * avg_win - (<span class="hljs-number">1</span> - win_rate) * avg_loss<br><span class="hljs-built_in">print</span>(expected_return)  <span class="hljs-comment"># -0.0175</span><br></code></pre></td></tr></table></figure>
+
+<p>胜率 75%，但平均盈利 1%，平均亏损 10%，期望收益是负的 1.75%。胜率高不一定赚钱。</p>
+<h2 id="6-说到底，统计是一门关于不确定性的语言"><a href="#6-说到底，统计是一门关于不确定性的语言" class="headerlink" title="6. 说到底，统计是一门关于不确定性的语言"></a>6. 说到底，统计是一门关于不确定性的语言</h2><p>4 次交易 75% 胜率，数字本身没错。但背后的不确定性太大。</p>
+<p>在统计上，我们永远无法通过少量样本证明一个策略有效。只能逐步积累证据，让置信区间收窄。</p>
+<p>所以下一次有人给你看一个「高胜率」策略，先别急着问赚多少。先问一句：样本量有多少？</p>
+<p>以上就是我对小样本过拟合的一点思考，希望对大家有帮助。</p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval">Binomial proportion confidence interval - Wikipedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Overfitting">Overfitting - Wikipedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Sample_size_determination">Sample size determination - Wikipedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Survivorship_bias">Survivorship bias - Wikipedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval">Wilson score interval</a></li>
+</ol>
 
                 
               </div>
@@ -560,17 +546,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+        <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="print-no-link">#量化交易</a>
       
-        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+        <a href="/tags/%E7%BB%9F%E8%AE%A1%E6%8E%A8%E6%96%AD/" class="print-no-link">#统计推断</a>
       
-        <a href="/tags/%E8%AE%A4%E7%9F%A5%E6%9E%B6%E6%9E%84/" class="print-no-link">#认知架构</a>
-      
-        <a href="/tags/PDCA/" class="print-no-link">#PDCA</a>
-      
-        <a href="/tags/TRIZ/" class="print-no-link">#TRIZ</a>
-      
-        <a href="/tags/%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86/" class="print-no-link">#质量管理</a>
+        <a href="/tags/%E8%BF%87%E6%8B%9F%E5%90%88/" class="print-no-link">#过拟合</a>
       
     </div>
   
@@ -582,8 +562,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>构建AI Agent的认知内核：从七问协议到自进化引擎</div>
-      <div>https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/</div>
+      <div>小样本过拟合：4 次交易 75% 胜率凭什么不能信</div>
+      <div>https://normdist.com/2026/07/25/ND-20260725-001-small-sample-overfitting-75-percent-win-rate/</div>
     </div>
     <div class="license-meta">
       
@@ -595,7 +575,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年6月26日</div>
+          <div>2026年7月25日</div>
         </div>
       
       
@@ -627,9 +607,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/27/ND-20260627-001-agent-execution-channel/" title="「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复">
+                      <a href="/2026/07/25/ND-20260725-003-how-to-write-agent-skills/" title="如何写一个好的智能体技能">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复</span>
+                        <span class="hidden-mobile">如何写一个好的智能体技能</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -637,8 +617,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
-                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
+                      <a href="/2026/07/25/ND-20260725-004-skill-master-self-optimize/" title="用技能大师优化技能大师——一个自指循环的100分实践">
+                        <span class="hidden-mobile">用技能大师优化技能大师——一个自指循环的100分实践</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
