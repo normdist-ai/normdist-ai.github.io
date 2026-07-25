@@ -1,0 +1,1011 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="基于 agentskills.io 开放规范的完整研究，从目录结构到最佳实践到评估迭代，一篇搞懂智能体技能怎么写。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何写一个好的智能体技能">
+<meta property="og:url" content="https://normdist.com/2026/07/25/ND-20260725-003-how-to-write-agent-skills/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="基于 agentskills.io 开放规范的完整研究，从目录结构到最佳实践到评估迭代，一篇搞懂智能体技能怎么写。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://normdist.com/img/cover-how-to-write-agent-skills.jpg">
+<meta property="article:published_time" content="2026-07-25T14:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-25T13:52:34.230Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="Agent Skills">
+<meta property="article:tag" content="技能工程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://normdist.com/img/cover-how-to-write-agent-skills.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>如何写一个好的智能体技能 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">如何写一个好的智能体技能</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-25 22:00" pubdate>
+          2026年7月25日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">如何写一个好的智能体技能</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月25日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>一个文件夹加一个 SKILL.md，就是一次可移植的智能体能力扩展。但”能跑”和”好用”之间，隔着一套设计哲学。</p>
+</blockquote>
+<h2 id="什么是-Agent-Skills"><a href="#什么是-Agent-Skills" class="headerlink" title="什么是 Agent Skills"></a>什么是 Agent Skills</h2><p>如果你用过 Claude Code、Cursor、或者我们团队基于 Hermes Agent 搭建的各种智能体，你可能已经接触过”技能”这个概念——给 AI 一段额外的指令和工具，让它能完成特定领域的任务。</p>
+<p>Agent Skills 就是把这个过程<strong>标准化</strong>了的开放格式。它由 Anthropic 发起，已被 40+ 主流 AI 工具采纳。</p>
+<p>核心思想极其简单：<strong>一个文件夹加一个 SKILL.md，就是一个可移植的智能体能力</strong>。</p>
+<p>但”能跑”的技能和”好用”的技能之间，差距很大。这篇文章是对 agentskills.io 全站内容的系统研究，总结出一套可操作的方法论。</p>
+<h2 id="渐进式披露：技能设计的灵魂"><a href="#渐进式披露：技能设计的灵魂" class="headerlink" title="渐进式披露：技能设计的灵魂"></a>渐进式披露：技能设计的灵魂</h2><p>这是整个 Agent Skills 体系最核心的设计原则。</p>
+<p>想象你是一个 AI 智能体，启动时有几十个技能可用。如果每个技能的全部内容都加载进来，上下文窗口瞬间就满了。</p>
+<p>渐进式披露用三层机制解决这个问题：</p>
+<p><strong>第一层：发现（~100 tokens）</strong></p>
+<p>启动时只加载每个技能的 <code>name</code> 和 <code>description</code>。一个技能的元数据大约消耗 100 个 token，几十个技能也就几 K——完全可以接受。</p>
+<p>智能体靠 description 判断”当前任务是否需要这个技能”。<strong>description 是技能唯一的触发器</strong>。写得不好，技能永远不会被激活。</p>
+<p><strong>第二层：激活（&lt;5000 tokens 推荐）</strong></p>
+<p>当用户的需求匹配了某个技能的 description，智能体才会加载完整的 SKILL.md 正文。这个加载是有成本的——5000 tokens 意味着占据了上下文窗口的相当一部分。所以官方推荐 SKILL.md 控制在 500 行以内。</p>
+<p><strong>第三层：执行（按需）</strong></p>
+<p>SKILL.md 正文中引用的 <code>scripts/</code>、<code>references/</code>、<code>assets/</code> 文件，只有在真正需要时才被读取。</p>
+<p>关键：<strong>不要笼统地说”详见 references&#x2F;“</strong>。要告诉智能体精确的触发条件——“当 API 返回非 200 状态码时，读取 references&#x2F;api-errors.md”。模糊引用等于没有引用。</p>
+<h2 id="目录结构：一个完整的技能长什么样"><a href="#目录结构：一个完整的技能长什么样" class="headerlink" title="目录结构：一个完整的技能长什么样"></a>目录结构：一个完整的技能长什么样</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs text">my-skill/<br>├── SKILL.md          # 必需：元数据 + 指令<br>├── scripts/          # 可选：可执行脚本<br>├── references/       # 可选：按需加载的文档<br>├── assets/           # 可选：模板、图片、数据<br>└── ...               # 任何额外文件<br>```text<br><br>简单到几乎没有学习成本。关键不在于目录怎么放，而在于每个文件里**写了什么**以及**多少篇幅**。<br><br>## Frontmatter：两个字段决定生死<br><br>SKILL.md 以 YAML frontmatter 开头，只有两个字段是必需的：<br><br>| 字段 | 必需 | 约束 |<br>|------|------|------|<br>| `name` | 是 | 小写字母+数字+连字符，≤64 字符，必须匹配目录名 |<br>| `description` | 是 | ≤1024 字符，说明&quot;做什么&quot;+&quot;何时用&quot; |<br><br>### name 的规则<br><br>不能有大写字母，不能以连字符开头或结尾，不能连续连字符。`pdf-processing` ✅，`PDF-Processing` ❌。<br><br>### description 的写法<br><br>好的 description 是技能被正确触发的唯一保证。<br><br>**差的**：`Helps with PDFs.`<br><br>**好的**：<br>```yaml<br>Extracts text and tables from PDF files, fills PDF forms, and merges multiple<br>PDFs. Use when working with PDF documents or when the user mentions PDFs,<br>forms, or document extraction.<br></code></pre></td></tr></table></figure>
+
+<p>四个要点：<strong>祈使语气</strong>、<strong>覆盖用户意图</strong>（不只是关键词）、<strong>宁可激进</strong>（明确列出适用场景）、<strong>简洁</strong>（1024 字符硬限制）。</p>
+<h2 id="正文：该写什么，不该写什么"><a href="#正文：该写什么，不该写什么" class="headerlink" title="正文：该写什么，不该写什么"></a>正文：该写什么，不该写什么</h2><p>这是大多数技能出问题的地方。SKILL.md 正文是技能的核心，但它要和对话历史、其他技能竞争上下文空间。</p>
+<h3 id="原则一：补充智能体不知道的，省略它知道的"><a href="#原则一：补充智能体不知道的，省略它知道的" class="headerlink" title="原则一：补充智能体不知道的，省略它知道的"></a>原则一：补充智能体不知道的，省略它知道的</h3><p>不要教 AI 什么是 PDF。只写它不会知道的——你的项目约定、特定 API 的怪癖、不明显的边界情况。</p>
+<p>对每段内容问自己：<strong>“没有这条指令，智能体会搞错吗？”</strong> 如果答案是”不会”，删掉它。</p>
+<h3 id="原则二：给默认值，不要给菜单"><a href="#原则二：给默认值，不要给菜单" class="headerlink" title="原则二：给默认值，不要给菜单"></a>原则二：给默认值，不要给菜单</h3><p><strong>差</strong>：<code>You can use pypdf, pdfplumber, PyMuPDF, or pdf2image...</code></p>
+<p><strong>好</strong>：<code>Use pdfplumber for text extraction. For scanned PDFs, use pdf2image with pytesseract.</code></p>
+<p>选一个默认方案，简短提及备选。让智能体做决定，而不是做选择题。</p>
+<h3 id="原则三：偏好过程，而非声明"><a href="#原则三：偏好过程，而非声明" class="headerlink" title="原则三：偏好过程，而非声明"></a>原则三：偏好过程，而非声明</h3><p>技能应该教智能体<strong>如何解决一类问题</strong>，而不是为某个特定实例指定产出物。方法要可推广。</p>
+<h2 id="高效指令的五种模式"><a href="#高效指令的五种模式" class="headerlink" title="高效指令的五种模式"></a>高效指令的五种模式</h2><p>研究 agentskills.io 的最佳实践后，我提炼出五种最高频、最高价值的指令模式：</p>
+<h3 id="①-Gotchas-段落——最高价值内容"><a href="#①-Gotchas-段落——最高价值内容" class="headerlink" title="① Gotchas 段落——最高价值内容"></a>① Gotchas 段落——最高价值内容</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## Gotchas</span><br><span class="hljs-bullet">-</span> The <span class="hljs-code">`users`</span> table uses soft deletes. Queries must include<br>  WHERE deleted<span class="hljs-emphasis">_at IS NULL.</span><br><span class="hljs-emphasis">- User ID is `user_</span>id<span class="hljs-code">` in the database, `</span>uid` in the auth service,<br>  and <span class="hljs-code">`accountId`</span> in the billing API.<br><span class="hljs-code">```text</span><br><span class="hljs-code"></span><br><span class="hljs-code">为什么 Gotchas 最高价值？因为正面指导（&quot;做 X&quot;）智能体往往已经知道。真正值钱的是**负面边界**——&quot;别做 Y，因为 Z 会坏&quot;。</span><br><span class="hljs-code"></span><br><span class="hljs-code">**技巧**：每次你纠正了智能体的一个错误，把纠正加到 Gotchas 里。这是迭代改进技能最直接的方式。</span><br><span class="hljs-code"></span><br><span class="hljs-code">### ② 输出格式模板</span><br><span class="hljs-code"></span><br><span class="hljs-code">给具体的结构模板，远胜过用文字描述&quot;应该是什么格式&quot;。智能体对 pattern-match 的能力远强于对抽象格式描述的理解。</span><br><span class="hljs-code"></span><br><span class="hljs-code">### ③ 多步骤清单</span><br><span class="hljs-code"></span><br><span class="hljs-code">```</span>markdown<br><span class="hljs-bullet">-</span> [ ] Step 1: 分析表单（运行 scripts/analyze<span class="hljs-emphasis">_form.py）</span><br><span class="hljs-emphasis">- [ ] Step 2: 创建字段映射（编辑 fields.json）</span><br><span class="hljs-emphasis">- [ ] Step 3: 验证映射（运行 scripts/validate_</span>fields.py）<br><span class="hljs-bullet">-</span> [ ] Step 4: 填写表单（运行 scripts/fill<span class="hljs-emphasis">_form.py）</span><br></code></pre></td></tr></table></figure>
+
+<p>显式的清单帮助智能体跟踪进度，不跳步。</p>
+<h3 id="④-验证循环"><a href="#④-验证循环" class="headerlink" title="④ 验证循环"></a>④ 验证循环</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs text">1. 执行操作<br>2. 运行验证脚本<br>3. 如果失败 → 诊断 → 修复 → 重新验证<br>4. 只有通过才继续下一步<br>```text<br><br>### ⑤ 计划-验证-执行<br><br>批量或破坏性操作的安全模式：先生成结构化计划 → 验证计划 → 才执行。<br><br>## 脚本优于文字描述<br><br>这是实践中最重要的一条经验。<br><br>**不同的大模型对同一段文字说明的理解不同，执行结果也不同。但同一个脚本跑出来的输出，永远是同一个。**<br><br>但凡能用脚本固化的流程——格式化输出、重复计算、固定命令序列——都不要用 SKILL.md 文字描述来替代。<br><br>智能体友好的脚本要做到：<br>- **禁止交互提示**（智能体在非交互 shell 中会挂起）<br>- **--help 是接口文档**（智能体靠它学习怎么用）<br>- **结构化输出**（JSON/CSV 到 stdout，诊断到 stderr）<br>- **幂等性**（重复运行不出问题）<br>- **有意义的退出码**（0 = 成功，非零 = 具体错误）<br><br>## 评估：怎么知道技能好不好<br><br>这是最容易被忽略的环节。一个技能写完了，怎么验证它确实有用？<br><br>**核心方法：对照实验。**<br><br>每个测试用例跑两次：一次有技能，一次没有。对比输出质量。技能真正有用时，差异应该很明显。<br><br>用可程序验证的断言，而不是&quot;输出好不好&quot;这种模糊判断：<br>- ✅ &quot;输出是有效的 JSON&quot;<br>- ✅ &quot;柱状图有标注坐标轴&quot;<br>- ❌ &quot;输出是好的&quot;<br><br>然后迭代：把评估信号反馈给技能，修改 SKILL.md，重新测试，直到通过率稳定。<br><br>## 描述优化：最后的打磨<br><br>技能写好了，但用户说了类似的话却没触发？问题出在 description。<br><br>**构建 ~20 条测试查询**——一半应该触发，一半不应该。特别有价值的是**近似命中（near-miss）**——共享关键词但需求不同的查询。<br><br>```text<br>应该触发：&quot;帮我从这个表格里算一下平均值&quot;<br>应该触发：&quot;这个 Excel 文件能做个图吗&quot;<br>不应触发：&quot;帮我写一首关于表格的诗&quot;  ← 共享&quot;表格&quot;关键词<br></code></pre></td></tr></table></figure>
+
+<p>用训练集 60% + 验证集 40% 的方式避免过拟合，按验证集通过率选最佳版本。</p>
+<h2 id="实践总结"><a href="#实践总结" class="headerlink" title="实践总结"></a>实践总结</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>关键要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心格式</td>
+<td>一个文件夹 + 一个 SKILL.md</td>
+</tr>
+<tr>
+<td>渐进式披露</td>
+<td>100 tokens 发现 → 5000 tokens 激活 → 按需加载资源</td>
+</tr>
+<tr>
+<td>内容来源</td>
+<td>从真实任务提取，不靠 LLM 凭空生成</td>
+</tr>
+<tr>
+<td>上下文经济</td>
+<td>只写智能体不知道的，500 行 &#x2F; 5000 tokens 以内</td>
+</tr>
+<tr>
+<td>控制力校准</td>
+<td>脆弱操作严格规范，灵活任务给自由</td>
+</tr>
+<tr>
+<td>最高价值内容</td>
+<td>Gotchas——智能体会犯的错、环境特定的坑</td>
+</tr>
+<tr>
+<td>脚本优先</td>
+<td>能用脚本的不要用文字描述</td>
+</tr>
+<tr>
+<td>评估闭环</td>
+<td>有&#x2F;无技能对照 → 程序验证断言 → 迭代</td>
+</tr>
+</tbody></table>
+<p>写好一个技能，本质上是在做<strong>知识工程</strong>——把你头脑中的专业知识、项目约定和踩过的坑，编码成智能体可消费的结构化指令。做得好，智能体的能力就会随时间持续积累；做得差，就是在浪费上下文空间。</p>
+<hr>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/home">Agent Skills — 官方主页</a></li>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/skill-creation/specification">Specification — 技能文件规范</a></li>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/skill-creation/quickstart">Quickstart — 快速入门</a></li>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/skill-creation/best-practices">Best Practices — 最佳实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/skill-creation/optimizing-descriptions">Optimizing Descriptions — 描述优化</a></li>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/skill-creation/evaluating-skills">Evaluating Skills — 技能评估</a></li>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/skill-creation/using-scripts">Using Scripts — 脚本使用</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI%E5%AE%9E%E8%B7%B5/" class="category-chain-item">AI实践</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+      
+        <a href="/tags/Agent-Skills/" class="print-no-link">#Agent Skills</a>
+      
+        <a href="/tags/%E6%8A%80%E8%83%BD%E5%B7%A5%E7%A8%8B/" class="print-no-link">#技能工程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>如何写一个好的智能体技能</div>
+      <div>https://normdist.com/2026/07/25/ND-20260725-003-how-to-write-agent-skills/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/24/ND-20260724-006-zhihu-publishing/" title="AI 智能体发布文章到知乎：五条技术路径深度对比">
+                        <span class="hidden-mobile">AI 智能体发布文章到知乎：五条技术路径深度对比</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
