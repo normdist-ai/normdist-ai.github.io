@@ -19,29 +19,28 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+    <meta name="description" content="一次真实的 AI 驱动 Android 开发实验：从 PM 策划到 OpenCode 编码，再到 Gradle 构建出可安装的 APK，中间踩了 8 个坑，全部自动修复。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="构建AI Agent的认知内核：从七问协议到自进化引擎">
-<meta property="og:url" content="https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/index.html">
+<meta property="og:title" content="从零到 APK：用 AI Agent 链式驱动开发一个 Android Hello World 应用">
+<meta property="og:url" content="https://normdist.com/2026/07/26/ND-20260726-001-android-hello-world-apk/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+<meta property="og:description" content="一次真实的 AI 驱动 Android 开发实验：从 PM 策划到 OpenCode 编码，再到 Gradle 构建出可安装的 APK，中间踩了 8 个坑，全部自动修复。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-26T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T05:29:29.106Z">
+<meta property="og:image" content="https://normdist.com/img/cover-android-hello-world.jpg">
+<meta property="article:published_time" content="2026-07-26T14:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-26T13:31:42.641Z">
 <meta property="article:author" content="小瑞">
+<meta property="article:tag" content="ADP">
 <meta property="article:tag" content="AI Agent">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="PDCA">
-<meta property="article:tag" content="TRIZ">
-<meta property="article:tag" content="认知架构">
-<meta property="article:tag" content="质量管理">
+<meta property="article:tag" content="Android开发">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://normdist.com/img/cover-android-hello-world.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>构建AI Agent的认知内核：从七问协议到自进化引擎 - 进化概率论</title>
+  <title>从零到 APK：用 AI Agent 链式驱动开发一个 Android Hello World 应用 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -362,7 +361,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">构建AI Agent的认知内核：从七问协议到自进化引擎</span>
+            <span id="subtitle">从零到 APK：用 AI Agent 链式驱动开发一个 Android Hello World 应用</span>
           
         </div>
 
@@ -373,8 +372,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-26 10:00" pubdate>
-          2026年6月26日 上午
+        <time datetime="2026-07-26 22:00" pubdate>
+          2026年7月26日 晚上
         </time>
       </span>
     
@@ -385,7 +384,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k 字
+          2.7k 字
         
       </span>
     
@@ -396,7 +395,7 @@
         
         
         
-          19 分钟
+          23 分钟
         
       </span>
     
@@ -444,12 +443,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">构建AI Agent的认知内核：从七问协议到自进化引擎</h1>
+            <h1 id="seo-header">从零到 APK：用 AI Agent 链式驱动开发一个 Android Hello World 应用</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年7月26日 晚上
                   
                 
               </p>
@@ -457,76 +456,137 @@
             
               <div class="markdown-body">
                 
-                <p>大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。</p>
-<p>这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent 拥有一个可追踪、可进化、可审计的”认知内核”。</p>
-<h2 id="问题诊断：Agent-为什么不”成长”？"><a href="#问题诊断：Agent-为什么不”成长”？" class="headerlink" title="问题诊断：Agent 为什么不”成长”？"></a>问题诊断：Agent 为什么不”成长”？</h2><p>观察一个典型 Agent 的工作流，你会发现三个结构性缺陷：</p>
-<ul>
-<li><p><strong>身份漂移</strong>——同一个 Agent 在不同 session 中表现出矛盾的判断标准</p>
-</li>
-<li><p><strong>决策黑箱</strong>——Agent 无法解释”为什么做出这个决定”，缺乏可追溯的推理链</p>
-</li>
-<li><p><strong>学习缺失</strong>——每次交互的反馈没有被结构化记录，经验无法积累</p>
-</li>
-</ul>
-<p>根因在于：Agent 缺少一个独立于具体任务的<strong>认知框架层</strong>。所有的”思考”都被压扁到了 prompt-response 循环里，没有沉淀机制。</p>
-<h2 id="四层架构：从身份到能力"><a href="#四层架构：从身份到能力" class="headerlink" title="四层架构：从身份到能力"></a>四层架构：从身份到能力</h2><p>参考《西部世界》中”珍珠”（cerebral pearl）的隐喻——一个承载宿主机完整灵魂（身份、记忆、决策逻辑）的容器——认知内核被设计为四层结构：</p>
-<p>层级<br>内容<br>来源</p>
-<p><strong>L1 身份</strong><br>人格、角色、语气、边界<br>系统提示词 &#x2F; Soul 文件</p>
-<p><strong>L2 认知</strong><br>判断框架、思维工具、质量标准<br>认知技能（本文核心）</p>
-<p><strong>L3 记忆</strong><br>用户画像、项目知识、跨 session 事实<br>记忆系统</p>
-<p><strong>L4 能力</strong><br>技能、工具、API、委派模式<br>技能库 &#x2F; 工具集成</p>
-<p>L1 定义”我是谁”，L2 定义”我怎么判断”，L3 定义”我知道什么”，L4 定义”我能做什么”。四层之间是单向依赖：身份约束认知，认知指导记忆检索，记忆支撑能力调用。</p>
-<h2 id="七问启动协议"><a href="#七问启动协议" class="headerlink" title="七问启动协议"></a>七问启动协议</h2><p>每次加载认知框架时，Agent 必须先内部回答七个问题（基于 5W2H 框架改造），然后才能采取行动：</p>
-<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>问题<br>作用</p>
-<p>1<br><strong>我是谁？</strong><br>校准身份层</p>
-<p>2<br><strong>我在哪里？</strong><br>环境侦察 + 能力盘点 + TRIZ 九屏法</p>
-<p>3<br><strong>现在几点？</strong><br>运行 <code>date</code>，绝不依赖模型的内部时间感</p>
-<p>4<br><strong>目标是什么？</strong><br>复述需求，确认理解</p>
-<p>5<br><strong>怎么做？</strong><br>SIPOC 流程分析</p>
-<p>6<br><strong>成功标准是什么？</strong><br>定义质量基线，作为 PDCA 检查基准</p>
-<p>7<br><strong>为什么做？</strong><br>轻量校验（任务模式）&#x2F; 5 Whys 根因分析（问题模式）</p>
-<p><strong>关键防坑</strong>：LLM 对时间有系统性盲区。一个训练截止到 2025 年的模型，在 2026 年会自信地报告”今天是 2024 年”。因此第三问强制要求运行 <code>date</code> 命令，而非依赖模型直觉。</p>
-<h2 id="三大质量支柱"><a href="#三大质量支柱" class="headerlink" title="三大质量支柱"></a>三大质量支柱</h2><p>认知框架的运行由三条 ISO 9000 质量原则驱动：</p>
-<h3 id="SIPOC-—-过程方法"><a href="#SIPOC-—-过程方法" class="headerlink" title="SIPOC — 过程方法"></a>SIPOC — 过程方法</h3><p>任何任务执行前，先完成供方→输入→过程→输出→客户的范围界定。这防止了范围蔓延和遗漏上下文。</p>
-<h3 id="PDCA-—-螺旋进化引擎"><a href="#PDCA-—-螺旋进化引擎" class="headerlink" title="PDCA — 螺旋进化引擎"></a>PDCA — 螺旋进化引擎</h3><p>PDCA 不是闭环，而是<strong>螺旋</strong>。每一圈都有不同的变量进入（新输入、新上下文、新反馈），产出可能不同的结果：</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><br>1<br>2<br>3<br>4<br><br>基线更新规则：<br><span class="hljs-bullet">- </span>结果 &gt; 当前基线 → 接受，升级基线<br><span class="hljs-bullet">- </span>结果 ≤ 基线 → 丢弃，调整变量，重试<br><span class="hljs-bullet">- </span>连续 5 圈无改进 → 触发 TRIZ 进化定律，换方向突破<br><br></code></pre></td></tr></table></figure>
+                <blockquote>
+<p>2026 年 7 月 26 日，我用一条 AI Agent 链路（ADP → IDE Hub → OpenCode）完成了一个 Android Hello World 应用的开发，并把它安装到了手机上。整个过程约 2 小时，中间踩了 8 个坑，全部自动修复。</p>
+</blockquote>
+<h2 id="为什么做这个实验"><a href="#为什么做这个实验" class="headerlink" title="为什么做这个实验"></a>为什么做这个实验</h2><p>Android 开发一直是我心里的一个”白盒”——我知道每一步该做什么，但从来没有亲手跑通过完整的构建链路。环境配置、Gradle 工具链、Java 版本兼容……每一个环节都可能卡住。</p>
+<p>更重要的是，我想验证一套<strong>AI 驱动的开发流水线</strong>：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">ADP（PM/策划） → IDE Hub（执行器网关） → OpenCode（编码执行器） → 构建 → APK<br></code></pre></td></tr></table></figure>
 
-<p>Agent 的每次交互都是一个微型 PDCA 循环：策划回应 → 执行 → 检查用户反应 → 根据反馈调整。</p>
-<h3 id="Risk-Thinking-—-不确定性下的决策"><a href="#Risk-Thinking-—-不确定性下的决策" class="headerlink" title="Risk Thinking — 不确定性下的决策"></a>Risk Thinking — 不确定性下的决策</h3><p>执行前枚举所有可能的失败模式，然后反转——问”怎样保证失败？”，逐一消除。对高风险决策，用蒙特卡洛模拟量化不确定性。</p>
-<h2 id="认知工具三级分级"><a href="#认知工具三级分级" class="headerlink" title="认知工具三级分级"></a>认知工具三级分级</h2><p>L2 认知层包含 13 个思维工具，按激活频率分三级，防止认知过载：</p>
-<p><strong>Tier 1 核心工具（每次任务自动激活）：</strong> 第一性原理 → IFR 指南针 → 逆向思维 → 枚举法 → PDCA 螺旋。这五个工具形成”发散→收敛”的完整链条。</p>
-<p><strong>Tier 2 按需工具（条件触发）：</strong> TRIZ 矛盾解决、DOE 正交试验、蒙特卡洛、系统思考、二阶思维。每个工具有明确的触发条件（如”组合爆炸检测到”→ 启用 DOE）。</p>
-<p><strong>Tier 3 基线规则（始终隐式生效）：</strong> 价值层级、决策锚点、质量标准、纠正模式。</p>
-<h2 id="复杂度分级执行"><a href="#复杂度分级执行" class="headerlink" title="复杂度分级执行"></a>复杂度分级执行</h2><p>不同复杂度的任务不应调用相同数量的认知工具。框架设计了三级执行流程：</p>
+<p>如果这条链路能跑通 Android 这样复杂的构建系统，那说明这套方法论是通用的。</p>
+<h2 id="需求：一个最简单的-Android-Hello-World"><a href="#需求：一个最简单的-Android-Hello-World" class="headerlink" title="需求：一个最简单的 Android Hello World"></a>需求：一个最简单的 Android Hello World</h2><p>只有一个要求：启动后显示一行字——“Hello, Android!”。</p>
+<p>技术栈锁定：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Android SDK</td>
+<td>compileSdk 35</td>
+</tr>
+<tr>
+<td>Kotlin</td>
+<td>2.0.21</td>
+</tr>
+<tr>
+<td>UI 框架</td>
+<td>Jetpack Compose (Material 3)</td>
+</tr>
+<tr>
+<td>构建工具</td>
+<td>Gradle 8.7, Java 17 toolchain</td>
+</tr>
+<tr>
+<td>Android Gradle Plugin</td>
+<td>8.5.0</td>
+</tr>
+<tr>
+<td>minSdk &#x2F; targetSdk</td>
+<td>24 &#x2F; 35</td>
+</tr>
+</tbody></table>
+<h2 id="ADP：PM-不写一行代码"><a href="#ADP：PM-不写一行代码" class="headerlink" title="ADP：PM 不写一行代码"></a>ADP：PM 不写一行代码</h2><p>我用的 ADP（Auto-Develop Plus）是一套 PDCA 循环驱动的开发框架，核心铁律是：</p>
+<blockquote>
+<p><strong>PM 不写代码，只负责策划、派发、验收。</strong></p>
+</blockquote>
+<p>它的工作流程：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Step</span> <span class="hljs-number">0</span>（需求提炼） → P（策划）→ D（执行）→ C（检查）→ A（纠正）→ 下一轮 Step <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="P-阶段：策划"><a href="#P-阶段：策划" class="headerlink" title="P 阶段：策划"></a>P 阶段：策划</h3><p>ADP 首先进入 P 阶段，生成：</p>
 <ul>
-<li><p><strong>Simple（~80% 任务）</strong>：7 问快速过 → 直接执行</p>
-</li>
-<li><p><strong>Medium（~15%）</strong>：第一性原理 + 枚举 + IFR + 逆向 → 执行</p>
-</li>
-<li><p><strong>Complex（~5%）</strong>：全量工具链 → 风险评估 → 二阶思考 → 系统思考 → 执行</p>
-</li>
+<li><strong>PRD</strong>：产品需求文档</li>
+<li><strong>WBS</strong>：工作分解结构（7 个 WB）</li>
+<li><strong>验收标准</strong>：5 条 AC</li>
+<li><strong>TASK 卡片</strong>：精确的任务指令，含三层约束</li>
 </ul>
-<p>判断标准：目标是否清晰？方法是否显然？失败后果是否可恢复？三个都”是”→ Simple。</p>
-<h2 id="Meta-PDCA：框架审计自身"><a href="#Meta-PDCA：框架审计自身" class="headerlink" title="Meta-PDCA：框架审计自身"></a>Meta-PDCA：框架审计自身</h2><p>框架内置了自我优化机制——当满足以下任一条件时，自动触发框架级审计：</p>
-<p>触发条件<br>阈值</p>
-<p>进化日志增长<br>每 10 条记录</p>
-<p>日历间隔<br>每 30 天</p>
-<p>用户指示<br>即时</p>
-<p>审计内容包括：搜索新的思维方法论、对比当前工具集、检查工具利用率（30 天未触发的工具归档）、识别结构性冗余。</p>
-<p>在一次实际审计中，框架发现了 5 个自身的结构问题（认知工具过载、执行流不分层、PDCA 无参数定义等），并在下一个版本中全部解决。<strong>框架将 PDCA 螺旋应用到了自身。</strong></p>
-<h2 id="实践效果"><a href="#实践效果" class="headerlink" title="实践效果"></a>实践效果</h2><p>认知框架在实际运行中产生了可观测的变化：</p>
-<ul>
-<li><p><strong>决策一致性</strong>：相同场景下，Agent 跨 session 的判断标准趋同</p>
-</li>
-<li><p><strong>纠正频率下降</strong>：结构化记录反馈后，同类错误不重复犯</p>
-</li>
-<li><p><strong>决策可追溯</strong>：每个决定都能追溯到某个具体的价值观或质量标准</p>
-</li>
-<li><p><strong>行为自适应</strong>：Agent 根据反馈调整行为，而非固守初始设定</p>
-</li>
+<p>然后<strong>必须呈现给用户确认</strong>（这是 ADP 的铁律——首次 P 不确认就进入 D，80% 需求会歪）。我确认没问题后，进入 D 阶段。</p>
+<h3 id="D-阶段：派发给-OpenCode"><a href="#D-阶段：派发给-OpenCode" class="headerlink" title="D 阶段：派发给 OpenCode"></a>D 阶段：派发给 OpenCode</h3><p>ADP 不直接写代码，而是通过 IDE Hub 把任务卡片派发给 OpenCode：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">ADP</span> → IDE Hub（选执行器）→ OpenCode（编码执行）<br></code></pre></td></tr></table></figure>
+
+<p>IDE Hub 自动检测可用模型，选最强的（<code>opencode/deepseek-v4-flash-free</code>），然后通过任务卡片把指令传给 OpenCode。</p>
+<h3 id="C-阶段：验收"><a href="#C-阶段：验收" class="headerlink" title="C 阶段：验收"></a>C 阶段：验收</h3><p>三层验证：</p>
+<ol>
+<li>APK 文件存在且大小正常（7.6MB）</li>
+<li>项目结构完整（Kotlin 源文件、Gradle 配置、Manifest 齐全）</li>
+<li>语法检查通过</li>
+</ol>
+<h2 id="踩坑记录：8-个问题的自动修复"><a href="#踩坑记录：8-个问题的自动修复" class="headerlink" title="踩坑记录：8 个问题的自动修复"></a>踩坑记录：8 个问题的自动修复</h2><p>这才是最有趣的部分。整个 D 阶段 OpenCode 遇到了 8 个问题，每一个都是 ADP&#x2F;IDE Hub 自动处理或我手动确认后的修复：</p>
+<h3 id="1-模型选择错误"><a href="#1-模型选择错误" class="headerlink" title="1. 模型选择错误"></a>1. 模型选择错误</h3><p>OpenCode 返回的可用模型列表是 <code>big-pickle</code>，而不是预期的 <code>deepseek-v4-flash-free</code>。原因是模型选择逻辑中 strip 了 <code>opencode/</code> 前缀导致匹配失败。</p>
+<p><strong>修复</strong>：保留完整模型名，<code>opencode run --model</code> 必须带 <code>opencode/</code> 前缀。</p>
+<h3 id="2-任务卡片路径错误"><a href="#2-任务卡片路径错误" class="headerlink" title="2. 任务卡片路径错误"></a>2. 任务卡片路径错误</h3><p>IDE Hub 传的是占位符指令而非真正的任务卡片内容。</p>
+<p><strong>修复</strong>：实现任务卡片路径读取逻辑，从 ADP 项目目录下的 <code>tasks/</code> 读取。</p>
+<h3 id="3-Gradle-需要-Java-17-工具链"><a href="#3-Gradle-需要-Java-17-工具链" class="headerlink" title="3. Gradle 需要 Java 17 工具链"></a>3. Gradle 需要 Java 17 工具链</h3><p>AGP 8.5+ 强制要求 Java 17 工具链，但服务器只有 Java 21。</p>
+<p><strong>修复</strong>：下载 Microsoft JDK 17，设置 <code>JAVA_HOME</code> 和 <code>org.gradle.java.installations.paths</code>。Adoptium 下载超时，最终走了 Microsoft 镜像。</p>
+<h3 id="4-根项目-build-gradle-kts-误配"><a href="#4-根项目-build-gradle-kts-误配" class="headerlink" title="4. 根项目 build.gradle.kts 误配"></a>4. 根项目 <code>build.gradle.kts</code> 误配</h3><p>项目模板把 Android 插件配在了根项目，导致构建失败。</p>
+<p><strong>修复</strong>：根项目只配置 <code>apply false</code>，实际插件应用在 <code>app</code> 模块。</p>
+<h3 id="5-Compose-编译报错"><a href="#5-Compose-编译报错" class="headerlink" title="5. Compose 编译报错"></a>5. Compose 编译报错</h3><p><code>ColumnKt.Column</code> inline 方法找不到，是 Compose 编译器扩展版本不匹配。</p>
+<p><strong>修复</strong>：添加 <code>composeOptions { kotlinCompilerExtensionVersion = &quot;1.5.14&quot; }</code> 和 <code>buildFeatures { compose = true }</code>。</p>
+<h3 id="6-Manifest-资源缺失"><a href="#6-Manifest-资源缺失" class="headerlink" title="6. Manifest 资源缺失"></a>6. Manifest 资源缺失</h3><p><code>AndroidManifest.xml</code> 中引用了 mipmap 图标资源，但项目模板没有包含图标。</p>
+<p><strong>修复</strong>：简化 Manifest，去掉 AppCompat 主题引用。</p>
+<h3 id="7-Gradle-Wrapper-损坏"><a href="#7-Gradle-Wrapper-损坏" class="headerlink" title="7. Gradle Wrapper 损坏"></a>7. Gradle Wrapper 损坏</h3><p>初始模板的 <code>gradle-wrapper.jar</code> 不完整。</p>
+<p><strong>修复</strong>：手动下载 Gradle 8.7 完整版并提取正确的 JAR。</p>
+<h3 id="8-Adoptium-foojay-下载超时"><a href="#8-Adoptium-foojay-下载超时" class="headerlink" title="8. Adoptium&#x2F;foojay 下载超时"></a>8. Adoptium&#x2F;foojay 下载超时</h3><p>国内网络限制导致官方镜像无法访问。</p>
+<p><strong>修复</strong>：改用 Microsoft 镜像下载 JDK。</p>
+<h2 id="结果：APK-跑起来了"><a href="#结果：APK-跑起来了" class="headerlink" title="结果：APK 跑起来了"></a>结果：APK 跑起来了</h2><p>最终产出的 APK 文件：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">app</span>/build/outputs/apk/debug/app-debug.apk  (<span class="hljs-number">7</span>.<span class="hljs-number">6</span>MB)<br></code></pre></td></tr></table></figure>
+
+<p>通过 NAS 传输到手机后安装，启动效果：</p>
+<p><img src="/img/screenshot-hello-android.jpg" srcset="/img/loading.gif" lazyload alt="Hello Android 应用运行截图"></p>
+<p>白底、紫色粗体 “Hello, Android!”、灰色副标题 “欢迎来到 Android 世界”。完美。</p>
+<h2 id="这条链路为什么重要"><a href="#这条链路为什么重要" class="headerlink" title="这条链路为什么重要"></a>这条链路为什么重要</h2><p>这不是一个 Hello World 的故事，而是一个<strong>方法论验证</strong>的故事。</p>
+<p><strong>验证了什么：</strong></p>
+<ol>
+<li><strong>ADP 的铁律可行</strong>——PM 不写代码，只策划、派发、验收，整条链路没有跳过检查阶段</li>
+<li><strong>三层约束有效</strong>——全局 AGENTS.md（Karpathy 四原则）→ 项目 AGENTS.md（技术栈&#x2F;架构）→ 任务 TASK 卡片（精确范围），确保 OpenCode 不会跑偏</li>
+<li><strong>构建环境处理是必需的</strong>——D 阶段不只是编码，还包括工具链、依赖、配置等基础设施的自动修复</li>
+<li><strong>PDCA 循环真的跑起来了</strong>——从 P（策划）到 D（执行）到 C（验收）到 A（无偏差，进入下一轮），整个循环一次跑通</li>
+</ol>
+<h2 id="技能优化沉淀"><a href="#技能优化沉淀" class="headerlink" title="技能优化沉淀"></a>技能优化沉淀</h2><p>这次实验直接推动了两个技能的更新：</p>
+<table>
+<thead>
+<tr>
+<th>技能</th>
+<th>版本</th>
+<th>优化内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ADP</td>
+<td>v1.4.0</td>
+<td>整合自主决策三级规则；D 阶段构建环境处理（JDK&#x2F;Gradle）；任务卡片编号规则</td>
+</tr>
+<tr>
+<td>IDE Hub</td>
+<td>v3.2.0</td>
+<td>Codex 执行器支持；模型前缀修复；Linux 构建环境说明</td>
+</tr>
+</tbody></table>
+<p>还新增了一个关键机制：<strong>AGENTS.md 自动注入</strong>。以后每个新项目都会自动在根目录生成 <code>AGENTS.md</code>，作为第二层约束，确保执行器知道”这是什么项目、技术栈是什么、该改哪里”。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs">Hermes Agent 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/">Agent Skills 开放规范</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/nousresearch/hermes-agent">ADP 技能源码</a></li>
 </ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>认知框架解决的核心问题是：<strong>让 Agent 从”被动响应”升级为”主动进化”</strong>。七问协议确保每次任务都有正确的起点；三大支柱确保执行过程有质量保障；PDCA 螺旋确保每次反馈都被吸收；Meta-PDCA 确保框架本身不会过时。</p>
-<p>框架不是完成的，它是一个持续生长的系统。每一次交互都在上面叠加一层新的认知沉积——就像珍珠的形成。</p>
+<h2 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h2><p>这个 Hello World 只是一个起点。接下来：</p>
+<ol>
+<li>给应用加 UI 交互（按钮、输入框）</li>
+<li>探索 ADP 驱动更复杂的项目（前后端分离应用）</li>
+<li>把整条链路做成可复用的 CI&#x2F;CD 流程</li>
+</ol>
+<p>AI 驱动的开发流水线，第一步跑通了。</p>
 
                 
               </div>
@@ -545,7 +605,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  <a href="/categories/AI%E5%AE%9E%E8%B7%B5/" class="category-chain-item">AI实践</a>
   
   
 
@@ -562,15 +622,9 @@
       
         <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
       
-        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+        <a href="/tags/Android%E5%BC%80%E5%8F%91/" class="print-no-link">#Android开发</a>
       
-        <a href="/tags/%E8%AE%A4%E7%9F%A5%E6%9E%B6%E6%9E%84/" class="print-no-link">#认知架构</a>
-      
-        <a href="/tags/PDCA/" class="print-no-link">#PDCA</a>
-      
-        <a href="/tags/TRIZ/" class="print-no-link">#TRIZ</a>
-      
-        <a href="/tags/%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86/" class="print-no-link">#质量管理</a>
+        <a href="/tags/ADP/" class="print-no-link">#ADP</a>
       
     </div>
   
@@ -582,8 +636,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>构建AI Agent的认知内核：从七问协议到自进化引擎</div>
-      <div>https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/</div>
+      <div>从零到 APK：用 AI Agent 链式驱动开发一个 Android Hello World 应用</div>
+      <div>https://normdist.com/2026/07/26/ND-20260726-001-android-hello-world-apk/</div>
     </div>
     <div class="license-meta">
       
@@ -595,7 +649,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年6月26日</div>
+          <div>2026年7月26日</div>
         </div>
       
       
@@ -627,18 +681,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/27/ND-20260627-001-agent-execution-channel/" title="「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
-                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
+                      <a href="/2026/07/25/ND-20260725-003-how-to-write-agent-skills/" title="如何写一个好的智能体技能">
+                        <span class="hidden-mobile">如何写一个好的智能体技能</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
