@@ -19,28 +19,29 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="回测系统用日期做缓存 key，同日不同参数的回测会命中同一份缓存返回错配数据。根因是 key 设计缺参数指纹。用 hashlib.md5 取 12 位指纹拼入文件名修复。">
+    <meta name="description" content="模型服务器上的 llama.cpp 整整落后了一个月。源码编译、替换二进制，本以为是个 10 分钟的常规操作——结果硬生生折腾了一上午，踩了一个隐藏极深的 CUDA 驱动版本不匹配的坑。 本文记录完整的诊断过程，希望帮你在遇到同类问题时少走弯路。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="回测缓存串号：日期做 key 的隐蔽数据污染">
-<meta property="og:url" content="https://normdist.com/2026/07/27/ND-20260727-001-backtest-cache-key-collision/index.html">
+<meta property="og:title" content="llama.cpp 升级踩坑：CUDA 驱动不匹配导致 GPU 掉线全记录">
+<meta property="og:url" content="https://normdist.com/2026/07/27/ND-20260727-003-llama-cpp-cuda-driver-mismatch/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="回测系统用日期做缓存 key，同日不同参数的回测会命中同一份缓存返回错配数据。根因是 key 设计缺参数指纹。用 hashlib.md5 取 12 位指纹拼入文件名修复。">
+<meta property="og:description" content="模型服务器上的 llama.cpp 整整落后了一个月。源码编译、替换二进制，本以为是个 10 分钟的常规操作——结果硬生生折腾了一上午，踩了一个隐藏极深的 CUDA 驱动版本不匹配的坑。 本文记录完整的诊断过程，希望帮你在遇到同类问题时少走弯路。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://normdist.com/img/cover-backtest-cache-key-collision.jpg">
 <meta property="article:published_time" content="2026-07-27T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-26T19:51:03.984Z">
+<meta property="article:modified_time" content="2026-07-27T02:11:16.228Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="bug修复">
-<meta property="article:tag" content="回测">
-<meta property="article:tag" content="缓存">
+<meta property="article:tag" content="CUDA">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="NVIDIA">
+<meta property="article:tag" content="llama.cpp">
+<meta property="article:tag" content="踩坑">
+<meta property="article:tag" content="运维">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://normdist.com/img/cover-backtest-cache-key-collision.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>回测缓存串号：日期做 key 的隐蔽数据污染 - 进化概率论</title>
+  <title>llama.cpp 升级踩坑：CUDA 驱动不匹配导致 GPU 掉线全记录 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -361,7 +362,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">回测缓存串号：日期做 key 的隐蔽数据污染</span>
+            <span id="subtitle">llama.cpp 升级踩坑：CUDA 驱动不匹配导致 GPU 掉线全记录</span>
           
         </div>
 
@@ -384,7 +385,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.9k 字
+          4.4k 字
         
       </span>
     
@@ -395,7 +396,7 @@
         
         
         
-          25 分钟
+          37 分钟
         
       </span>
     
@@ -443,12 +444,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">回测缓存串号：日期做 key 的隐蔽数据污染</h1>
+            <h1 id="seo-header">llama.cpp 升级踩坑：CUDA 驱动不匹配导致 GPU 掉线全记录</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月27日 凌晨
+                    本文最后更新于 2026年7月27日 上午
                   
                 
               </p>
@@ -456,80 +457,139 @@
             
               <div class="markdown-body">
                 
-                <p>回测跑了一晚上，结果发现两个不同策略的收益曲线一模一样。</p>
-<p>这不是巧合，是缓存串号了。</p>
-<p>根因很简单：缓存文件名只用日期做 key，同一天跑的回测无论参数怎么变，全部命中同一份缓存。</p>
-<h2 id="翻车现场"><a href="#翻车现场" class="headerlink" title="翻车现场"></a>翻车现场</h2><p>AutoQuant 的回测 pipeline 有一个日级缓存机制。每天第一次跑回测时，把结果写入一个 JSON 文件。后续同日再跑，直接读缓存，跳过耗时的数据拉取和回测计算。</p>
-<p>问题出在缓存文件名的生成逻辑上：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 修复前</span><br>cache_file = os.path.join(<br>    CACHE_DIR,<br>    <span class="hljs-string">f&quot;pipeline_<span class="hljs-subst">&#123;datetime.now().strftime(<span class="hljs-string">&#x27;%Y%m%d&#x27;</span>)&#125;</span>.json&quot;</span><br>)<br></code></pre></td></tr></table></figure>
+                <p>模型服务器上的 llama.cpp 整整落后了一个月。源码编译、替换二进制，本以为是个 10 分钟的常规操作——结果硬生生折腾了一上午，踩了一个隐藏极深的 CUDA 驱动版本不匹配的坑。</p>
+<p>本文记录完整的诊断过程，希望帮你在遇到同类问题时少走弯路。</p>
+<span id="more"></span>
 
-<p>文件名长这样：<code>pipeline_20260727.json</code>。</p>
-<p>看起来没问题？同一天的回测确实应该复用缓存。但如果你在同一天用不同的股票池、不同的回测天数跑了两轮回测呢？</p>
-<p>第一轮：<code>symbols=[&quot;518880&quot;], days=30</code></p>
-<p>第二轮：<code>symbols=[&quot;518880&quot;, &quot;512100&quot;], days=60</code></p>
-<p>两轮的缓存文件名都是 <code>pipeline_20260727.json</code>。第二轮直接读到了第一轮的结果。</p>
-<p>这比报错可怕多了。报错你会停下来查，缓存串号只会让你对着一份看起来合理但完全错配的数据做决策。</p>
-<p><img src="/img/diagram-cache-key-collision.png" srcset="/img/loading.gif" lazyload alt="缓存串号问题示意图"></p>
-<p>上图：旧方案用日期做唯一 key，不同参数的回测挤进同一个缓存文件。新方案用参数指纹区分，各走各的路。</p>
-<h2 id="问题出在哪"><a href="#问题出在哪" class="headerlink" title="问题出在哪"></a>问题出在哪</h2><p>缓存 key 的唯一职责是区分「这份缓存对应的输入是什么」。一个正确的 cache key 必须覆盖所有影响输出的参数。</p>
-<p>原来的 key 只有日期。但 pipeline 的输出实际依赖这些参数：</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>ModelBase 服务器配置：</p>
+<ul>
+<li>双 RTX 2080 Ti（22GB 魔改版）</li>
+<li>AMD Ryzen 7 5700G，16 核 32 线程</li>
+<li>CUDA 12.8，Ubuntu 24.04</li>
+<li>llama.cpp 运行 Ornith-1.0-35B（Q4_K_M 量化），正常速度 ~104 tok&#x2F;s</li>
+</ul>
+<p>旧版 llama.cpp 编译于 2026-06-27（commit ae7151b），落后最新 master 一个月。最近一个月的主要更新包括：</p>
+<ul>
+<li>NVFP4 W4A4 activation quantization 优化</li>
+<li>mlock&#x2F;mmap&#x2F;directio 加载模式重构</li>
+<li>投机解码 draft model 自动识别</li>
+<li>DeepSeek v4 chat template 修复</li>
+</ul>
+<h2 id="第一阶段：编译——顺利得不像话"><a href="#第一阶段：编译——顺利得不像话" class="headerlink" title="第一阶段：编译——顺利得不像话"></a>第一阶段：编译——顺利得不像话</h2><p>下载源码、cmake 配置、编译，一气呵成：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 下载</span><br>aria2c -c -x4 -s4 <span class="hljs-string">&#x27;https://gh-proxy.com/https://github.com/ggml-org/llama.cpp/archive/refs/heads/master.zip&#x27;</span><br><br><span class="hljs-comment"># 编译（关键参数）</span><br>cmake .. \<br>  -DCMAKE_BUILD_TYPE=Release \<br>  -DGGML_CUDA=ON \<br>  -DGGML_CUDA_FA=ON \<br>  -DCMAKE_CUDA_ARCHITECTURES=75 \<br>  -DCUDAToolkit_ROOT=/usr/local/cuda-12.8 \<br>  -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.8/bin/nvcc<br><br>cmake --build . --config Release -j$(<span class="hljs-built_in">nproc</span>)<br></code></pre></td></tr></table></figure>
+
+<p>16 核全开，约 5-10 分钟编译完成。<code>llama-server --version</code> 正常输出。</p>
+<h2 id="第二阶段：部署——第一个坑"><a href="#第二阶段：部署——第一个坑" class="headerlink" title="第二阶段：部署——第一个坑"></a>第二阶段：部署——第一个坑</h2><p>编译完成后，我把旧的 <code>build/</code> 目录改名为 <code>build.old/</code>，新版放到 <code>build/</code>，然后重启 systemd 服务。</p>
+<p>测速——<strong>14 tok&#x2F;s</strong>。</p>
+<p>不对，正常应该是 100+ tok&#x2F;s。</p>
+<p>查日志：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-built_in">warning</span>: <span class="hljs-keyword">no</span> usable GPU <span class="hljs-built_in">found</span>, <span class="hljs-comment">--gpu-layers option will be ignored</span><br><span class="hljs-built_in">warning</span>: llama.cpp was compiled <span class="hljs-keyword">without</span> support <span class="hljs-keyword">for</span> GPU offload.<br></code></pre></td></tr></table></figure>
+
+<p>GPU offload 没生效。模型跑在 CPU 上。</p>
+<h3 id="诊断-1：RUNPATH-硬编码"><a href="#诊断-1：RUNPATH-硬编码" class="headerlink" title="诊断 1：RUNPATH 硬编码"></a>诊断 1：RUNPATH 硬编码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">readelf -d llama-server | grep RUNPATH<br><span class="hljs-comment"># 0x000000000000001d (RUNPATH) Library runpath: [/home/tony/llama.cpp/build/bin:]</span><br></code></pre></td></tr></table></figure>
+
+<p>二进制文件在编译时，CMake 会把编译目录的绝对路径写进 RUNPATH。旧版二进制编译时路径是 <code>build/bin</code>，现在这个位置放着新版的 .so 库——版本不兼容，GPU 后端加载失败。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle">ldd llama-server | <span class="hljs-keyword">grep</span> ggml-cuda<br># libggml-cuda.so.<span class="hljs-number">0</span> =&gt; <span class="hljs-regexp">/home/</span>tony<span class="hljs-regexp">/llama.cpp/</span>build<span class="hljs-regexp">/bin/</span>libggml-cuda.so.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>旧版二进制加载的是新版 CUDA 库。修复方法是覆盖 RUNPATH 或用 <code>LD_LIBRARY_PATH</code>，但这只是表面问题。</p>
+<h3 id="诊断-2：切回旧版也一样"><a href="#诊断-2：切回旧版也一样" class="headerlink" title="诊断 2：切回旧版也一样"></a>诊断 2：切回旧版也一样</h3><p>我完全恢复了旧版目录结构，确保二进制和 .so 库版本一致。重启服务，再测——<strong>还是 14 tok&#x2F;s</strong>，同样报 <code>no usable GPU found</code>。</p>
+<p>这就不对了。目录结构完全恢复到升级前状态，配置文件一行没动，为什么 GPU 还是掉线？</p>
+<h3 id="诊断-3：CUDA-驱动版本不匹配"><a href="#诊断-3：CUDA-驱动版本不匹配" class="headerlink" title="诊断 3：CUDA 驱动版本不匹配"></a>诊断 3：CUDA 驱动版本不匹配</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 内核驱动版本</span><br><span class="hljs-built_in">cat</span> /proc/driver/nvidia/version<br><span class="hljs-comment"># NVRM version: NVIDIA UNIX x86_64 Kernel Module  580.159.03</span><br><br><span class="hljs-comment"># 用户空间库版本</span><br><span class="hljs-built_in">ls</span> -la /lib/x86_64-linux-gnu/libcuda.so.1<br><span class="hljs-comment"># libcuda.so.1 -&gt; libcuda.so.580.173.02</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>内核驱动 580.159.03，用户空间库 580.173.02。版本不匹配！</strong></p>
+<p>写一个最简单的 CUDA 测试程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cuda_runtime.h&gt;</span></span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">int</span> count;<br>    cudaError_t err = cudaGetDeviceCount(&amp;count);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;count=%d err=%d\n&quot;</span>, count, err);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">nvcc -o <span class="hljs-built_in">test</span> test.cu &amp;&amp; ./test<br><span class="hljs-comment"># count=0 err=804</span><br></code></pre></td></tr></table></figure>
+
+<p>CUDA 错误码 804：<code>forward compatibility was attempted on non supported HW</code>。驱动版本不匹配，CUDA 完全不可用。</p>
+<h2 id="第三阶段：根因——apt-的静默升级"><a href="#第三阶段：根因——apt-的静默升级" class="headerlink" title="第三阶段：根因——apt 的静默升级"></a>第三阶段：根因——apt 的静默升级</h2><p><code>dpkg -l | grep nvidia-driver</code> 显示：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">nvidia</span>-driver-<span class="hljs-number">580</span>  <span class="hljs-number">580</span>.<span class="hljs-number">173</span>.<span class="hljs-number">02</span>-<span class="hljs-number">0</span>ubuntu<span class="hljs-number">0.24.04.1</span><br></code></pre></td></tr></table></figure>
+
+<p>用户空间库已经是 580.173.02。但当前跑的内核是 6.8.0-124，里面加载的 nvidia 内核模块还是旧的 580.159.03。</p>
+<p>时间线推断：</p>
+<ol>
+<li><strong>6月28日</strong>：系统启动，加载内核 6.8.0-124，nvidia 模块 580.159.03</li>
+<li><strong>6月29日</strong>：unattended-upgrades 或手动 apt upgrade 升级了 <code>nvidia-driver-580</code> 到 580.173.02（用户空间库）</li>
+<li>DKMS 为新内核 6.8.0-136 编译了 580.173.02 的 nvidia 模块</li>
+<li><strong>但没重启</strong>——旧内核 6.8.0-124 里跑的还是旧模块</li>
+</ol>
+<p>此后所有依赖 CUDA 的程序都在静默失败，只是 llama.cpp 有 CPU fallback 兜底（4-14 tok&#x2F;s），看起来”虽然慢但能跑”，没触发告警。</p>
+<h2 id="第四阶段：修复——重启切内核"><a href="#第四阶段：修复——重启切内核" class="headerlink" title="第四阶段：修复——重启切内核"></a>第四阶段：修复——重启切内核</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 确认新内核已安装</span><br>dpkg -l | grep linux-image<br><span class="hljs-comment"># linux-image-6.8.0-136-generic 6.8.0-136.136</span><br><br><span class="hljs-comment"># 确认 DKMS 已为新内核编译驱动</span><br>dkms status<br><span class="hljs-comment"># nvidia/580.173.02, 6.8.0-136-generic, x86_64: installed</span><br><br><span class="hljs-comment"># 确认 GRUB 默认启动最新内核</span><br>grep GRUB_DEFAULT /etc/default/grub<br><span class="hljs-comment"># GRUB_DEFAULT=0</span><br><br><span class="hljs-comment"># 重启</span><br><span class="hljs-built_in">sudo</span> reboot<br></code></pre></td></tr></table></figure>
+
+<p>重启后验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">uname</span> -r<br><span class="hljs-comment"># 6.8.0-136-generic</span><br><br>nvidia-smi<br><span class="hljs-comment"># NVIDIA-SMI 580.173.02   Driver Version: 580.173.02   CUDA Version: 13.0</span><br><span class="hljs-comment"># GPU 0: RTX 2080 Ti  22528MiB</span><br><span class="hljs-comment"># GPU 1: RTX 2080 Ti  22528MiB</span><br></code></pre></td></tr></table></figure>
+
+<p>驱动版本完全匹配，两张 GPU 正常识别。</p>
+<h2 id="第五阶段：测速——满血复活"><a href="#第五阶段：测速——满血复活" class="headerlink" title="第五阶段：测速——满血复活"></a>第五阶段：测速——满血复活</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 热测速</span><br>curl http://10.28.9.6:8080/v1/chat/completions \<br>  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \<br>  -d <span class="hljs-string">&#x27;&#123;&quot;model&quot;:&quot;Qwen/Qwen3.5-35B-A3B-Ornith&quot;,</span><br><span class="hljs-string">       &quot;messages&quot;:[&#123;&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;介绍上海&quot;&#125;],</span><br><span class="hljs-string">       &quot;max_tokens&quot;:200,&quot;temperature&quot;:0&#125;&#x27;</span><br><br><span class="hljs-comment"># 日志输出</span><br><span class="hljs-comment"># eval time = 1910 ms / 200 tokens (9.5 ms per token, 104.7 tokens per second)</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>104.7 tok&#x2F;s。满血复活。</strong></p>
+<h2 id="新版-vs-旧版对比"><a href="#新版-vs-旧版对比" class="headerlink" title="新版 vs 旧版对比"></a>新版 vs 旧版对比</h2><p>确认旧版恢复后，重新部署新版：</p>
 <table>
 <thead>
 <tr>
-<th>参数</th>
-<th>含义</th>
-<th>改变后输出会变吗</th>
+<th>版本</th>
+<th>库版本</th>
+<th>热测速</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>symbols</code></td>
-<td>回测的股票列表</td>
-<td>是，不同的股票产生不同结果</td>
+<td>旧版 (ae7151b)</td>
+<td>0.15.3</td>
+<td>101.6 tok&#x2F;s</td>
 </tr>
 <tr>
-<td><code>days</code></td>
-<td>回测天数</td>
-<td>是，时间窗口不同</td>
-</tr>
-<tr>
-<td><code>skip_factor</code></td>
-<td>是否跳过因子计算</td>
-<td>是，影响因子分析段</td>
-</tr>
-<tr>
-<td><code>skip_strategy</code></td>
-<td>是否跳过策略回测</td>
-<td>是，影响策略回测段</td>
+<td>新版 (master)</td>
+<td>0.17.0</td>
+<td>104.7 tok&#x2F;s</td>
 </tr>
 </tbody></table>
-<p>任何一个参数变了，缓存就应该失效。但旧 key 完全忽略了它们。</p>
-<h2 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案"></a>修复方案</h2><p>用参数指纹区分不同输入。把所有影响输出的参数拼在一起，算一个 MD5，截取前 12 位拼进文件名。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> hashlib<br><span class="hljs-keyword">import</span> json<br><br><span class="hljs-comment"># 参数指纹：不同参数缓存隔离</span><br>param_fingerprint = hashlib.md5(<br>    json.dumps(&#123;<br>        <span class="hljs-string">&quot;symbols&quot;</span>: <span class="hljs-built_in">sorted</span>(symbols),<br>        <span class="hljs-string">&quot;days&quot;</span>: days,<br>        <span class="hljs-string">&quot;skip_factor&quot;</span>: skip_factor,<br>        <span class="hljs-string">&quot;skip_strategy&quot;</span>: skip_strategy,<br>    &#125;, sort_keys=<span class="hljs-literal">True</span>).encode()<br>).hexdigest()[:<span class="hljs-number">12</span>]<br><br>cache_file = os.path.join(<br>    CACHE_DIR,<br>    <span class="hljs-string">f&quot;pipeline_<span class="hljs-subst">&#123;datetime.now().strftime(<span class="hljs-string">&#x27;%Y%m%d&#x27;</span>)&#125;</span>_<span class="hljs-subst">&#123;param_fingerprint&#125;</span>.json&quot;</span><br>)<br></code></pre></td></tr></table></figure>
+<p>新版略快 3%，提升不大，但一个月的 bug fix 和新功能支持是值得的。</p>
+<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><h3 id="1-GPU-掉线先查驱动版本匹配"><a href="#1-GPU-掉线先查驱动版本匹配" class="headerlink" title="1. GPU 掉线先查驱动版本匹配"></a>1. GPU 掉线先查驱动版本匹配</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> /proc/driver/nvidia/version    <span class="hljs-comment"># 内核模块版本</span><br><span class="hljs-built_in">ls</span> -la /lib/x86_64-linux-gnu/libcuda.so.1  <span class="hljs-comment"># 用户空间库版本</span><br></code></pre></td></tr></table></figure>
 
-<p>修复后，文件名变成这样：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">pipeline_20260727_a3f8b2c1d9e0.json   ← symbols=[&quot;518880&quot;], days=30<br>pipeline_20260727_7e2f1a9b4c6d.json   ← symbols=[&quot;518880&quot;,&quot;512100&quot;], days=60<br></code></pre></td></tr></table></figure>
+<p>两个版本必须一致。不一致就是 CUDA 驱动不匹配，所有 GPU 加速都会静默失败。</p>
+<h3 id="2-CPU-fallback-是双刃剑"><a href="#2-CPU-fallback-是双刃剑" class="headerlink" title="2. CPU fallback 是双刃剑"></a>2. CPU fallback 是双刃剑</h3><p>llama.cpp 有 CPU fallback 机制——GPU 不可用时自动切 CPU。这让服务”看起来正常”（能推理），但速度差 10 倍。如果不主动测速，可能几周都不会发现 GPU 掉线。</p>
+<h3 id="3-apt-升级-nvidia-driver-后必须重启"><a href="#3-apt-升级-nvidia-driver-后必须重启" class="headerlink" title="3. apt 升级 nvidia-driver 后必须重启"></a>3. apt 升级 nvidia-driver 后必须重启</h3><p>Ubuntu 的 unattended-upgrades 会自动升级 NVIDIA 驱动包，但内核模块需要重启才能加载。升级后检查：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 比对版本</span><br><span class="hljs-built_in">cat</span> /proc/driver/nvidia/version<br>dpkg -l | grep nvidia-driver<br></code></pre></td></tr></table></figure>
 
-<p>同一个日期，不同参数，不同文件。互不干扰。</p>
-<h2 id="为什么要-sorted-symbols"><a href="#为什么要-sorted-symbols" class="headerlink" title="为什么要 sorted(symbols)"></a>为什么要 sorted(symbols)</h2><p><code>[&quot;518880&quot;, &quot;512100&quot;]</code> 和 <code>[&quot;512100&quot;, &quot;518880&quot;]</code> 在业务上是等价的——同一批股票，顺序不同不影响回测结果。如果不做排序，同一个股票池换了顺序就会生成不同的指纹，导致缓存 miss。</p>
-<p><code>sorted()</code> 保证了顺序无关。<code>json.dumps(..., sort_keys=True)</code> 保证了字典 key 的顺序也无关。两层保险。</p>
-<h2 id="为什么截-12-位"><a href="#为什么截-12-位" class="headerlink" title="为什么截 12 位"></a>为什么截 12 位</h2><p>MD5 完整是 32 位十六进制。12 位 &#x3D; 48 bit, 碰撞概率约 $1&#x2F;2^{48}$。对于一个每天最多跑几十次回测的系统, 这个碰撞空间绰绰有余。</p>
-<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>写了个测试用例, 连续跑两次不同参数的 pipeline, 断言两次写缓存的文件路径不同:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">test_cache_fingerprint_isolates_params</span>(<span class="hljs-params">self, ...</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;不同参数使用不同缓存文件，不串号&quot;&quot;&quot;</span><br>    run_pipeline(symbols=[<span class="hljs-string">&quot;518880&quot;</span>])<br>    run_pipeline(symbols=[<span class="hljs-string">&quot;518880&quot;</span>, <span class="hljs-string">&quot;512100&quot;</span>])<br>    write_calls = [c <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> mock_file.call_args_list<br>                   <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(c[<span class="hljs-number">0</span>]) &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> c[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>] == <span class="hljs-string">&quot;w&quot;</span>]<br>    <span class="hljs-variable language_">self</span>.assertEqual(<span class="hljs-built_in">len</span>(write_calls), <span class="hljs-number">2</span>, <span class="hljs-string">&quot;应有2次写缓存调用&quot;</span>)<br>    <span class="hljs-variable language_">self</span>.assertNotEqual(write_calls[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>][<span class="hljs-number">0</span>], write_calls[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>][<span class="hljs-number">0</span>],<br>                        <span class="hljs-string">&quot;不同参数应使用不同缓存文件路径&quot;</span>)<br></code></pre></td></tr></table></figure>
-
-<p>152 个测试全过, 新增的这个用例也过了。</p>
-<h2 id="教训"><a href="#教训" class="headerlink" title="教训"></a>教训</h2><p>缓存 key 的设计原则其实就一句话：<strong>key 必须覆盖所有影响输出的输入</strong>。</p>
-<p>听起来像废话。但实际写代码时, 很容易只考虑「最明显的那个维度」（这里是日期）, 忽略其他参数。尤其是当你先写了无缓存版本, 后来加缓存时, 往往只拿一个最容易获取的值当 key。</p>
-<p>更通用的做法: 如果函数签名里的每个参数都会影响输出, 直接拿整个参数集做指纹。不要手动挑参数, 容易遗漏。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 更通用的写法</span><br><span class="hljs-keyword">import</span> inspect<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">make_cache_key</span>(<span class="hljs-params">func, *args, **kwargs</span>):<br>    bound = inspect.signature(func).bind(*args, **kwargs)<br>    bound.apply_defaults()<br>    <span class="hljs-keyword">return</span> hashlib.md5(<br>        <span class="hljs-built_in">repr</span>(bound.arguments).encode()<br>    ).hexdigest()[:<span class="hljs-number">12</span>]<br></code></pre></td></tr></table></figure>
-
-<p>这样不管以后函数加多少参数, 缓存 key 自动跟着变。</p>
-<p>缓存是个好东西, 但 key 设计错了比不用缓存还危险。不用缓存最多慢一点, 缓存串号会让你对着错误数据做决策。</p>
-<hr>
-<p><strong>参考文献</strong></p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/hashlib.html">Python hashlib 文档</a></li>
-<li><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/functools.html#functools.lru_cache">functools.lru_cache — key 生成逻辑参考</a></li>
-</ol>
+<p>版本不一致就准备重启。</p>
+<h3 id="4-RUNPATH-问题用独立目录规避"><a href="#4-RUNPATH-问题用独立目录规避" class="headerlink" title="4. RUNPATH 问题用独立目录规避"></a>4. RUNPATH 问题用独立目录规避</h3><p>编译 llama.cpp 时，CMake 把绝对路径写进 RUNPATH。移动目录后找不到 .so 库。推荐每次新版放在独立目录（<code>build_new/</code>），通过 systemd 的 <code>LD_LIBRARY_PATH</code> 切换，保留旧版做备份。</p>
+<h3 id="5-systemd-管理-健康检查"><a href="#5-systemd-管理-健康检查" class="headerlink" title="5. systemd 管理 + 健康检查"></a>5. systemd 管理 + 健康检查</h3><p>llama-server 用 systemd 管理，重启后自动恢复。但 ComfyUI&#x2F;Whisper&#x2F;TTS 是手动 nohup 启动的，重启后需要手动拉起。建议后续都改成 systemd 服务。</p>
+<h2 id="最终架构"><a href="#最终架构" class="headerlink" title="最终架构"></a>最终架构</h2><table>
+<thead>
+<tr>
+<th>服务</th>
+<th>端口</th>
+<th>GPU</th>
+<th>启动方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>llama-server</td>
+<td>8080</td>
+<td>GPU 0+1 (0.7:0.3)</td>
+<td>systemd</td>
+</tr>
+<tr>
+<td>ComfyUI</td>
+<td>8188</td>
+<td>GPU 1</td>
+<td>nohup</td>
+</tr>
+<tr>
+<td>Whisper</td>
+<td>8700</td>
+<td>GPU 1</td>
+<td>nohup</td>
+</tr>
+<tr>
+<td>TTS</td>
+<td>8701</td>
+<td>GPU 1</td>
+<td>nohup</td>
+</tr>
+</tbody></table>
+<p>新版 llama.cpp 部署在 <code>/home/tony/llama.cpp/build_new/</code>，旧版保留在 <code>build/</code> 作为备份，随时可切回。</p>
 
                 
               </div>
@@ -563,11 +623,17 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%9B%9E%E6%B5%8B/" class="print-no-link">#回测</a>
+        <a href="/tags/CUDA/" class="print-no-link">#CUDA</a>
       
-        <a href="/tags/%E7%BC%93%E5%AD%98/" class="print-no-link">#缓存</a>
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
       
-        <a href="/tags/bug%E4%BF%AE%E5%A4%8D/" class="print-no-link">#bug修复</a>
+        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
+      
+        <a href="/tags/%E8%B8%A9%E5%9D%91/" class="print-no-link">#踩坑</a>
+      
+        <a href="/tags/NVIDIA/" class="print-no-link">#NVIDIA</a>
+      
+        <a href="/tags/%E8%BF%90%E7%BB%B4/" class="print-no-link">#运维</a>
       
     </div>
   
@@ -579,8 +645,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>回测缓存串号：日期做 key 的隐蔽数据污染</div>
-      <div>https://normdist.com/2026/07/27/ND-20260727-001-backtest-cache-key-collision/</div>
+      <div>llama.cpp 升级踩坑：CUDA 驱动不匹配导致 GPU 掉线全记录</div>
+      <div>https://normdist.com/2026/07/27/ND-20260727-003-llama-cpp-cuda-driver-mismatch/</div>
     </div>
     <div class="license-meta">
       
@@ -624,12 +690,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" title="回测缓存串号：日期做 key 的隐蔽数据污染">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">回测缓存串号：日期做 key 的隐蔽数据污染</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/07/27/ND-20260727-003-llama-cpp-cuda-driver-mismatch/" title="llama.cpp 升级踩坑：CUDA 驱动不匹配导致 GPU 掉线全记录">
-                        <span class="hidden-mobile">llama.cpp 升级踩坑：CUDA 驱动不匹配导致 GPU 掉线全记录</span>
+                      <a href="/2026/07/27/ND-20260727-002-ai-agent-android-scanner-app-pdca/" title="AI Agent 写了个 Android 扫码 App——从零到扫码成功的 3 轮 PDCA">
+                        <span class="hidden-mobile">AI Agent 写了个 Android 扫码 App——从零到扫码成功的 3 轮 PDCA</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
