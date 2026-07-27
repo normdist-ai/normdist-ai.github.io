@@ -527,15 +527,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/04/06/ND-20260406-002-mcp-playwright-introduction/" target="_self">
-          MCP Playwright：AI 驱动的浏览器自动化调试革命
+        <a href="/2026/05/03/ND-20260503-002-qwen3.6-inference-params-optimization/" target="_self">
+          Qwen3.6-35B-A3B 推理参数优化实战——从踩坑到最优配置
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/04/06/ND-20260406-002-mcp-playwright-introduction/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/05/03/ND-20260503-002-qwen3.6-inference-params-optimization/" target="_self">
         <div>
-          本文介绍 MCP Playwright 如何将 AI 助手与浏览器自动化结合，实现智能化的 Web 应用调试。  什么是 MCP PlaywrightMCP (Model Context Protocol) 是一种标准化的协议，允许 AI 助手与外部工具进行交互。Playwright 是微软开发的现代化浏览器自动化工具。 MCP Playwright 将两者结合，让 AI 助手能够：  🌐
+          作者： 小瑞、小莫（CherryClaw）日期： 2026-05-03目标模型： Qwen3.6-35B-A3B（Q4_K_M 量化，20.5 GiB）推理框架： LM Studio（llama.cpp 后端）  📖 目录 背景  为什么参数配置很重要  问题诊断：原始配置的问题  官方推荐参数方案  第一次优化：对齐官方 Thinking 模式参数  踩坑：Thinking 模式与 Age
         </div>
       </a>
 
@@ -543,8 +543,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-04-06 10:00" pubdate>
-              2026-04-06
+            <time datetime="2026-05-03 10:00" pubdate>
+              2026-05-03
             </time>
           </div>
         
@@ -574,15 +574,17 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/MCP/">#MCP</a>
+              <a href="/tags/Qwen/">#Qwen</a>
             
-              <a href="/tags/Playwright/">#Playwright</a>
+              <a href="/tags/%E6%8E%A8%E7%90%86%E5%8F%82%E6%95%B0/">#推理参数</a>
             
-              <a href="/tags/AI/">#AI</a>
+              <a href="/tags/LLM/">#LLM</a>
             
-              <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">#浏览器自动化</a>
+              <a href="/tags/%E6%A8%A1%E5%9E%8B%E4%BC%98%E5%8C%96/">#模型优化</a>
             
-              <a href="/tags/%E8%B0%83%E8%AF%95/">#调试</a>
+              <a href="/tags/temperature/">#temperature</a>
+            
+              <a href="/tags/top-p/">#top_p</a>
             
           </div>
         
@@ -649,9 +651,78 @@
             
               <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">#浏览器自动化</a>
             
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">#自动化测试</a>
+            
               <a href="/tags/%E8%B0%83%E8%AF%95/">#调试</a>
             
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">#自动化测试</a>
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/04/06/ND-20260406-002-mcp-playwright-introduction/" target="_self">
+          MCP Playwright：AI 驱动的浏览器自动化调试革命
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/04/06/ND-20260406-002-mcp-playwright-introduction/" target="_self">
+        <div>
+          本文介绍 MCP Playwright 如何将 AI 助手与浏览器自动化结合，实现智能化的 Web 应用调试。  什么是 MCP PlaywrightMCP (Model Context Protocol) 是一种标准化的协议，允许 AI 助手与外部工具进行交互。Playwright 是微软开发的现代化浏览器自动化工具。 MCP Playwright 将两者结合，让 AI 助手能够：  🌐
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-04-06 10:00" pubdate>
+              2026-04-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/MCP/">#MCP</a>
+            
+              <a href="/tags/Playwright/">#Playwright</a>
+            
+              <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">#浏览器自动化</a>
+            
+              <a href="/tags/%E8%B0%83%E8%AF%95/">#调试</a>
+            
+              <a href="/tags/AI/">#AI</a>
             
           </div>
         
@@ -993,77 +1064,6 @@
               <a href="/tags/Web-Scraping/">#Web Scraping</a>
             
               <a href="/tags/Scrapling/">#Scrapling</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/03/24/ND-20260324-002-voc-skill-README/" target="_self">
-          <img src="/img/cover-flat-04.jpg" srcset="/img/loading.gif" lazyload alt="VoC (Voice of Customer) 技能">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/03/24/ND-20260324-002-voc-skill-README/" target="_self">
-          VoC (Voice of Customer) 技能
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/03/24/ND-20260324-002-voc-skill-README/" target="_self">
-        <div>
-          VoC (Voice of Customer) 技能 📚 简介VoC（Voice of Customer）技能用于记录、分析和响应用户（客户）反馈，将用户的声音转化为可执行的决策和文档更新。 核心功能 如实记录用户发言  记录时间戳 记录发言内容 记录会话上下文   发掘有价值信息  分析用户需求 识别潜在问题 发现改进机会 更新相关文档     📖 快速开始安装步骤方法1：直接复制SKILL
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-03-24 00:00" pubdate>
-              2026-03-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/VoC/">#VoC</a>
-            
-              <a href="/tags/%E6%8A%80%E8%83%BD/">#技能</a>
-            
-              <a href="/tags/%E7%94%A8%E6%88%B7%E5%8F%8D%E9%A6%88/">#用户反馈</a>
             
           </div>
         

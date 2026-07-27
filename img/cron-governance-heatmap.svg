@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" font-family="-apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <rect width="800" height="360" fill="#fafafa"/>
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-size="18" font-weight="600" fill="#222">凌晨 cron 调度热力图（01:00 - 06:00）</text>
+  <text x="400" y="52" text-anchor="middle" font-size="12" fill="#888">每个 █ 代表一个启用的定时任务</text>
+
+  <!-- Bars -->
+  <!-- 01:00 - 4 tasks -->
+  <text x="70" y="90" text-anchor="end" font-size="13" fill="#444">01:00</text>
+  <g fill="#4a9eff">
+    <rect x="80" y="76" width="28" height="28" rx="3"/>
+    <rect x="112" y="76" width="28" height="28" rx="3"/>
+    <rect x="144" y="76" width="28" height="28" rx="3"/>
+    <rect x="176" y="76" width="28" height="28" rx="3"/>
+  </g>
+  <text x="214" y="95" font-size="12" fill="#666">4 个任务</text>
+
+  <!-- 02:00 - 2 tasks -->
+  <text x="70" y="135" text-anchor="end" font-size="13" fill="#444">02:00</text>
+  <g fill="#4a9eff">
+    <rect x="80" y="121" width="28" height="28" rx="3"/>
+    <rect x="112" y="121" width="28" height="28" rx="3"/>
+  </g>
+  <text x="150" y="140" font-size="12" fill="#666">2 个任务</text>
+
+  <!-- 03:00 - 6 tasks (PEAK) -->
+  <text x="70" y="180" text-anchor="end" font-size="13" fill="#444">03:00</text>
+  <g fill="#ff6b4a">
+    <rect x="80" y="166" width="28" height="28" rx="3"/>
+    <rect x="112" y="166" width="28" height="28" rx="3"/>
+    <rect x="144" y="166" width="28" height="28" rx="3"/>
+    <rect x="176" y="166" width="28" height="28" rx="3"/>
+    <rect x="208" y="166" width="28" height="28" rx="3"/>
+    <rect x="240" y="166" width="28" height="28" rx="3"/>
+  </g>
+  <text x="278" y="185" font-size="12" fill="#ff6b4a" font-weight="600">← 高峰！6 个任务</text>
+
+  <!-- 04:00 - 5 tasks -->
+  <text x="70" y="225" text-anchor="end" font-size="13" fill="#444">04:00</text>
+  <g fill="#4a9eff">
+    <rect x="80" y="211" width="28" height="28" rx="3"/>
+    <rect x="112" y="211" width="28" height="28" rx="3"/>
+    <rect x="144" y="211" width="28" height="28" rx="3"/>
+    <rect x="176" y="211" width="28" height="28" rx="3"/>
+    <rect x="208" y="211" width="28" height="28" rx="3"/>
+  </g>
+  <text x="246" y="230" font-size="12" fill="#666">5 个任务</text>
+
+  <!-- 05:00 - 1 task -->
+  <text x="70" y="270" text-anchor="end" font-size="13" fill="#444">05:00</text>
+  <g fill="#4a9eff">
+    <rect x="80" y="256" width="28" height="28" rx="3"/>
+  </g>
+  <text x="118" y="275" font-size="12" fill="#666">1 个任务</text>
+
+  <!-- Divider -->
+  <line x1="80" y1="305" x2="720" y2="305" stroke="#e0e0e0" stroke-width="1"/>
+
+  <!-- Footer note -->
+  <text x="80" y="328" font-size="12" fill="#888">高峰错峰方案：03:00 的 6 个任务按分钟偏移（03:05 / 03:10 / 03:15 / 03:45）错开，避免并发抢占显存</text>
+  <text x="80" y="346" font-size="11" fill="#aaa">数据来源：Hermes Agent cron 引擎 · hanmeimei profile · 2026-07-27</text>
+</svg>
