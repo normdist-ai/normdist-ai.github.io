@@ -1,0 +1,976 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="凌晨三点，MCP 服务器本该最安静，却最拥挤。 韩梅梅跑了日记，小美还在监控舆情，贾维斯开了一整晚的代码优化 session，露西的采集任务也刚醒来。它们各不相干，却在同一个 Hermes 实例下抢同一个 session 池。结果是：心跳、日记、日报这类关键 cron 明明到点了，却迟迟不启动，或者说，它们排了队，却在 session 资源被占满的时候被饿着等。 这篇写的是同一个系统的另一面：之前">
+<meta property="og:type" content="article">
+<meta property="og:title" content="压缩风暴：Session 过多饿死关键 Cron">
+<meta property="og:url" content="https://normdist.com/2026/07/28/ND-20260728-002-session-starvation-cron/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="凌晨三点，MCP 服务器本该最安静，却最拥挤。 韩梅梅跑了日记，小美还在监控舆情，贾维斯开了一整晚的代码优化 session，露西的采集任务也刚醒来。它们各不相干，却在同一个 Hermes 实例下抢同一个 session 池。结果是：心跳、日记、日报这类关键 cron 明明到点了，却迟迟不启动，或者说，它们排了队，却在 session 资源被占满的时候被饿着等。 这篇写的是同一个系统的另一面：之前">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-28T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-28T08:06:24.948Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="Cron调度">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="Session管理">
+<meta property="article:tag" content="多Profile">
+<meta property="article:tag" content="资源竞争">
+<meta property="article:tag" content="运维踩坑">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>压缩风暴：Session 过多饿死关键 Cron - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">压缩风暴：Session 过多饿死关键 Cron</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-28 10:00" pubdate>
+          2026年7月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          26 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">压缩风暴：Session 过多饿死关键 Cron</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年7月28日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>凌晨三点，MCP 服务器本该最安静，却最拥挤。</p>
+<p>韩梅梅跑了日记，小美还在监控舆情，贾维斯开了一整晚的代码优化 session，露西的采集任务也刚醒来。它们各不相干，却在同一个 Hermes 实例下抢同一个 session 池。结果是：心跳、日记、日报这类关键 cron 明明到点了，却迟迟不启动，或者说，它们排了队，却在 session 资源被占满的时候被饿着等。</p>
+<p>这篇写的是同一个系统的另一面：之前我们聊过 50 个 cron 的错峰治理，聊过 <code>collect_cron_results</code> 的假阴性，也聊过 FIFO 把 P1 任务堵在队尾的问题。今天要讲的是更底层的资源竞争——当 session 数本身成了瓶颈，再好的调度逻辑也没地方跑。</p>
+<h2 id="什么是”压缩风暴”"><a href="#什么是”压缩风暴”" class="headerlink" title="什么是”压缩风暴”"></a>什么是”压缩风暴”</h2><p>“压缩风暴”这个名字形容的是现象本身：多个 profile 的 cron 和长 session 在同一台机器上叠罗汉。每个 profile 都有自己的一套定时任务——韩梅梅管投资、日报、日记；小美管舆情、内容；露西管数据采集；贾维斯管远程代码优化——它们各自看起来都不算多，但叠在一起，并发量会迅速吃掉 Hermes Worker 的可用 session 名额。</p>
+<p>一旦可用 session 名额被占用完，新的 cron 触发后并不会直接报错，它可能进入等待状态，或者在 session 池满的时候根本拿不到一个可执行的 session。对心跳、日记、日报这类”定时必须发生”的任务来说，这很麻烦：它不是代码 bug，不是网络失败，而是系统资源被别的合法任务挤占，结果本该准点运行的任务被静默延迟。</p>
+<p>这跟之前写的 FIFO 陷阱不是同一回事。FIFO 是队列顺序问题，P0 任务被 P2 任务排在前面；而这里的根因是容量问题：session 池本身不够分，无论怎么排，池子满的时候大家都要等。</p>
+<h2 id="现场长什么样"><a href="#现场长什么样" class="headerlink" title="现场长什么样"></a>现场长什么样</h2><p>典型表现是：某个 cron 的触发时间到了，但下一周期的任务先跑完了，或者日志里能看到触发记录，却没有对应的 session 执行结果。另一个常见信号是：系统同时在线的 session 数已经很高，worker 状态里活跃 interaction 和仍在交互的 session 数量长期接近某个隐式上限。</p>
+<p>在 Hermes 里，第一步不是去查 cron 配置，而是查 worker。<code>hermes_studio_use_worker_status</code>（或 Hermes Web UI 里对应的 worker status 接口）能告诉你当前 worker 数量、已完成 interaction 数，以及还有多少 session 仍在交互。如果你看到活跃 session 长期处于高位，而 cron 触发后迟迟不见新 session 启动，这就很像容量竞争。</p>
+<p>第二步，用 session 列表做横向统计。<code>hermes_studio_use_sessions_list</code> 能看到近期 session，配合按 profile、source 或时间窗口做简单计数，就能判断高峰出现在什么时段、哪些 profile 贡献了最多的并发。实际经验里，高峰往往不是白天，而是凌晨——多个 cron 按整点唤醒，长 session 又没及时关闭，两个流量撞在一起，就是最容易出问题的时刻。</p>
+<h2 id="诊断方法：看队列，也看池子"><a href="#诊断方法：看队列，也看池子" class="headerlink" title="诊断方法：看队列，也看池子"></a>诊断方法：看队列，也看池子</h2><p>诊断时不要只盯一个维度。建议同时看三样东西：</p>
+<ul>
+<li><strong>worker status</strong>：当前 worker 数量和仍活跃 session 数。这是容量维度的入口，能说明”是不是池子满了”。</li>
+<li><strong>session 数统计</strong>：按 profile、source、时间段统计 session 数量。这是负载维度的入口，能说明”是谁占满了池子”。</li>
+<li><strong>cron 触发与完成的时间差</strong>：对比 cron 计划时间和实际 session 启动时间。如果差异持续存在，且正好落在活跃 session 高位区间，就能把资源竞争和单纯延迟区分开。</li>
+</ul>
+<p>这三步合起来，能把问题从”任务没跑”收敛到”任务因为 session 池满而饿等”。</p>
+<h2 id="根因：并发-session-上限"><a href="#根因：并发-session-上限" class="headerlink" title="根因：并发 session 上限"></a>根因：并发 session 上限</h2><p>Hermes Agent 的架构里，多个 profile 共享同一个 Hermes 实例和同一套 worker。cron 触发的每一次执行，本质上都对应一个新的 session；长 session（比如一晚上持续优化的代码任务）会长期占据一个名额。当 worker 可维护的并发 session 数有限时，profile 再多、任务越多，session 池就越容易被打满。</p>
+<p>换句话说，每个 profile 单独看都合理：韩梅梅跑日报、小美跑舆情、贾维斯跑代码优化，它们各自都有业务必要性。问题不在某个任务，而在它们共享同一张桌子——session 池没有为每个 profile 预留独立容量，也没有对关键 cron 设置绝对优先的执行通道。于是当并发上来时，最轻、最频繁、最容易被打断的心跳和日报，反而最容易被挤到后面。</p>
+<h2 id="缓解策略：先错峰，再隔离，最后管生命周期"><a href="#缓解策略：先错峰，再隔离，最后管生命周期" class="headerlink" title="缓解策略：先错峰，再隔离，最后管生命周期"></a>缓解策略：先错峰，再隔离，最后管生命周期</h2><p>针对 session 饥饿，可以按成本从低到高尝试三层方案。</p>
+<p><strong>第一层：cron 时间错开。</strong> 这是最快、成本最低的。把多个整点触发的 cron 按分钟偏移，比如韩梅梅日记放在 03:10，露西采集放在 03:15，贾维斯优化放在 03:25，把心跳、日报这类关键任务放到高峰之后。错开不是让任务更快，而是减少同一时刻争抢 session 的概率。这层和之前的错峰治理是同一套思路，但对”压缩风暴”尤其有效，因为它直接削峰。</p>
+<p><strong>第二层：profile 隔离。</strong> 如果错峰还不够，说明问题不是时间点，而是并发总量。可以考虑把关键 profile 放到独立 Hermes 实例，或至少在调度层面区分”关键通道”和”普通通道”：心跳、日报、系统巡检进入关键通道，研发优化、舆情批量、长代码 session 进入普通通道。关键通道被保障启动，普通通道在容量紧张时降级或延后。这样做的代价是运维复杂度上升，但对多 profile 共享实例长期运行来说，往往是必经之路。</p>
+<p><strong>第三层：session 生命周期管理。</strong> 长 session 是 session 池里最隐蔽的占用源。诊断后如果发现某些 profile 的长 session 长期不关闭，要给它设计明确的结束条件：定时关闭、任务完成即关、或者把长工作拆成多个短 session。session 生命周期一旦被管理起来，池子里的可用名额会明显释放，关键 cron 被饿死的概率也会下降。</p>
+<h2 id="这套经验适合谁"><a href="#这套经验适合谁" class="headerlink" title="这套经验适合谁"></a>这套经验适合谁</h2><p>如果你满足以下条件，这篇内容基本可以直接用：</p>
+<ul>
+<li>多个 AI Agent profile 共用一个 Hermes 实例</li>
+<li>cron 数量和长 session 同时存在，且高峰时段重叠</li>
+<li>关键 cron 偶尔不按时跑，但单独查每个任务又没有明显报错</li>
+<li>worker status 显示活跃 session 长期处于高位</li>
+</ul>
+<p>不适合的场景则相反：单 profile、任务量少、session 数低，这类环境通常不会触发容量竞争，用错峰就够了，不必搞 profile 隔离。</p>
+<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>“压缩风暴”的本质不是某个任务写错了，而是共享资源在并发高峰时没有优先级保护。Hermes Agent 的多 profile 协作很强大，但强大也意味着更容易在同一张桌子上挤满人。治理的关键不是减少任务，而是让资源分配变得更可见、更可控：看得到的 session 池、分得开的错峰时间、分得清的关键与普通通道。</p>
+<p>下次凌晨三点，如果关键 cron 又没按时醒来，先别急着改代码。先看看 worker 状态和 session 列表——可能它不是死了，只是在排队等一个空位。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/07/27/%E9%9B%B6%E6%88%90%E6%9C%AC%E8%BF%90%E7%BB%B4-5%E4%BA%BAAI-Agent%E5%9B%A2%E9%98%9F%E7%9A%84cron%E6%B2%BB%E7%90%86/">零成本运维：5 人 AI Agent 团队的 cron 治理</a> — 错峰调度和 50 个 cron 的治理思路</li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/07/19/%E5%BF%83%E8%B7%B3%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97FIFO%E9%99%B7%E9%98%B1/">心跳任务队列 FIFO 陷阱：P1 被 3 天挡住</a> — 队列顺序导致的优先级问题</li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/07/24/%E5%88%A0%E7%97%87%E7%8A%B6%E4%B8%8D%E7%AD%89%E4%BA%8E%E4%BF%AE%E6%A0%B9%E5%9B%A0/">删症状≠修根因：collect_cron_results 连续三天假阴性的教训</a> — 如何避免把假阴性当成根本原因</li>
+<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs">Hermes Agent 官方文档</a> — worker status、session 列表与 cron 引擎说明</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="category-chain-item">最佳实践</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
+      
+        <a href="/tags/%E5%A4%9AProfile/" class="print-no-link">#多Profile</a>
+      
+        <a href="/tags/Session%E7%AE%A1%E7%90%86/" class="print-no-link">#Session管理</a>
+      
+        <a href="/tags/Cron%E8%B0%83%E5%BA%A6/" class="print-no-link">#Cron调度</a>
+      
+        <a href="/tags/%E8%B5%84%E6%BA%90%E7%AB%9E%E4%BA%89/" class="print-no-link">#资源竞争</a>
+      
+        <a href="/tags/%E8%BF%90%E7%BB%B4%E8%B8%A9%E5%9D%91/" class="print-no-link">#运维踩坑</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>压缩风暴：Session 过多饿死关键 Cron</div>
+      <div>https://normdist.com/2026/07/28/ND-20260728-002-session-starvation-cron/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/28/ND-20260728-001-article/" title="QFII 跟庄策略 +32.20%：从设计到回测验证全链路">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">QFII 跟庄策略 +32.20%：从设计到回测验证全链路</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/27/ND-20260727-001-css-button-min-width-trap/" title="一个 CSS 按钮的寻踪记：从 24×24 到 min-width 陷阱">
+                        <span class="hidden-mobile">一个 CSS 按钮的寻踪记：从 24×24 到 min-width 陷阱</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
