@@ -1,0 +1,1036 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一次被 72 秒吓到的启动上周把 AutoQuant 量化系统从 Docker 迁到裸跑后，我发现一个隐蔽问题：每次 Git 心跳触发一次 commit，systemd 服务会短暂重启，整个系统冷启动一次。日志里记录着 Jul 15 08:31:22——从进程启动到第一条量化心跳跑完，72 秒。 72 秒意味着什么？在 5 分钟心跳间隔下，相当于每个周期有 24% 的时间在空转。如果心跳压到 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="懒加载架构：从方案设计到 420 倍提速">
+<meta property="og:url" content="https://normdist.com/2026/08/01/ND-20260801-001-lazy-loading-architecture-420x-speedup/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="一次被 72 秒吓到的启动上周把 AutoQuant 量化系统从 Docker 迁到裸跑后，我发现一个隐蔽问题：每次 Git 心跳触发一次 commit，systemd 服务会短暂重启，整个系统冷启动一次。日志里记录着 Jul 15 08:31:22——从进程启动到第一条量化心跳跑完，72 秒。 72 秒意味着什么？在 5 分钟心跳间隔下，相当于每个周期有 24% 的时间在空转。如果心跳压到 1">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-31T19:47:33.000Z">
+<meta property="article:modified_time" content="2026-07-31T19:53:08.873Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="启动优化">
+<meta property="article:tag" content="懒加载">
+<meta property="article:tag" content="架构设计">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>懒加载架构：从方案设计到 420 倍提速 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">懒加载架构：从方案设计到 420 倍提速</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-01 03:47" pubdate>
+          2026年8月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">懒加载架构：从方案设计到 420 倍提速</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年8月1日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一次被-72-秒吓到的启动"><a href="#一次被-72-秒吓到的启动" class="headerlink" title="一次被 72 秒吓到的启动"></a>一次被 72 秒吓到的启动</h2><p>上周把 AutoQuant 量化系统从 Docker 迁到裸跑后，我发现一个隐蔽问题：每次 Git 心跳触发一次 commit，systemd 服务会短暂重启，整个系统冷启动一次。日志里记录着 <code>Jul 15 08:31:22</code>——从进程启动到第一条量化心跳跑完，<strong>72 秒</strong>。</p>
+<p>72 秒意味着什么？在 5 分钟心跳间隔下，相当于每个周期有 24% 的时间在空转。如果心跳压到 1 分钟，系统根本跑不动。</p>
+<p>更糟的是，这台机器上还要同时跑 llama.cpp 推理（两张 2080 Ti 魔改卡，单卡 22GB、合计 44GB 显存）、ComfyUI 出图、TTS 语音服务。显存是硬天花板——<strong>不能全量常驻，只能按需加载</strong>。</p>
+<p>所以懒加载不只是一个”加速技巧”，而是这台机器上所有服务能共存的<strong>必要条件</strong>。</p>
+<h2 id="为什么全量加载跑不动"><a href="#为什么全量加载跑不动" class="headerlink" title="为什么全量加载跑不动"></a>为什么全量加载跑不动</h2><p>先说痛点。传统的服务架构是这样写的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">on_start:<br>    <span class="hljs-comment"># 全量加载模式：进程启动时一次性加载所有依赖</span><br>    load_model_a()        <span class="hljs-comment"># 5 GB 显存，8 秒</span><br>    load_model_b()        <span class="hljs-comment"># 4 GB 显存，10 秒</span><br>    load_strategy_cache() <span class="hljs-comment"># 3 秒，全量读入 200+ 策略参数</span><br>    init_database_conn()  <span class="hljs-comment"># 5 秒，建索引</span><br>    <span class="hljs-comment"># 总计：约 26 秒，实际串行更长</span><br></code></pre></td></tr></table></figure>
+
+<p>在 AutoQuant 的旧版本中，服务启动时会一口气加载所有策略的模型权重、回测缓存、指标引擎。对于 200+ 策略的配置，冷启动时间随策略数量线性增长。实测 72 秒。</p>
+<p>更致命的是<strong>显存浪费</strong>。量化系统的策略模型只在回测时用到，日常运行（心跳、监控、日志）根本不需要。但它们一直占着 4-8GB 显存，挤占了 TTS 和 llama.cpp 的配额。</p>
+<h2 id="方案设计：三层懒加载架构"><a href="#方案设计：三层懒加载架构" class="headerlink" title="方案设计：三层懒加载架构"></a>方案设计：三层懒加载架构</h2><p>我把懒加载拆成三层，每一层解决一个具体问题：</p>
+<h3 id="第一层：按需加载（Lazy-Init）"><a href="#第一层：按需加载（Lazy-Init）" class="headerlink" title="第一层：按需加载（Lazy Init）"></a>第一层：按需加载（Lazy Init）</h3><p>核心思路：<strong>对象声明时不初始化，第一次使用时才加载</strong>。</p>
+<p>实现上用一个装饰器模式，把”加载”和”使用”解耦：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> functools<br><span class="hljs-keyword">import</span> time<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">LazyLoader</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;通用懒加载装饰器&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, factory, name=<span class="hljs-string">&quot;unnamed&quot;</span></span>):<br>        <span class="hljs-variable language_">self</span>._factory = factory<br>        <span class="hljs-variable language_">self</span>._name = name<br>        <span class="hljs-variable language_">self</span>._value = <span class="hljs-literal">None</span><br>        <span class="hljs-variable language_">self</span>._loaded = <span class="hljs-literal">False</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__call__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>._loaded:<br>            start = time.time()<br>            <span class="hljs-variable language_">self</span>._value = <span class="hljs-variable language_">self</span>._factory()<br>            <span class="hljs-variable language_">self</span>._loaded = <span class="hljs-literal">True</span><br>            elapsed = time.time() - start<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[<span class="hljs-subst">&#123;self._name&#125;</span>] 懒加载完成，耗时 <span class="hljs-subst">&#123;elapsed:<span class="hljs-number">.2</span>f&#125;</span>s&quot;</span>)<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._value<br><br><span class="hljs-meta">    @property</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">is_ready</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._loaded<br></code></pre></td></tr></table></figure>
+
+<p>用这个包一下策略引擎：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">strategy_engine = StrategyEngine(config)  <span class="hljs-comment"># 旧：启动即加载，72s</span><br><br>_strategy_engine = LazyLoader(<br>    factory=<span class="hljs-keyword">lambda</span>: StrategyEngine(config),<br>    name=<span class="hljs-string">&quot;strategy_engine&quot;</span>  <span class="hljs-comment"># 新：声明即加载</span><br>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_strategy_engine</span>():<br>    <span class="hljs-keyword">return</span> _strategy_engine()  <span class="hljs-comment"># 首次调用才触发加载</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="第二层：显存空闲卸载（Idle-Unload）"><a href="#第二层：显存空闲卸载（Idle-Unload）" class="headerlink" title="第二层：显存空闲卸载（Idle Unload）"></a>第二层：显存空闲卸载（Idle Unload）</h3><p>按需加载解决了”启动慢”，但显存一直被占着的问题没解决。第二层引入<strong>空闲超时卸载</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">LazyUnloadManager</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;显存空闲卸载管理器&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, model_loader, idle_timeout=<span class="hljs-number">600</span>, process_name=<span class="hljs-string">&quot;&quot;</span></span>):<br>        <span class="hljs-variable language_">self</span>._loader = model_loader<br>        <span class="hljs-variable language_">self</span>._idle_timeout = idle_timeout<br>        <span class="hljs-variable language_">self</span>._process_name = process_name<br>        <span class="hljs-variable language_">self</span>._last_access = time.time()<br>        <span class="hljs-variable language_">self</span>._unloaded = <span class="hljs-literal">False</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__call__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-variable language_">self</span>._last_access = time.time()<br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._unloaded:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[<span class="hljs-subst">&#123;self._process_name&#125;</span>] 重新加载模型...&quot;</span>)<br>            <span class="hljs-variable language_">self</span>._loader()<br>            <span class="hljs-variable language_">self</span>._unloaded = <span class="hljs-literal">False</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._loader()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">check_idle</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;定期检查空闲，超过阈值卸载模型但保留进程&quot;&quot;&quot;</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._unloaded:<br>            <span class="hljs-keyword">return</span><br>        <span class="hljs-keyword">if</span> time.time() - <span class="hljs-variable language_">self</span>._last_access &gt; <span class="hljs-variable language_">self</span>._idle_timeout:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[<span class="hljs-subst">&#123;self._process_name&#125;</span>] 空闲超时，卸载模型显存&quot;</span>)<br>            <span class="hljs-variable language_">self</span>._unload()<br>            <span class="hljs-variable language_">self</span>._unloaded = <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
+
+<p>这里有一个<strong>关键陷阱</strong>——TTS 服务早期就是这么崩的。代码写的是 <code>os._exit(0)</code> 直接退出整个进程，而不是卸载模型保留进程。结果是下次请求来了找不到服务，又要从头启动，显存和时间的损失都翻倍。修复后空闲超时只清理显存、保留进程，下次请求 3-5 秒就能恢复服务。</p>
+<h3 id="第三层：预热缓存（Warm-Cache）"><a href="#第三层：预热缓存（Warm-Cache）" class="headerlink" title="第三层：预热缓存（Warm Cache）"></a>第三层：预热缓存（Warm Cache）</h3><p>完全懒加载的代价是<strong>首次请求慢</strong>。量化系统里，心跳触发时如果需要加载策略，这一轮心跳就会超时。</p>
+<p>解法是<strong>后台预热</strong>：在系统空闲时，把高频策略的缓存预加载到内存（不是显存），心跳触发时直接取用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">WarmCache</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, cache_size=<span class="hljs-number">10</span></span>):<br>        <span class="hljs-variable language_">self</span>._cache = &#123;&#125;<br>        <span class="hljs-variable language_">self</span>._access_time = &#123;&#125;<br>        <span class="hljs-variable language_">self</span>._cache_size = cache_size<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get</span>(<span class="hljs-params">self, key, factory</span>):<br>        <span class="hljs-keyword">if</span> key <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._cache:<br>            <span class="hljs-variable language_">self</span>._access_time[key] = time.time()<br>            <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._cache[key]<br>        value = factory(key)<br>        <span class="hljs-variable language_">self</span>._add(key, value)<br>        <span class="hljs-keyword">return</span> value<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_add</span>(<span class="hljs-params">self, key, value</span>):<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>._cache) &gt;= <span class="hljs-variable language_">self</span>._cache_size:<br>            oldest = <span class="hljs-built_in">min</span>(<span class="hljs-variable language_">self</span>._access_time, key=<span class="hljs-variable language_">self</span>._access_time.get)<br>            <span class="hljs-keyword">del</span> <span class="hljs-variable language_">self</span>._cache[oldest]<br>            <span class="hljs-keyword">del</span> <span class="hljs-variable language_">self</span>._access_time[oldest]<br>        <span class="hljs-variable language_">self</span>._cache[key] = value<br>        <span class="hljs-variable language_">self</span>._access_time[key] = time.time()<br></code></pre></td></tr></table></figure>
+
+<p>L1 策略（高频交易）的缓存常驻，L2 策略按需加载，L3 策略只在回测时临时加载后释放。三级调度让显存占用从全量 12GB 降到日常 2-3GB。</p>
+<h2 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h2><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>选择</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>显存监控</td>
+<td><code>nvidia-smi</code> + psutil</td>
+<td>不需要额外依赖，直接读系统状态</td>
+</tr>
+<tr>
+<td>对象加载</td>
+<td>装饰器模式 + <code>__call__</code></td>
+<td>侵入性最低，现有代码几乎不改</td>
+</tr>
+<tr>
+<td>并发保护</td>
+<td><code>threading.RLock</code></td>
+<td>多 cron 并发时避免重复加载</td>
+</tr>
+<tr>
+<td>进程保留</td>
+<td>仅清理模型，不调用 <code>os._exit</code></td>
+<td>避免重启导致的 72s 冷启动</td>
+</tr>
+<tr>
+<td>超时调度</td>
+<td>asyncio 后台 task</td>
+<td>不阻塞主逻辑</td>
+</tr>
+</tbody></table>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>改造前</th>
+<th>改造后</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>冷启动时间</td>
+<td>72 s</td>
+<td>0.17 s（仅框架加载）</td>
+</tr>
+<tr>
+<td>首次策略计算</td>
+<td>72 s</td>
+<td>3-5 s（单策略加载）</td>
+</tr>
+<tr>
+<td>日常显存占用</td>
+<td>12 GB</td>
+<td>2-3 GB</td>
+</tr>
+<tr>
+<td>心跳成功率</td>
+<td>76%（间隔5分钟）</td>
+<td>100%（间隔1分钟）</td>
+</tr>
+<tr>
+<td>启动加速</td>
+<td>—</td>
+<td><strong>约 420 倍</strong></td>
+</tr>
+</tbody></table>
+<p>420 倍这个数字来自冷启动时间：72s → 0.17s ≈ 424 倍。首次策略计算不是 420 倍，那只是 14-24 倍。<strong>别被标题党数字误导</strong>——420 倍只适用于”框架启动”这个特定场景。</p>
+<p>TTS 服务同样应用了这套架构。模型已加载时端到端延迟 3-5 秒，首次加载约 15 秒，空闲 10 分钟后自动卸载显存。在 44GB 总显存（两张 2080 Ti 魔改卡各 22GB）的硬约束下，这套架构让 llama.cpp、TTS、ComfyUI 和量化系统能稳定共存，不再频繁 OOM。</p>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p><strong>1. <code>os._exit(0)</code> 退出了整个进程</strong></p>
+<p>这是最大的一次翻车。设计上要”卸载模型保留进程”，实际代码里写了 <code>os._exit(0)</code>。结果是进程直接退出，下次请求找不到服务。加一个 <code>_unloaded</code> 标志位来区分”进程活但模型未加载”和”进程不存在”，问题才解决。</p>
+<p><strong>2. 显存泄漏</strong></p>
+<p>Python 的 <code>del model</code> 不等于显存立即释放。GPU 上的显存要等到 CUDA context 回收后才真正释放。显式调用 <code>torch.cuda.empty_cache()</code>（如果使用 PyTorch）或在 llama.cpp 侧主动释放模型句柄，才能确保显存回到可用状态。</p>
+<p><strong>3. 并发重复加载</strong></p>
+<p>多个 cron 任务同时触发时，如果第一个还在加载，第二个又触发一次加载，显存就被占两次。加 <code>RLock</code> 互斥锁，第二个等第一个加载完直接取结果。</p>
+<p><strong>4. 首次请求超时</strong></p>
+<p>懒加载把 72s 拆成了”首次请求慢”。如果心跳间隔太短，首次请求还是会超时。解法是预热缓存（L1 策略常驻）+ 心跳间隔调整（首次加载期间临时放宽超时阈值）。</p>
+<h2 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h2><p>最后提炼一条原则：<strong>懒加载的边界是”可延迟到不延迟”的那条线</strong>。</p>
+<p>能延迟的延迟——策略模型、回测缓存、低频数据源。不能延迟的不延迟——数据库连接、心跳注册、监控上报。这条线画对了，系统又快又稳；画错了，要么启动慢，要么首次请求慢，要么显存撑爆。</p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/06/26/ND-20260626-002-tts-engine-selection-journey/">TTS 引擎选型历程</a> — 懒加载模式的首次实践</li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/06/05/ND-20260605-002-dual-2080ti-bottleneck/">双卡 2080Ti 跑大模型：PCIe 带宽是瓶颈吗？</a> — 显存约束背景</li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/07/04/ND-20260704-003-docker-to-bare-metal-migration/">Docker→裸跑迁移踩坑</a> — 裸跑环境启动问题源头</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" class="print-no-link">#架构设计</a>
+      
+        <a href="/tags/%E6%87%92%E5%8A%A0%E8%BD%BD/" class="print-no-link">#懒加载</a>
+      
+        <a href="/tags/%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96/" class="print-no-link">#启动优化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>懒加载架构：从方案设计到 420 倍提速</div>
+      <div>https://normdist.com/2026/08/01/ND-20260801-001-lazy-loading-architecture-420x-speedup/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/31/ND-20260731-001-github-push-troubleshooting/" title="git push 卡死、token 失效、TLS 握手失败：一个 AI Agent 的 GitHub 五连坑实录">
+                        <span class="hidden-mobile">git push 卡死、token 失效、TLS 握手失败：一个 AI Agent 的 GitHub 五连坑实录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
