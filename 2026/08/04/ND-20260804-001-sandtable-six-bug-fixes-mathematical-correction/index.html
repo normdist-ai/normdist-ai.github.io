@@ -19,27 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例： Profile端口用途 default8642默认代理通信 hanmeimei8643韩梅">
+    <meta name="description" content="沙盘推演引擎（Sandtable）上线后跑了两个月，黄金价格的多模型融合分析结果看起来挺合理——直到我打算认真审计它的数学层。 不审不知道，一审头皮麻。 四个推理引擎（贝叶斯、决策树、蒙特卡洛、因果链）里，六个数学 Bug 同时在跑。有些是 off-by-one，有些是概率没归一化，有些是时间单位跨层不一致。六个 Bug 各自的偏差方向不同，恰好相互抵消，让最终输出看起来”正常”——这正是最危险的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hermes Agent Gateway 多实例配置实践">
-<meta property="og:url" content="https://normdist.com/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/index.html">
+<meta property="og:title" content="六个 Bug 修复实战：沙盘推演引擎的数学纠正">
+<meta property="og:url" content="https://normdist.com/2026/08/04/ND-20260804-001-sandtable-six-bug-fixes-mathematical-correction/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例： Profile端口用途 default8642默认代理通信 hanmeimei8643韩梅">
+<meta property="og:description" content="沙盘推演引擎（Sandtable）上线后跑了两个月，黄金价格的多模型融合分析结果看起来挺合理——直到我打算认真审计它的数学层。 不审不知道，一审头皮麻。 四个推理引擎（贝叶斯、决策树、蒙特卡洛、因果链）里，六个数学 Bug 同时在跑。有些是 off-by-one，有些是概率没归一化，有些是时间单位跨层不一致。六个 Bug 各自的偏差方向不同，恰好相互抵消，让最终输出看起来”正常”——这正是最危险的">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-20T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T05:29:29.104Z">
+<meta property="article:published_time" content="2026-08-04T08:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-03T19:49:02.982Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI-Agent">
-<meta property="article:tag" content="Gateway">
-<meta property="article:tag" content="Hermes">
-<meta property="article:tag" content="服务器运维">
+<meta property="article:tag" content="Bug修复">
+<meta property="article:tag" content="沙盘推演">
+<meta property="article:tag" content="贝叶斯">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Hermes Agent Gateway 多实例配置实践 - 进化概率论</title>
+  <title>六个 Bug 修复实战：沙盘推演引擎的数学纠正 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -360,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Hermes Agent Gateway 多实例配置实践</span>
+            <span id="subtitle">六个 Bug 修复实战：沙盘推演引擎的数学纠正</span>
           
         </div>
 
@@ -371,8 +370,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-20 10:00" pubdate>
-          2026年5月20日 上午
+        <time datetime="2026-08-04 16:00" pubdate>
+          2026年8月4日 下午
         </time>
       </span>
     
@@ -383,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3k 字
+          3.6k 字
         
       </span>
     
@@ -394,7 +393,7 @@
         
         
         
-          26 分钟
+          31 分钟
         
       </span>
     
@@ -442,12 +441,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Hermes Agent Gateway 多实例配置实践</h1>
+            <h1 id="seo-header">六个 Bug 修复实战：沙盘推演引擎的数学纠正</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年8月4日 凌晨
                   
                 
               </p>
@@ -455,98 +454,73 @@
             
               <div class="markdown-body">
                 
-                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。</p>
-<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><h3 id="初始状态（v0-13-0）"><a href="#初始状态（v0-13-0）" class="headerlink" title="初始状态（v0.13.0）"></a>初始状态（v0.13.0）</h3><p>在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例：</p>
-<p>Profile<br>端口<br>用途</p>
-<p>default<br>8642<br>默认代理通信</p>
-<p>hanmeimei<br>8643<br>韩梅梅数字人通信</p>
-<p>两个实例通过 systemd 服务自动管理，运行稳定。</p>
-<h3 id="升级后问题"><a href="#升级后问题" class="headerlink" title="升级后问题"></a>升级后问题</h3><p>升级到 v0.14.0 后，两个 Gateway 无法同时在线。表现为：</p>
-<ul>
-<li><p>启动第二个 Gateway 时，第一个被踢下线</p>
-</li>
-<li><p>端口冲突，<code>ss -tlnp | grep :864[23]</code> 只显示一个端口</p>
-</li>
-<li><p>systemd 服务频繁重启</p>
-</li>
-</ul>
-<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="1-版本差异分析"><a href="#1-版本差异分析" class="headerlink" title="1. 版本差异分析"></a>1. 版本差异分析</h3><p>通过阅读 v0.14.0 的变更日志和 Gateway 模块源码，发现关键变化：</p>
-<p>v0.14.0 引入了 <code>--replace</code> 参数作为默认行为。当两个实例使用相同配置启动时，新的实例会自动替换旧的实例，导致”此起彼伏”的现象。</p>
-<h3 id="2-端口冲突排查"><a href="#2-端口冲突排查" class="headerlink" title="2. 端口冲突排查"></a>2. 端口冲突排查</h3><p>检查了 <code>/etc/services</code>、<code>/etc/sysctl.conf</code> 以及所有配置文件中的端口绑定设置，确认没有端口冲突。问题出在应用层而非系统层。</p>
-<h3 id="3-根因定位"><a href="#3-根因定位" class="headerlink" title="3. 根因定位"></a>3. 根因定位</h3><p><strong>核心发现：不要使用 <code>--replace</code> 参数！</strong></p>
-<p>这是本次排查最重要的经验。<code>--replace</code> 的设计初衷是用于单实例场景下的优雅重启，但在多实例配置中会导致实例间的互相替换。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案一：手动启动（推荐验证用）"><a href="#方案一：手动启动（推荐验证用）" class="headerlink" title="方案一：手动启动（推荐验证用）"></a>方案一：手动启动（推荐验证用）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br><br><span class="hljs-comment"># 停止所有现有 Gateway</span><br>pkill -f <span class="hljs-string">&#x27;hermes_cli.main gateway&#x27;</span><br><br><span class="hljs-comment"># 等待清理完成</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-comment"># 分别启动两个实例</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
+                <p>沙盘推演引擎（Sandtable）上线后跑了两个月，黄金价格的多模型融合分析结果看起来挺合理——直到我打算认真审计它的数学层。</p>
+<p>不审不知道，一审头皮麻。</p>
+<p>四个推理引擎（贝叶斯、决策树、蒙特卡洛、因果链）里，<strong>六个数学 Bug 同时在跑</strong>。有些是 off-by-one，有些是概率没归一化，有些是时间单位跨层不一致。六个 Bug 各自的偏差方向不同，恰好相互抵消，让最终输出看起来”正常”——这正是最危险的情况。</p>
+<p>以下是六次修复的完整记录。</p>
+<h2 id="Bug-1：百分位计算的-off-by-one"><a href="#Bug-1：百分位计算的-off-by-one" class="headerlink" title="Bug 1：百分位计算的 off-by-one"></a>Bug 1：百分位计算的 off-by-one</h2><p><strong>位置</strong>：蒙特卡洛模拟 → 百分位统计</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 修复前</span><br>idx = p / <span class="hljs-number">100</span> * <span class="hljs-built_in">len</span>(sorted_arr)  <span class="hljs-comment"># 索引从 0 开始，len 做分母会越界</span><br><br><span class="hljs-comment"># 修复后</span><br>idx = p / <span class="hljs-number">100</span> * (<span class="hljs-built_in">len</span>(sorted_arr) - <span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
 
-<p><strong>关键参数说明：</strong></p>
-<ul>
-<li><p><code>-p &lt;profile&gt;</code>：指定 profile，确保每个实例使用独立的配置目录和数据库</p>
-</li>
-<li><p><strong>不使用 <code>--replace</code></strong>：这是多实例共存的前提</p>
-</li>
-<li><p><code>sleep 8</code>：两个 Gateway 之间需要足够的启动间隔（建议至少 5-8 秒）</p>
-</li>
-</ul>
-<h3 id="方案二：systemd-统一管理"><a href="#方案二：systemd-统一管理" class="headerlink" title="方案二：systemd 统一管理"></a>方案二：systemd 统一管理</h3><p>创建统一的 systemd 服务来管理所有 Gateway 实例。</p>
-<h4 id="1-创建启动脚本"><a href="#1-创建启动脚本" class="headerlink" title="1. 创建启动脚本"></a>1. 创建启动脚本</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br><br><span class="hljs-comment">#!/bin/bash</span><br><span class="hljs-comment"># /home/jarvis/.local/bin/hermes-gateway-start.sh</span><br><br>pkill -f hermes_cli.main || <span class="hljs-literal">true</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-built_in">cd</span> /home/jarvis/.hermes/hermes-agent<br><br><span class="hljs-comment"># 启动 default Gateway</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><br><span class="hljs-comment"># 启动 hanmeimei Gateway  </span><br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
+<p>典型的围栏柱错误（Fencepost Error）。百分位 p 的理论位置是 <code>p/100 * (N-1)</code>，不是 <code>p/100 * N</code>。N&#x3D;100 条路径时，P95 的索引应该是 94（第 95 个元素），但旧代码算出 95——越界到第 96 个元素，对应 P96 左右。</p>
+<p><strong>影响</strong>：所有百分位区间都向右偏移了 1 个位置。P5~P95 的置信区间宽度被低估了约 1-2%，导致尾部风险看起来比实际小。</p>
+<p><strong>发现方式</strong>：人工审查时发现 <code>percentile(sorted_arr, 100)</code> 会报索引错误，100% 对应的索引应该是 N-1，不是 N。</p>
+<h2 id="Bug-2：贝叶斯更新的顺序敏感性"><a href="#Bug-2：贝叶斯更新的顺序敏感性" class="headerlink" title="Bug 2：贝叶斯更新的顺序敏感性"></a>Bug 2：贝叶斯更新的顺序敏感性</h2><p><strong>位置</strong>：贝叶斯推断引擎 → 多证据后验计算</p>
+<p>贝叶斯定理说后验概率与证据到达顺序无关，但旧代码在每次更新时掺入了 <code>confidence_strength</code> 权重：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 修复前（简化示意）</span><br><span class="hljs-keyword">for</span> evidence <span class="hljs-keyword">in</span> evidences:<br>    posterior = prior * likelihood ** strength  <span class="hljs-comment"># strength 导致顺序依赖</span><br><br><span class="hljs-comment"># 修复后</span><br><span class="hljs-keyword">for</span> evidence <span class="hljs-keyword">in</span> evidences:<br>    posterior = prior * likelihood              <span class="hljs-comment"># 纯贝叶斯更新，顺序无关</span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br><span class="hljs-built_in">chmod</span> +x ~/.local/bin/hermes-gateway-start.sh<br><br></code></pre></td></tr></table></figure>
+<p>strength 参数本来是为了给”强证据”更高权重，但每次更新时用它指数缩放似然比，导致先处理的证据实际影响力更大——<strong>先来先权重</strong>，违反了贝叶斯推断的顺序无关性公理。</p>
+<p><strong>影响</strong>：同样一组证据，按不同顺序输入，得出不同的后验概率。最大偏差可达 8-15 个百分点。</p>
+<p><strong>修复</strong>：删除 strength 参数对似然的指数缩放，改用在证据选择阶段做权重过滤（只有置信度达标的证据才进入贝叶斯管道），进入后一律平等更新。</p>
+<h2 id="Bug-3：决策树概率未归一化"><a href="#Bug-3：决策树概率未归一化" class="headerlink" title="Bug 3：决策树概率未归一化"></a>Bug 3：决策树概率未归一化</h2><p><strong>位置</strong>：决策树分析器 → 子节点概率求和</p>
+<p>决策树的每个分支节点下，子节点的概率之和应该精确等于 1.0。但代码在构建树时直接累加外部输入的概率，没有做归一化处理：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 修复前</span><br><span class="hljs-keyword">for</span> child <span class="hljs-keyword">in</span> children:<br>    total_prob = <span class="hljs-built_in">sum</span>(child.probability <span class="hljs-keyword">for</span> child <span class="hljs-keyword">in</span> children)<br>    <span class="hljs-comment"># 没有归一化，total_prob 可能 != 1.0</span><br><br><span class="hljs-comment"># 修复后</span><br><span class="hljs-keyword">for</span> child <span class="hljs-keyword">in</span> children:<br>    child.probability = child.probability / total_prob  <span class="hljs-comment"># 强制归一化</span><br></code></pre></td></tr></table></figure>
 
-<h4 id="2-创建-systemd-服务文件"><a href="#2-创建-systemd-服务文件" class="headerlink" title="2. 创建 systemd 服务文件"></a>2. 创建 systemd 服务文件</h4><p><code>~/.config/systemd/user/hermes-gateway-all.service</code>:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br><br><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=Hermes Agent Gateway - All Profiles<br><span class="hljs-attr">After</span>=network.target<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=<span class="hljs-literal">on</span>eshot<br><span class="hljs-attr">ExecStart</span>=/home/jarvis/.local/bin/hermes-gateway-start.sh<br><span class="hljs-attr">RemainAfterExit</span>=<span class="hljs-literal">yes</span><br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=default.target<br><br></code></pre></td></tr></table></figure>
+<p><strong>触发场景</strong>：当用户（或上游模型）输入的分支概率之和为 0.95 或 1.05 时——因为浮点精度或人为估算误差——决策树会计算出一条”不可能路径”的概率，或者低估某些路径。</p>
+<p><strong>影响</strong>：多分支决策树中，某些路径的预期收益计算偏差在 3-8% 之间。最坏情况：四个分支各自输入 0.25，浮点误差累积到 0.9999999，归一化后一条路径被吃掉。</p>
+<p><strong>发现方式</strong>：在批量测试中对比 <code>sum(all_path_probabilities)</code> 是否等于 1.0，发现多数情况不等于 1。</p>
+<h2 id="Bug-4：蒙特卡洛时间单位不一致"><a href="#Bug-4：蒙特卡洛时间单位不一致" class="headerlink" title="Bug 4：蒙特卡洛时间单位不一致"></a>Bug 4：蒙特卡洛时间单位不一致</h2><p><strong>位置</strong>：蒙特卡洛模拟 → 几何布朗运动公式</p>
+<p>GBM 的标准公式是：</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-built_in">dS</span> = μ·S·<span class="hljs-built_in">dt</span> + σ·S·ε·√<span class="hljs-built_in">dt</span><br></code></pre></td></tr></table></figure>
 
-<h4 id="3-安装和启用"><a href="#3-安装和启用" class="headerlink" title="3. 安装和启用"></a>3. 安装和启用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br><br>systemctl --user daemon-reload<br>systemctl --user <span class="hljs-built_in">enable</span> hermes-gateway-all.service<br>systemctl --user start hermes-gateway-all.service<br><br></code></pre></td></tr></table></figure>
+<p>代码中 dt 被硬编码为 1，但波动率 σ 的输入单位是”年化波动率”，而漂移率 μ 是”日收益率”：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 修复前</span><br>drift = (mu - <span class="hljs-number">0.5</span> * sigma**<span class="hljs-number">2</span>) * <span class="hljs-number">1</span>           <span class="hljs-comment"># dt=1，但 sigma 是年化值</span><br>diffusion = sigma * math.sqrt(<span class="hljs-number">1</span>) * dw        <span class="hljs-comment"># 年化 sigma 直接当日的用</span><br><br><span class="hljs-comment"># 修复后</span><br>dt = <span class="hljs-number">1</span> / <span class="hljs-number">252</span>                                 <span class="hljs-comment"># 交易日</span><br>drift = (mu - <span class="hljs-number">0.5</span> * sigma**<span class="hljs-number">2</span>) * dt<br>diffusion = sigma * math.sqrt(dt) * dw<br></code></pre></td></tr></table></figure>
 
-<h3 id="验证结果"><a href="#验证结果" class="headerlink" title="验证结果"></a>验证结果</h3><p>启动后通过以下命令确认两个实例都正常运行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br>ss -tlnp | grep -E <span class="hljs-string">&#x27;:(8642|8643)&#x27;</span><br><span class="hljs-comment"># 预期输出两行，分别对应两个端口</span><br><br>hermes gateway list<br><span class="hljs-comment"># 预期显示两个在线实例</span><br><br></code></pre></td></tr></table></figure>
+<p><strong>影响</strong>：年化波动率 20% 的资产，在 dt&#x3D;1（即一天&#x3D;一年）的模拟中，单日波动被放大 √252 ≈ 15.9 倍。模拟出的价格路径几乎全部发散，500 次模拟中 95% 的路径在 30 天后超出合理范围。</p>
+<p>最诡异的是——因为所有路径都发散，<strong>上涨概率反而看起来正常</strong>（对称发散，50% 涨 50% 跌），只有置信区间宽度异常宽。如果不是专门检查了 P95 的值，这个 Bug 可能永远不被发现。</p>
+<h2 id="Bug-5：因果链强度值跨链不一致"><a href="#Bug-5：因果链强度值跨链不一致" class="headerlink" title="Bug 5：因果链强度值跨链不一致"></a>Bug 5：因果链强度值跨链不一致</h2><p><strong>位置</strong>：因果链分析器 → 多链加权合并</p>
+<p>因果链分析器允许用户定义多条因果链（例如”美联储降息→美元走弱→黄金上涨”），每条链有个 <code>strength</code> 值（0-1）表示因果强度。</p>
+<p>问题出在：不同链的 strength 值是由不同专家&#x2F;模型在不同的语境下估算的，没有校准：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 修复前</span><br>chain_A_strength = <span class="hljs-number">0.8</span>   <span class="hljs-comment"># 专家 A 给的&quot;降息→美元&quot;强度</span><br>chain_B_strength = <span class="hljs-number">0.3</span>   <span class="hljs-comment"># 专家 B 给的&quot;美元→黄金&quot;强度</span><br><span class="hljs-comment"># 两者直接相乘，但 scale 不同</span><br><br><span class="hljs-comment"># 修复后</span><br><span class="hljs-comment"># 每条链的 strength 经过 sigmoid 校准到同一分布</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">calibrate</span>(<span class="hljs-params">strength</span>):<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> / (<span class="hljs-number">1</span> + math.exp(-<span class="hljs-number">3</span> * (strength - <span class="hljs-number">0.5</span>)))<br></code></pre></td></tr></table></figure>
 
-<h2 id="配置详情"><a href="#配置详情" class="headerlink" title="配置详情"></a>配置详情</h2><h3 id="Profile-配置要点"><a href="#Profile-配置要点" class="headerlink" title="Profile 配置要点"></a>Profile 配置要点</h3><p>每个 Gateway profile 需要以下关键配置：</p>
-<ul>
-<li><p><strong>独立的 <code>HERMES_HOME</code> 目录</strong> — 确保数据库、状态文件互不干扰</p>
-</li>
-<li><p><strong>不同的消息平台应用凭证</strong> — 避免会话冲突</p>
-</li>
-<li><p><strong>合理的端口分配</strong> — 建议在同一网段内连续分配，便于管理</p>
-</li>
-</ul>
-<h3 id="systemd-服务对比"><a href="#systemd-服务对比" class="headerlink" title="systemd 服务对比"></a>systemd 服务对比</h3><p>方式<br>优点<br>缺点</p>
-<p>单实例独立 service<br>配置简单、隔离性好<br>需要维护多个 service 文件</p>
-<p>统一 oneshot service<br>统一管理、一个命令启停<br>启动顺序依赖脚本逻辑</p>
-<p>推荐使用 <strong>方案二</strong>（统一 oneshot service），特别是当 Gateway 实例数量较多时。</p>
-<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="Q1-为什么不能直接用-replace？"><a href="#Q1-为什么不能直接用-replace？" class="headerlink" title="Q1: 为什么不能直接用 --replace？"></a>Q1: 为什么不能直接用 <code>--replace</code>？</h3><p><code>--replace</code> 的实现原理是找到并终止同配置的其他实例，然后接管其连接。在多实例场景下，这会导致”谁后启动谁存活”的不可预期行为。</p>
-<h3 id="Q2-两个-Gateway-之间需要多少启动间隔？"><a href="#Q2-两个-Gateway-之间需要多少启动间隔？" class="headerlink" title="Q2: 两个 Gateway 之间需要多少启动间隔？"></a>Q2: 两个 Gateway 之间需要多少启动间隔？</h3><p>实测建议 <strong>至少 8 秒</strong>。这是因为每个 Gateway 启动时需要：</p>
-<ul>
-<li><p>初始化数据库连接池</p>
-</li>
-<li><p>加载 profile 配置</p>
-</li>
-<li><p>注册消息平台回调</p>
-</li>
-<li><p>建立 WebSocket 监听</p>
-</li>
-</ul>
-<p>这些步骤在资源紧张时可能需要较长时间。间隔过短可能导致第二个实例启动时发现端口已被占用（第一个尚未完全释放）。</p>
-<h3 id="Q3-如何排查-Gateway-启动失败？"><a href="#Q3-如何排查-Gateway-启动失败？" class="headerlink" title="Q3: 如何排查 Gateway 启动失败？"></a>Q3: 如何排查 Gateway 启动失败？</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br><br><span class="hljs-comment"># 查看详细日志</span><br><span class="hljs-built_in">tail</span> -f /tmp/hermes-default.log<br><span class="hljs-built_in">tail</span> -f /tmp/hermes-hanmeimei.log<br><br><span class="hljs-comment"># 检查端口占用</span><br>ss -tlnp | grep :864[23]<br><br><span class="hljs-comment"># 查看 systemd 状态</span><br>systemctl --user status hermes-gateway-all.service<br><br></code></pre></td></tr></table></figure>
+<p><strong>影响</strong>：不同专家对”强度”的理解不同。有的专家把 0.8 当”非常强”，有的把 0.3 当”已经很强”。直接相乘导致某些链被系统性低估或高估，最终推演结果偏向于”专家更保守的链”。</p>
+<p><strong>修复</strong>：引入 sigmoid 校准函数，将所有 strength 值映射到同一概率尺度上。同时要求每条因果链附带一个”校准参考”（什么情况下算 0.5，什么情况下算 0.9），减少跨链 scale 漂移。</p>
+<h2 id="Bug-6：Tier-0-融合超时计算错误"><a href="#Bug-6：Tier-0-融合超时计算错误" class="headerlink" title="Bug 6：Tier 0 融合超时计算错误"></a>Bug 6：Tier 0 融合超时计算错误</h2><p><strong>位置</strong>：推演引擎调度器 → Fusion 模型超时</p>
+<p>Tier 0（极速模式）使用单个 fusion 模型做快速融合分析。它的超时配置是：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># 旧配置</span><br><span class="hljs-attr">timeout_seconds:</span> <span class="hljs-number">120</span><br><span class="hljs-attr">max_wait_seconds:</span> <span class="hljs-number">150</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><ul>
-<li><p><strong>升级前务必阅读变更日志</strong> — v0.14.0 的 <code>--replace</code> 默认行为是本次问题的根源</p>
-</li>
-<li><p><strong>多实例场景下避免使用替换参数</strong> — 这是通用原则，不仅限于 Hermes</p>
-</li>
-<li><p><strong>给每个实例独立的资源空间</strong> — 数据库、配置目录、日志文件都要隔离</p>
-</li>
-<li><p><strong>启动间隔不可省略</strong> — 即使是 fast startup 的服务，也建议保留合理间隔</p>
-</li>
-</ul>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><p><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs">Hermes Agent 官方文档</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/">Messaging Gateway 配置指南</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.freedesktop.org/software/systemd/man/latest/systemd-user@.service.html">systemd user services 文档</a></p>
-</li>
-</ul>
+<p>但实际运行中，fusion 模型平均需要 60-120 秒，最长可达 180 秒。超时设定为 120 秒意味着 <strong>50% 以上的 Tier 0 请求在正常完成前就被强行终止</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 修复前</span><br><span class="hljs-keyword">if</span> elapsed &gt; config[<span class="hljs-string">&quot;timeout_seconds&quot;</span>]:<br>    <span class="hljs-keyword">raise</span> TimeoutError(<span class="hljs-string">&quot;Tier 0 超时&quot;</span>)<br>    <span class="hljs-comment"># 但此时 fusion 可能已经完成了 80% 的计算</span><br><br><span class="hljs-comment"># 修复后</span><br><span class="hljs-keyword">if</span> elapsed &gt; config[<span class="hljs-string">&quot;max_wait_seconds&quot;</span>]:<br>    <span class="hljs-keyword">raise</span> TimeoutError(<span class="hljs-string">&quot;Tier 0 超时&quot;</span>)<br>    <span class="hljs-comment"># 先读取已生成的部分结果，作为&quot;部分推演&quot;返回</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>影响</strong>：Tier 0 的失败率高达 60%，导致主代理频繁降级到 Tier 1（5 模型，耗时 30-60 秒），反而比直接等 fusion 更慢。而且因为超时后没有任何返回，主代理不知道”部分结果”的存在，直接重试，浪费更多 token。</p>
+<p><strong>修复</strong>：将超时从 120 秒提高到 180 秒，并在超时后读取已生成的部分结果，返回”部分推演（partial）”状态，让上层可以决定是接受还是重试。</p>
 <hr>
-<p><em>本文基于实际生产环境调试经验编写，如有疏漏欢迎指正。</em></p>
+<h2 id="六个-Bug-的共同特征"><a href="#六个-Bug-的共同特征" class="headerlink" title="六个 Bug 的共同特征"></a>六个 Bug 的共同特征</h2><p>回头看，这六个 Bug 有一个共同模式：<strong>没有在数学层做闭环验证</strong>。</p>
+<ul>
+<li>百分位做完没有对极端值（P0&#x2F;P100）做边界测试</li>
+<li>贝叶斯更新做完没有验证”顺序无关性”</li>
+<li>决策树建完没有断言 <code>sum(prob) == 1.0</code></li>
+<li>蒙特卡洛跑完没有检查置信区间是否合理</li>
+<li>因果链强度没有做 cross-chain 校准</li>
+<li>超时配置没有分析实际运行分布</li>
+</ul>
+<p>沙盘推演引擎的推理层是”看起来合理”的典型——输入输出都对，中间数学层隐蔽地跑偏了半年。修复方式也很一致：<strong>在每层输出加一个不变性断言（invariant assertion）</strong>，让偏差在变成习惯之前就被发现。</p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li>沙盘推演引擎 SKILL.md — <code>~/.hermes/skills/sandtable/SKILL.md</code></li>
+<li>推理引擎源码 — <code>~/.hermes/skills/sandtable/scripts/reasoning_engine.py</code></li>
+<li>沙盘推演引擎实战：黄金价格的多模型融合分析 — <a target="_blank" rel="noopener" href="https://www.normdist.com/2026/08/03/sandbox-simulation-gold-price-analysis/">https://www.normdist.com/2026/08/03/sandbox-simulation-gold-price-analysis/</a></li>
+</ol>
 
                 
               </div>
@@ -580,13 +554,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
+        <a href="/tags/%E6%B2%99%E7%9B%98%E6%8E%A8%E6%BC%94/" class="print-no-link">#沙盘推演</a>
       
-        <a href="/tags/Gateway/" class="print-no-link">#Gateway</a>
+        <a href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/" class="print-no-link">#贝叶斯</a>
       
-        <a href="/tags/AI-Agent/" class="print-no-link">#AI-Agent</a>
-      
-        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4/" class="print-no-link">#服务器运维</a>
+        <a href="/tags/Bug%E4%BF%AE%E5%A4%8D/" class="print-no-link">#Bug修复</a>
       
     </div>
   
@@ -598,8 +570,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Hermes Agent Gateway 多实例配置实践</div>
-      <div>https://normdist.com/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/</div>
+      <div>六个 Bug 修复实战：沙盘推演引擎的数学纠正</div>
+      <div>https://normdist.com/2026/08/04/ND-20260804-001-sandtable-six-bug-fixes-mathematical-correction/</div>
     </div>
     <div class="license-meta">
       
@@ -611,7 +583,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月20日</div>
+          <div>2026年8月4日</div>
         </div>
       
       
@@ -643,18 +615,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-001-ai-portrait-expression-control/" title="Hermes Agent Gateway 多实例配置实践">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hermes Agent Gateway 多实例配置实践</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/" title="LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF">
-                        <span class="hidden-mobile">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</span>
+                      <a href="/2026/08/03/ND-20260803-001-sandbox-simulation-gold-price-analysis/" title="沙盘推演引擎实战：黄金价格的多模型融合分析">
+                        <span class="hidden-mobile">沙盘推演引擎实战：黄金价格的多模型融合分析</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
