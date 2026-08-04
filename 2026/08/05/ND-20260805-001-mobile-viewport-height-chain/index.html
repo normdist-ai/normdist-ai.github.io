@@ -19,18 +19,18 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="翻车现场一个 Next.js 的扫码页面，在电脑浏览器上看完美无缺——卡片撑满屏幕，底部贴着 iPhone 的横条 home 指示线。 切到手机上一看：卡片比屏幕高出了几十像素。没有出现滚动条，但手指从下往上拖，页面会「回弹」回去。就像……它被什么东西往外推了一点点。 同一个 div，同一套 CSS，PC 上完美、手机上超出边界。 直觉告诉我：肯定是个和视口相关的单位问题。但哪个单位？ 排查过程第">
+    <meta name="description" content="翻车现场一个扫码页面，在电脑浏览器上看着一切正常——卡片撑满屏幕，底部对齐手机 home 指示线。 切到手机上，卡片高度比屏幕多出了几十像素。没有滚动条，但手指能从下往上拖动，页面会回弹。看起来像是：内容比视口”大了一圈”，但又没有大到需要滚动条。 同一个 div，同一套 CSS，PC 完美、手机溢出。 第一轮排查：是不是父容器没撑高直觉反应：肯定有某个父容器没设 h-full，导致子元素的高度计">
 <meta property="og:type" content="article">
-<meta property="og:title" content="为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录">
+<meta property="og:title" content="为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录">
 <meta property="og:url" content="https://normdist.com/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="翻车现场一个 Next.js 的扫码页面，在电脑浏览器上看完美无缺——卡片撑满屏幕，底部贴着 iPhone 的横条 home 指示线。 切到手机上一看：卡片比屏幕高出了几十像素。没有出现滚动条，但手指从下往上拖，页面会「回弹」回去。就像……它被什么东西往外推了一点点。 同一个 div，同一套 CSS，PC 上完美、手机上超出边界。 直觉告诉我：肯定是个和视口相关的单位问题。但哪个单位？ 排查过程第">
+<meta property="og:description" content="翻车现场一个扫码页面，在电脑浏览器上看着一切正常——卡片撑满屏幕，底部对齐手机 home 指示线。 切到手机上，卡片高度比屏幕多出了几十像素。没有滚动条，但手指能从下往上拖动，页面会回弹。看起来像是：内容比视口”大了一圈”，但又没有大到需要滚动条。 同一个 div，同一套 CSS，PC 完美、手机溢出。 第一轮排查：是不是父容器没撑高直觉反应：肯定有某个父容器没设 h-full，导致子元素的高度计">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-08-05T01:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-04T16:13:53.058Z">
+<meta property="article:modified_time" content="2026-08-04T16:16:50.919Z">
 <meta property="article:author" content="小瑞">
+<meta property="article:tag" content="CSS">
 <meta property="article:tag" content="前端">
-<meta property="article:tag" content="响应式">
 <meta property="article:tag" content="移动端">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -38,7 +38,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录 - 进化概率论</title>
+  <title>为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -359,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录</span>
+            <span id="subtitle">为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录</span>
           
         </div>
 
@@ -382,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3k 字
+          2.6k 字
         
       </span>
     
@@ -393,7 +393,7 @@
         
         
         
-          26 分钟
+          22 分钟
         
       </span>
     
@@ -441,7 +441,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录</h1>
+            <h1 id="seo-header">为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
@@ -454,75 +454,59 @@
             
               <div class="markdown-body">
                 
-                <h2 id="翻车现场"><a href="#翻车现场" class="headerlink" title="翻车现场"></a>翻车现场</h2><p>一个 Next.js 的扫码页面，在电脑浏览器上看完美无缺——卡片撑满屏幕，底部贴着 iPhone 的横条 home 指示线。</p>
-<p>切到手机上一看：卡片比屏幕高出了几十像素。没有出现滚动条，但手指从下往上拖，页面会「回弹」回去。就像……它被什么东西往外推了一点点。</p>
-<p><strong>同一个 div，同一套 CSS，PC 上完美、手机上超出边界。</strong></p>
-<p>直觉告诉我：肯定是个和视口相关的单位问题。但哪个单位？</p>
-<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="第一轮：以为是-height-100-没撑满"><a href="#第一轮：以为是-height-100-没撑满" class="headerlink" title="第一轮：以为是 height: 100% 没撑满"></a>第一轮：以为是 height: 100% 没撑满</h3><p>扫码卡片用的是 <code>h-full</code>，父容器用 <code>flex-1</code>，一层层往上追——父容器有 <code>h-full</code>，再往上也有，看起来没问题。</p>
-<p>实际上问题恰恰相反：不是撑不满，是撑太满了。</p>
-<h3 id="第二轮：加-max-h-限制"><a href="#第二轮：加-max-h-限制" class="headerlink" title="第二轮：加 max-h 限制"></a>第二轮：加 max-h 限制</h3><p>我给卡片加了 <code>max-h-[calc(100vh - 8rem)]</code>，想把它卡死在视口以内。结果两边扫码页面对比起来高度还是不一样——一个撑得高，一个撑得矮。</p>
-<p>原来 <code>100vh</code> 在不同层级上算出来的「视口」不一样。页面层级用了 <code>max-w-4xl mx-auto</code> 居中，这一层没加 <code>h-full</code>，高度链就断了。</p>
-<h3 id="第三轮：h-screen-反而越描越黑"><a href="#第三轮：h-screen-反而越描越黑" class="headerlink" title="第三轮：h-screen 反而越描越黑"></a>第三轮：h-screen 反而越描越黑</h3><p>我在 <code>&lt;main&gt;</code> 上加了 <code>h-screen</code> 想把高度锁死。结果超出更严重了——<code>h-screen</code> 等于 <code>100vh</code>，加上 flex 的 <code>flex-1</code> 一起作用，<code>flex-1</code> 想撑满父容器，<code>h-screen</code> 又想撑满整个视口，两个约束打架，页面直接超出。</p>
-<p><strong>关键教训</strong>：在 flex 布局里混用 <code>flex-1</code> 和 <code>h-screen</code> 等价于让浏览器做一道解不开的方程题。</p>
-<h3 id="第四轮：终于找到根因-——-100vh-在手机上不是-100vh"><a href="#第四轮：终于找到根因-——-100vh-在手机上不是-100vh" class="headerlink" title="第四轮：终于找到根因 —— 100vh 在手机上不是 100vh"></a>第四轮：终于找到根因 —— <code>100vh</code> 在手机上不是 100vh</h3><p>把 <code>h-screen</code> 清掉后，超出问题小了很多，但还是有。手机页面还是能往上拖动。</p>
-<p>问题出在最底层的 <code>body</code> 上。代码里写的是 <code>h-screen</code>，也就是 <code>height: 100vh</code>。</p>
-<p><strong><code>100vh</code> 在移动端，永远是手机物理屏幕的高度</strong>，包含地址栏、导航栏、工具栏。</p>
-<p>当手机浏览器的地址栏折叠后，实际能显示内容的区域（可见视口）比 <code>100vh</code> 小了一截——大约 56px（地址栏高度）+ 56px（底部导航）&#x3D; 100px 左右。</p>
-<p>所以 <code>body</code> 高度 &#x3D; <code>100vh</code>（物理屏幕），但 flex 容器分给 <code>&lt;main&gt;</code> 的高度是按 body 减去 header 算的，结果 <code>&lt;main&gt;</code> 里的内容比实际可视区域大了一截。没有滚动条（因为浏览器认为内容没有超出「视口」），但手指能拖动（浏览器允许 overscroll）。</p>
-<h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p><strong>CSS 里有一个专门为移动端浏览器设计的单位：<code>dvh</code>（Dynamic Viewport Height）。</strong></p>
-<table>
-<thead>
-<tr>
-<th>单位</th>
-<th>含义</th>
-<th>移动端行为</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>100vh</code></td>
-<td>物理视口</td>
-<td>永远 &#x3D; 手机物理屏幕高度，含地址栏</td>
-</tr>
-<tr>
-<td><code>100svh</code></td>
-<td>最小视口</td>
-<td>地址栏展开时的最小可视区</td>
-</tr>
-<tr>
-<td><code>100dvh</code></td>
-<td>动态视口</td>
-<td><strong>随地址栏折叠&#x2F;展开动态变化</strong></td>
-</tr>
-</tbody></table>
-<p>把 <code>body</code> 的 <code>h-screen</code>（<code>100vh</code>）换成 <code>h-dvh</code>（<code>100dvh</code>），地址栏折叠时 <code>100dvh</code> 自动缩小，完美贴合实际可视区域。</p>
-<p>同时确保整个高度链干净——<strong>只用 flex 撑高，不要用 h-screen&#x2F;h-full 硬约束</strong>：</p>
-<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// layout.tsx</span><br>&lt;body className=<span class="hljs-string">&quot;min-h-dvh flex flex-col h-dvh&quot;</span>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AppHeader</span> /&gt;</span></span>                    &#123;<span class="hljs-comment">/* 固定高度 */</span>&#125;<br>  &lt;div className=<span class="hljs-string">&quot;flex flex-1 overflow-hidden&quot;</span>&gt;<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AppSidebar</span> /&gt;</span></span><br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;flex-1 min-w-0 overflow-y-auto p-4&quot;</span>&gt;</span></span><br><span class="language-xml">      &#123;children&#125;                   &#123;/* 撑满剩余空间 */&#125;</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span><br>  &lt;/div&gt;<br>&lt;/body&gt;<br></code></pre></td></tr></table></figure>
+                <h2 id="翻车现场"><a href="#翻车现场" class="headerlink" title="翻车现场"></a>翻车现场</h2><p>一个扫码页面，在电脑浏览器上看着一切正常——卡片撑满屏幕，底部对齐手机 home 指示线。</p>
+<p>切到手机上，卡片高度比屏幕多出了几十像素。没有滚动条，但手指能从下往上拖动，页面会回弹。看起来像是：内容比视口”大了一圈”，但又没有大到需要滚动条。</p>
+<p>同一个 div，同一套 CSS，PC 完美、手机溢出。</p>
+<h2 id="第一轮排查：是不是父容器没撑高"><a href="#第一轮排查：是不是父容器没撑高" class="headerlink" title="第一轮排查：是不是父容器没撑高"></a>第一轮排查：是不是父容器没撑高</h2><p>直觉反应：肯定有某个父容器没设 <code>h-full</code>，导致子元素的高度计算链断了。</p>
+<p>我翻了一遍高度链：<code>&lt;body&gt;</code> → flex 布局 → main 区域 → 页面组件 → 卡片 div。</p>
+<p><code>&lt;body&gt;</code> 写了 <code>h-screen</code>，main 区域是 <code>flex-1</code>，卡片也是 <code>h-full</code>。结构看着没毛病，但手机就是溢出。</p>
+<p><strong>问题不在撑不够，而在撑过头了。</strong></p>
+<h2 id="第二轮排查：加-max-h-限制"><a href="#第二轮排查：加-max-h-限制" class="headerlink" title="第二轮排查：加 max-h 限制"></a>第二轮排查：加 <code>max-h</code> 限制</h2><p>我给卡片加上了 <code>max-h-[calc(100vh - 8rem)]</code>，意思是”卡片最高不要超过视口减 8rem”。</p>
+<p>看起来修好了。但打开第二个扫码页面一比较——两个页面卡片高度不一致。一个是真正的撑满，一个被 <code>max-h</code> 截断了。</p>
+<p><strong>问题不是单个页面的高度，而是每个页面对”视口”的理解不一样。</strong></p>
+<h2 id="第三轮：发现根因——100vh-在手机上不等于屏幕"><a href="#第三轮：发现根因——100vh-在手机上不等于屏幕" class="headerlink" title="第三轮：发现根因——100vh 在手机上不等于屏幕"></a>第三轮：发现根因——<code>100vh</code> 在手机上不等于屏幕</h2><p>我把 <code>h-screen</code>（即 <code>height: 100vh</code>）从 <code>&lt;main&gt;</code> 上移除后，溢出大幅缩小了，但还是有。</p>
+<p>这才是真正的根因：<strong><code>100vh</code> 在移动端浏览器中，永远是手机物理屏幕的总高度，包括浏览器地址栏、底部导航栏。</strong></p>
+<p>当手机浏览器的地址栏折叠后，实际可见的视口高度（viewport）比 <code>100vh</code> 小了大约 56~80px。所以 <code>body { height: 100vh }</code> 设的高度，比实际能显示的区域还要大。</p>
+<p>这就是为什么”没有滚动条但能往上拖动”。CSS 计算的内容高度确实比视口大，但差得不是一屏。浏览器认为不需要滚动条，手指拖拽时却能感觉到超出。</p>
+<h2 id="最终方案：dvh（Dynamic-Viewport-Height）"><a href="#最终方案：dvh（Dynamic-Viewport-Height）" class="headerlink" title="最终方案：dvh（Dynamic Viewport Height）"></a>最终方案：<code>dvh</code>（Dynamic Viewport Height）</h2><p>CSS 有一个专门针对移动端设计的单位：<code>dvh</code>（Dynamic Viewport Height）。</p>
+<ul>
+<li><code>100vh</code> &#x3D; 物理视口（包含地址栏等浏览器 UI）</li>
+<li><code>100svh</code> &#x3D; 最小视口（地址栏展开时的最小可用高度）</li>
+<li><code>100dvh</code> &#x3D; 动态视口（随地址栏折叠&#x2F;展开动态变化）</li>
+</ul>
+<p>解决方案只有一行代码：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// 原来</span><br>&lt;body className=<span class="hljs-string">&quot;flex flex-col h-screen&quot;</span>&gt;<br><br><span class="hljs-comment">// 改为</span><br><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;flex flex-col h-dvh&quot;</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// scan/page.tsx</span><br>&lt;div className=<span class="hljs-string">&quot;h-full w-full flex flex-col&quot;</span>&gt;  &#123;<span class="hljs-comment">/* flex 父容器 */</span>&#125;<br>  &lt;<span class="hljs-title class_">ScanPage</span> /&gt;                          &#123;<span class="hljs-comment">/* h-full 撑满 */</span>&#125;<br>&lt;/div&gt;<br></code></pre></td></tr></table></figure>
+<p>同时确保整条高度链完整：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs tsx">&lt;body className=<span class="hljs-string">&quot;flex flex-col h-dvh&quot;</span>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AppHeader</span> /&gt;</span></span><br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;flex flex-1 overflow-hidden&quot;</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">AppSidebar</span> /&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;flex-1 min-w-0 overflow-y-auto&quot;</span>&gt;</span></span><br><span class="language-xml">      &#123;/* 卡片 */&#125;</span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;h-full flex flex-col bg-background rounded-lg overflow-hidden&quot;</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;shrink-0&quot;</span>&gt;</span>头部<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;py-5&quot;</span>&gt;</span>输入区<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;flex-1 overflow-auto&quot;</span>&gt;</span>内容<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span><br><span class="language-xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>&lt;/body&gt;<br></code></pre></td></tr></table></figure>
 
-<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// components/scan-page.tsx</span><br>&lt;div className=<span class="hljs-string">&quot;h-full flex flex-col bg-background border rounded-lg overflow-hidden&quot;</span>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;shrink-0&quot;</span>&gt;</span>...<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>   &#123;<span class="hljs-comment">/* 头部 */</span>&#125;<br>  &lt;div className=<span class="hljs-string">&quot;py-5&quot;</span>&gt;...&lt;<span class="hljs-regexp">/div&gt;        &#123;/</span>* 输入区 */&#125;<br>  &lt;div className=<span class="hljs-string">&quot;flex-1 overflow-auto&quot;</span>&gt;...&lt;<span class="hljs-regexp">/div&gt;  &#123;/</span>* 主体内容 */&#125;<br>&lt;/div&gt;<br></code></pre></td></tr></table></figure>
-
-<p>高度链：<code>body(h-dvh)</code> → <code>flex-1</code> → <code>main(flex-1)</code> → <code>wrapper(h-full)</code> → <code>card(h-full)</code>，层层传递，没有断裂，没有冲突。</p>
-<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>部署到生产环境后，手机刷新页面，四个扫码页面（扫码入库、扫码出库、扫码收货、扫码发货）卡片高度完全一致，刚好贴合屏幕，手指无法拖动，无滚动条。</p>
-<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：flex-1-和-h-screen-混用"><a href="#坑一：flex-1-和-h-screen-混用" class="headerlink" title="坑一：flex-1 和 h-screen 混用"></a>坑一：flex-1 和 h-screen 混用</h3><p><strong>现象</strong>：加了 <code>h-full</code> 后页面还是超出视口。</p>
-<p><strong>根因</strong>：<code>flex-1</code> 想撑满 flex 父容器，<code>h-screen</code> 又想撑满视口，两个约束同时生效时浏览器按 <code>h-screen</code> 走，超出 flex 容器。</p>
-<p><strong>解法</strong>：flex 布局下只用 <code>flex-1</code> 或 <code>h-full</code>，不要用 <code>h-screen</code>。</p>
-<h3 id="坑二：外层包裹层没有-flex-属性"><a href="#坑二：外层包裹层没有-flex-属性" class="headerlink" title="坑二：外层包裹层没有 flex 属性"></a>坑二：外层包裹层没有 flex 属性</h3><p><strong>现象</strong>：扫码卡片明明写了 <code>h-full</code>，但高度就是比另一个页面矮。</p>
-<p><strong>根因</strong>：扫码入口页用了 <code>max-w-4xl mx-auto</code> 包裹卡片，这一层没有 <code>flex flex-col</code>，里面的 <code>h-full</code> 找不到参照物，退化为 auto。</p>
-<p><strong>解法</strong>：包裹层加 <code>flex flex-col h-full</code>，让子元素的 <code>h-full</code> 生效。</p>
-<h3 id="坑三：多层-CSS-类叠加时高度链断裂"><a href="#坑三：多层-CSS-类叠加时高度链断裂" class="headerlink" title="坑三：多层 CSS 类叠加时高度链断裂"></a>坑三：多层 CSS 类叠加时高度链断裂</h3><p><strong>现象</strong>：每个文件单独看都写了 <code>h-full</code>，但页面就是不撑满。</p>
-<p><strong>根因</strong>：中间某个父容器没有 <code>height: 100%</code>（或等价的 flex 撑高），高度链在这一层断开了。</p>
-<p><strong>解法</strong>：从 <code>&lt;body&gt;</code> 到目标元素，一层一层往上追。任何一层断了，下面的 <code>h-full</code> 都白写。</p>
-<h3 id="坑四：浏览器缓存导致「改了没用」"><a href="#坑四：浏览器缓存导致「改了没用」" class="headerlink" title="坑四：浏览器缓存导致「改了没用」"></a>坑四：浏览器缓存导致「改了没用」</h3><p><strong>现象</strong>：build 成功了，CSS 里也编译了新规则，但手机上看还是旧的样式。</p>
-<p><strong>根因</strong>：移动端浏览器缓存了旧版 CSS&#x2F;JS 文件。</p>
-<p><strong>解法</strong>：地址栏加 <code>?v=999</code> 清缓存，或手动清除浏览器缓存。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>移动端响应式的「高度」问题，本质上是<strong>视口单位选择</strong>和<strong>flex 高度链完整性</strong>两个问题的叠加。</p>
-<p>记住一条原则：<strong>在 flex 布局里做高度，用 <code>flex-1</code> 撑高，用 <code>h-dvh</code> 定总高，不要用 <code>h-screen</code>（<code>100vh</code>）硬约束。</strong></p>
+<p>关键点：</p>
+<ul>
+<li><code>body</code> 用 <code>h-dvh</code> 而不是 <code>h-screen</code></li>
+<li><code>main</code> 用 <code>flex-1</code> 而不是 <code>h-screen</code>（flex 布局下混用 <code>flex-1</code> + <code>h-screen</code> 会导致高度冲突）</li>
+<li>卡片高度链：<code>h-full</code>（卡片外层）→ <code>flex-1</code>（内容区）</li>
+<li>不要在中途用 <code>h-full w-full</code> 的包裹层打断 flex 高度传递</li>
+</ul>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：flex-布局下-h-screen-和-flex-1-冲突"><a href="#坑一：flex-布局下-h-screen-和-flex-1-冲突" class="headerlink" title="坑一：flex 布局下 h-screen 和 flex-1 冲突"></a>坑一：flex 布局下 <code>h-screen</code> 和 <code>flex-1</code> 冲突</h3><p><strong>现象</strong>：加了 <code>h-screen</code> 后页面反而更严重地超出视口。</p>
+<p><strong>根因</strong>：<code>flex-1</code> 在 flex 容器内会撑满剩余空间，<code>h-screen</code> 是绝对值 <code>100vh</code>。两个属性同时存在时，<code>h-screen</code> 会覆盖 <code>flex-1</code> 的计算结果，导致子元素高度超过父容器。</p>
+<p><strong>解法</strong>：在 flex 布局中，父容器高度用 <code>h-dvh</code> 或 <code>h-full</code>，子元素用 <code>flex-1</code>，不要同时用。</p>
+<h3 id="坑二：高度链在中途断掉"><a href="#坑二：高度链在中途断掉" class="headerlink" title="坑二：高度链在中途断掉"></a>坑二：高度链在中途断掉</h3><p><strong>现象</strong>：<code>&lt;body&gt;</code> 到卡片之间的某个 div 没有正确传递高度。</p>
+<p><strong>根因</strong>：<code>&lt;main&gt;</code> 外层有一个 <code>&lt;div className=&quot;flex flex-1 overflow-hidden&quot;&gt;</code>，这个 div 需要父容器有明确高度才能撑开。<code>&lt;body&gt;</code> 改了 <code>h-dvh</code> 后高度就确定了。</p>
+<p><strong>解法</strong>：每层父容器都有明确的高度（<code>h-dvh</code>、<code>flex-1</code>、<code>h-full</code>），不能有遗漏。</p>
+<h3 id="坑三：h-full-w-full-包裹层"><a href="#坑三：h-full-w-full-包裹层" class="headerlink" title="坑三：h-full w-full 包裹层"></a>坑三：<code>h-full w-full</code> 包裹层</h3><p><strong>现象</strong>：页面结构中间有一层 <code>&lt;div className=&quot;h-full w-full&quot;&gt;</code>，看似无害，但在某些 flex 布局下会中断高度传递。</p>
+<p><strong>根因</strong>：<code>h-full</code> 需要父容器有明确高度才能生效。如果父容器是 <code>flex-1</code>，在某些浏览器&#x2F;布局场景下 <code>h-full</code> 会退化为 <code>auto</code>。</p>
+<p><strong>解法</strong>：在 flex 子元素里直接用 <code>flex-1</code> 撑高，而不是用 <code>h-full</code>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>移动端页面的”高度踩坑”，归根结底是两个问题：</p>
+<ol>
+<li><strong>视口单位选错了</strong>——<code>100vh</code> 不等于”手机能看到的屏幕高度”，要用 <code>100dvh</code></li>
+<li><strong>高度链不连续</strong>——<code>&lt;body&gt;</code> 到目标元素之间，任何一层没撑满，整个链就断了</li>
+</ol>
+<p>一行 <code>h-dvh</code>，加一条完整的 flex 高度链，问题就彻底解决了。</p>
 <hr>
 <p><strong>参考文献</strong></p>
 <ol>
-<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/Length#viewport-percentage_lengths">MDN - Viewport-percentage lengths: vh, dvh, svh</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.w3.org/TR/css-values-4/#viewport-units">CSS Working Group - dvh&#x2F;svh&#x2F;lvh spec</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/length#viewport_percentage_lengths">MDN: viewport-percentage lengths - dvh, lvh, svh</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow">MDN: Overflow</a></li>
 </ol>
 
                 
@@ -557,11 +541,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
+        <a href="/tags/CSS/" class="print-no-link">#CSS</a>
+      
         <a href="/tags/%E7%A7%BB%E5%8A%A8%E7%AB%AF/" class="print-no-link">#移动端</a>
       
         <a href="/tags/%E5%89%8D%E7%AB%AF/" class="print-no-link">#前端</a>
-      
-        <a href="/tags/%E5%93%8D%E5%BA%94%E5%BC%8F/" class="print-no-link">#响应式</a>
       
     </div>
   
@@ -573,7 +557,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录</div>
+      <div>为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录</div>
       <div>https://normdist.com/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/</div>
     </div>
     <div class="license-meta">
