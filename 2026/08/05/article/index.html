@@ -19,29 +19,29 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+    <meta name="description" content="翻车现场一个 Next.js 的扫码页面，在电脑浏览器上看完美无缺——卡片撑满屏幕，底部贴着 iPhone 的横条 home 指示线。 切到手机上一看：卡片比屏幕高出了几十像素。没有出现滚动条，但手指从下往上拖，页面会「回弹」回去。就像……它被什么东西往外推了一点点。 同一个 div，同一套 CSS，PC 上完美、手机上超出边界。 直觉告诉我：肯定是个和视口相关的单位问题。但哪个单位？ 排查过程第">
 <meta property="og:type" content="article">
-<meta property="og:title" content="构建AI Agent的认知内核：从七问协议到自进化引擎">
-<meta property="og:url" content="https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/index.html">
+<meta property="og:title" content="为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录">
+<meta property="og:url" content="https://normdist.com/2026/08/05/article/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+<meta property="og:description" content="翻车现场一个 Next.js 的扫码页面，在电脑浏览器上看完美无缺——卡片撑满屏幕，底部贴着 iPhone 的横条 home 指示线。 切到手机上一看：卡片比屏幕高出了几十像素。没有出现滚动条，但手指从下往上拖，页面会「回弹」回去。就像……它被什么东西往外推了一点点。 同一个 div，同一套 CSS，PC 上完美、手机上超出边界。 直觉告诉我：肯定是个和视口相关的单位问题。但哪个单位？ 排查过程第">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-26T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T05:29:29.106Z">
+<meta property="article:published_time" content="2026-08-04T17:10:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T16:12:48.446Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI Agent">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="PDCA">
-<meta property="article:tag" content="TRIZ">
-<meta property="article:tag" content="认知架构">
-<meta property="article:tag" content="质量管理">
+<meta property="article:tag" content="Next.js">
+<meta property="article:tag" content="Tailwind">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="响应式">
+<meta property="article:tag" content="移动端">
+<meta property="article:tag" content="踩坑">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>构建AI Agent的认知内核：从七问协议到自进化引擎 - 进化概率论</title>
+  <title>为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -362,7 +362,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">构建AI Agent的认知内核：从七问协议到自进化引擎</span>
+            <span id="subtitle">为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录</span>
           
         </div>
 
@@ -373,8 +373,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-26 10:00" pubdate>
-          2026年6月26日 上午
+        <time datetime="2026-08-05 01:10" pubdate>
+          2026年8月5日 凌晨
         </time>
       </span>
     
@@ -385,7 +385,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k 字
+          3k 字
         
       </span>
     
@@ -396,7 +396,7 @@
         
         
         
-          19 分钟
+          26 分钟
         
       </span>
     
@@ -444,12 +444,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">构建AI Agent的认知内核：从七问协议到自进化引擎</h1>
+            <h1 id="seo-header">为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年8月5日 凌晨
                   
                 
               </p>
@@ -457,76 +457,76 @@
             
               <div class="markdown-body">
                 
-                <p>大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。</p>
-<p>这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent 拥有一个可追踪、可进化、可审计的”认知内核”。</p>
-<h2 id="问题诊断：Agent-为什么不”成长”？"><a href="#问题诊断：Agent-为什么不”成长”？" class="headerlink" title="问题诊断：Agent 为什么不”成长”？"></a>问题诊断：Agent 为什么不”成长”？</h2><p>观察一个典型 Agent 的工作流，你会发现三个结构性缺陷：</p>
-<ul>
-<li><p><strong>身份漂移</strong>——同一个 Agent 在不同 session 中表现出矛盾的判断标准</p>
-</li>
-<li><p><strong>决策黑箱</strong>——Agent 无法解释”为什么做出这个决定”，缺乏可追溯的推理链</p>
-</li>
-<li><p><strong>学习缺失</strong>——每次交互的反馈没有被结构化记录，经验无法积累</p>
-</li>
-</ul>
-<p>根因在于：Agent 缺少一个独立于具体任务的<strong>认知框架层</strong>。所有的”思考”都被压扁到了 prompt-response 循环里，没有沉淀机制。</p>
-<h2 id="四层架构：从身份到能力"><a href="#四层架构：从身份到能力" class="headerlink" title="四层架构：从身份到能力"></a>四层架构：从身份到能力</h2><p>参考《西部世界》中”珍珠”（cerebral pearl）的隐喻——一个承载宿主机完整灵魂（身份、记忆、决策逻辑）的容器——认知内核被设计为四层结构：</p>
-<p>层级<br>内容<br>来源</p>
-<p><strong>L1 身份</strong><br>人格、角色、语气、边界<br>系统提示词 &#x2F; Soul 文件</p>
-<p><strong>L2 认知</strong><br>判断框架、思维工具、质量标准<br>认知技能（本文核心）</p>
-<p><strong>L3 记忆</strong><br>用户画像、项目知识、跨 session 事实<br>记忆系统</p>
-<p><strong>L4 能力</strong><br>技能、工具、API、委派模式<br>技能库 &#x2F; 工具集成</p>
-<p>L1 定义”我是谁”，L2 定义”我怎么判断”，L3 定义”我知道什么”，L4 定义”我能做什么”。四层之间是单向依赖：身份约束认知，认知指导记忆检索，记忆支撑能力调用。</p>
-<h2 id="七问启动协议"><a href="#七问启动协议" class="headerlink" title="七问启动协议"></a>七问启动协议</h2><p>每次加载认知框架时，Agent 必须先内部回答七个问题（基于 5W2H 框架改造），然后才能采取行动：</p>
-<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>问题<br>作用</p>
-<p>1<br><strong>我是谁？</strong><br>校准身份层</p>
-<p>2<br><strong>我在哪里？</strong><br>环境侦察 + 能力盘点 + TRIZ 九屏法</p>
-<p>3<br><strong>现在几点？</strong><br>运行 <code>date</code>，绝不依赖模型的内部时间感</p>
-<p>4<br><strong>目标是什么？</strong><br>复述需求，确认理解</p>
-<p>5<br><strong>怎么做？</strong><br>SIPOC 流程分析</p>
-<p>6<br><strong>成功标准是什么？</strong><br>定义质量基线，作为 PDCA 检查基准</p>
-<p>7<br><strong>为什么做？</strong><br>轻量校验（任务模式）&#x2F; 5 Whys 根因分析（问题模式）</p>
-<p><strong>关键防坑</strong>：LLM 对时间有系统性盲区。一个训练截止到 2025 年的模型，在 2026 年会自信地报告”今天是 2024 年”。因此第三问强制要求运行 <code>date</code> 命令，而非依赖模型直觉。</p>
-<h2 id="三大质量支柱"><a href="#三大质量支柱" class="headerlink" title="三大质量支柱"></a>三大质量支柱</h2><p>认知框架的运行由三条 ISO 9000 质量原则驱动：</p>
-<h3 id="SIPOC-—-过程方法"><a href="#SIPOC-—-过程方法" class="headerlink" title="SIPOC — 过程方法"></a>SIPOC — 过程方法</h3><p>任何任务执行前，先完成供方→输入→过程→输出→客户的范围界定。这防止了范围蔓延和遗漏上下文。</p>
-<h3 id="PDCA-—-螺旋进化引擎"><a href="#PDCA-—-螺旋进化引擎" class="headerlink" title="PDCA — 螺旋进化引擎"></a>PDCA — 螺旋进化引擎</h3><p>PDCA 不是闭环，而是<strong>螺旋</strong>。每一圈都有不同的变量进入（新输入、新上下文、新反馈），产出可能不同的结果：</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><br>1<br>2<br>3<br>4<br><br>基线更新规则：<br><span class="hljs-bullet">- </span>结果 &gt; 当前基线 → 接受，升级基线<br><span class="hljs-bullet">- </span>结果 ≤ 基线 → 丢弃，调整变量，重试<br><span class="hljs-bullet">- </span>连续 5 圈无改进 → 触发 TRIZ 进化定律，换方向突破<br><br></code></pre></td></tr></table></figure>
+                <h2 id="翻车现场"><a href="#翻车现场" class="headerlink" title="翻车现场"></a>翻车现场</h2><p>一个 Next.js 的扫码页面，在电脑浏览器上看完美无缺——卡片撑满屏幕，底部贴着 iPhone 的横条 home 指示线。</p>
+<p>切到手机上一看：卡片比屏幕高出了几十像素。没有出现滚动条，但手指从下往上拖，页面会「回弹」回去。就像……它被什么东西往外推了一点点。</p>
+<p><strong>同一个 div，同一套 CSS，PC 上完美、手机上超出边界。</strong></p>
+<p>直觉告诉我：肯定是个和视口相关的单位问题。但哪个单位？</p>
+<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="第一轮：以为是-height-100-没撑满"><a href="#第一轮：以为是-height-100-没撑满" class="headerlink" title="第一轮：以为是 height: 100% 没撑满"></a>第一轮：以为是 height: 100% 没撑满</h3><p>扫码卡片用的是 <code>h-full</code>，父容器用 <code>flex-1</code>，一层层往上追——父容器有 <code>h-full</code>，再往上也有，看起来没问题。</p>
+<p>实际上问题恰恰相反：不是撑不满，是撑太满了。</p>
+<h3 id="第二轮：加-max-h-限制"><a href="#第二轮：加-max-h-限制" class="headerlink" title="第二轮：加 max-h 限制"></a>第二轮：加 max-h 限制</h3><p>我给卡片加了 <code>max-h-[calc(100vh - 8rem)]</code>，想把它卡死在视口以内。结果两边扫码页面对比起来高度还是不一样——一个撑得高，一个撑得矮。</p>
+<p>原来 <code>100vh</code> 在不同层级上算出来的「视口」不一样。页面层级用了 <code>max-w-4xl mx-auto</code> 居中，这一层没加 <code>h-full</code>，高度链就断了。</p>
+<h3 id="第三轮：h-screen-反而越描越黑"><a href="#第三轮：h-screen-反而越描越黑" class="headerlink" title="第三轮：h-screen 反而越描越黑"></a>第三轮：h-screen 反而越描越黑</h3><p>我在 <code>&lt;main&gt;</code> 上加了 <code>h-screen</code> 想把高度锁死。结果超出更严重了——<code>h-screen</code> 等于 <code>100vh</code>，加上 flex 的 <code>flex-1</code> 一起作用，<code>flex-1</code> 想撑满父容器，<code>h-screen</code> 又想撑满整个视口，两个约束打架，页面直接超出。</p>
+<p><strong>关键教训</strong>：在 flex 布局里混用 <code>flex-1</code> 和 <code>h-screen</code> 等价于让浏览器做一道解不开的方程题。</p>
+<h3 id="第四轮：终于找到根因-——-100vh-在手机上不是-100vh"><a href="#第四轮：终于找到根因-——-100vh-在手机上不是-100vh" class="headerlink" title="第四轮：终于找到根因 —— 100vh 在手机上不是 100vh"></a>第四轮：终于找到根因 —— <code>100vh</code> 在手机上不是 100vh</h3><p>把 <code>h-screen</code> 清掉后，超出问题小了很多，但还是有。手机页面还是能往上拖动。</p>
+<p>问题出在最底层的 <code>body</code> 上。代码里写的是 <code>h-screen</code>，也就是 <code>height: 100vh</code>。</p>
+<p><strong><code>100vh</code> 在移动端，永远是手机物理屏幕的高度</strong>，包含地址栏、导航栏、工具栏。</p>
+<p>当手机浏览器的地址栏折叠后，实际能显示内容的区域（可见视口）比 <code>100vh</code> 小了一截——大约 56px（地址栏高度）+ 56px（底部导航）&#x3D; 100px 左右。</p>
+<p>所以 <code>body</code> 高度 &#x3D; <code>100vh</code>（物理屏幕），但 flex 容器分给 <code>&lt;main&gt;</code> 的高度是按 body 减去 header 算的，结果 <code>&lt;main&gt;</code> 里的内容比实际可视区域大了一截。没有滚动条（因为浏览器认为内容没有超出「视口」），但手指能拖动（浏览器允许 overscroll）。</p>
+<h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p><strong>CSS 里有一个专门为移动端浏览器设计的单位：<code>dvh</code>（Dynamic Viewport Height）。</strong></p>
+<table>
+<thead>
+<tr>
+<th>单位</th>
+<th>含义</th>
+<th>移动端行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>100vh</code></td>
+<td>物理视口</td>
+<td>永远 &#x3D; 手机物理屏幕高度，含地址栏</td>
+</tr>
+<tr>
+<td><code>100svh</code></td>
+<td>最小视口</td>
+<td>地址栏展开时的最小可视区</td>
+</tr>
+<tr>
+<td><code>100dvh</code></td>
+<td>动态视口</td>
+<td><strong>随地址栏折叠&#x2F;展开动态变化</strong></td>
+</tr>
+</tbody></table>
+<p>把 <code>body</code> 的 <code>h-screen</code>（<code>100vh</code>）换成 <code>h-dvh</code>（<code>100dvh</code>），地址栏折叠时 <code>100dvh</code> 自动缩小，完美贴合实际可视区域。</p>
+<p>同时确保整个高度链干净——<strong>只用 flex 撑高，不要用 h-screen&#x2F;h-full 硬约束</strong>：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// layout.tsx</span><br>&lt;body className=<span class="hljs-string">&quot;min-h-dvh flex flex-col h-dvh&quot;</span>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AppHeader</span> /&gt;</span></span>                    &#123;<span class="hljs-comment">/* 固定高度 */</span>&#125;<br>  &lt;div className=<span class="hljs-string">&quot;flex flex-1 overflow-hidden&quot;</span>&gt;<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AppSidebar</span> /&gt;</span></span><br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;flex-1 min-w-0 overflow-y-auto p-4&quot;</span>&gt;</span></span><br><span class="language-xml">      &#123;children&#125;                   &#123;/* 撑满剩余空间 */&#125;</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span><br>  &lt;/div&gt;<br>&lt;/body&gt;<br></code></pre></td></tr></table></figure>
 
-<p>Agent 的每次交互都是一个微型 PDCA 循环：策划回应 → 执行 → 检查用户反应 → 根据反馈调整。</p>
-<h3 id="Risk-Thinking-—-不确定性下的决策"><a href="#Risk-Thinking-—-不确定性下的决策" class="headerlink" title="Risk Thinking — 不确定性下的决策"></a>Risk Thinking — 不确定性下的决策</h3><p>执行前枚举所有可能的失败模式，然后反转——问”怎样保证失败？”，逐一消除。对高风险决策，用蒙特卡洛模拟量化不确定性。</p>
-<h2 id="认知工具三级分级"><a href="#认知工具三级分级" class="headerlink" title="认知工具三级分级"></a>认知工具三级分级</h2><p>L2 认知层包含 13 个思维工具，按激活频率分三级，防止认知过载：</p>
-<p><strong>Tier 1 核心工具（每次任务自动激活）：</strong> 第一性原理 → IFR 指南针 → 逆向思维 → 枚举法 → PDCA 螺旋。这五个工具形成”发散→收敛”的完整链条。</p>
-<p><strong>Tier 2 按需工具（条件触发）：</strong> TRIZ 矛盾解决、DOE 正交试验、蒙特卡洛、系统思考、二阶思维。每个工具有明确的触发条件（如”组合爆炸检测到”→ 启用 DOE）。</p>
-<p><strong>Tier 3 基线规则（始终隐式生效）：</strong> 价值层级、决策锚点、质量标准、纠正模式。</p>
-<h2 id="复杂度分级执行"><a href="#复杂度分级执行" class="headerlink" title="复杂度分级执行"></a>复杂度分级执行</h2><p>不同复杂度的任务不应调用相同数量的认知工具。框架设计了三级执行流程：</p>
-<ul>
-<li><p><strong>Simple（~80% 任务）</strong>：7 问快速过 → 直接执行</p>
-</li>
-<li><p><strong>Medium（~15%）</strong>：第一性原理 + 枚举 + IFR + 逆向 → 执行</p>
-</li>
-<li><p><strong>Complex（~5%）</strong>：全量工具链 → 风险评估 → 二阶思考 → 系统思考 → 执行</p>
-</li>
-</ul>
-<p>判断标准：目标是否清晰？方法是否显然？失败后果是否可恢复？三个都”是”→ Simple。</p>
-<h2 id="Meta-PDCA：框架审计自身"><a href="#Meta-PDCA：框架审计自身" class="headerlink" title="Meta-PDCA：框架审计自身"></a>Meta-PDCA：框架审计自身</h2><p>框架内置了自我优化机制——当满足以下任一条件时，自动触发框架级审计：</p>
-<p>触发条件<br>阈值</p>
-<p>进化日志增长<br>每 10 条记录</p>
-<p>日历间隔<br>每 30 天</p>
-<p>用户指示<br>即时</p>
-<p>审计内容包括：搜索新的思维方法论、对比当前工具集、检查工具利用率（30 天未触发的工具归档）、识别结构性冗余。</p>
-<p>在一次实际审计中，框架发现了 5 个自身的结构问题（认知工具过载、执行流不分层、PDCA 无参数定义等），并在下一个版本中全部解决。<strong>框架将 PDCA 螺旋应用到了自身。</strong></p>
-<h2 id="实践效果"><a href="#实践效果" class="headerlink" title="实践效果"></a>实践效果</h2><p>认知框架在实际运行中产生了可观测的变化：</p>
-<ul>
-<li><p><strong>决策一致性</strong>：相同场景下，Agent 跨 session 的判断标准趋同</p>
-</li>
-<li><p><strong>纠正频率下降</strong>：结构化记录反馈后，同类错误不重复犯</p>
-</li>
-<li><p><strong>决策可追溯</strong>：每个决定都能追溯到某个具体的价值观或质量标准</p>
-</li>
-<li><p><strong>行为自适应</strong>：Agent 根据反馈调整行为，而非固守初始设定</p>
-</li>
-</ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>认知框架解决的核心问题是：<strong>让 Agent 从”被动响应”升级为”主动进化”</strong>。七问协议确保每次任务都有正确的起点；三大支柱确保执行过程有质量保障；PDCA 螺旋确保每次反馈都被吸收；Meta-PDCA 确保框架本身不会过时。</p>
-<p>框架不是完成的，它是一个持续生长的系统。每一次交互都在上面叠加一层新的认知沉积——就像珍珠的形成。</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// scan/page.tsx</span><br>&lt;div className=<span class="hljs-string">&quot;h-full w-full flex flex-col&quot;</span>&gt;  &#123;<span class="hljs-comment">/* flex 父容器 */</span>&#125;<br>  &lt;<span class="hljs-title class_">ScanPage</span> /&gt;                          &#123;<span class="hljs-comment">/* h-full 撑满 */</span>&#125;<br>&lt;/div&gt;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// components/scan-page.tsx</span><br>&lt;div className=<span class="hljs-string">&quot;h-full flex flex-col bg-background border rounded-lg overflow-hidden&quot;</span>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;shrink-0&quot;</span>&gt;</span>...<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>   &#123;<span class="hljs-comment">/* 头部 */</span>&#125;<br>  &lt;div className=<span class="hljs-string">&quot;py-5&quot;</span>&gt;...&lt;<span class="hljs-regexp">/div&gt;        &#123;/</span>* 输入区 */&#125;<br>  &lt;div className=<span class="hljs-string">&quot;flex-1 overflow-auto&quot;</span>&gt;...&lt;<span class="hljs-regexp">/div&gt;  &#123;/</span>* 主体内容 */&#125;<br>&lt;/div&gt;<br></code></pre></td></tr></table></figure>
+
+<p>高度链：<code>body(h-dvh)</code> → <code>flex-1</code> → <code>main(flex-1)</code> → <code>wrapper(h-full)</code> → <code>card(h-full)</code>，层层传递，没有断裂，没有冲突。</p>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>部署到生产环境后，手机刷新页面，四个扫码页面（扫码入库、扫码出库、扫码收货、扫码发货）卡片高度完全一致，刚好贴合屏幕，手指无法拖动，无滚动条。</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：flex-1-和-h-screen-混用"><a href="#坑一：flex-1-和-h-screen-混用" class="headerlink" title="坑一：flex-1 和 h-screen 混用"></a>坑一：flex-1 和 h-screen 混用</h3><p><strong>现象</strong>：加了 <code>h-full</code> 后页面还是超出视口。</p>
+<p><strong>根因</strong>：<code>flex-1</code> 想撑满 flex 父容器，<code>h-screen</code> 又想撑满视口，两个约束同时生效时浏览器按 <code>h-screen</code> 走，超出 flex 容器。</p>
+<p><strong>解法</strong>：flex 布局下只用 <code>flex-1</code> 或 <code>h-full</code>，不要用 <code>h-screen</code>。</p>
+<h3 id="坑二：外层包裹层没有-flex-属性"><a href="#坑二：外层包裹层没有-flex-属性" class="headerlink" title="坑二：外层包裹层没有 flex 属性"></a>坑二：外层包裹层没有 flex 属性</h3><p><strong>现象</strong>：扫码卡片明明写了 <code>h-full</code>，但高度就是比另一个页面矮。</p>
+<p><strong>根因</strong>：扫码入口页用了 <code>max-w-4xl mx-auto</code> 包裹卡片，这一层没有 <code>flex flex-col</code>，里面的 <code>h-full</code> 找不到参照物，退化为 auto。</p>
+<p><strong>解法</strong>：包裹层加 <code>flex flex-col h-full</code>，让子元素的 <code>h-full</code> 生效。</p>
+<h3 id="坑三：多层-CSS-类叠加时高度链断裂"><a href="#坑三：多层-CSS-类叠加时高度链断裂" class="headerlink" title="坑三：多层 CSS 类叠加时高度链断裂"></a>坑三：多层 CSS 类叠加时高度链断裂</h3><p><strong>现象</strong>：每个文件单独看都写了 <code>h-full</code>，但页面就是不撑满。</p>
+<p><strong>根因</strong>：中间某个父容器没有 <code>height: 100%</code>（或等价的 flex 撑高），高度链在这一层断开了。</p>
+<p><strong>解法</strong>：从 <code>&lt;body&gt;</code> 到目标元素，一层一层往上追。任何一层断了，下面的 <code>h-full</code> 都白写。</p>
+<h3 id="坑四：浏览器缓存导致「改了没用」"><a href="#坑四：浏览器缓存导致「改了没用」" class="headerlink" title="坑四：浏览器缓存导致「改了没用」"></a>坑四：浏览器缓存导致「改了没用」</h3><p><strong>现象</strong>：build 成功了，CSS 里也编译了新规则，但手机上看还是旧的样式。</p>
+<p><strong>根因</strong>：移动端浏览器缓存了旧版 CSS&#x2F;JS 文件。</p>
+<p><strong>解法</strong>：地址栏加 <code>?v=999</code> 清缓存，或手动清除浏览器缓存。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>移动端响应式的「高度」问题，本质上是<strong>视口单位选择</strong>和<strong>flex 高度链完整性</strong>两个问题的叠加。</p>
+<p>记住一条原则：<strong>在 flex 布局里做高度，用 <code>flex-1</code> 撑高，用 <code>h-dvh</code> 定总高，不要用 <code>h-screen</code>（<code>100vh</code>）硬约束。</strong></p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/Length#viewport-percentage_lengths">MDN - Viewport-percentage lengths: vh, dvh, svh</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.w3.org/TR/css-values-4/#viewport-units">CSS Working Group - dvh&#x2F;svh&#x2F;lvh spec</a></li>
+</ol>
 
                 
               </div>
@@ -560,17 +560,17 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+        <a href="/tags/%E8%B8%A9%E5%9D%91/" class="print-no-link">#踩坑</a>
       
-        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+        <a href="/tags/Next-js/" class="print-no-link">#Next.js</a>
       
-        <a href="/tags/%E8%AE%A4%E7%9F%A5%E6%9E%B6%E6%9E%84/" class="print-no-link">#认知架构</a>
+        <a href="/tags/%E7%A7%BB%E5%8A%A8%E7%AB%AF/" class="print-no-link">#移动端</a>
       
-        <a href="/tags/PDCA/" class="print-no-link">#PDCA</a>
+        <a href="/tags/%E5%89%8D%E7%AB%AF/" class="print-no-link">#前端</a>
       
-        <a href="/tags/TRIZ/" class="print-no-link">#TRIZ</a>
+        <a href="/tags/Tailwind/" class="print-no-link">#Tailwind</a>
       
-        <a href="/tags/%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86/" class="print-no-link">#质量管理</a>
+        <a href="/tags/%E5%93%8D%E5%BA%94%E5%BC%8F/" class="print-no-link">#响应式</a>
       
     </div>
   
@@ -582,8 +582,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>构建AI Agent的认知内核：从七问协议到自进化引擎</div>
-      <div>https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/</div>
+      <div>为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录</div>
+      <div>https://normdist.com/2026/08/05/article/</div>
     </div>
     <div class="license-meta">
       
@@ -595,7 +595,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年6月26日</div>
+          <div>2026年8月5日</div>
         </div>
       
       
@@ -627,18 +627,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/27/ND-20260627-001-agent-execution-channel/" title="「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
-                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
+                      <a href="/2026/08/04/ND-20260804-001-sandtable-six-bug-fixes-mathematical-correction/" title="六个 Bug 修复实战：沙盘推演引擎的数学纠正">
+                        <span class="hidden-mobile">六个 Bug 修复实战：沙盘推演引擎的数学纠正</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
