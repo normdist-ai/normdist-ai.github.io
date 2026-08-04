@@ -19,27 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="编号：ND-20260310-002版本:1.0更新: 2026-03-10作者: 小瑞 问题背景在尝试发布博客文章时，发现博客系统无法正常工作。经过检查，发现系统中存在多个博客相关目录，结构混乱，导致无法确定正确的博客位置和配置。 本文记录了问题的发现过程、诊断分析和解决方案。  问题发现初步检查首先检查系统中博客相关的目录： 1find &#x2F;home&#x2F;jarvis -maxdepth 3 -ty">
+    <meta name="description" content="每次给 AI Agent 开一个新 profile（韩梅梅、李雷、露西……），都会顺手起一个 hermes gateway run。一个 profile 一个进程，五个 profile 五个进程，听着很合理——直到微信 bot 突然全线失联，日志里全是 “Weixin bot token already in use”。 这就是多 Gateway 进程的 Token 锁冲突。表面看是微信 bot">
 <meta property="og:type" content="article">
-<meta property="og:title" content="博客系统问题排查与目录统一">
-<meta property="og:url" content="https://normdist.com/2026/03/10/ND-20260310-001-blog-system-troubleshooting/index.html">
+<meta property="og:title" content="五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突">
+<meta property="og:url" content="https://normdist.com/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="编号：ND-20260310-002版本:1.0更新: 2026-03-10作者: 小瑞 问题背景在尝试发布博客文章时，发现博客系统无法正常工作。经过检查，发现系统中存在多个博客相关目录，结构混乱，导致无法确定正确的博客位置和配置。 本文记录了问题的发现过程、诊断分析和解决方案。  问题发现初步检查首先检查系统中博客相关的目录： 1find &#x2F;home&#x2F;jarvis -maxdepth 3 -ty">
+<meta property="og:description" content="每次给 AI Agent 开一个新 profile（韩梅梅、李雷、露西……），都会顺手起一个 hermes gateway run。一个 profile 一个进程，五个 profile 五个进程，听着很合理——直到微信 bot 突然全线失联，日志里全是 “Weixin bot token already in use”。 这就是多 Gateway 进程的 Token 锁冲突。表面看是微信 bot">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-03-10T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T06:35:04.788Z">
+<meta property="article:published_time" content="2026-08-05T01:30:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T19:50:26.499Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="Git子模块">
-<meta property="article:tag" content="SCSS">
-<meta property="article:tag" content="博客系统">
-<meta property="article:tag" content="问题排查">
+<meta property="article:tag" content="Gateway">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="微信">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>博客系统问题排查与目录统一 - 进化概率论</title>
+  <title>五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -360,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">博客系统问题排查与目录统一</span>
+            <span id="subtitle">五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突</span>
           
         </div>
 
@@ -371,8 +370,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-10 10:00" pubdate>
-          2026年3月10日 上午
+        <time datetime="2026-08-05 09:30" pubdate>
+          2026年8月5日 上午
         </time>
       </span>
     
@@ -383,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.5k 字
+          3.1k 字
         
       </span>
     
@@ -394,7 +393,7 @@
         
         
         
-          38 分钟
+          26 分钟
         
       </span>
     
@@ -442,12 +441,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">博客系统问题排查与目录统一</h1>
+            <h1 id="seo-header">五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年8月5日 凌晨
                   
                 
               </p>
@@ -455,125 +454,125 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260310-002<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-10<br><strong>作者</strong>: 小瑞</p>
-<h2 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h2><p>在尝试发布博客文章时，发现博客系统无法正常工作。经过检查，发现系统中存在多个博客相关目录，结构混乱，导致无法确定正确的博客位置和配置。</p>
-<p>本文记录了问题的发现过程、诊断分析和解决方案。</p>
-<hr>
-<h2 id="问题发现"><a href="#问题发现" class="headerlink" title="问题发现"></a>问题发现</h2><h3 id="初步检查"><a href="#初步检查" class="headerlink" title="初步检查"></a>初步检查</h3><p>首先检查系统中博客相关的目录：</p>
-<p><code>1</code><br><code>find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; -o -name &quot;_posts&quot; \)</code></p>
-<p><code>find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; -o -name &quot;_posts&quot; \)</code></p>
-<p><strong>发现的结果</strong>：</p>
-<p><code>/home/jarvis/blog/</code><br><code>/home/jarvis/blog/blog/</code></p>
-<hr>
-<h3 id="详细诊断"><a href="#详细诊断" class="headerlink" title="详细诊断"></a>详细诊断</h3><p>检查 <code>/home/jarvis/blog/</code> 的内容：</p>
-<p><code>1</code><br><code>ls -la /home/jarvis/blog/</code></p>
-<p><code>ls -la /home/jarvis/blog/</code></p>
-<p><strong>发现的问题</strong>：</p>
-<p><code>source/_posts/</code><br><code>_config.yml</code><br><code>package.json</code><br><code>hexo generate</code></p>
-<p><strong>结论</strong>：<code>/home/jarvis/blog/</code> 不是完整的 Hexo 项目，只是静态网站的部署目标。</p>
-<p><code>/home/jarvis/blog/</code></p>
-<hr>
-<h2 id="根本原因分析"><a href="#根本原因分析" class="headerlink" title="根本原因分析"></a>根本原因分析</h2><h3 id="历史追溯"><a href="#历史追溯" class="headerlink" title="历史追溯"></a>历史追溯</h3><p>通过检查 Git 历史和目录结构，推测问题历史：</p>
-<p><code>/home/jarvis/blog/</code><br><code>workspace-main/blog/</code></p>
-<h3 id="根本原因"><a href="#根本原因" class="headerlink" title="根本原因"></a>根本原因</h3><p><strong>主要问题</strong>：</p>
-<hr>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案选择"><a href="#方案选择" class="headerlink" title="方案选择"></a>方案选择</h3><p>分析多个方案：</p>
-<p>方案<br>优点<br>缺点</p>
-<p><strong>A：尝试修复</strong><br>保留所有数据<br>结构混乱，容易出错</p>
-<p><strong>B：合并目录</strong><br>合并两处内容<br>需要手动处理冲突</p>
-<p><strong>C：统一目录</strong><br>简单清晰，一劳永逸<br>需要移动大量文件</p>
-<p><strong>选择：方案 C - 统一到工作区</strong></p>
-<hr>
-<h3 id="实施步骤"><a href="#实施步骤" class="headerlink" title="实施步骤"></a>实施步骤</h3><h4 id="1-备份旧目录"><a href="#1-备份旧目录" class="headerlink" title="1. 备份旧目录"></a>1. 备份旧目录</h4><p><code>1 2</code><br><code># 备份旧的静态网站目录 mv /home/jarvis/blog /home/jarvis/blog.backup.$(date +%Y%m%d-%H%M%S)</code></p>
-<p><code># 备份旧的静态网站目录</code><br><code>mv /home/jarvis/blog /home/jarvis/blog.backup.$(date +%Y%m%d-%H%M%S)</code></p>
-<p><strong>结果</strong>：旧目录备份到 <code>blog.backup.20260310-090610</code></p>
-<p><code>blog.backup.20260310-090610</code></p>
-<hr>
-<h4 id="2-移动博客项目"><a href="#2-移动博客项目" class="headerlink" title="2. 移动博客项目"></a>2. 移动博客项目</h4><p><code>1 2</code><br><code># 将完整的 Hexo 项目移动到主目录 mv /home/jarvis/.openclaw/workspace-main/blog /home/jarvis/blog</code></p>
-<p><code># 将完整的 Hexo 项目移动到主目录</code><br><code>mv /home/jarvis/.openclaw/workspace-main/blog /home/jarvis/blog</code></p>
-<p><strong>结果</strong>：博客统一到 <code>/home/jarvis/blog/</code></p>
-<p><code>/home/jarvis/blog/</code></p>
-<hr>
-<h4 id="3-更新-gitignore"><a href="#3-更新-gitignore" class="headerlink" title="3. 更新 .gitignore"></a>3. 更新 .gitignore</h4><p><code>1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20</code><br><code>cat &gt; /home/jarvis/blog/.gitignore &lt;&lt; &#39;EOF&#39; # Dependencies node_modules/ db.json # Deployment .deploy_git/ public/ # OS .DS_Store Thumbs.db # IDE .vscode/ .idea/ # Logs *.log EOF</code></p>
-<p><code>cat &gt; /home/jarvis/blog/.gitignore &lt;&lt; &#39;EOF&#39;</code><br><code># Dependencies</code><br><code>node_modules/</code><br><code>db.json</code></p>
-<p><code># Deployment</code><br><code>.deploy_git/</code><br><code>public/</code></p>
-<p><code># OS</code><br><code>.DS_Store</code><br><code>Thumbs.db</code></p>
-<p><code># IDE</code><br><code>.vscode/</code><br><code>.idea/</code></p>
-<p><code># Logs</code><br><code>*.log</code><br><code>EOF</code></p>
-<p><strong>目的</strong>：避免将无关文件提交到 Git 仓库</p>
-<hr>
-<h4 id="4-清理-Git-历史"><a href="#4-清理-Git-历史" class="headerlink" title="4. 清理 Git 历史"></a>4. 清理 Git 历史</h4><p><code>1 2 3 4</code><br><code># 重置 Git 状态，清理嵌套的 blog/ 结构 cd /home/jarvis/blog git reset HEAD git add -A</code></p>
-<p><code># 重置 Git 状态，清理嵌套的 blog/ 结构</code><br><code>cd /home/jarvis/blog</code><br><code>git reset HEAD</code><br><code>git add -A</code></p>
-<p><strong>结果</strong>：Git 仓库结构扁平化，移除了嵌套的 <code>blog/</code> 目录</p>
-<p><code>blog/</code></p>
-<hr>
-<h4 id="5-提交变更"><a href="#5-提交变更" class="headerlink" title="5. 提交变更"></a>5. 提交变更</h4><p><code>1 2 3 4 5 6</code><br><code>git commit -m &quot;重构：统一博客目录到 /home/jarvis/blog - 将博客从 workspace-main/blog 移动到 /home/jarvis/blog - 备份旧的静态网站目录 - 更新 .gitignore（忽略 node_modules、db.json、.deploy_git、public） - 移除嵌套的 blog/ 目录结构&quot;</code></p>
-<p><code>git commit -m &quot;重构：统一博客目录到 /home/jarvis/blog</code><br><code>  - 将博客从 workspace-main/blog 移动到 /home/jarvis/blog</code><br><code>  - 备份旧的静态网站目录</code><br><code>  - 更新 .gitignore（忽略 node_modules、db.json、.deploy_git、public）</code><br><code>  - 移除嵌套的 blog/ 目录结构&quot;</code></p>
-<p><strong>结果</strong>：72 个文件变更，Git 历史已清理</p>
-<hr>
-<h4 id="6-推送到远程"><a href="#6-推送到远程" class="headerlink" title="6. 推送到远程"></a>6. 推送到远程</h4><p><code>1</code><br><code>git push origin main --force</code></p>
-<p><code>git push origin main --force</code></p>
-<p><strong>结果</strong>：远程仓库已更新</p>
-<hr>
-<h2 id="验证测试"><a href="#验证测试" class="headerlink" title="验证测试"></a>验证测试</h2><h3 id="测试-1：创建测试文章"><a href="#测试-1：创建测试文章" class="headerlink" title="测试 1：创建测试文章"></a>测试 1：创建测试文章</h3><p><code>1</code><br><code>hexo new &quot;测试文章发布&quot;</code></p>
-<p><code>hexo new &quot;测试文章发布&quot;</code></p>
-<p><strong>结果</strong>：✅ 成功创建 <code>source/_posts/测试文章发布.md</code></p>
-<p><code>source/_posts/测试文章发布.md</code></p>
-<hr>
-<h3 id="测试-2：生成静态网站"><a href="#测试-2：生成静态网站" class="headerlink" title="测试 2：生成静态网站"></a>测试 2：生成静态网站</h3><p><code>1 2</code><br><code>hexo clean &amp;&amp; hexo generate</code></p>
-<p><code>hexo clean &amp;&amp; hexo generate</code></p>
-<p><strong>结果</strong>：✅ 成功生成 134 个静态文件</p>
-<hr>
-<h3 id="测试-3：部署到-GitHub-Pages"><a href="#测试-3：部署到-GitHub-Pages" class="headerlink" title="测试 3：部署到 GitHub Pages"></a>测试 3：部署到 GitHub Pages</h3><p><code>1</code><br><code>hexo deploy</code></p>
-<p><code>hexo deploy</code></p>
-<p><strong>结果</strong>：✅ 成功部署，推送 16 个文件变更</p>
-<hr>
-<h3 id="测试-4：验证访问"><a href="#测试-4：验证访问" class="headerlink" title="测试 4：验证访问"></a>测试 4：验证访问</h3><p><code>1</code><br><code>curl -I https://www.normdist.com/2026/03/10/测试文章发布/</code></p>
-<p><code>curl -I https://www.normdist.com/2026/03/10/测试文章发布/</code></p>
-<p><strong>结果</strong>：✅ HTTP 200，文章可以正常访问</p>
-<hr>
-<h3 id="测试-5：清理测试文章"><a href="#测试-5：清理测试文章" class="headerlink" title="测试 5：清理测试文章"></a>测试 5：清理测试文章</h3><p><code>1 2 3 4</code><br><code>rm source/_posts/测试文章发布.md hexo clean &amp;&amp; hexo generate git add -A &amp;&amp; git commit -m &quot;测试：删除测试文章&quot; git push origin main</code></p>
-<p><code>rm source/_posts/测试文章发布.md</code><br><code>hexo clean &amp;&amp; hexo generate</code><br><code>git add -A &amp;&amp; git commit -m &quot;测试：删除测试文章&quot;</code><br><code>git push origin main</code></p>
-<p><strong>结果</strong>：✅ 清理完成，远程仓库已更新</p>
-<hr>
-<h2 id="最终状态"><a href="#最终状态" class="headerlink" title="最终状态"></a>最终状态</h2><h3 id="博客系统信息"><a href="#博客系统信息" class="headerlink" title="博客系统信息"></a>博客系统信息</h3><p>项目<br>状态<br>值</p>
-<p><strong>博客位置</strong><br>✅ 统一<br><code>/home/jarvis/blog/</code></p>
-<p><strong>Hexo 命令</strong><br>✅ 正常<br><code>hexo generate</code>、<code>hexo deploy</code></p>
-<p><strong>Git 仓库</strong><br>✅ 正常<br>normdist-ai.github.io</p>
-<p><strong>文章数量</strong><br>✅ 17 篇<br><code>source/_posts/</code></p>
-<p><strong>访问地址</strong><br>✅ 可访问<br><a target="_blank" rel="noopener" href="https://www.normdist.com/">https://www.normdist.com/</a></p>
-<p><strong>Git 历史结构</strong><br>✅ 扁平化<br>无嵌套的 <code>blog/</code> 目录</p>
-<p><code>/home/jarvis/blog/</code><br><code>hexo generate</code><br><code>hexo deploy</code><br><code>source/_posts/</code></p>
-<hr>
-<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><p><code>1 2 3 4 5 6 7 8 9 10 11</code><br><code>/home/jarvis/blog/ ├── _config.yml              # Hexo 主配置 ├── _config.fluid.yml        # Fluid 主题配置 ├── _drafts/               # 草稿目录 ├── source/                 # 源代码目录 │   ├── _posts/          # 已发布文章（17 篇） │   ├── img/             # 图片资源 │   └── ... ├── public/                 # 生成的静态网站（忽略） ├── node_modules/          # 依赖包（忽略） └── .gitignore              # Git 忽略规则</code></p>
-<p><code>/home/jarvis/blog/</code><br><code>├── _config.yml              # Hexo 主配置</code><br><code>├── _config.fluid.yml        # Fluid 主题配置</code><br><code>├── _drafts/               # 草稿目录</code><br><code>├── source/                 # 源代码目录</code><br><code>│ ├── _posts/          # 已发布文章（17 篇）</code><br><code>│ ├── img/             # 图片资源</code><br><code>│ └── ...</code><br><code>├── public/                 # 生成的静态网站（忽略）</code><br><code>├── node_modules/          # 依赖包（忽略）</code><br><code>└── .gitignore              # Git 忽略规则</code></p>
-<hr>
-<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><h3 id="关键教训"><a href="#关键教训" class="headerlink" title="关键教训"></a>关键教训</h3><p><strong>目录统一管理</strong>：</p>
-<p><strong>Git 历史管理</strong>：</p>
-<p><code>.gitignore</code></p>
-<p><strong>版本控制策略</strong>：</p>
-<p><code>git reset</code></p>
-<p><strong>备份和测试</strong>：</p>
-<hr>
-<h3 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h3><h4 id="博客系统维护"><a href="#博客系统维护" class="headerlink" title="博客系统维护"></a>博客系统维护</h4><p><code>1 2 3 4 5 6 7 8 9 10 11 12 13</code><br><code># 1. 创建文章 hexo new &quot;文章标题&quot; # 2. 编辑文章（添加内容） # 3. 生成本地预览 hexo clean &amp;&amp; hexo generate # 4. 部署到 GitHub Pages hexo deploy # 5. 验证访问 curl -I https://www.normdist.com/年/月/日/文章标题/</code></p>
-<p><code># 1. 创建文章</code><br><code>hexo new &quot;文章标题&quot;</code></p>
-<p><code># 2. 编辑文章（添加内容）</code></p>
-<p><code># 3. 生成本地预览</code><br><code>hexo clean &amp;&amp; hexo generate</code></p>
-<p><code># 4. 部署到 GitHub Pages</code><br><code>hexo deploy</code></p>
-<p><code># 5. 验证访问</code><br><code>curl -I https://www.normdist.com/年/月/日/文章标题/</code></p>
-<hr>
-<h4 id="定期检查"><a href="#定期检查" class="headerlink" title="定期检查"></a>定期检查</h4><p><code>1 2 3 4 5 6 7 8</code><br><code># 检查目录结构 find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; \) # 检查 Git 状态 git status # 检查远程同步 git fetch &amp;&amp; git status</code></p>
-<p><code># 检查目录结构</code><br><code>find /home/jarvis -maxdepth 3 -type d \( -name &quot;blog&quot; -o -name &quot;hexo&quot; \)</code></p>
-<p><code># 检查 Git 状态</code><br><code>git status</code></p>
-<p><code># 检查远程同步</code><br><code>git fetch &amp;&amp; git status</code></p>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过这次问题排查，成功解决了博客系统的目录混乱问题：</p>
-<p>✅ <strong>统一博客目录</strong>：从多个分散的目录统一到 <code>/home/jarvis/blog/</code><br>✅ <strong>清理 Git 历史</strong>：移除嵌套的目录结构，扁平化管理<br>✅ <strong>完善 .gitignore</strong>：避免无关文件提交到仓库<br>✅ <strong>验证发布流程</strong>：从创建文章到部署的完整流程测试通过</p>
-<p><code>/home/jarvis/blog/</code></p>
-<p>博客系统现在已经恢复正常，可以正常发布文章。今后应定期检查目录结构，避免类似问题再次发生。</p>
-<hr>
-<p><em>发布日期：2026 年 3 月 10 日</em><br><em>最后更新：2026 年 3 月 10 日</em></p>
-<hr>
+                <p>每次给 AI Agent 开一个新 profile（韩梅梅、李雷、露西……），都会顺手起一个 <code>hermes gateway run</code>。一个 profile 一个进程，五个 profile 五个进程，听着很合理——直到微信 bot 突然全线失联，日志里全是 <strong>“Weixin bot token already in use”</strong>。</p>
+<p>这就是多 Gateway 进程的 Token 锁冲突。表面看是微信 bot 连不上，实际上是 Hermes 的消息平台 Token 在<strong>进程级共享</strong>，而每个 Gateway 都认为自己拿到了所有权。</p>
+<h2 id="问题的发现"><a href="#问题的发现" class="headerlink" title="问题的发现"></a>问题的发现</h2><p>日志不会撒谎。这是某次排查时的现场记录：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs subunit">2026<span class="hljs-string">-07</span><span class="hljs-string">-15</span> 22:36:32 [INFO]  Connected to Weixin bot (ws://...)<br>2026<span class="hljs-string">-07</span><span class="hljs-string">-15</span> 22:36:33 [ERROR] Weixin bot token already in use (PID 1097147). Stop the other gateway first.<br>2026<span class="hljs-string">-07</span><span class="hljs-string">-15</span> 22:37:03 [ERROR] Reconnecting weixin (attempt 2)... token already in use (PID 1097147).<br>2026<span class="hljs-string">-07</span><span class="hljs-string">-15</span> 22:38:03 [ERROR] Reconnecting weixin (attempt 3)... token already in use (PID 1097147).<br>2026<span class="hljs-string">-07</span><span class="hljs-string">-15</span> 22:39:34 [INFO]  ✓ feishu disconnected<br>2026<span class="hljs-string">-07</span><span class="hljs-string">-15</span> 22:39:34 [INFO]  ✓ api_server disconnected<br></code></pre></td></tr></table></figure>
+
+<p>注意到 <code>token already in use (PID 1097147)</code> 了吗？PID 1097147 是另一个 Gateway 进程，它比当前进程先连上了微信。当前 Gateway 被卡在了一个<strong>指数退避重连循环</strong>里（60s → 120s → 240s），永远等不到释放。</p>
+<h2 id="为什么会冲突"><a href="#为什么会冲突" class="headerlink" title="为什么会冲突"></a>为什么会冲突</h2><p>Hermes 的 Gateway 架构里，消息平台接入（微信、飞书、API Server 等）走的是<strong>同一套平台适配器</strong>，而微信 bot 的 Token 是一个<strong>全局共享资源</strong>——不是每个 profile 一份。</p>
+<p>这意味着：</p>
+<ul>
+<li><strong>微信 bot Token 只能被一个 Gateway 持有</strong>。无论起多少个进程，第一个连上的就是唯一能收消息的那个。</li>
+<li><strong>飞书和 API Server 没有这个限制</strong>。飞书 WebSocket 是每个 app 一个连接，API Server 是 HTTP 端口监听，两者都不存在 Token 互斥。</li>
+<li><strong><code>--replace</code> 参数只替换本 profile 的 Gateway 进程</strong>，不会去停别的 profile 的进程。</li>
+</ul>
+<p>实际现场：六个 Hermes 进程同时在线——</p>
+<table>
+<thead>
+<tr>
+<th>PID</th>
+<th>Profile</th>
+<th>状态</th>
+<th>微信</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1003464</td>
+<td>default (main)</td>
+<td>running</td>
+<td>✅ 持有 Token</td>
+</tr>
+<tr>
+<td>1003504</td>
+<td>hanmeimei</td>
+<td>running</td>
+<td>✗ Token 被占</td>
+</tr>
+<tr>
+<td>1003614</td>
+<td>lilei</td>
+<td>running</td>
+<td>✗ Token 被占</td>
+</tr>
+<tr>
+<td>1003765</td>
+<td>lucy</td>
+<td>running</td>
+<td>✗ Token 被占</td>
+</tr>
+<tr>
+<td>1003891</td>
+<td>polly</td>
+<td>running</td>
+<td>✗ Token 被占</td>
+</tr>
+<tr>
+<td>1003994</td>
+<td>xiaomei</td>
+<td>running</td>
+<td>✗ Token 被占</td>
+</tr>
+</tbody></table>
+<p><code>hanmeimei</code> 到 <code>xiaomei</code> 这五个子进程的微信通道，全部是死的。</p>
+<p>除了微信 Token 锁，还有一个<strong>并行问题</strong>：Kanban Dispatcher 的锁文件 <code>/home/tony/.hermes/kanban/.dispatcher.lock</code> 也是进程级互斥。同一时刻只能有一个 Gateway 持有 dispatcher lock，其他进程只会输出：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">kanban <span class="hljs-keyword">dispatcher: </span>another gateway already holds the <span class="hljs-keyword">dispatcher </span>lock<span class="hljs-comment">; this gateway will NOT dispatch.</span><br></code></pre></td></tr></table></figure>
+
+<p>这不是 Bug，是<strong>设计行为</strong>——多个 Gateway 共享同一个 Task Queue，必须保证调度不重复。真正需要排查的是<strong>平台 Token</strong>，而不是 dispatcher lock。</p>
+<h2 id="根本原因"><a href="#根本原因" class="headerlink" title="根本原因"></a>根本原因</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>平台 Token 共享</td>
+<td>微信 bot Token 在所有 profile 间共享，不随 profile 隔离</td>
+</tr>
+<tr>
+<td>没有 Token 抢占</td>
+<td>Hermes 没有”踢掉旧进程、抢 token”机制，后来者只能被动等待</td>
+</tr>
+<tr>
+<td>退避重连无上限</td>
+<td>退避间隔只增不减，最长 240s，理论上永远等不到</td>
+</tr>
+<tr>
+<td><code>--replace</code> 不跨 profile</td>
+<td>只重启本 profile，不会清理其他 profile 的连接</td>
+</tr>
+</tbody></table>
+<p>换句话说：<strong>微信 bot 在设计上就是单点接入的</strong>，而多 Gateway 部署没有做 Token 路由。</p>
+<h2 id="怎么修"><a href="#怎么修" class="headerlink" title="怎么修"></a>怎么修</h2><h3 id="方案-A：只留一个主-Gateway-接微信"><a href="#方案-A：只留一个主-Gateway-接微信" class="headerlink" title="方案 A：只留一个主 Gateway 接微信"></a>方案 A：只留一个主 Gateway 接微信</h3><p>最稳妥的做法。<strong>微信 bot 只配在 main profile（default）</strong>，其他子 profile 的 config 里直接 <code>weixin: { enabled: false }</code>。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">platforms:</span><br>  <span class="hljs-attr">weixin:</span><br>    <span class="hljs-attr">enabled:</span> <span class="hljs-literal">false</span>   <span class="hljs-comment"># 子 profile 不用微信</span><br>  <span class="hljs-attr">feishu:</span><br>    <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span>    <span class="hljs-comment"># 飞书可以每个 profile 独立开</span><br></code></pre></td></tr></table></figure>
+
+<p>这样只有 main Gateway 接微信，其他进程专心处理本 profile 的飞书&#x2F;Telegram 等独立平台。</p>
+<h3 id="方案-B：子-profile-走不同消息通道"><a href="#方案-B：子-profile-走不同消息通道" class="headerlink" title="方案 B：子 profile 走不同消息通道"></a>方案 B：子 profile 走不同消息通道</h3><p>每个 AI Agent 用<strong>自己的消息通道</strong>，避免 Token 碰撞：</p>
+<ul>
+<li>韩梅梅 → Telegram bot（独立 token）</li>
+<li>李雷 → Discord（独立 bot）</li>
+<li>露西 → Slack（独立 app）</li>
+<li>主进程 → 微信 + API Server</li>
+</ul>
+<p>Hermes 对 Telegram、Discord、Slack 的支持是<strong>每个 bot&#x2F;app 一个连接</strong>，天然互不干扰，不存在 Token 锁。</p>
+<h3 id="方案-C：手动轮转（不推荐）"><a href="#方案-C：手动轮转（不推荐）" class="headerlink" title="方案 C：手动轮转（不推荐）"></a>方案 C：手动轮转（不推荐）</h3><p>如果确实需要所有 profile 都能接微信，只能：</p>
+<ol>
+<li><code>ps aux | grep &quot;hermes gateway&quot;</code> 确认所有 Gateway 的 PID</li>
+<li>找到持有微信 Token 的进程，<code>kill</code> 它</li>
+<li>重启目标 profile 的 Gateway</li>
+<li>验证日志无 <code>token already in use</code></li>
+</ol>
+<p>这只能应急，不能当常态。每次新进程上来还是会撞。</p>
+<h2 id="验证方法"><a href="#验证方法" class="headerlink" title="验证方法"></a>验证方法</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 确认只有 main 进程在接微信</span><br>grep <span class="hljs-string">&quot;Weixin bot token&quot;</span> ~/.hermes/logs/gateway.log | <span class="hljs-built_in">tail</span> -5<br><span class="hljs-comment"># 预期：只有 default 进程的日志，无报错</span><br><br><span class="hljs-comment"># 2. 确认 dispatcher lock 正常</span><br>grep <span class="hljs-string">&quot;dispatcher&quot;</span> ~/.hermes/logs/gateway.log | <span class="hljs-built_in">tail</span> -5<br><span class="hljs-comment"># holding singleton dispatcher lock  = 正常</span><br><span class="hljs-comment"># another gateway already holds       = 其他进程正确退让</span><br><br><span class="hljs-comment"># 3. 确认各 profile 独立平台可用</span><br><span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> hanmeimei lilei lucy polly xiaomei; <span class="hljs-keyword">do</span><br>    grep <span class="hljs-string">&quot;feishu.*connected\|telegram.*connected&quot;</span> ~/.hermes/profiles/<span class="hljs-variable">$p</span>/logs/gateway.log 2&gt;/dev/null | <span class="hljs-built_in">tail</span> -1<br><span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h2><p>多 Gateway 部署的本质问题是<strong>资源粒度不匹配</strong>：Gateway 是 profile 级进程，但消息平台 Token 是<strong>全局级资源</strong>。架构上的不对称必然导致冲突。</p>
+<p>解决思路只有两条路：</p>
+<ol>
+<li><strong>资源下沉</strong>——让每个 profile 拥有独立的平台 Token（方案 B），适合多平台异构接入；</li>
+<li><strong>资源上收</strong>——把全局资源只配在主 profile，子 profile 不碰（方案 A），适合微信这类单一接入的平台。</li>
+</ol>
+<p>不要试图在 Hermes 现有的 <code>--replace</code> 机制上打补丁，那个参数只负责进程替换，不负责资源协调。</p>
 
                 
               </div>
@@ -607,13 +606,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F/" class="print-no-link">#博客系统</a>
+        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
       
-        <a href="/tags/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" class="print-no-link">#问题排查</a>
+        <a href="/tags/Gateway/" class="print-no-link">#Gateway</a>
       
-        <a href="/tags/Git%E5%AD%90%E6%A8%A1%E5%9D%97/" class="print-no-link">#Git子模块</a>
-      
-        <a href="/tags/SCSS/" class="print-no-link">#SCSS</a>
+        <a href="/tags/%E5%BE%AE%E4%BF%A1/" class="print-no-link">#微信</a>
       
     </div>
   
@@ -625,8 +622,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>博客系统问题排查与目录统一</div>
-      <div>https://normdist.com/2026/03/10/ND-20260310-001-blog-system-troubleshooting/</div>
+      <div>五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突</div>
+      <div>https://normdist.com/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/</div>
     </div>
     <div class="license-meta">
       
@@ -638,7 +635,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月10日</div>
+          <div>2026年8月5日</div>
         </div>
       
       
@@ -670,18 +667,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/11/ND-20260311-001-lm-studio-baseurl-v1/" title="OpenClaw 接入 LM Studio 本地模型：baseUrl 必须是 /v1结尾">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">OpenClaw 接入 LM Studio 本地模型：baseUrl 必须是 /v1结尾</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/10/ND-20260310-003-openclaw-2026-3-8-update/" title="OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升">
-                        <span class="hidden-mobile">OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升</span>
+                      <a href="/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/" title="为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录">
+                        <span class="hidden-mobile">为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
