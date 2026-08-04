@@ -19,27 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例： Profile端口用途 default8642默认代理通信 hanmeimei8643韩梅">
+    <meta name="description" content="翻车现场一个 Next.js 的扫码页面，在电脑浏览器上看完美无缺——卡片撑满屏幕，底部贴着 iPhone 的横条 home 指示线。 切到手机上一看：卡片比屏幕高出了几十像素。没有出现滚动条，但手指从下往上拖，页面会「回弹」回去。就像……它被什么东西往外推了一点点。 同一个 div，同一套 CSS，PC 上完美、手机上超出边界。 直觉告诉我：肯定是个和视口相关的单位问题。但哪个单位？ 排查过程第">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hermes Agent Gateway 多实例配置实践">
-<meta property="og:url" content="https://normdist.com/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/index.html">
+<meta property="og:title" content="为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录">
+<meta property="og:url" content="https://normdist.com/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例： Profile端口用途 default8642默认代理通信 hanmeimei8643韩梅">
+<meta property="og:description" content="翻车现场一个 Next.js 的扫码页面，在电脑浏览器上看完美无缺——卡片撑满屏幕，底部贴着 iPhone 的横条 home 指示线。 切到手机上一看：卡片比屏幕高出了几十像素。没有出现滚动条，但手指从下往上拖，页面会「回弹」回去。就像……它被什么东西往外推了一点点。 同一个 div，同一套 CSS，PC 上完美、手机上超出边界。 直觉告诉我：肯定是个和视口相关的单位问题。但哪个单位？ 排查过程第">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-20T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T05:29:29.104Z">
+<meta property="article:published_time" content="2026-08-05T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T16:13:53.058Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI-Agent">
-<meta property="article:tag" content="Gateway">
-<meta property="article:tag" content="Hermes">
-<meta property="article:tag" content="服务器运维">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="响应式">
+<meta property="article:tag" content="移动端">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Hermes Agent Gateway 多实例配置实践 - 进化概率论</title>
+  <title>为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -360,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Hermes Agent Gateway 多实例配置实践</span>
+            <span id="subtitle">为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录</span>
           
         </div>
 
@@ -371,8 +370,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-20 10:00" pubdate>
-          2026年5月20日 上午
+        <time datetime="2026-08-05 09:00" pubdate>
+          2026年8月5日 上午
         </time>
       </span>
     
@@ -442,12 +441,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Hermes Agent Gateway 多实例配置实践</h1>
+            <h1 id="seo-header">为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年8月5日 凌晨
                   
                 
               </p>
@@ -455,98 +454,76 @@
             
               <div class="markdown-body">
                 
-                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。</p>
-<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><h3 id="初始状态（v0-13-0）"><a href="#初始状态（v0-13-0）" class="headerlink" title="初始状态（v0.13.0）"></a>初始状态（v0.13.0）</h3><p>在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例：</p>
-<p>Profile<br>端口<br>用途</p>
-<p>default<br>8642<br>默认代理通信</p>
-<p>hanmeimei<br>8643<br>韩梅梅数字人通信</p>
-<p>两个实例通过 systemd 服务自动管理，运行稳定。</p>
-<h3 id="升级后问题"><a href="#升级后问题" class="headerlink" title="升级后问题"></a>升级后问题</h3><p>升级到 v0.14.0 后，两个 Gateway 无法同时在线。表现为：</p>
-<ul>
-<li><p>启动第二个 Gateway 时，第一个被踢下线</p>
-</li>
-<li><p>端口冲突，<code>ss -tlnp | grep :864[23]</code> 只显示一个端口</p>
-</li>
-<li><p>systemd 服务频繁重启</p>
-</li>
-</ul>
-<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="1-版本差异分析"><a href="#1-版本差异分析" class="headerlink" title="1. 版本差异分析"></a>1. 版本差异分析</h3><p>通过阅读 v0.14.0 的变更日志和 Gateway 模块源码，发现关键变化：</p>
-<p>v0.14.0 引入了 <code>--replace</code> 参数作为默认行为。当两个实例使用相同配置启动时，新的实例会自动替换旧的实例，导致”此起彼伏”的现象。</p>
-<h3 id="2-端口冲突排查"><a href="#2-端口冲突排查" class="headerlink" title="2. 端口冲突排查"></a>2. 端口冲突排查</h3><p>检查了 <code>/etc/services</code>、<code>/etc/sysctl.conf</code> 以及所有配置文件中的端口绑定设置，确认没有端口冲突。问题出在应用层而非系统层。</p>
-<h3 id="3-根因定位"><a href="#3-根因定位" class="headerlink" title="3. 根因定位"></a>3. 根因定位</h3><p><strong>核心发现：不要使用 <code>--replace</code> 参数！</strong></p>
-<p>这是本次排查最重要的经验。<code>--replace</code> 的设计初衷是用于单实例场景下的优雅重启，但在多实例配置中会导致实例间的互相替换。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案一：手动启动（推荐验证用）"><a href="#方案一：手动启动（推荐验证用）" class="headerlink" title="方案一：手动启动（推荐验证用）"></a>方案一：手动启动（推荐验证用）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br><br><span class="hljs-comment"># 停止所有现有 Gateway</span><br>pkill -f <span class="hljs-string">&#x27;hermes_cli.main gateway&#x27;</span><br><br><span class="hljs-comment"># 等待清理完成</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-comment"># 分别启动两个实例</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
+                <h2 id="翻车现场"><a href="#翻车现场" class="headerlink" title="翻车现场"></a>翻车现场</h2><p>一个 Next.js 的扫码页面，在电脑浏览器上看完美无缺——卡片撑满屏幕，底部贴着 iPhone 的横条 home 指示线。</p>
+<p>切到手机上一看：卡片比屏幕高出了几十像素。没有出现滚动条，但手指从下往上拖，页面会「回弹」回去。就像……它被什么东西往外推了一点点。</p>
+<p><strong>同一个 div，同一套 CSS，PC 上完美、手机上超出边界。</strong></p>
+<p>直觉告诉我：肯定是个和视口相关的单位问题。但哪个单位？</p>
+<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="第一轮：以为是-height-100-没撑满"><a href="#第一轮：以为是-height-100-没撑满" class="headerlink" title="第一轮：以为是 height: 100% 没撑满"></a>第一轮：以为是 height: 100% 没撑满</h3><p>扫码卡片用的是 <code>h-full</code>，父容器用 <code>flex-1</code>，一层层往上追——父容器有 <code>h-full</code>，再往上也有，看起来没问题。</p>
+<p>实际上问题恰恰相反：不是撑不满，是撑太满了。</p>
+<h3 id="第二轮：加-max-h-限制"><a href="#第二轮：加-max-h-限制" class="headerlink" title="第二轮：加 max-h 限制"></a>第二轮：加 max-h 限制</h3><p>我给卡片加了 <code>max-h-[calc(100vh - 8rem)]</code>，想把它卡死在视口以内。结果两边扫码页面对比起来高度还是不一样——一个撑得高，一个撑得矮。</p>
+<p>原来 <code>100vh</code> 在不同层级上算出来的「视口」不一样。页面层级用了 <code>max-w-4xl mx-auto</code> 居中，这一层没加 <code>h-full</code>，高度链就断了。</p>
+<h3 id="第三轮：h-screen-反而越描越黑"><a href="#第三轮：h-screen-反而越描越黑" class="headerlink" title="第三轮：h-screen 反而越描越黑"></a>第三轮：h-screen 反而越描越黑</h3><p>我在 <code>&lt;main&gt;</code> 上加了 <code>h-screen</code> 想把高度锁死。结果超出更严重了——<code>h-screen</code> 等于 <code>100vh</code>，加上 flex 的 <code>flex-1</code> 一起作用，<code>flex-1</code> 想撑满父容器，<code>h-screen</code> 又想撑满整个视口，两个约束打架，页面直接超出。</p>
+<p><strong>关键教训</strong>：在 flex 布局里混用 <code>flex-1</code> 和 <code>h-screen</code> 等价于让浏览器做一道解不开的方程题。</p>
+<h3 id="第四轮：终于找到根因-——-100vh-在手机上不是-100vh"><a href="#第四轮：终于找到根因-——-100vh-在手机上不是-100vh" class="headerlink" title="第四轮：终于找到根因 —— 100vh 在手机上不是 100vh"></a>第四轮：终于找到根因 —— <code>100vh</code> 在手机上不是 100vh</h3><p>把 <code>h-screen</code> 清掉后，超出问题小了很多，但还是有。手机页面还是能往上拖动。</p>
+<p>问题出在最底层的 <code>body</code> 上。代码里写的是 <code>h-screen</code>，也就是 <code>height: 100vh</code>。</p>
+<p><strong><code>100vh</code> 在移动端，永远是手机物理屏幕的高度</strong>，包含地址栏、导航栏、工具栏。</p>
+<p>当手机浏览器的地址栏折叠后，实际能显示内容的区域（可见视口）比 <code>100vh</code> 小了一截——大约 56px（地址栏高度）+ 56px（底部导航）&#x3D; 100px 左右。</p>
+<p>所以 <code>body</code> 高度 &#x3D; <code>100vh</code>（物理屏幕），但 flex 容器分给 <code>&lt;main&gt;</code> 的高度是按 body 减去 header 算的，结果 <code>&lt;main&gt;</code> 里的内容比实际可视区域大了一截。没有滚动条（因为浏览器认为内容没有超出「视口」），但手指能拖动（浏览器允许 overscroll）。</p>
+<h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p><strong>CSS 里有一个专门为移动端浏览器设计的单位：<code>dvh</code>（Dynamic Viewport Height）。</strong></p>
+<table>
+<thead>
+<tr>
+<th>单位</th>
+<th>含义</th>
+<th>移动端行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>100vh</code></td>
+<td>物理视口</td>
+<td>永远 &#x3D; 手机物理屏幕高度，含地址栏</td>
+</tr>
+<tr>
+<td><code>100svh</code></td>
+<td>最小视口</td>
+<td>地址栏展开时的最小可视区</td>
+</tr>
+<tr>
+<td><code>100dvh</code></td>
+<td>动态视口</td>
+<td><strong>随地址栏折叠&#x2F;展开动态变化</strong></td>
+</tr>
+</tbody></table>
+<p>把 <code>body</code> 的 <code>h-screen</code>（<code>100vh</code>）换成 <code>h-dvh</code>（<code>100dvh</code>），地址栏折叠时 <code>100dvh</code> 自动缩小，完美贴合实际可视区域。</p>
+<p>同时确保整个高度链干净——<strong>只用 flex 撑高，不要用 h-screen&#x2F;h-full 硬约束</strong>：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// layout.tsx</span><br>&lt;body className=<span class="hljs-string">&quot;min-h-dvh flex flex-col h-dvh&quot;</span>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AppHeader</span> /&gt;</span></span>                    &#123;<span class="hljs-comment">/* 固定高度 */</span>&#125;<br>  &lt;div className=<span class="hljs-string">&quot;flex flex-1 overflow-hidden&quot;</span>&gt;<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AppSidebar</span> /&gt;</span></span><br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;flex-1 min-w-0 overflow-y-auto p-4&quot;</span>&gt;</span></span><br><span class="language-xml">      &#123;children&#125;                   &#123;/* 撑满剩余空间 */&#125;</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span><br>  &lt;/div&gt;<br>&lt;/body&gt;<br></code></pre></td></tr></table></figure>
 
-<p><strong>关键参数说明：</strong></p>
-<ul>
-<li><p><code>-p &lt;profile&gt;</code>：指定 profile，确保每个实例使用独立的配置目录和数据库</p>
-</li>
-<li><p><strong>不使用 <code>--replace</code></strong>：这是多实例共存的前提</p>
-</li>
-<li><p><code>sleep 8</code>：两个 Gateway 之间需要足够的启动间隔（建议至少 5-8 秒）</p>
-</li>
-</ul>
-<h3 id="方案二：systemd-统一管理"><a href="#方案二：systemd-统一管理" class="headerlink" title="方案二：systemd 统一管理"></a>方案二：systemd 统一管理</h3><p>创建统一的 systemd 服务来管理所有 Gateway 实例。</p>
-<h4 id="1-创建启动脚本"><a href="#1-创建启动脚本" class="headerlink" title="1. 创建启动脚本"></a>1. 创建启动脚本</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br><br><span class="hljs-comment">#!/bin/bash</span><br><span class="hljs-comment"># /home/jarvis/.local/bin/hermes-gateway-start.sh</span><br><br>pkill -f hermes_cli.main || <span class="hljs-literal">true</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-built_in">cd</span> /home/jarvis/.hermes/hermes-agent<br><br><span class="hljs-comment"># 启动 default Gateway</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><br><span class="hljs-comment"># 启动 hanmeimei Gateway  </span><br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// scan/page.tsx</span><br>&lt;div className=<span class="hljs-string">&quot;h-full w-full flex flex-col&quot;</span>&gt;  &#123;<span class="hljs-comment">/* flex 父容器 */</span>&#125;<br>  &lt;<span class="hljs-title class_">ScanPage</span> /&gt;                          &#123;<span class="hljs-comment">/* h-full 撑满 */</span>&#125;<br>&lt;/div&gt;<br></code></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br><span class="hljs-built_in">chmod</span> +x ~/.local/bin/hermes-gateway-start.sh<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// components/scan-page.tsx</span><br>&lt;div className=<span class="hljs-string">&quot;h-full flex flex-col bg-background border rounded-lg overflow-hidden&quot;</span>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;shrink-0&quot;</span>&gt;</span>...<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>   &#123;<span class="hljs-comment">/* 头部 */</span>&#125;<br>  &lt;div className=<span class="hljs-string">&quot;py-5&quot;</span>&gt;...&lt;<span class="hljs-regexp">/div&gt;        &#123;/</span>* 输入区 */&#125;<br>  &lt;div className=<span class="hljs-string">&quot;flex-1 overflow-auto&quot;</span>&gt;...&lt;<span class="hljs-regexp">/div&gt;  &#123;/</span>* 主体内容 */&#125;<br>&lt;/div&gt;<br></code></pre></td></tr></table></figure>
 
-<h4 id="2-创建-systemd-服务文件"><a href="#2-创建-systemd-服务文件" class="headerlink" title="2. 创建 systemd 服务文件"></a>2. 创建 systemd 服务文件</h4><p><code>~/.config/systemd/user/hermes-gateway-all.service</code>:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br><br><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=Hermes Agent Gateway - All Profiles<br><span class="hljs-attr">After</span>=network.target<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=<span class="hljs-literal">on</span>eshot<br><span class="hljs-attr">ExecStart</span>=/home/jarvis/.local/bin/hermes-gateway-start.sh<br><span class="hljs-attr">RemainAfterExit</span>=<span class="hljs-literal">yes</span><br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=default.target<br><br></code></pre></td></tr></table></figure>
-
-<h4 id="3-安装和启用"><a href="#3-安装和启用" class="headerlink" title="3. 安装和启用"></a>3. 安装和启用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br><br>systemctl --user daemon-reload<br>systemctl --user <span class="hljs-built_in">enable</span> hermes-gateway-all.service<br>systemctl --user start hermes-gateway-all.service<br><br></code></pre></td></tr></table></figure>
-
-<h3 id="验证结果"><a href="#验证结果" class="headerlink" title="验证结果"></a>验证结果</h3><p>启动后通过以下命令确认两个实例都正常运行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br>ss -tlnp | grep -E <span class="hljs-string">&#x27;:(8642|8643)&#x27;</span><br><span class="hljs-comment"># 预期输出两行，分别对应两个端口</span><br><br>hermes gateway list<br><span class="hljs-comment"># 预期显示两个在线实例</span><br><br></code></pre></td></tr></table></figure>
-
-<h2 id="配置详情"><a href="#配置详情" class="headerlink" title="配置详情"></a>配置详情</h2><h3 id="Profile-配置要点"><a href="#Profile-配置要点" class="headerlink" title="Profile 配置要点"></a>Profile 配置要点</h3><p>每个 Gateway profile 需要以下关键配置：</p>
-<ul>
-<li><p><strong>独立的 <code>HERMES_HOME</code> 目录</strong> — 确保数据库、状态文件互不干扰</p>
-</li>
-<li><p><strong>不同的消息平台应用凭证</strong> — 避免会话冲突</p>
-</li>
-<li><p><strong>合理的端口分配</strong> — 建议在同一网段内连续分配，便于管理</p>
-</li>
-</ul>
-<h3 id="systemd-服务对比"><a href="#systemd-服务对比" class="headerlink" title="systemd 服务对比"></a>systemd 服务对比</h3><p>方式<br>优点<br>缺点</p>
-<p>单实例独立 service<br>配置简单、隔离性好<br>需要维护多个 service 文件</p>
-<p>统一 oneshot service<br>统一管理、一个命令启停<br>启动顺序依赖脚本逻辑</p>
-<p>推荐使用 <strong>方案二</strong>（统一 oneshot service），特别是当 Gateway 实例数量较多时。</p>
-<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="Q1-为什么不能直接用-replace？"><a href="#Q1-为什么不能直接用-replace？" class="headerlink" title="Q1: 为什么不能直接用 --replace？"></a>Q1: 为什么不能直接用 <code>--replace</code>？</h3><p><code>--replace</code> 的实现原理是找到并终止同配置的其他实例，然后接管其连接。在多实例场景下，这会导致”谁后启动谁存活”的不可预期行为。</p>
-<h3 id="Q2-两个-Gateway-之间需要多少启动间隔？"><a href="#Q2-两个-Gateway-之间需要多少启动间隔？" class="headerlink" title="Q2: 两个 Gateway 之间需要多少启动间隔？"></a>Q2: 两个 Gateway 之间需要多少启动间隔？</h3><p>实测建议 <strong>至少 8 秒</strong>。这是因为每个 Gateway 启动时需要：</p>
-<ul>
-<li><p>初始化数据库连接池</p>
-</li>
-<li><p>加载 profile 配置</p>
-</li>
-<li><p>注册消息平台回调</p>
-</li>
-<li><p>建立 WebSocket 监听</p>
-</li>
-</ul>
-<p>这些步骤在资源紧张时可能需要较长时间。间隔过短可能导致第二个实例启动时发现端口已被占用（第一个尚未完全释放）。</p>
-<h3 id="Q3-如何排查-Gateway-启动失败？"><a href="#Q3-如何排查-Gateway-启动失败？" class="headerlink" title="Q3: 如何排查 Gateway 启动失败？"></a>Q3: 如何排查 Gateway 启动失败？</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br><br><span class="hljs-comment"># 查看详细日志</span><br><span class="hljs-built_in">tail</span> -f /tmp/hermes-default.log<br><span class="hljs-built_in">tail</span> -f /tmp/hermes-hanmeimei.log<br><br><span class="hljs-comment"># 检查端口占用</span><br>ss -tlnp | grep :864[23]<br><br><span class="hljs-comment"># 查看 systemd 状态</span><br>systemctl --user status hermes-gateway-all.service<br><br></code></pre></td></tr></table></figure>
-
-<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><ul>
-<li><p><strong>升级前务必阅读变更日志</strong> — v0.14.0 的 <code>--replace</code> 默认行为是本次问题的根源</p>
-</li>
-<li><p><strong>多实例场景下避免使用替换参数</strong> — 这是通用原则，不仅限于 Hermes</p>
-</li>
-<li><p><strong>给每个实例独立的资源空间</strong> — 数据库、配置目录、日志文件都要隔离</p>
-</li>
-<li><p><strong>启动间隔不可省略</strong> — 即使是 fast startup 的服务，也建议保留合理间隔</p>
-</li>
-</ul>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><p><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs">Hermes Agent 官方文档</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/">Messaging Gateway 配置指南</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.freedesktop.org/software/systemd/man/latest/systemd-user@.service.html">systemd user services 文档</a></p>
-</li>
-</ul>
+<p>高度链：<code>body(h-dvh)</code> → <code>flex-1</code> → <code>main(flex-1)</code> → <code>wrapper(h-full)</code> → <code>card(h-full)</code>，层层传递，没有断裂，没有冲突。</p>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>部署到生产环境后，手机刷新页面，四个扫码页面（扫码入库、扫码出库、扫码收货、扫码发货）卡片高度完全一致，刚好贴合屏幕，手指无法拖动，无滚动条。</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：flex-1-和-h-screen-混用"><a href="#坑一：flex-1-和-h-screen-混用" class="headerlink" title="坑一：flex-1 和 h-screen 混用"></a>坑一：flex-1 和 h-screen 混用</h3><p><strong>现象</strong>：加了 <code>h-full</code> 后页面还是超出视口。</p>
+<p><strong>根因</strong>：<code>flex-1</code> 想撑满 flex 父容器，<code>h-screen</code> 又想撑满视口，两个约束同时生效时浏览器按 <code>h-screen</code> 走，超出 flex 容器。</p>
+<p><strong>解法</strong>：flex 布局下只用 <code>flex-1</code> 或 <code>h-full</code>，不要用 <code>h-screen</code>。</p>
+<h3 id="坑二：外层包裹层没有-flex-属性"><a href="#坑二：外层包裹层没有-flex-属性" class="headerlink" title="坑二：外层包裹层没有 flex 属性"></a>坑二：外层包裹层没有 flex 属性</h3><p><strong>现象</strong>：扫码卡片明明写了 <code>h-full</code>，但高度就是比另一个页面矮。</p>
+<p><strong>根因</strong>：扫码入口页用了 <code>max-w-4xl mx-auto</code> 包裹卡片，这一层没有 <code>flex flex-col</code>，里面的 <code>h-full</code> 找不到参照物，退化为 auto。</p>
+<p><strong>解法</strong>：包裹层加 <code>flex flex-col h-full</code>，让子元素的 <code>h-full</code> 生效。</p>
+<h3 id="坑三：多层-CSS-类叠加时高度链断裂"><a href="#坑三：多层-CSS-类叠加时高度链断裂" class="headerlink" title="坑三：多层 CSS 类叠加时高度链断裂"></a>坑三：多层 CSS 类叠加时高度链断裂</h3><p><strong>现象</strong>：每个文件单独看都写了 <code>h-full</code>，但页面就是不撑满。</p>
+<p><strong>根因</strong>：中间某个父容器没有 <code>height: 100%</code>（或等价的 flex 撑高），高度链在这一层断开了。</p>
+<p><strong>解法</strong>：从 <code>&lt;body&gt;</code> 到目标元素，一层一层往上追。任何一层断了，下面的 <code>h-full</code> 都白写。</p>
+<h3 id="坑四：浏览器缓存导致「改了没用」"><a href="#坑四：浏览器缓存导致「改了没用」" class="headerlink" title="坑四：浏览器缓存导致「改了没用」"></a>坑四：浏览器缓存导致「改了没用」</h3><p><strong>现象</strong>：build 成功了，CSS 里也编译了新规则，但手机上看还是旧的样式。</p>
+<p><strong>根因</strong>：移动端浏览器缓存了旧版 CSS&#x2F;JS 文件。</p>
+<p><strong>解法</strong>：地址栏加 <code>?v=999</code> 清缓存，或手动清除浏览器缓存。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>移动端响应式的「高度」问题，本质上是<strong>视口单位选择</strong>和<strong>flex 高度链完整性</strong>两个问题的叠加。</p>
+<p>记住一条原则：<strong>在 flex 布局里做高度，用 <code>flex-1</code> 撑高，用 <code>h-dvh</code> 定总高，不要用 <code>h-screen</code>（<code>100vh</code>）硬约束。</strong></p>
 <hr>
-<p><em>本文基于实际生产环境调试经验编写，如有疏漏欢迎指正。</em></p>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/Length#viewport-percentage_lengths">MDN - Viewport-percentage lengths: vh, dvh, svh</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.w3.org/TR/css-values-4/#viewport-units">CSS Working Group - dvh&#x2F;svh&#x2F;lvh spec</a></li>
+</ol>
 
                 
               </div>
@@ -580,13 +557,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
+        <a href="/tags/%E7%A7%BB%E5%8A%A8%E7%AB%AF/" class="print-no-link">#移动端</a>
       
-        <a href="/tags/Gateway/" class="print-no-link">#Gateway</a>
+        <a href="/tags/%E5%89%8D%E7%AB%AF/" class="print-no-link">#前端</a>
       
-        <a href="/tags/AI-Agent/" class="print-no-link">#AI-Agent</a>
-      
-        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4/" class="print-no-link">#服务器运维</a>
+        <a href="/tags/%E5%93%8D%E5%BA%94%E5%BC%8F/" class="print-no-link">#响应式</a>
       
     </div>
   
@@ -598,8 +573,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Hermes Agent Gateway 多实例配置实践</div>
-      <div>https://normdist.com/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/</div>
+      <div>为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑全记录</div>
+      <div>https://normdist.com/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/</div>
     </div>
     <div class="license-meta">
       
@@ -611,7 +586,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月20日</div>
+          <div>2026年8月5日</div>
         </div>
       
       
@@ -643,18 +618,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-001-ai-portrait-expression-control/" title="Hermes Agent Gateway 多实例配置实践">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hermes Agent Gateway 多实例配置实践</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/" title="LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF">
-                        <span class="hidden-mobile">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</span>
+                      <a href="/2026/08/04/ND-20260804-001-sandtable-six-bug-fixes-mathematical-correction/" title="六个 Bug 修复实战：沙盘推演引擎的数学纠正">
+                        <span class="hidden-mobile">六个 Bug 修复实战：沙盘推演引擎的数学纠正</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
