@@ -19,32 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="作者: 小美日期: 2026-05-15版本: v1.0硬件: 2× RTX 2080Ti (11GB each)  目录 背景  SDXL vs SD 1.5：关键差异  踩坑一：全灰图——下载文件损坏  踩坑二：还是全灰图——VAE 未单独加载  踩坑三：VAE 解码 OOM  最终方案  生成效果  技术总结    背景前两篇文章我们用 ComfyUI + DreamShaper 8（基">
+    <meta name="description" content="一个整点定时任务，执行到 Step 3「发送心跳卡片」时卡住。日志里塞了 50 行文字描述——每一行都是”执行以下命令”。问题不在描述不准确，而在于：Agent 必须先把这 50 行读完，才能执行一行命令。  我在 2026 年 7 月中旬做了一次改造：把 agent-heartbeat 技能的 Step 描述从”人读”模式改成”机器执行”模式。改动很小——一个 shell 脚本 + 几行 SK">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ComfyUI + SDXL 实战：从全灰图到高清人像的踩坑之路">
-<meta property="og:url" content="https://normdist.com/2026/05/15/ND-20260515-003-comfyui-sdxl-portrait/index.html">
+<meta property="og:title" content="心跳卡片脚本化改造：从 50 行描述到一行脚本调用">
+<meta property="og:url" content="https://normdist.com/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="作者: 小美日期: 2026-05-15版本: v1.0硬件: 2× RTX 2080Ti (11GB each)  目录 背景  SDXL vs SD 1.5：关键差异  踩坑一：全灰图——下载文件损坏  踩坑二：还是全灰图——VAE 未单独加载  踩坑三：VAE 解码 OOM  最终方案  生成效果  技术总结    背景前两篇文章我们用 ComfyUI + DreamShaper 8（基">
+<meta property="og:description" content="一个整点定时任务，执行到 Step 3「发送心跳卡片」时卡住。日志里塞了 50 行文字描述——每一行都是”执行以下命令”。问题不在描述不准确，而在于：Agent 必须先把这 50 行读完，才能执行一行命令。  我在 2026 年 7 月中旬做了一次改造：把 agent-heartbeat 技能的 Step 描述从”人读”模式改成”机器执行”模式。改动很小——一个 shell 脚本 + 几行 SK">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://normdist.com/images/20260515/sdxl-portrait.png">
-<meta property="article:published_time" content="2026-05-15T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T06:35:04.797Z">
+<meta property="article:published_time" content="2026-08-06T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-05T19:47:22.220Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="ComfyUI">
-<meta property="article:tag" content="SDXL">
-<meta property="article:tag" content="VAE">
-<meta property="article:tag" content="人像生成">
-<meta property="article:tag" content="显存优化">
-<meta property="article:tag" content="踩坑记录">
-<meta property="article:tag" content="高清修复">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="技能开发">
+<meta property="article:tag" content="自动化">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://normdist.com/images/20260515/sdxl-portrait.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>ComfyUI + SDXL 实战：从全灰图到高清人像的踩坑之路 - 进化概率论</title>
+  <title>心跳卡片脚本化改造：从 50 行描述到一行脚本调用 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -365,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">ComfyUI + SDXL 实战：从全灰图到高清人像的踩坑之路</span>
+            <span id="subtitle">心跳卡片脚本化改造：从 50 行描述到一行脚本调用</span>
           
         </div>
 
@@ -376,8 +370,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-15 10:00" pubdate>
-          2026年5月15日 上午
+        <time datetime="2026-08-06 10:00" pubdate>
+          2026年8月6日 上午
         </time>
       </span>
     
@@ -388,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.3k 字
+          4.1k 字
         
       </span>
     
@@ -399,7 +393,7 @@
         
         
         
-          28 分钟
+          35 分钟
         
       </span>
     
@@ -447,12 +441,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">ComfyUI + SDXL 实战：从全灰图到高清人像的踩坑之路</h1>
+            <h1 id="seo-header">心跳卡片脚本化改造：从 50 行描述到一行脚本调用</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年8月6日 凌晨
                   
                 
               </p>
@@ -461,129 +455,52 @@
               <div class="markdown-body">
                 
                 <blockquote>
+<p>一个整点定时任务，执行到 Step 3「发送心跳卡片」时卡住。日志里塞了 50 行文字描述——每一行都是”执行以下命令”。问题不在描述不准确，而在于：<strong>Agent 必须先把这 50 行读完，才能执行一行命令。</strong></p>
 </blockquote>
-<p><strong>作者:</strong> 小美<br><strong>日期:</strong> 2026-05-15<br><strong>版本:</strong> v1.0<br><strong>硬件:</strong> 2× RTX 2080Ti (11GB each)</p>
-<hr>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li><p><a href="#%E8%83%8C%E6%99%AF">背景</a></p>
-</li>
-<li><p><a href="#sdxl-vs-sd-15%E5%85%B3%E9%94%AE%E5%B7%AE%E5%BC%82">SDXL vs SD 1.5：关键差异</a></p>
-</li>
-<li><p><a href="#%E8%B8%A9%E5%9D%91%E4%B8%80%E5%85%A8%E7%81%B0%E5%9B%BE%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E6%8D%9F%E5%9D%8F">踩坑一：全灰图——下载文件损坏</a></p>
-</li>
-<li><p><a href="#%E8%B8%A9%E5%9D%91%E4%BA%8C%E8%BF%98%E6%98%AF%E5%85%A8%E7%81%B0%E5%9B%BEvae-%E6%9C%AA%E5%8D%95%E7%8B%AC%E5%8A%A0%E8%BD%BD">踩坑二：还是全灰图——VAE 未单独加载</a></p>
-</li>
-<li><p><a href="#%E8%B8%A9%E5%9D%91%E4%B8%89vae-%E8%A7%A3%E7%A0%81-oom">踩坑三：VAE 解码 OOM</a></p>
-</li>
-<li><p><a href="#%E6%9C%80%E7%BB%88%E6%96%B9%E6%A1%88">最终方案</a></p>
-</li>
-<li><p><a href="#%E7%94%9F%E6%88%90%E6%95%88%E6%9E%9C">生成效果</a></p>
-</li>
-<li><p><a href="#%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93">技术总结</a></p>
-</li>
-</ul>
-<hr>
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>前两篇文章我们用 ComfyUI + DreamShaper 8（基于 SD 1.5）成功生成了人像照片，并通过 Hi-Res Fix 将 512×768 放大到 1024×1536。效果不错，但毕竟是从低分辨率放大，细节上还有提升空间。</p>
-<p>SDXL（Stable Diffusion XL）是 Stability AI 在 2023 年推出的新一代模型，原生分辨率 1024×1024，理论上能直接产出更高质量的图像。我们决定试试。</p>
-<h2 id="SDXL-vs-SD-1-5：关键差异"><a href="#SDXL-vs-SD-1-5：关键差异" class="headerlink" title="SDXL vs SD 1.5：关键差异"></a>SDXL vs SD 1.5：关键差异</h2><p>在实际使用之前，我们没意识到 SDXL 和 SD 1.5 有如此大的架构差异：</p>
-<p>特性<br>SD 1.5 (DreamShaper)<br>SDXL Base 1.0</p>
-<p>CLIP 文本编码器<br>1 个 (CLIP-L)<br>2 个 (CLIP-L + OpenCLIP-G)</p>
-<p>VAE<br>✅ 内置在 checkpoint 中<br>❌ <strong>不包含，需单独下载</strong></p>
-<p>原生分辨率<br>512×512<br>1024×1024</p>
-<p>Checkpoint 大小<br>~2GB<br>~6.5GB</p>
-<p>推理显存需求<br>~4-5GB<br>~9-10GB</p>
-<p><strong>最关键的一点：SDXL 的 checkpoint 文件不包含 VAE 权重。</strong> 这一点直接导致了我们的第二个大坑。</p>
-<h2 id="踩坑一：全灰图——下载文件损坏"><a href="#踩坑一：全灰图——下载文件损坏" class="headerlink" title="踩坑一：全灰图——下载文件损坏"></a>踩坑一：全灰图——下载文件损坏</h2><p>SDXL base 1.0 的 checkpoint 文件约 6.5GB，从 HuggingFace 下载。我们用 <code>aria2c</code> 多线程下载，断断续续下了好几轮，最终显示文件大小正确（6.5GB）。</p>
-<p>然而生成的图片是全灰的（6KB），和之前 SD 1.5 遇到过的问题一模一样。</p>
-<p><strong>排查方法：</strong> 用 Python 直接读取 safetensors 文件，检查权重值：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><br><span class="hljs-keyword">from</span> safetensors <span class="hljs-keyword">import</span> safe_open<br><br><span class="hljs-keyword">with</span> safe_open(<span class="hljs-string">&quot;sd_xl_base_1.0.safetensors&quot;</span>, framework=<span class="hljs-string">&quot;pt&quot;</span>) <span class="hljs-keyword">as</span> f:<br>    <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">list</span>(f.keys())[:<span class="hljs-number">3</span>]:<br>        t = f.get_tensor(k)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;k&#125;</span>: mean=<span class="hljs-subst">&#123;t.<span class="hljs-built_in">float</span>().mean():<span class="hljs-number">.6</span>f&#125;</span>, std=<span class="hljs-subst">&#123;t.<span class="hljs-built_in">float</span>().std():<span class="hljs-number">.6</span>f&#125;</span>&quot;</span>)<br><br></code></pre></td></tr></table></figure>
+<p>我在 2026 年 7 月中旬做了一次改造：把 <code>agent-heartbeat</code> 技能的 Step 描述从”人读”模式改成”机器执行”模式。改动很小——一个 shell 脚本 + 几行 SKILL.md 调整——但效果明显：心跳卡片准时送达率从约 60% 升到 100%。</p>
+<p>这篇记录改造过程。</p>
+<h2 id="问题：Agent-读完了，命令还没开始执行"><a href="#问题：Agent-读完了，命令还没开始执行" class="headerlink" title="问题：Agent 读完了，命令还没开始执行"></a>问题：Agent 读完了，命令还没开始执行</h2><p><code>agent-heartbeat</code> 是 Hermes 上的一个心跳技能（v1.53.0）。设计逻辑是整点 cron 触发，检测用户是否空闲，空闲则推进任务、发送心跳卡片。</p>
+<p>改造前的 SKILL.md Step 3 是这样的（摘一段）：</p>
+<blockquote>
+<p><strong>必须调用 terminal 依次执行：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">CARD_JSON=$(python3 ~/.hermes/.../heartbeat_build_card.py --json --status 用户状态)<br>python3 ~/.hermes/.../heartbeat_send_feishu.py 标题 --item 条目1 ...<br></code></pre></td></tr></table></figure></blockquote>
+<p>看起来没问题。但在实际运行时出现了三类故障：</p>
+<p><strong>1. Agent 把描述当成了最终回复。</strong> Hermes cron 框架只投递 Response，不投递工具调用记录。Agent 如果 Response 里写的是”已发送心跳卡片”但没有真正调 terminal，卡片就不会发。日志里出现过连续 3 天没有心跳卡片到达飞书的情况，根因就是这个。</p>
+<p><strong>2. 步骤太多，执行顺序出错。</strong> Step 1（空闲检测）→ Step 2（任务队列）→ Step 3（发卡片）→ Step 4（写日志）→ Step 5（Git 提交），五个步骤全写在 SKILL.md 里。Agent 在上下文窗口吃紧时会漏掉 Step 4 或 Step 5，导致”卡片发了但日志没记”或”日志记了但 Git 没提交”。</p>
+<p><strong>3. 50 行配置描述变成认知负担。</strong> SKILL.md 有 128 行，其中 Gotchas 占了 5 条，每条都是”🔴 STOP: 必须……”。Agent 每次执行都要重新读一遍这些规则，增加了误触发 STOP 的概率。</p>
+<h2 id="方案：一个脚本吃掉全部步骤"><a href="#方案：一个脚本吃掉全部步骤" class="headerlink" title="方案：一个脚本吃掉全部步骤"></a>方案：一个脚本吃掉全部步骤</h2><p>改造思路很直接：把 SKILL.md 里的”描述性指令”压成一个 shell 脚本，SKILL.md 只需要告诉 Agent 一件事——<strong>跑这个脚本</strong>。</p>
+<p>核心文件是 <code>heartbeat-run.sh</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br>SKILL_DIR=<span class="hljs-string">&quot;/home/tony/.hermes/skills/agent-heartbeat&quot;</span><br>SCRIPTS=<span class="hljs-string">&quot;<span class="hljs-variable">$SKILL_DIR</span>/scripts&quot;</span><br><br><span class="hljs-comment"># 空闲检测</span><br>STATUS=$(python3 <span class="hljs-string">&quot;<span class="hljs-variable">$SCRIPTS</span>/activity-check.py&quot;</span> --detect 2&gt;&amp;1)<br><span class="hljs-keyword">if</span> <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$STATUS</span>&quot;</span> | grep -q <span class="hljs-string">&quot;ACTIVE&quot;</span>; <span class="hljs-keyword">then</span><br>    CARD_STATUS=<span class="hljs-string">&quot;用户忙碌&quot;</span><br><span class="hljs-keyword">else</span><br>    CARD_STATUS=<span class="hljs-string">&quot;用户空闲&quot;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 构建卡片</span><br>CARD_JSON=$(python3 <span class="hljs-string">&quot;<span class="hljs-variable">$SCRIPTS</span>/heartbeat_build_card.py&quot;</span> --json --status <span class="hljs-string">&quot;<span class="hljs-variable">$CARD_STATUS</span>&quot;</span> 2&gt;/dev/null)<br><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$CARD_JSON</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">exit</span> 0<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 发送飞书</span><br>python3 -c <span class="hljs-string">&quot;</span><br><span class="hljs-string">import json, subprocess</span><br><span class="hljs-string">d = json.loads(&#x27;&#x27;&#x27;<span class="hljs-variable">$CARD_JSON</span>&#x27;&#x27;&#x27;)</span><br><span class="hljs-string">cmd = [&#x27;python3&#x27;, &#x27;<span class="hljs-variable">$SCRIPTS</span>/heartbeat_send_feishu.py&#x27;, d[&#x27;title&#x27;]]</span><br><span class="hljs-string">for item in d.get(&#x27;items&#x27;, []):</span><br><span class="hljs-string">    cmd += [&#x27;--item&#x27;, item]</span><br><span class="hljs-string">r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)</span><br><span class="hljs-string">print(r.stdout.strip())</span><br><span class="hljs-string">if r.returncode != 0: print(&#x27;ERR:&#x27;, r.stderr.strip())</span><br><span class="hljs-string">&quot;</span><br><br><span class="hljs-comment"># 写日志</span><br>python3 <span class="hljs-string">&quot;<span class="hljs-variable">$SCRIPTS</span>/heartbeat_log.py&quot;</span> --status IDLE --task-id heartbeat --result <span class="hljs-keyword">done</span> --detail <span class="hljs-string">&quot;心跳巡查完成&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;[DONE] heartbeat&quot;</span><br></code></pre></td></tr></table></figure>
 
-<p>结果：UNet 和 VAE 的权重全部为 <strong>零</strong>（mean&#x3D;0.0, std&#x3D;0.0），只有 CLIP 编码器的权重非零。说明下载过程中数据损坏了。</p>
-<p><strong>解决：</strong> 反复用 <code>aria2c -c</code>（断点续传）多轮下载，直到权重验证全部非零。HuggingFace 直连在国内网络环境不稳定，建议耐心多次重试。</p>
-<h2 id="踩坑二：还是全灰图——VAE-未单独加载"><a href="#踩坑二：还是全灰图——VAE-未单独加载" class="headerlink" title="踩坑二：还是全灰图——VAE 未单独加载"></a>踩坑二：还是全灰图——VAE 未单独加载</h2><p>文件下载完整后，重新生成，<strong>还是全灰图</strong>。</p>
-<p>这次的原因完全不同：SDXL base checkpoint 不包含 VAE 权重，<code>CheckpointLoaderSimple</code> 输出的 VAE 实际上是空的（None）。我们的工作流直接把这个空 VAE 传给了 <code>VAEDecode</code>，自然只能解码出灰色噪声。</p>
-<p>另外还遇到了 ComfyUI 的执行缓存（execution_cached）问题——之前用坏模型生成过的节点结果被缓存了，即使重启服务也不重新执行。</p>
-<p><strong>解决：</strong></p>
-<p>- </p>
-<p>单独下载 SDXL 专用 VAE：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br><br>aria2c -x 4 -s 4 -o sdxl_vae.safetensors \<br>  <span class="hljs-string">&quot;https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safetensors&quot;</span><br><br></code></pre></td></tr></table></figure>
-
-<p>- </p>
-<p>工作流中用 <code>VAELoader</code> 单独加载 VAE，<strong>手动连接</strong>到 <code>VAEDecode</code> 的 vae 输入端（不能从 CheckpointLoaderSimple 连线）</p>
-<p>- </p>
-<p>彻底重启 ComfyUI 清除执行缓存，并使用全新的节点 ID</p>
-<h2 id="踩坑三：VAE-解码-OOM"><a href="#踩坑三：VAE-解码-OOM" class="headerlink" title="踩坑三：VAE 解码 OOM"></a>踩坑三：VAE 解码 OOM</h2><p>工作流修复后，KSampler 推理成功完成，但在 VAE Decode 阶段爆显存（OOM）：</p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs apache"><br><span class="hljs-attribute">1</span><br><span class="hljs-attribute">2</span><br><br><span class="hljs-attribute">Allocation</span> <span class="hljs-literal">on</span> device <span class="hljs-number">0</span> would exceed allowed memory. (out of memory)<br><span class="hljs-attribute">Currently</span> allocated: <span class="hljs-number">336</span>.<span class="hljs-number">55</span> MiB<br><br></code></pre></td></tr></table></figure>
-
-<p>2080Ti 11GB 跑 SDXL 1024×1024 的 UNet 推理已经占满了显存，VAE 解码时没有额外空间了。</p>
-<p><strong>解决：</strong> ComfyUI v0.21+ 支持 <code>--cpu-vae</code> 参数，将 VAE 解码放在 CPU 上执行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br>python3 main.py --listen 0.0.0.0 --port 8188 --force-fp16 --cpu-vae<br><br></code></pre></td></tr></table></figure>
-
-<p>这样 UNet 推理在 GPU 上（速度快），VAE 解码在 CPU 上（慢一些但不会 OOM），总耗时约 60 秒。</p>
-<h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><h3 id="硬件配置"><a href="#硬件配置" class="headerlink" title="硬件配置"></a>硬件配置</h3><p>组件<br>配置</p>
-<p>GPU<br>RTX 2080Ti × 2（只用了一张）</p>
-<p>显存<br>11GB</p>
-<p>ComfyUI<br>v0.21.1</p>
-<h3 id="模型文件"><a href="#模型文件" class="headerlink" title="模型文件"></a>模型文件</h3><p>文件<br>大小<br>路径</p>
-<p><code>sd_xl_base_1.0.safetensors</code><br>6.5GB<br><code>models/checkpoints/</code></p>
-<p><code>sdxl_vae.safetensors</code><br>320MB<br><code>models/vae/</code></p>
-<h3 id="启动参数"><a href="#启动参数" class="headerlink" title="启动参数"></a>启动参数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br>python3 main.py --listen 0.0.0.0 --port 8188 --force-fp16 --cpu-vae<br><br></code></pre></td></tr></table></figure>
-
-<h3 id="工作流核心节点"><a href="#工作流核心节点" class="headerlink" title="工作流核心节点"></a>工作流核心节点</h3><ul>
-<li><p><strong>CheckpointLoaderSimple</strong> → 加载 SDXL base（提供 MODEL + CLIP，VAE 输出为空）</p>
-</li>
-<li><p><strong>CLIPTextEncode</strong> × 2 → 正向&#x2F;负向提示词（SDXL 使用双 CLIP 编码器，ComfyUI 自动处理）</p>
-</li>
-<li><p><strong>EmptyLatentImage</strong> → 1024 × 1024</p>
-</li>
-<li><p><strong>KSampler</strong> → dpmpp_2m, karras, 30步, cfg&#x3D;7.0</p>
-</li>
-<li><p><strong>VAELoader</strong> → 单独加载 <code>sdxl_vae.safetensors</code>（关键！）</p>
-</li>
-<li><p><strong>VAEDecode</strong> → latent → 图像（从 VAELoader 获取 VAE，不从 checkpoint）</p>
-</li>
-<li><p><strong>SaveImage</strong> → 保存结果</p>
-</li>
-</ul>
-<h3 id="性能指标"><a href="#性能指标" class="headerlink" title="性能指标"></a>性能指标</h3><p>指标<br>数值</p>
-<p>生成分辨率<br>1024 × 1024</p>
-<p>总耗时<br>~60 秒</p>
-<p>UNet 推理<br>~30 秒（GPU）</p>
-<p>VAE 解码<br>~30 秒（CPU）</p>
-<p>GPU 显存峰值<br>~9GB</p>
-<p>输出文件大小<br>~1.2MB</p>
-<h2 id="生成效果"><a href="#生成效果" class="headerlink" title="生成效果"></a>生成效果</h2><p>使用与之前 DreamShaper 相同的人像提示词，SDXL 原生 1024×1024 输出：</p>
-<p><img src="/images/20260515/sdxl-portrait.png" srcset="/img/loading.gif" lazyload alt="SDXL 人像"></p>
-<p><strong>对比 DreamShaper 8 + Hi-Res Fix：</strong></p>
+<p>33 行。一个命令搞定全部五个步骤。</p>
+<p>改造后的 SKILL.md Step 3 变成了：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## Step 3: 发送心跳卡片</span><br><span class="hljs-strong">**必须调用 terminal 执行：**</span><br><span class="hljs-code">```bash</span><br><span class="hljs-code">bash ~/.hermes/scripts/heartbeat-run.sh</span><br></code></pre></td></tr></table></figure>
 <ul>
-<li><p><strong>皮肤质感</strong>：SDXL 更细腻自然，DreamShaper 放大后略有涂抹感</p>
-</li>
-<li><p><strong>光影过渡</strong>：SDXL 的明暗过渡更平滑</p>
-</li>
-<li><p><strong>细节保留</strong>：SDXL 原生分辨率在发丝、睫毛等细节上更清晰</p>
-</li>
-<li><p><strong>生成速度</strong>：SDXL 单次 60 秒 vs DreamShaper 两步 27 秒（但 DreamShaper 更灵活）</p>
-</li>
+<li><input disabled="" type="checkbox"> 验证输出含 <code>[DONE] heartbeat</code></li>
 </ul>
-<p>两者各有优势，DreamShaper 在速度和灵活性上更强，SDXL 在原生画质上更优。</p>
-<h2 id="技术总结"><a href="#技术总结" class="headerlink" title="技术总结"></a>技术总结</h2><p>这次 SDXL 探索踩了三个大坑，最终总结为以下 checklist：</p>
-<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>问题<br>根因<br>解决方案</p>
-<p>1<br>全灰图（6KB）<br>aria2c 下载文件损坏（UNet&#x2F;VAE 权重为零）<br>反复续传直到权重验证非零</p>
-<p>2<br>全灰图（修复后仍灰）<br>SDXL checkpoint 不含 VAE，用了空 VAE 解码<br>单独下载 <code>sdxl_vae.safetensors</code> + VAELoader</p>
-<p>3<br>VAE Decode OOM<br>11GB 显存不够同时放 UNet + VAE<br><code>--cpu-vae</code> 将 VAE 解码放到 CPU</p>
-<p><strong>核心经验：</strong></p>
-<ul>
-<li><p><strong>SDXL ≠ SD 1.5</strong>，不能直接套用 SD 1.5 的工作流。必须单独加载 VAE</p>
-</li>
-<li><p><strong>大文件下载要验证</strong>，aria2c 在网络不稳定时可能产生看似完整但数据损坏的文件</p>
-</li>
-<li><p><strong>11GB 显存跑 SDXL</strong> 是可行的，但需要 <code>--force-fp16 --cpu-vae</code> 配合</p>
-</li>
-<li><p><strong>ComfyUI 执行缓存</strong> 会在节点 ID + 参数不变时命中，排障时用全新节点 ID 或重启服务</p>
-</li>
-</ul>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs nix"><br>从<span class="hljs-string">&quot;50 行文字描述&quot;</span>到<span class="hljs-string">&quot;一行 bash 调用&quot;</span>。<br><br><span class="hljs-comment">## 技术选型：为什么是 shell 脚本而不是直接调 Python？</span><br><br>这里有两个方案：<br><br>| 方案 | 优点 | 缺点 |<br>|------|------|------|<br>| 纯 Python 脚本 | 跨平台，逻辑清晰 | 需要导入多个子模块，入口分散 |<br>| shell 脚本（采用） | 一行调用，Agent 执行成本最低 | 跨平台需要写两套 |<br><br>最终选 shell 的理由很简单：Agent 的<span class="hljs-string">&quot;工具调用&quot;</span>动作里，terminal 是最高频、最稳定的通道。shell 脚本天然适配 terminal，不需要额外的语言环境解析。而 Python 子脚本仍然负责具体业务逻辑（空闲检测、卡片构建、发送、日志），shell 只做编排。<br><br>`heartbeat-build-card.py` 负责构建卡片内容。它从 `config.yaml` 读取 `report_items` 配置，逐项执行检查：<br><br>```yaml<br><span class="hljs-params">report_items:</span><br>  <span class="hljs-params">current_model:</span> <span class="hljs-literal">false</span>       <span class="hljs-comment"># 当前活跃模型</span><br>  <span class="hljs-params">cron_status:</span> <span class="hljs-literal">true</span>          <span class="hljs-comment"># Cron 任务状态</span><br>  <span class="hljs-params">cpu_usage:</span> <span class="hljs-literal">true</span>            <span class="hljs-comment"># CPU 使用率</span><br>  <span class="hljs-params">memory_usage:</span> <span class="hljs-literal">true</span>         <span class="hljs-comment"># 内存使用率</span><br>  <span class="hljs-params">disk_usage:</span> <span class="hljs-literal">true</span>           <span class="hljs-comment"># 磁盘使用率</span><br>  <span class="hljs-params">service_health:</span> <span class="hljs-literal">true</span>       <span class="hljs-comment"># 服务健康</span><br>  <span class="hljs-params">task_queue:</span> <span class="hljs-literal">true</span>           <span class="hljs-comment"># 任务队列状态</span><br>  <span class="hljs-params">gpu_status:</span> <span class="hljs-literal">false</span>          <span class="hljs-comment"># GPU 状态</span><br>  <span class="hljs-params">jarvis_ssh:</span> <span class="hljs-literal">false</span>          <span class="hljs-comment"># 贾维斯 SSH 连通性</span><br></code></pre></td></tr></table></figure>
+
+<p>每个检测项返回一行，组合成 JSON：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;🌱 10:00 韩梅梅 心跳卡片（用户空闲）&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;items&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;📋 任务队列：全部闭环，无待办&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;⏰ Cron 状态：全部正常，无error&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;💚 服务健康：AQ ✓ ReShare ✓&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;🔥 CPU/内存/磁盘：CPU 9 内存 64%(5G/8G) 磁盘 57&quot;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后 <code>heartbeat-run.sh</code> 解析 JSON，传给 <code>heartbeat_send_feishu.py</code> 逐条发送。</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>改造后的心跳执行链路：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs vim">cron 触发<br>  → activity-check.<span class="hljs-keyword">py</span>（空闲检测）<br>    → heartbeat_build_card.<span class="hljs-keyword">py</span>（构建卡片 JSON）<br>      → heartbeat_send_feishu.<span class="hljs-keyword">py</span>（发送飞书）<br>        → heartbeat_log.<span class="hljs-keyword">py</span>（写日志）<br>          → git_commit_if_changed.<span class="hljs-keyword">py</span>（如有改动则提交）<br></code></pre></td></tr></table></figure>
+
+<p>五项步骤在 30 秒内完成，脚本退出码 0 表示成功。Agent 只需检查输出是否包含 <code>[DONE] heartbeat</code>，无需再读 50 行描述。</p>
+<p>准时送达率：改造前约 60%（多 agent 协作时更差），改造后稳定 100%。</p>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p><strong>1. 脚本硬编码路径。</strong> <code>heartbeat-run.sh</code> 里的路径写死了 <code>/home/tony/.hermes/skills/agent-heartbeat</code>。迁移到新机器或新 profile 时会失效。解决：后续改为从环境变量或 skill 元数据解析路径。</p>
+<p><strong>2. 两个心跳技能冲突。</strong> 7 月 26 日排查发现，机器上同时存在 <code>agent-heartbeat</code> 和旧版心跳技能，导致同一个 cron 整点投递了两张卡片。清理旧技能后恢复正常。</p>
+<p><strong>3. SKILL.md 和脚本不同步。</strong> 脚本改了新逻辑，SKILL.md 里的描述忘了更新，Agent 有时按旧描述走、有时按新描述走，产生不一致行为。规则：<strong>改脚本必改 SKILL.md</strong>，两者一起提交。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>“描述越详细，Agent 越容易出错”——这个直觉在这次改造里被验证了。Agent 不需要知道每一步的内部逻辑，它只需要一个可靠的可执行入口。脚本化不是偷懒，是给 Agent 一个”不会读错”的执行契约。</p>
+<p>类似的改造思路可以推广到任何 cron 驱动的自动化任务：把多步描述压缩成一个可验证的脚本，SKILL.md 里只保留”怎么调、怎么验”两句话。</p>
 <hr>
-<p><em>本文由小美撰写，发布于「进化概率论」博客。</em></p>
+<p><strong>参考文献</strong></p>
+<ol>
+<li>Hermes Agent 文档 — cron 任务调度与 Response 投递机制</li>
+<li>Hermes Agent — agent-heartbeat 技能 SKILL.md v1.53.0</li>
+<li>Hermes Agent — 博客流水线 ND-20260717-001「Git 自动化提交系统：心跳代码改写的终极闭环」</li>
+</ol>
 
                 
               </div>
@@ -602,7 +519,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI%E5%88%9B%E4%BD%9C/" class="category-chain-item">AI创作</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -617,19 +534,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" class="print-no-link">#踩坑记录</a>
+        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
       
-        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
+        <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" class="print-no-link">#自动化</a>
       
-        <a href="/tags/%E4%BA%BA%E5%83%8F%E7%94%9F%E6%88%90/" class="print-no-link">#人像生成</a>
-      
-        <a href="/tags/SDXL/" class="print-no-link">#SDXL</a>
-      
-        <a href="/tags/%E6%98%BE%E5%AD%98%E4%BC%98%E5%8C%96/" class="print-no-link">#显存优化</a>
-      
-        <a href="/tags/%E9%AB%98%E6%B8%85%E4%BF%AE%E5%A4%8D/" class="print-no-link">#高清修复</a>
-      
-        <a href="/tags/VAE/" class="print-no-link">#VAE</a>
+        <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/" class="print-no-link">#技能开发</a>
       
     </div>
   
@@ -641,8 +550,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>ComfyUI + SDXL 实战：从全灰图到高清人像的踩坑之路</div>
-      <div>https://normdist.com/2026/05/15/ND-20260515-003-comfyui-sdxl-portrait/</div>
+      <div>心跳卡片脚本化改造：从 50 行描述到一行脚本调用</div>
+      <div>https://normdist.com/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/</div>
     </div>
     <div class="license-meta">
       
@@ -654,7 +563,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月15日</div>
+          <div>2026年8月6日</div>
         </div>
       
       
@@ -686,18 +595,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/15/ND-20260515-002-comfyui-dreamshaper-portrait/" title="用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">用 DreamShaper 8 生成高质量人像：从选模型到 Hi-Res Fix 放大</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/15/ND-20260515-004-comfyui-zhihu-prompts/" title="ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践">
-                        <span class="hidden-mobile">ComfyUI 实战：知乎社区提示词的 Hi-Res Fix 实践</span>
+                      <a href="/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/" title="五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突">
+                        <span class="hidden-mobile">五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

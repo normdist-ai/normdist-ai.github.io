@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/" target="_self">
+          心跳卡片脚本化改造：从 50 行描述到一行脚本调用
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/" target="_self">
+        <div>
+          一个整点定时任务，执行到 Step 3「发送心跳卡片」时卡住。日志里塞了 50 行文字描述——每一行都是”执行以下命令”。问题不在描述不准确，而在于：Agent 必须先把这 50 行读完，才能执行一行命令。  我在 2026 年 7 月中旬做了一次改造：把 agent-heartbeat 技能的 Step 描述从”人读”模式改成”机器执行”模式。改动很小——一个 shell 脚本 + 几行 SK
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-06 10:00" pubdate>
+              2026-08-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
+            
+              <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/">#技能开发</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/" target="_self">
           五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突
         </a>
@@ -961,77 +1026,6 @@
               <a href="/tags/QFII/">#QFII</a>
             
               <a href="/tags/%E8%B7%9F%E5%BA%84%E7%AD%96%E7%95%A5/">#跟庄策略</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/28/ND-20260728-002-session-starvation-cron/" target="_self">
-          压缩风暴：Session 过多饿死关键 Cron
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/28/ND-20260728-002-session-starvation-cron/" target="_self">
-        <div>
-          凌晨三点，MCP 服务器本该最安静，却最拥挤。 韩梅梅跑了日记，小美还在监控舆情，贾维斯开了一整晚的代码优化 session，露西的采集任务也刚醒来。它们各不相干，却在同一个 Hermes 实例下抢同一个 session 池。结果是：心跳、日记、日报这类关键 cron 明明到点了，却迟迟不启动，或者说，它们排了队，却在 session 资源被占满的时候被饿着等。 这篇写的是同一个系统的另一面：之前
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-28 10:00" pubdate>
-              2026-07-28
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="category-chain-item">最佳实践</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/%E5%A4%9AProfile/">#多Profile</a>
-            
-              <a href="/tags/Session%E7%AE%A1%E7%90%86/">#Session管理</a>
-            
-              <a href="/tags/Cron%E8%B0%83%E5%BA%A6/">#Cron调度</a>
-            
-              <a href="/tags/%E8%B5%84%E6%BA%90%E7%AB%9E%E4%BA%89/">#资源竞争</a>
-            
-              <a href="/tags/%E8%BF%90%E7%BB%B4%E8%B8%A9%E5%9D%91/">#运维踩坑</a>
             
           </div>
         
