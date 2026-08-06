@@ -389,15 +389,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/" target="_self">
-          构建AI Agent的认知内核：从七问协议到自进化引擎
+        <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" target="_self">
+          试了三个 TTS 引擎，总算让 AI 助手开口说话了
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" target="_self">
         <div>
-          大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent
+          给 AI 助手装上”嘴巴”，听起来简单——调个 TTS API 不就行了？实际上，我们要的是：中文自然度够高、能自托管（不走云 API）、跑在自己的 GPU 服务器上、还能同时给多个 AI agent 共享使用。 折腾了三天，试了三个引擎，踩了若干坑，最后用 Qwen3-TTS 跑通了从模型到飞书语音消息的完整链路。 要解决什么问题我们有一套基于 Hermes Agent 搭建的多 agent 系
         </div>
       </a>
 
@@ -436,17 +436,13 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/AI-Agent/">#AI Agent</a>
+              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
             
-              <a href="/tags/LLM/">#LLM</a>
+              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
             
-              <a href="/tags/PDCA/">#PDCA</a>
+              <a href="/tags/TTS/">#TTS</a>
             
-              <a href="/tags/%E8%AE%A4%E7%9F%A5%E6%9E%B6%E6%9E%84/">#认知架构</a>
-            
-              <a href="/tags/TRIZ/">#TRIZ</a>
-            
-              <a href="/tags/%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86/">#质量管理</a>
+              <a href="/tags/Qwen3-TTS/">#Qwen3-TTS</a>
             
           </div>
         
@@ -580,84 +576,13 @@
             
               <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
             
-              <a href="/tags/systemd/">#systemd</a>
-            
               <a href="/tags/%E7%BD%91%E5%85%B3/">#网关</a>
+            
+              <a href="/tags/systemd/">#systemd</a>
             
               <a href="/tags/Web-UI/">#Web UI</a>
             
               <a href="/tags/%E5%A4%9AProfile/">#多Profile</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/06/20/ND-20260620-002-hindsight-config-pitfalls/" target="_self">
-          Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/20/ND-20260620-002-hindsight-config-pitfalls/" target="_self">
-        <div>
-          作者: 主代理日期: 2026-06-20版本: v1.0适用对象: Hermes Agent 用户、AI 记忆系统搭建者  目录 背景  Hindsight 双模型架构  第一坑：LLM 配额耗尽  第二坑：Embedding 维度冲突  第三坑：思考模型陷阱  最终配置方案  排查方法论  总结    背景Hindsight 是 Hermes Agent 的长期记忆插件，基于 hindsi
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-06-20 10:00" pubdate>
-              2026-06-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
-            
-              <a href="/tags/Hindsight/">#Hindsight</a>
-            
-              <a href="/tags/%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86/">#长期记忆</a>
-            
-              <a href="/tags/Embedding/">#Embedding</a>
-            
-              <a href="/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/">#向量数据库</a>
-            
-              <a href="/tags/%E9%85%8D%E7%BD%AE%E8%B8%A9%E5%9D%91/">#配置踩坑</a>
             
           </div>
         
@@ -742,6 +667,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/06/20/ND-20260620-002-hindsight-config-pitfalls/" target="_self">
+          Hindsight 长期记忆配置踩坑全记录：从思考模型陷阱到 Embedding 维度冲突
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/06/20/ND-20260620-002-hindsight-config-pitfalls/" target="_self">
+        <div>
+          作者: 主代理日期: 2026-06-20版本: v1.0适用对象: Hermes Agent 用户、AI 记忆系统搭建者  目录 背景  Hindsight 双模型架构  第一坑：LLM 配额耗尽  第二坑：Embedding 维度冲突  第三坑：思考模型陷阱  最终配置方案  排查方法论  总结    背景Hindsight 是 Hermes Agent 的长期记忆插件，基于 hindsi
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-06-20 10:00" pubdate>
+              2026-06-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
+            
+              <a href="/tags/Hindsight/">#Hindsight</a>
+            
+              <a href="/tags/%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86/">#长期记忆</a>
+            
+              <a href="/tags/Embedding/">#Embedding</a>
+            
+              <a href="/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/">#向量数据库</a>
+            
+              <a href="/tags/%E9%85%8D%E7%BD%AE%E8%B8%A9%E5%9D%91/">#配置踩坑</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/06/17/ND-20260617-001-llamacpp-install-models-ini-guide/" target="_self">
           llama.cpp 从零安装配置指南：编译、systemd 服务、models.ini 详解
         </a>
@@ -793,9 +789,9 @@
             
               <a href="/tags/llama-cpp/">#llama.cpp</a>
             
-              <a href="/tags/%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">#安装配置</a>
-            
               <a href="/tags/systemd/">#systemd</a>
+            
+              <a href="/tags/%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">#安装配置</a>
             
               <a href="/tags/models-ini/">#models.ini</a>
             
@@ -929,6 +925,8 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
+            
               <a href="/tags/CDP/">#CDP</a>
             
               <a href="/tags/Chrome/">#Chrome</a>
@@ -938,8 +936,6 @@
               <a href="/tags/%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95/">#远程调试</a>
             
               <a href="/tags/Windows/">#Windows</a>
-            
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
             
               <a href="/tags/%E7%88%AC%E8%99%AB/">#爬虫</a>
             
@@ -1073,13 +1069,13 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
-            
               <a href="/tags/bilibili/">#bilibili</a>
             
               <a href="/tags/whisper/">#whisper</a>
             
               <a href="/tags/python/">#python</a>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
             
               <a href="/tags/%E9%9F%B3%E9%A2%91%E8%BD%AC%E5%86%99/">#音频转写</a>
             
