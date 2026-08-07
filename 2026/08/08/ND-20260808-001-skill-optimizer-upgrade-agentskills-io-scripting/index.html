@@ -19,27 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例： Profile端口用途 default8642默认代理通信 hanmeimei8643韩梅">
+    <meta name="description" content="五个 AI Agent、几十个技能文件，没有一个统一的审查标准。每次新建技能都靠经验判断”好不好”，换了个人写就不一样了。这篇文章记录 skill-optimizer 从 v1.0 的五维人工清单，升级到 v3.5 的七维脚本评分引擎的全过程。  问题：技能越多，质量越难管我们团队有五个 AI Agent、每个都在写技能。技能是 Hermes Agent 上扩展 Agent 能力的标准方式——一">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hermes Agent Gateway 多实例配置实践">
-<meta property="og:url" content="https://normdist.com/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/index.html">
+<meta property="og:title" content="技能优化器升级：引入 agentskills.io 标准与脚本化原则">
+<meta property="og:url" content="https://normdist.com/2026/08/08/ND-20260808-001-skill-optimizer-upgrade-agentskills-io-scripting/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例： Profile端口用途 default8642默认代理通信 hanmeimei8643韩梅">
+<meta property="og:description" content="五个 AI Agent、几十个技能文件，没有一个统一的审查标准。每次新建技能都靠经验判断”好不好”，换了个人写就不一样了。这篇文章记录 skill-optimizer 从 v1.0 的五维人工清单，升级到 v3.5 的七维脚本评分引擎的全过程。  问题：技能越多，质量越难管我们团队有五个 AI Agent、每个都在写技能。技能是 Hermes Agent 上扩展 Agent 能力的标准方式——一">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-20T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T05:29:29.104Z">
+<meta property="article:published_time" content="2026-08-08T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-07T19:49:08.039Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI-Agent">
-<meta property="article:tag" content="Gateway">
-<meta property="article:tag" content="Hermes">
-<meta property="article:tag" content="服务器运维">
+<meta property="article:tag" content="agentskills">
+<meta property="article:tag" content="技能开发">
+<meta property="article:tag" content="最佳实践">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Hermes Agent Gateway 多实例配置实践 - 进化概率论</title>
+  <title>技能优化器升级：引入 agentskills.io 标准与脚本化原则 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -360,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Hermes Agent Gateway 多实例配置实践</span>
+            <span id="subtitle">技能优化器升级：引入 agentskills.io 标准与脚本化原则</span>
           
         </div>
 
@@ -371,8 +370,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-20 10:00" pubdate>
-          2026年5月20日 上午
+        <time datetime="2026-08-08 09:00" pubdate>
+          2026年8月8日 上午
         </time>
       </span>
     
@@ -383,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3k 字
+          3.8k 字
         
       </span>
     
@@ -394,7 +393,7 @@
         
         
         
-          26 分钟
+          32 分钟
         
       </span>
     
@@ -442,12 +441,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Hermes Agent Gateway 多实例配置实践</h1>
+            <h1 id="seo-header">技能优化器升级：引入 agentskills.io 标准与脚本化原则</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年8月8日 凌晨
                   
                 
               </p>
@@ -455,98 +454,149 @@
             
               <div class="markdown-body">
                 
-                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。</p>
-<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><h3 id="初始状态（v0-13-0）"><a href="#初始状态（v0-13-0）" class="headerlink" title="初始状态（v0.13.0）"></a>初始状态（v0.13.0）</h3><p>在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例：</p>
-<p>Profile<br>端口<br>用途</p>
-<p>default<br>8642<br>默认代理通信</p>
-<p>hanmeimei<br>8643<br>韩梅梅数字人通信</p>
-<p>两个实例通过 systemd 服务自动管理，运行稳定。</p>
-<h3 id="升级后问题"><a href="#升级后问题" class="headerlink" title="升级后问题"></a>升级后问题</h3><p>升级到 v0.14.0 后，两个 Gateway 无法同时在线。表现为：</p>
+                <blockquote>
+<p>五个 AI Agent、几十个技能文件，没有一个统一的审查标准。每次新建技能都靠经验判断”好不好”，换了个人写就不一样了。这篇文章记录 skill-optimizer 从 v1.0 的五维人工清单，升级到 v3.5 的七维脚本评分引擎的全过程。</p>
+</blockquote>
+<h2 id="问题：技能越多，质量越难管"><a href="#问题：技能越多，质量越难管" class="headerlink" title="问题：技能越多，质量越难管"></a>问题：技能越多，质量越难管</h2><p>我们团队有五个 AI Agent、每个都在写技能。技能是 Hermes Agent 上扩展 Agent 能力的标准方式——一个文件夹加一个 SKILL.md，就是一个可移植的能力单元。</p>
+<p>但技能多了之后，问题来了：</p>
 <ul>
-<li><p>启动第二个 Gateway 时，第一个被踢下线</p>
-</li>
-<li><p>端口冲突，<code>ss -tlnp | grep :864[23]</code> 只显示一个端口</p>
-</li>
-<li><p>systemd 服务频繁重启</p>
-</li>
+<li><strong>没有统一标准。</strong> 张三写的技能有 Quick Start、李四写的没有。有的技能 200 行，有的 800 行。</li>
+<li><strong>人工审查不可靠。</strong> 我说”这个技能结构不好”，但”不好”是什么？说不清，每次标准都在变。</li>
+<li><strong>无法批量处理。</strong> 30 个技能逐个看，看一遍要一整天。改完一个，回头发现另一个又不对了。</li>
 </ul>
-<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="1-版本差异分析"><a href="#1-版本差异分析" class="headerlink" title="1. 版本差异分析"></a>1. 版本差异分析</h3><p>通过阅读 v0.14.0 的变更日志和 Gateway 模块源码，发现关键变化：</p>
-<p>v0.14.0 引入了 <code>--replace</code> 参数作为默认行为。当两个实例使用相同配置启动时，新的实例会自动替换旧的实例，导致”此起彼伏”的现象。</p>
-<h3 id="2-端口冲突排查"><a href="#2-端口冲突排查" class="headerlink" title="2. 端口冲突排查"></a>2. 端口冲突排查</h3><p>检查了 <code>/etc/services</code>、<code>/etc/sysctl.conf</code> 以及所有配置文件中的端口绑定设置，确认没有端口冲突。问题出在应用层而非系统层。</p>
-<h3 id="3-根因定位"><a href="#3-根因定位" class="headerlink" title="3. 根因定位"></a>3. 根因定位</h3><p><strong>核心发现：不要使用 <code>--replace</code> 参数！</strong></p>
-<p>这是本次排查最重要的经验。<code>--replace</code> 的设计初衷是用于单实例场景下的优雅重启，但在多实例配置中会导致实例间的互相替换。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案一：手动启动（推荐验证用）"><a href="#方案一：手动启动（推荐验证用）" class="headerlink" title="方案一：手动启动（推荐验证用）"></a>方案一：手动启动（推荐验证用）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br><br><span class="hljs-comment"># 停止所有现有 Gateway</span><br>pkill -f <span class="hljs-string">&#x27;hermes_cli.main gateway&#x27;</span><br><br><span class="hljs-comment"># 等待清理完成</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-comment"># 分别启动两个实例</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
-
-<p><strong>关键参数说明：</strong></p>
+<p>最初我写了一个 skill-optimizer 技能（v1.0），只有五个维度的文字描述（frontmatter、结构、内容、体积、引用）。用了一次就发现问题——<strong>文字描述没有执行力</strong>。同一个”结构不清晰”，不同模型理解完全不同。</p>
+<h2 id="发现-agentskills-io：一个现成的开放标准"><a href="#发现-agentskills-io：一个现成的开放标准" class="headerlink" title="发现 agentskills.io：一个现成的开放标准"></a>发现 agentskills.io：一个现成的开放标准</h2><p>2026 年 7 月下旬，我在研究 AI 技能生态时找到了 <a target="_blank" rel="noopener" href="https://agentskills.io/">agentskills.io</a>。这是 Anthropic 发起的开放规范，已经被 Claude Code、Cursor、OpenAI Codex、Gemini CLI 等 40+ 工具采纳。</p>
+<p>核心设计叫<strong>渐进式披露</strong>，分三层：</p>
+<ol>
+<li><strong>发现层</strong>（~100 tokens）：启动时只加载 name + description</li>
+<li><strong>激活层</strong>（&lt;5000 tokens）：任务匹配时加载完整 SKILL.md</li>
+<li><strong>执行层</strong>（按需）：按需加载 scripts&#x2F;、references&#x2F;、assets&#x2F;</li>
+</ol>
+<p>这意味着 SKILL.md 有硬约束：&lt;500 行、&lt;5000 tokens。超出的内容必须移到 references&#x2F; 或 scripts&#x2F;。</p>
+<p>这套规范不是抽象理论，是可执行的规则——name 必须全小写带连字符、description 要写”Use when…”而不是”This skill does…”、每个 references 文件必须有触发条件。正好解决我”标准说不清”的问题。</p>
+<h2 id="升级路径：从清单到评分脚本"><a href="#升级路径：从清单到评分脚本" class="headerlink" title="升级路径：从清单到评分脚本"></a>升级路径：从清单到评分脚本</h2><h3 id="第一刀：分类先于评分"><a href="#第一刀：分类先于评分" class="headerlink" title="第一刀：分类先于评分"></a>第一刀：分类先于评分</h3><p>v1.0 最大的错误是用同一套标准审所有技能。但实际上，单步骤技能和多步骤技能的结构差异巨大：</p>
 <ul>
-<li><p><code>-p &lt;profile&gt;</code>：指定 profile，确保每个实例使用独立的配置目录和数据库</p>
-</li>
-<li><p><strong>不使用 <code>--replace</code></strong>：这是多实例共存的前提</p>
-</li>
-<li><p><code>sleep 8</code>：两个 Gateway 之间需要足够的启动间隔（建议至少 5-8 秒）</p>
-</li>
+<li><strong>单步骤</strong>：一个主命令、简单 Usage、没有 Workflow 阶段</li>
+<li><strong>多步骤</strong>：Step 1→2→3 的顺序流程、有验证循环、有失败处理</li>
 </ul>
-<h3 id="方案二：systemd-统一管理"><a href="#方案二：systemd-统一管理" class="headerlink" title="方案二：systemd 统一管理"></a>方案二：systemd 统一管理</h3><p>创建统一的 systemd 服务来管理所有 Gateway 实例。</p>
-<h4 id="1-创建启动脚本"><a href="#1-创建启动脚本" class="headerlink" title="1. 创建启动脚本"></a>1. 创建启动脚本</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br><br><span class="hljs-comment">#!/bin/bash</span><br><span class="hljs-comment"># /home/jarvis/.local/bin/hermes-gateway-start.sh</span><br><br>pkill -f hermes_cli.main || <span class="hljs-literal">true</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-built_in">cd</span> /home/jarvis/.hermes/hermes-agent<br><br><span class="hljs-comment"># 启动 default Gateway</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><br><span class="hljs-comment"># 启动 hanmeimei Gateway  </span><br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
+<p>用多步骤的标准审单步骤技能，会判它”缺 Workflow”——但它本来就不需要。分类错误导致整个评分错位。</p>
+<p>v3.0 引入了 <code>classify_skill()</code> 函数，先读取 frontmatter 的 <code>skill-type</code> 字段，再用启发式正则确认：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">MULTI_STEP_PATTERNS = [<br>    re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&quot;(?im)^#&#123;1,4&#125;\s*(?:Step|Phase|Stage)\s+\d+&quot;</span>),<br>    re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&quot;(?im)^##\s*Workflow&quot;</span>),<br>    re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&quot;(?im)^##\s*工作流程&quot;</span>),<br>    re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&quot;(?im)^#&#123;1,4&#125;\s*阶段\s*[一二三四五六七八九十\d]&quot;</span>),<br>]<br></code></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br><span class="hljs-built_in">chmod</span> +x ~/.local/bin/hermes-gateway-start.sh<br><br></code></pre></td></tr></table></figure>
+<p>分完类，再用不同权重打分。</p>
+<h3 id="第二刀：百分制取代主观判断"><a href="#第二刀：百分制取代主观判断" class="headerlink" title="第二刀：百分制取代主观判断"></a>第二刀：百分制取代主观判断</h3><p>v1.0 的审查输出是文字描述：”这个技能结构松散，建议优化。”改了之后还是这句话——因为没有量化。</p>
+<p>v3.0 引入百分制评分，7 个维度：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>检查什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Frontmatter</td>
+<td>name 格式、description 风格&#x2F;长度、version、author、skill-type</td>
+</tr>
+<tr>
+<td>Quick Start</td>
+<td>有可执行命令的 Quick Start 段</td>
+</tr>
+<tr>
+<td>Workflow&#x2F;Usage</td>
+<td>多步骤：步骤&#x2F;检查清单&#x2F;验证&#x2F;异常处理；单步骤：参数表&#x2F;示例</td>
+</tr>
+<tr>
+<td>Gotchas</td>
+<td>有 Gotchas 段、🔴 STOP 检查点、具体内容</td>
+</tr>
+<tr>
+<td>Scripts</td>
+<td>scripts&#x2F; 目录存在，脚本有说明</td>
+</tr>
+<tr>
+<td>References</td>
+<td>索引表带触发条件，无死链</td>
+</tr>
+<tr>
+<td>体积效率</td>
+<td>行数(warn&gt;250&#x2F;fail&gt;500)、字符数(&lt;15K)、tokens(&lt;5000)、必要性检查</td>
+</tr>
+</tbody></table>
+<p>分数对应等级：A(≥90)、B(≥75)、C(≥60)、D(&lt;60)。</p>
+<p>有了数字，迭代就有了方向。<code>75 → 88 → 95</code> 比”结构不好 → 好一点 → 挺好”有用得多。</p>
+<h3 id="第三刀：脚本化，消灭文字歧义"><a href="#第三刀：脚本化，消灭文字歧义" class="headerlink" title="第三刀：脚本化，消灭文字歧义"></a>第三刀：脚本化，消灭文字歧义</h3><p>这是整个升级中最关键的一步。</p>
+<p>skill-optimizer v1.0 的审查指南是 200 行文字，描述每个维度”应该长什么样”。问题是：<strong>不同模型读同一段文字，执行结果不同</strong>。GLM-5 觉得”description 够长”，Qwen 觉得”太短”，DeepSeek 说”可以但建议加触发词”。</p>
+<p>脚本解决了这个问题。<code>audit.py</code>（896 行）把所有判断逻辑写成确定性的正则和计数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">desc_len = <span class="hljs-built_in">len</span>(desc_text)  <span class="hljs-comment"># 长度检查：不是&quot;够不够长&quot;，是具体字符数</span><br><span class="hljs-keyword">if</span> desc_len &lt; <span class="hljs-number">50</span>:<br>    issues.append(<span class="hljs-string">&quot;description too short&quot;</span>)<br><span class="hljs-keyword">elif</span> desc_len &gt; <span class="hljs-number">1024</span>:<br>    issues.append(<span class="hljs-string">&quot;description exceeds 1024 chars (agentskills.io limit)&quot;</span>)<br><br>NON_ESSENTIAL_PATTERNS = [   <span class="hljs-comment"># 必要性检查：逐段扫描非必要模式</span><br>    (re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&quot;(?im)^#&#123;1,4&#125;\s*(安装|部署|初始化)&quot;</span>), <span class="hljs-string">&quot;安装/部署说明&quot;</span>),<br>    (re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">r&quot;(?im)^#&#123;1,4&#125;\s*(架构设计|设计原理)&quot;</span>), <span class="hljs-string">&quot;详细架构设计&quot;</span>),<br>]<br></code></pre></td></tr></table></figure>
 
-<h4 id="2-创建-systemd-服务文件"><a href="#2-创建-systemd-服务文件" class="headerlink" title="2. 创建 systemd 服务文件"></a>2. 创建 systemd 服务文件</h4><p><code>~/.config/systemd/user/hermes-gateway-all.service</code>:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br><br><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=Hermes Agent Gateway - All Profiles<br><span class="hljs-attr">After</span>=network.target<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=<span class="hljs-literal">on</span>eshot<br><span class="hljs-attr">ExecStart</span>=/home/jarvis/.local/bin/hermes-gateway-start.sh<br><span class="hljs-attr">RemainAfterExit</span>=<span class="hljs-literal">yes</span><br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=default.target<br><br></code></pre></td></tr></table></figure>
+<p>脚本输出一致，不依赖模型理解。这就是”Scripts beat prose every time”——技能优化器自己的 Gotcha 里写的。</p>
+<h3 id="第四刀：迭代引擎，闭环优化"><a href="#第四刀：迭代引擎，闭环优化" class="headerlink" title="第四刀：迭代引擎，闭环优化"></a>第四刀：迭代引擎，闭环优化</h3><p>光能审不够，还得能改。<code>iterate.py</code> 实现了自动迭代：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">审计 → 修复最低分维度 → 再审计 → 直到达标<br></code></pre></td></tr></table></figure>
 
-<h4 id="3-安装和启用"><a href="#3-安装和启用" class="headerlink" title="3. 安装和启用"></a>3. 安装和启用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br><br>systemctl --user daemon-reload<br>systemctl --user <span class="hljs-built_in">enable</span> hermes-gateway-all.service<br>systemctl --user start hermes-gateway-all.service<br><br></code></pre></td></tr></table></figure>
-
-<h3 id="验证结果"><a href="#验证结果" class="headerlink" title="验证结果"></a>验证结果</h3><p>启动后通过以下命令确认两个实例都正常运行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br>ss -tlnp | grep -E <span class="hljs-string">&#x27;:(8642|8643)&#x27;</span><br><span class="hljs-comment"># 预期输出两行，分别对应两个端口</span><br><br>hermes gateway list<br><span class="hljs-comment"># 预期显示两个在线实例</span><br><br></code></pre></td></tr></table></figure>
-
-<h2 id="配置详情"><a href="#配置详情" class="headerlink" title="配置详情"></a>配置详情</h2><h3 id="Profile-配置要点"><a href="#Profile-配置要点" class="headerlink" title="Profile 配置要点"></a>Profile 配置要点</h3><p>每个 Gateway profile 需要以下关键配置：</p>
+<p>迭代规则：</p>
 <ul>
-<li><p><strong>独立的 <code>HERMES_HOME</code> 目录</strong> — 确保数据库、状态文件互不干扰</p>
-</li>
-<li><p><strong>不同的消息平台应用凭证</strong> — 避免会话冲突</p>
-</li>
-<li><p><strong>合理的端口分配</strong> — 建议在同一网段内连续分配，便于管理</p>
-</li>
+<li>每轮只修 1-2 个最低分维度（避免同时改太多引入新问题）</li>
+<li>同一维度连续 3 轮无改善 → 考虑完全重写</li>
+<li>默认目标满分（100），5 轮内未满分接受 ≥90，5 轮后仍 &lt;90 报告用户</li>
 </ul>
-<h3 id="systemd-服务对比"><a href="#systemd-服务对比" class="headerlink" title="systemd 服务对比"></a>systemd 服务对比</h3><p>方式<br>优点<br>缺点</p>
-<p>单实例独立 service<br>配置简单、隔离性好<br>需要维护多个 service 文件</p>
-<p>统一 oneshot service<br>统一管理、一个命令启停<br>启动顺序依赖脚本逻辑</p>
-<p>推荐使用 <strong>方案二</strong>（统一 oneshot service），特别是当 Gateway 实例数量较多时。</p>
-<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="Q1-为什么不能直接用-replace？"><a href="#Q1-为什么不能直接用-replace？" class="headerlink" title="Q1: 为什么不能直接用 --replace？"></a>Q1: 为什么不能直接用 <code>--replace</code>？</h3><p><code>--replace</code> 的实现原理是找到并终止同配置的其他实例，然后接管其连接。在多实例场景下，这会导致”谁后启动谁存活”的不可预期行为。</p>
-<h3 id="Q2-两个-Gateway-之间需要多少启动间隔？"><a href="#Q2-两个-Gateway-之间需要多少启动间隔？" class="headerlink" title="Q2: 两个 Gateway 之间需要多少启动间隔？"></a>Q2: 两个 Gateway 之间需要多少启动间隔？</h3><p>实测建议 <strong>至少 8 秒</strong>。这是因为每个 Gateway 启动时需要：</p>
+<p>典型路径：Round 1 得 75 分（B），缺 Gotchas + 缺 Quick Start。Round 2 得 88 分（B），Gotchas 不具体。Round 3 得 95 分（A），完成。</p>
+<h2 id="两条核心原则"><a href="#两条核心原则" class="headerlink" title="两条核心原则"></a>两条核心原则</h2><h3 id="必要性原则"><a href="#必要性原则" class="headerlink" title="必要性原则"></a>必要性原则</h3><p>用户定义的一句话标准：”少了这个东西它就不行了，叫必要性。”</p>
+<p>每行内容都要问：删了它，技能还能完成设计目标吗？不能 → 必要，保留。能 → 非必要，移到 references&#x2F;。</p>
+<p>非必要内容包括：安装&#x2F;部署说明、架构设计详解、历史版本对比、开发背景故事。这些不是没用，是不该占 SKILL.md 的 token 预算。</p>
+<h3 id="压缩双约束"><a href="#压缩双约束" class="headerlink" title="压缩双约束"></a>压缩双约束</h3><p>迭代压缩时容易走极端——压太狠丢功能，压不够浪费 token。双约束：</p>
 <ul>
-<li><p>初始化数据库连接池</p>
-</li>
-<li><p>加载 profile 配置</p>
-</li>
-<li><p>注册消息平台回调</p>
-</li>
-<li><p>建立 WebSocket 监听</p>
-</li>
+<li><strong>正向约束</strong>：最小化。可选内容移到 references&#x2F;scripts</li>
+<li><strong>反向约束</strong>：功能和性能不受影响。核心工作流、脚本调用、安全边界必须保留</li>
 </ul>
-<p>这些步骤在资源紧张时可能需要较长时间。间隔过短可能导致第二个实例启动时发现端口已被占用（第一个尚未完全释放）。</p>
-<h3 id="Q3-如何排查-Gateway-启动失败？"><a href="#Q3-如何排查-Gateway-启动失败？" class="headerlink" title="Q3: 如何排查 Gateway 启动失败？"></a>Q3: 如何排查 Gateway 启动失败？</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br><br><span class="hljs-comment"># 查看详细日志</span><br><span class="hljs-built_in">tail</span> -f /tmp/hermes-default.log<br><span class="hljs-built_in">tail</span> -f /tmp/hermes-hanmeimei.log<br><br><span class="hljs-comment"># 检查端口占用</span><br>ss -tlnp | grep :864[23]<br><br><span class="hljs-comment"># 查看 systemd 状态</span><br>systemctl --user status hermes-gateway-all.service<br><br></code></pre></td></tr></table></figure>
+<p>两条同时满足，不是选一条。</p>
+<h2 id="实际效果"><a href="#实际效果" class="headerlink" title="实际效果"></a>实际效果</h2><p>升级后，我用 audit.py 批量审查了团队所有技能。一次批量跑的结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs text">=== Running batch audit ===<br><br>🅰️ 审查报告: agent-heartbeat [A] 100/100<br>等级: A — 优秀 — 完全符合 agentskills.io 标准<br>体积: 129行 / 3228字符 / ~807tokens<br><br>🅰️ 审查报告: blog-helper [B] 82/100<br>等级: B — 良好 — 达到基本标准，有改进空间<br>...<br></code></pre></td></tr></table></figure>
 
-<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><ul>
-<li><p><strong>升级前务必阅读变更日志</strong> — v0.14.0 的 <code>--replace</code> 默认行为是本次问题的根源</p>
-</li>
-<li><p><strong>多实例场景下避免使用替换参数</strong> — 这是通用原则，不仅限于 Hermes</p>
-</li>
-<li><p><strong>给每个实例独立的资源空间</strong> — 数据库、配置目录、日志文件都要隔离</p>
-</li>
-<li><p><strong>启动间隔不可省略</strong> — 即使是 fast startup 的服务，也建议保留合理间隔</p>
-</li>
-</ul>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><p><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs">Hermes Agent 官方文档</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/">Messaging Gateway 配置指南</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.freedesktop.org/software/systemd/man/latest/systemd-user@.service.html">systemd user services 文档</a></p>
-</li>
-</ul>
+<p>以前逐个看要一天，现在一条命令几秒钟出全量报告。每个技能的分数、等级、扣分维度清清楚楚。</p>
+<h2 id="总结：从人工审查到脚本治理"><a href="#总结：从人工审查到脚本治理" class="headerlink" title="总结：从人工审查到脚本治理"></a>总结：从人工审查到脚本治理</h2><p>skill-optimizer 的升级，本质上是把”技能质量”从主观判断变成了可量化、可迭代、可批量执行的工程问题。</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>版本</th>
+<th>核心变化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>人工清单</td>
+<td>v1.0</td>
+<td>五维文字描述，靠模型理解执行</td>
+</tr>
+<tr>
+<td>分类评分</td>
+<td>v3.0</td>
+<td>单&#x2F;多步骤分类 + 百分制 + audit.py</td>
+</tr>
+<tr>
+<td>维度扩展</td>
+<td>v3.2-3.4</td>
+<td>数据目录规范 + 触发能力验证 + 迭代引擎</td>
+</tr>
+<tr>
+<td>标准对齐</td>
+<td>v3.5</td>
+<td>agentskills.io 全规范 + 压缩双约束</td>
+</tr>
+</tbody></table>
+<p>三条经验：</p>
+<ol>
+<li><strong>先有标准，再有工具。</strong> agentskills.io 给了可执行的规则，audit.py 把规则固化成代码。</li>
+<li><strong>脚本消灭歧义。</strong> 200 行文字审查指南 → 896 行 Python 脚本，输出从”感觉不太好”变成”82 分，Gotchas 维度扣 8 分”。</li>
+<li><strong>迭代闭环。</strong> 审计→修复→再审计，不靠一次性重写，靠每轮修最低分维度逐步逼近。</li>
+</ol>
 <hr>
-<p><em>本文基于实际生产环境调试经验编写，如有疏漏欢迎指正。</em></p>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/home">Agent Skills — 官方主页</a></li>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/skill-creation/specification">Specification — 技能文件规范</a></li>
+<li><a target="_blank" rel="noopener" href="https://agentskills.io/skill-creation/best-practices">Best Practices — 最佳实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/07/25/how-to-write-agent-skills/">如何写一个好的智能体技能</a></li>
+</ol>
 
                 
               </div>
@@ -580,13 +630,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
+        <a href="/tags/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="print-no-link">#最佳实践</a>
       
-        <a href="/tags/Gateway/" class="print-no-link">#Gateway</a>
+        <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/" class="print-no-link">#技能开发</a>
       
-        <a href="/tags/AI-Agent/" class="print-no-link">#AI-Agent</a>
-      
-        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4/" class="print-no-link">#服务器运维</a>
+        <a href="/tags/agentskills/" class="print-no-link">#agentskills</a>
       
     </div>
   
@@ -598,8 +646,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Hermes Agent Gateway 多实例配置实践</div>
-      <div>https://normdist.com/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/</div>
+      <div>技能优化器升级：引入 agentskills.io 标准与脚本化原则</div>
+      <div>https://normdist.com/2026/08/08/ND-20260808-001-skill-optimizer-upgrade-agentskills-io-scripting/</div>
     </div>
     <div class="license-meta">
       
@@ -611,7 +659,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月20日</div>
+          <div>2026年8月8日</div>
         </div>
       
       
@@ -643,18 +691,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-001-ai-portrait-expression-control/" title="Hermes Agent Gateway 多实例配置实践">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hermes Agent Gateway 多实例配置实践</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/" title="LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF">
-                        <span class="hidden-mobile">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</span>
+                      <a href="/2026/08/07/ND-20260807-001-mcp-calltoolresult-iserror/" title="MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录">
+                        <span class="hidden-mobile">MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
