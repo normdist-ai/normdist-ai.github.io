@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/09/ND-20260809-001-dual-2080ti-pcie-bandwidth-bottleneck-recalculation/" target="_self">
+          双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？（重算修正版）
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/09/ND-20260809-001-dual-2080ti-pcie-bandwidth-bottleneck-recalculation/" target="_self">
+        <div>
+          本文是对《双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测》的重算修正版。原文的显存带宽天花板计算存在量化精度错误，导致理论极限被高估了近一倍。修正后，结论方向不变（显存带宽是瓶颈，PCIe 不是），但数字全部对齐。  为什么要重算原文的核心论证链是这样的：  Qwen3.6-35B-A3B 每次只激活约 3B 参数 Q4_K_M 量化 → 按 2 bytes&#x2F;param
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-09 09:00" pubdate>
+              2026-08-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/RTX-2080-Ti/">#RTX 2080 Ti</a>
+            
+              <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/">#性能分析</a>
+            
+              <a href="/tags/%E6%98%BE%E5%AD%98%E5%B8%A6%E5%AE%BD/">#显存带宽</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/08/ND-20260808-002-a2a-plus-old-hermes-compatibility/" target="_self">
           A2A 与 A2A Plus：AI Agent 跨机器通信协议配置与旧版兼容实战
         </a>
@@ -835,9 +900,9 @@
             
               <a href="/tags/%E6%B2%99%E7%9B%98%E6%8E%A8%E6%BC%94/">#沙盘推演</a>
             
-              <a href="/tags/Bug%E4%BF%AE%E5%A4%8D/">#Bug修复</a>
-            
               <a href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/">#贝叶斯</a>
+            
+              <a href="/tags/Bug%E4%BF%AE%E5%A4%8D/">#Bug修复</a>
             
           </div>
         
@@ -900,9 +965,9 @@
             
               <a href="/tags/%E6%B2%99%E7%9B%98%E6%8E%A8%E6%BC%94/">#沙盘推演</a>
             
-              <a href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/">#贝叶斯</a>
-            
               <a href="/tags/%E5%A4%9A%E6%A8%A1%E5%9E%8B%E8%9E%8D%E5%90%88/">#多模型融合</a>
+            
+              <a href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/">#贝叶斯</a>
             
           </div>
         
@@ -975,76 +1040,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/08/01/ND-20260801-001-lazy-loading-architecture-420x-speedup/" target="_self">
-          懒加载架构：从方案设计到 420 倍提速
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/01/ND-20260801-001-lazy-loading-architecture-420x-speedup/" target="_self">
-        <div>
-          一次被 72 秒吓到的启动上周把 AutoQuant 量化系统从 Docker 迁到裸跑后，我发现一个隐蔽问题：每次 Git 心跳触发一次 commit，systemd 服务会短暂重启，整个系统冷启动一次。日志里记录着 Jul 15 08:31:22——从进程启动到第一条量化心跳跑完，72 秒。 72 秒意味着什么？在 5 分钟心跳间隔下，相当于每个周期有 24% 的时间在空转。如果心跳压到 1
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-08-01 03:47" pubdate>
-              2026-08-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">#架构设计</a>
-            
-              <a href="/tags/%E6%87%92%E5%8A%A0%E8%BD%BD/">#懒加载</a>
-            
-              <a href="/tags/%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96/">#启动优化</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/#board">13</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/#board">14</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

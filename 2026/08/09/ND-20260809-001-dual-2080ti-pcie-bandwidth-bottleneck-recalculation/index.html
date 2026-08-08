@@ -1,0 +1,1095 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文是对《双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测》的重算修正版。原文的显存带宽天花板计算存在量化精度错误，导致理论极限被高估了近一倍。修正后，结论方向不变（显存带宽是瓶颈，PCIe 不是），但数字全部对齐。  为什么要重算原文的核心论证链是这样的：  Qwen3.6-35B-A3B 每次只激活约 3B 参数 Q4_K_M 量化 → 按 2 bytes&#x2F;param">
+<meta property="og:type" content="article">
+<meta property="og:title" content="双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？（重算修正版）">
+<meta property="og:url" content="https://normdist.com/2026/08/09/ND-20260809-001-dual-2080ti-pcie-bandwidth-bottleneck-recalculation/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="本文是对《双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测》的重算修正版。原文的显存带宽天花板计算存在量化精度错误，导致理论极限被高估了近一倍。修正后，结论方向不变（显存带宽是瓶颈，PCIe 不是），但数字全部对齐。  为什么要重算原文的核心论证链是这样的：  Qwen3.6-35B-A3B 每次只激活约 3B 参数 Q4_K_M 量化 → 按 2 bytes&#x2F;param">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-09T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-08T19:49:18.632Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="RTX 2080 Ti">
+<meta property="article:tag" content="性能分析">
+<meta property="article:tag" content="显存带宽">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？（重算修正版） - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？（重算修正版）</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-09 09:00" pubdate>
+          2026年8月9日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？（重算修正版）</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年8月9日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>本文是对《双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？一次深度实测》的重算修正版。原文的显存带宽天花板计算存在量化精度错误，导致理论极限被高估了近一倍。修正后，结论方向不变（显存带宽是瓶颈，PCIe 不是），但数字全部对齐。</p>
+</blockquote>
+<h2 id="为什么要重算"><a href="#为什么要重算" class="headerlink" title="为什么要重算"></a>为什么要重算</h2><p>原文的核心论证链是这样的：</p>
+<ol>
+<li>Qwen3.6-35B-A3B 每次只激活约 3B 参数</li>
+<li>Q4_K_M 量化 → 按 <strong>2 bytes&#x2F;param</strong> 算</li>
+<li>每 token 需读取 3B × 2 &#x3D; <strong>6 GB</strong></li>
+<li>2080 Ti 显存带宽 616 GB&#x2F;s</li>
+<li>理论天花板 &#x3D; 616 ÷ 6 ≈ <strong>103 t&#x2F;s</strong></li>
+<li>实测 105 t&#x2F;s → “几乎完全吻合”</li>
+</ol>
+<p>问题出在第 2 步。<strong>Q4_K_M 不是 2 bytes&#x2F;param。</strong> Q4 就是 4-bit，加上 K-Quant 的分组缩放因子，实际权重体积约 <strong>0.55-0.6 bytes&#x2F;param</strong>。原文把 Q4 当成了 FP16（2 bytes），导致每 token 的数据搬运量被高估了约 3.5 倍。</p>
+<p>用错误的 6 GB 算，刚好凑出 103 t&#x2F;s ≈ 实测 105 t&#x2F;s，看起来完美闭合。但这是一个<strong>巧合</strong>——数字对上了，物理模型是错的。</p>
+<h2 id="修正后的计算"><a href="#修正后的计算" class="headerlink" title="修正后的计算"></a>修正后的计算</h2><h3 id="每-token-激活的数据量"><a href="#每-token-激活的数据量" class="headerlink" title="每 token 激活的数据量"></a>每 token 激活的数据量</h3><p>先理清楚 MoE 模型推理时每个 token 到底读什么：</p>
+<p><strong>必须读取（每 token 都读）：</strong></p>
+<ul>
+<li><strong>激活的 Expert 权重</strong>：A3B 表示每个 token 只激活 ~3B 参数的 Expert。Q4_K_M 约 0.55 bpw（bits per weight），换算成字节 ≈ 3B × 0.55 &#x2F; 8 &#x3D; <strong>0.206 GB</strong></li>
+<li><strong>共享层（Attention + Shared Expert）</strong>：这部分每个 token 必读。Qwen3.6-35B-A3B 的共享参数约 2-3B（含 attention），算 2.5B × 0.55 &#x2F; 8 &#x3D; <strong>0.172 GB</strong></li>
+</ul>
+<p><strong>小计：每 token 权重读取 ≈ 0.38 GB</strong></p>
+<p><strong>额外开销（不能忽略）：</strong></p>
+<ul>
+<li><strong>KV Cache</strong>：每个 token 生成时需要读取已生成的 KV cache。假设上下文 4K tokens，模型 64 层，每层 KV 在 Q4_K_M 下约 32 KB&#x2F;token → 4K × 64 × 32KB ≈ <strong>8 GB 的 KV cache 读取</strong>（摊到每个 token 的边际读取很小，但总量大）</li>
+<li><strong>激活值、中间 buffer</strong>：约 0.02-0.05 GB&#x2F;token</li>
+</ul>
+<h3 id="显存带宽天花板（修正）"><a href="#显存带宽天花板（修正）" class="headerlink" title="显存带宽天花板（修正）"></a>显存带宽天花板（修正）</h3><p>2080 Ti 单卡显存带宽 616 GB&#x2F;s。但推理不是纯线性读取，实际有效带宽通常只有标称的 <strong>50-70%</strong>（因为随机访问模式、cache miss、kernel 调度间隙等）。</p>
+<p>取有效带宽 60%：</p>
+<ul>
+<li>有效带宽 ≈ 616 × 0.6 &#x3D; <strong>370 GB&#x2F;s</strong></li>
+<li>每 token 需读取 ≈ 0.38 GB（权重）+ KV cache 增量 ≈ 0.4 GB</li>
+<li>单卡理论速度 ≈ 370 ÷ 0.4 ≈ <strong>925 t&#x2F;s</strong>？</li>
+</ul>
+<p>这个数字远高于实测的 73 t&#x2F;s（单卡）。说明<strong>权重读取不是唯一的瓶颈</strong>——计算本身（矩阵乘法）也要时间。</p>
+<h3 id="更合理的模型：算力-带宽双重约束"><a href="#更合理的模型：算力-带宽双重约束" class="headerlink" title="更合理的模型：算力 + 带宽双重约束"></a>更合理的模型：算力 + 带宽双重约束</h3><p>Turing 架构（2080 Ti）的 Q4 矩阵乘法吞吐：约 <strong>100 TOPS</strong>（INT4&#x2F;FP16 混合）。</p>
+<ul>
+<li>每 token 激活 ~5.5B 参数（3B Expert + 2.5B 共享）</li>
+<li>每 param 约 1-2 FLOPs（矩阵乘）→ 5.5B × 2 ≈ 11 GFLOP&#x2F;token</li>
+<li>算力上限 ≈ 100 TOPS ÷ 11 GFLOP ≈ <strong>9000 t&#x2F;s</strong></li>
+</ul>
+<p>算力也不是瓶颈。那是什么限制了单卡只有 73 t&#x2F;s？</p>
+<p>答案是 <strong>kernel launch 开销 + 调度间隙</strong>。MoE 模型每层有 routing（专家选择）、gather&#x2F;scatter 操作，这些不是密集计算，而是大量小 kernel 串行调度。每个 kernel launch 约 5-10 μs，64 层 × 多个 kernel&#x2F;层 → 每个 token 的调度开销可以吃掉 30-50% 的时间。</p>
+<h2 id="重新解读原始数据"><a href="#重新解读原始数据" class="headerlink" title="重新解读原始数据"></a>重新解读原始数据</h2><p>原文的监控数据本身是可信的，只是解释模型错了。重新解读：</p>
+<p><strong>PCIe 利用率（原文数据，可信）：</strong></p>
+<ul>
+<li>GPU0 (x16)：平均 0.5%，峰值 15%</li>
+<li>GPU1 (x4)：平均 4.4%，峰值 33.9%</li>
+<li>Replay 错误：零</li>
+</ul>
+<p><strong>结论不变</strong>：PCIe x4 在推理场景下确实不是瓶颈。x4 的 3.9 GB&#x2F;s 理论带宽，推理时只用不到 200 MB&#x2F;s，余量超过 20 倍。</p>
+<p><strong>GPU SM 利用率（原文数据，可信）：</strong></p>
+<ul>
+<li>两卡均 39-44%</li>
+<li>功耗 130W &#x2F; 250W &#x3D; 52%</li>
+</ul>
+<p><strong>重新解读</strong>：SM 利用率 40% 不代表”算力有富余被卡住了”。更可能是 <strong>MoE 的 routing&#x2F;gather 操作让 SM 时忙时闲</strong>——计算密集时打满，调度间隙时空转，平均下来 40%。这跟”显存带宽天花板”是两个独立的约束。</p>
+<h2 id="修正后的核心结论"><a href="#修正后的核心结论" class="headerlink" title="修正后的核心结论"></a>修正后的核心结论</h2><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>原文结论</th>
+<th>修正结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PCIe x4 是瓶颈吗？</td>
+<td>不是（利用率&lt;5%）</td>
+<td><strong>不是</strong>（利用率&lt;5%，结论不变）</td>
+</tr>
+<tr>
+<td>显存带宽是天花板？</td>
+<td>是（616÷6≈103 t&#x2F;s）</td>
+<td><strong>是天花板之一，但计算方式错了</strong>——Q4_K_M 是 0.55 bpw 不是 2 bpw</td>
+</tr>
+<tr>
+<td>双卡效率为什么只有 45%？</td>
+<td>PHB 同步延迟</td>
+<td><strong>MoE 调度开销 + PHB 同步延迟</strong>，后者是次因</td>
+</tr>
+<tr>
+<td>真正的限制因素</td>
+<td>显存带宽</td>
+<td><strong>kernel 调度间隙 + 显存带宽</strong>，两者叠加</td>
+</tr>
+<tr>
+<td>MTP 为什么只提升 13%？</td>
+<td>显存带宽用完了</td>
+<td><strong>MoE 调度间隙</strong>——投机 token 也得过 routing，间隙吃掉了并行收益</td>
+</tr>
+</tbody></table>
+<p><strong>最大的修正</strong>：原文说”103 t&#x2F;s 理论天花板跟实测 105 t&#x2F;s 完全吻合”，这个吻合是假象。修正后的理论模型显示，显存带宽上限远高于实测速度，真正的瓶颈是 <strong>MoE 架构的调度开销</strong>（routing + gather&#x2F;scatter 的大量小 kernel 串行执行）。</p>
+<h2 id="为什么双卡效率仍然只有-45"><a href="#为什么双卡效率仍然只有-45" class="headerlink" title="为什么双卡效率仍然只有 45%"></a>为什么双卡效率仍然只有 45%</h2><p>原文归因于 PHB 同步延迟，这个方向对，但权重分配需要修正：</p>
+<ol>
+<li><strong>PHB 跨卡同步（次要因）</strong>：Tensor Parallel 每层 all-reduce，64 层 × 5-10 μs&#x2F;层 ≈ 320-640 μs&#x2F;token，约占 3-6%</li>
+<li><strong>MoE routing 的跨卡 gather（主要因）</strong>：A3B 模型的 Expert 分布在两张卡上，每次激活的 Expert 可能在另一张卡上。跨卡读取 Expert 权重走 PCIe，虽然带宽够用，但 <strong>延迟累积</strong>——每 token 可能触发多次跨卡 gather，每次 10-50 μs，64 层下来可能吃掉 1-3 ms&#x2F;token</li>
+<li><strong>负载不均衡</strong>：MoE 的 routing 是动态的，两张卡的 Expert 被选中频率不均，导致一张卡等待另一张卡</li>
+</ol>
+<h2 id="升级建议修正"><a href="#升级建议修正" class="headerlink" title="升级建议修正"></a>升级建议修正</h2><p>原文的 ROI 分析方向正确，但需要补充一点：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>原文预期</th>
+<th>修正预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>换 X570 主板</td>
+<td>~0%</td>
+<td><strong>~0%</strong>（不变，PCIe 确实不是瓶颈）</td>
+</tr>
+<tr>
+<td>NVLink 桥接</td>
+<td>5-10%</td>
+<td><strong>10-15%</strong>（消除跨卡 gather 延迟，对 MoE 收益比原估更高）</td>
+</tr>
+<tr>
+<td>换 2× RTX 3090</td>
+<td>+50%</td>
+<td><strong>+40-50%</strong>（带宽提升+调度优化，但 MoE 开销仍在）</td>
+</tr>
+<tr>
+<td>换 2× RTX 4090</td>
+<td>+65%</td>
+<td><strong>+60-70%</strong>（FP8 加速对 MoE routing 有硬件级优化）</td>
+</tr>
+</tbody></table>
+<p><strong>NVLink 的价值被低估了。</strong> 原文假设 MoE 同步数据量小，NVLink 收益有限。但修正后发现，MoE 的跨卡 Expert gather 是高频小包延迟，NVLink 的低延迟特性（比 PCIe 低 5-10 倍）对 MoE 场景的收益可能比传统 Dense 模型更高。</p>
+<h2 id="如何自己做这个分析"><a href="#如何自己做这个分析" class="headerlink" title="如何自己做这个分析"></a>如何自己做这个分析</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 采集推理期间的完整 GPU 指标（120 秒）</span><br>nvidia-smi dmon -s tupe -d 1 -c 120 &gt; gpu_full_metrics.log<br><br><span class="hljs-comment"># 2. 用 llama-bench 测纯计算速度（排除调度开销）</span><br>/path/to/llama-bench -m model.gguf -p 512 -n 128 -t 0,1   <span class="hljs-comment"># 指定 GPU</span><br><br><span class="hljs-comment"># 3. 对比推理速度 vs bench 速度的差距</span><br><span class="hljs-comment"># 如果 bench 远快于推理，差距来自调度开销，不是带宽</span><br><br><span class="hljs-comment"># 4. 用 nsys 做 kernel timeline 分析（进阶）</span><br>nsys profile -t cuda --stats=<span class="hljs-literal">true</span> ./llama-server -m model.gguf<br><span class="hljs-comment"># 看 kernel launch 密度和间隙</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="附录：原始数据-vs-修正解读"><a href="#附录：原始数据-vs-修正解读" class="headerlink" title="附录：原始数据 vs 修正解读"></a>附录：原始数据 vs 修正解读</h2><p><strong>30 轮压力测试（原文数据，可信）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">平均: 100.9 t/s, 中位数: 106.8 t/s, 标准差: 11.3<br>最小: 73.8 t/s, 最大: 112.8 t/s<br></code></pre></td></tr></table></figure>
+
+<p>注意：facts.md 记录 Qwen3.6 实测 103 t&#x2F;s，与本数据的中位数 106.8 基本一致（长输出场景均值会偏低，因为长序列的 KV cache 读取开销增大）。</p>
+<p><strong>Q4_K_M 量化精度对照：</strong></p>
+<table>
+<thead>
+<tr>
+<th>量化方式</th>
+<th>bpw（bits per weight）</th>
+<th>bytes&#x2F;param</th>
+<th>35B 模型体积</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FP16</td>
+<td>16</td>
+<td>2.0</td>
+<td>70 GB</td>
+</tr>
+<tr>
+<td>Q8_0</td>
+<td>8</td>
+<td>1.0</td>
+<td>35 GB</td>
+</tr>
+<tr>
+<td>Q4_K_M</td>
+<td>4.5</td>
+<td><strong>0.56</strong></td>
+<td>19.6 GB</td>
+</tr>
+<tr>
+<td>Q3_K_M</td>
+<td>3.5</td>
+<td>0.44</td>
+<td>15.4 GB</td>
+</tr>
+</tbody></table>
+<p>Q4_K_M 的 0.56 bytes&#x2F;param 是关键修正值。原文用的 2.0 是 FP16 的精度，套在 Q4 模型上完全错了。</p>
+<hr>
+<p><em>修正版基于：Qwen3.6-35B-A3B Q4_K_M，llama.cpp 2026-06 build，RTX 2080 Ti 22GB 魔改 × 2（总显存 44 GB），B550M 主板（x16&#x2F;x4 PCIe Gen3）。</em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/RTX-2080-Ti/" class="print-no-link">#RTX 2080 Ti</a>
+      
+        <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" class="print-no-link">#性能分析</a>
+      
+        <a href="/tags/%E6%98%BE%E5%AD%98%E5%B8%A6%E5%AE%BD/" class="print-no-link">#显存带宽</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？（重算修正版）</div>
+      <div>https://normdist.com/2026/08/09/ND-20260809-001-dual-2080ti-pcie-bandwidth-bottleneck-recalculation/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/08/ND-20260808-002-a2a-plus-old-hermes-compatibility/" title="A2A 与 A2A Plus：AI Agent 跨机器通信协议配置与旧版兼容实战">
+                        <span class="hidden-mobile">A2A 与 A2A Plus：AI Agent 跨机器通信协议配置与旧版兼容实战</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
