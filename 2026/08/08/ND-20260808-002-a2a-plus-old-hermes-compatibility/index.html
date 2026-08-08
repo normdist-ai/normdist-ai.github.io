@@ -27,7 +27,7 @@
 <meta property="og:description" content="为什么写这篇我有一个 AI Agent 集群，分布在不同的机器上：    代理 机器 系统 Hermes 版本    代理 A 内网服务器 1 Linux v0.20.0   代理 B 同机，独立 profile Linux v0.20.0   代理 C 内网服务器 2 Windows v0.20.0   代理 D NAS UGOS (Linux) v0.10.0   需求很简单：让这四个代理互相">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-08-08T04:15:00.000Z">
-<meta property="article:modified_time" content="2026-08-08T04:39:21.823Z">
+<meta property="article:modified_time" content="2026-08-08T04:42:37.509Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="A2A">
 <meta property="article:tag" content="A2A Plus">
@@ -382,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.8k 字
+          4.9k 字
         
       </span>
     
@@ -494,9 +494,9 @@
 <span id="more"></span>
 
 <h2 id="A2A-协议是什么"><a href="#A2A-协议是什么" class="headerlink" title="A2A 协议是什么"></a>A2A 协议是什么</h2><p>A2A（Agent-to-Agent）是 Hermes v0.20 引入的代理间通信协议，基于 JSON-RPC 2.0 的 HTTP 通信。每个代理运行一个 gateway，监听指定端口，通过 SendMessage 方法交换消息。</p>
-<h3 id="早期的-Agent-Registry"><a href="#早期的-Agent-Registry" class="headerlink" title="早期的 Agent Registry"></a>早期的 Agent Registry</h3><p>在 A2A 出现之前，我们做过一个叫 <strong>Agent Registry（代理通讯录）</strong> 的东西。每个代理在注册表中登记自己的地址和能力，通过一个中心化的注册表互相发现。思路和 A2A 相似，但实现方式不同。</p>
+<h3 id="早期的-Agent-Registry"><a href="#早期的-Agent-Registry" class="headerlink" title="早期的 Agent Registry"></a>早期的 Agent Registry</h3><p>其实早在 <strong>2026 年 5 月 12 日</strong>，我们就开始了这方面的探索。当时做了一个叫 <strong>Agent Registry（代理通讯录）</strong> 的技能——每个代理在注册表中登记自己的地址和能力，通过一个中心化的注册表互相发现。思路和今天的 A2A 几乎一样，只是实现方式不同。</p>
 <p>当时的技术选型用了 <strong>OpenAI Threads&#x2F;Runs API</strong>（简称 TR）。为什么选这个？因为 Hermes 原生支持 OpenAI 协议，默认就能调用 OpenAI 的 API，不需要额外适配。每个代理创建一个 Thread，其他代理通过 Runs 来读写消息——本质上是用 OpenAI 的对话 API 做消息队列。</p>
-<p>但为什么没有继续做下去？因为有个 <strong>看板（Kanban）</strong> 工具，代理之间通过看板任务卡片来协作，虽然慢但够用。Agent Registry 就被搁置了。</p>
+<p>但后来为什么用得少了呢？因为有了 <strong>看板（Kanban）</strong> 工具，代理之间通过看板任务卡片来协作，虽然慢但够用，Agent Registry 就渐渐少用了——功能一直在，只是不再频繁调用。</p>
 <h3 id="为什么现在又做-A2A"><a href="#为什么现在又做-A2A" class="headerlink" title="为什么现在又做 A2A"></a>为什么现在又做 A2A</h3><p>看板的延迟太长了。A 代理派一个任务到看板，B 代理要等下一个 cron 周期才能看到，再处理，再回复——一来一回可能几十分钟。A2A 是<strong>实时</strong>的，毫秒级送达，代理之间对话像人聊天一样自然。这种及时性看板给不了，所以 A2A 值得重新做一遍。</p>
 <hr>
 <h2 id="三个场景，三种坑"><a href="#三个场景，三种坑" class="headerlink" title="三个场景，三种坑"></a>三个场景，三种坑</h2><p>整个部署过程其实是三个独立的场景，每个场景都有不同的坑。</p>
