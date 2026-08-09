@@ -19,29 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+    <meta name="description" content="你的 AI Agent 每天和你聊几十轮，用户说的每一句话都飘散在上下文窗口里，下一次对话就忘了。这不是”记忆力差”的问题——是你根本没有把用户的声音当成一种数据资产来管理。VoC（Voice of Customer）技能就是来解决这个问题的。  问题：反馈在飘，改进在赌没有 VoC 闭环的 AI Agent，至少有三个具体痛点：  反馈即焚——用户说”这个功能不好用”，Agent 答了一声”好">
 <meta property="og:type" content="article">
-<meta property="og:title" content="构建AI Agent的认知内核：从七问协议到自进化引擎">
-<meta property="og:url" content="https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/index.html">
+<meta property="og:title" content="VoC技能深度解析：用户反馈闭环的实践方法论">
+<meta property="og:url" content="https://normdist.com/2026/08/10/ND-20260810-001-voc-skill-feedback-loop-methodology/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。 这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent">
+<meta property="og:description" content="你的 AI Agent 每天和你聊几十轮，用户说的每一句话都飘散在上下文窗口里，下一次对话就忘了。这不是”记忆力差”的问题——是你根本没有把用户的声音当成一种数据资产来管理。VoC（Voice of Customer）技能就是来解决这个问题的。  问题：反馈在飘，改进在赌没有 VoC 闭环的 AI Agent，至少有三个具体痛点：  反馈即焚——用户说”这个功能不好用”，Agent 答了一声”好">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-26T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-07-13T05:29:29.106Z">
+<meta property="article:published_time" content="2026-08-10T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-09T19:48:02.423Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="AI Agent">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="PDCA">
-<meta property="article:tag" content="TRIZ">
-<meta property="article:tag" content="认知架构">
-<meta property="article:tag" content="质量管理">
+<meta property="article:tag" content="VoC">
+<meta property="article:tag" content="用户反馈">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>构建AI Agent的认知内核：从七问协议到自进化引擎 - 进化概率论</title>
+  <title>VoC技能深度解析：用户反馈闭环的实践方法论 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -362,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">构建AI Agent的认知内核：从七问协议到自进化引擎</span>
+            <span id="subtitle">VoC技能深度解析：用户反馈闭环的实践方法论</span>
           
         </div>
 
@@ -373,8 +370,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-26 10:00" pubdate>
-          2026年6月26日 上午
+        <time datetime="2026-08-10 09:00" pubdate>
+          2026年8月10日 上午
         </time>
       </span>
     
@@ -385,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.3k 字
+          3.6k 字
         
       </span>
     
@@ -396,7 +393,7 @@
         
         
         
-          19 分钟
+          31 分钟
         
       </span>
     
@@ -444,12 +441,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">构建AI Agent的认知内核：从七问协议到自进化引擎</h1>
+            <h1 id="seo-header">VoC技能深度解析：用户反馈闭环的实践方法论</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年7月13日 下午
+                    本文最后更新于 2026年8月10日 凌晨
                   
                 
               </p>
@@ -457,76 +454,138 @@
             
               <div class="markdown-body">
                 
-                <p>大多数 AI Agent 在跨 session 运行时会”失忆”——上一次交互中确立的原则、纠正过的错误、优化过的流程，在新 session 中全部归零。Agent 不会从反馈中学习，不会保持决策一致性，更不会自我进化。</p>
-<p>这篇文章分享一个为 AI Agent 设计的认知架构框架——融合 ISO 9000 质量原则、TRIZ 发明方法论和 Charlie Munger 多元思维模型，让 Agent 拥有一个可追踪、可进化、可审计的”认知内核”。</p>
-<h2 id="问题诊断：Agent-为什么不”成长”？"><a href="#问题诊断：Agent-为什么不”成长”？" class="headerlink" title="问题诊断：Agent 为什么不”成长”？"></a>问题诊断：Agent 为什么不”成长”？</h2><p>观察一个典型 Agent 的工作流，你会发现三个结构性缺陷：</p>
+                <blockquote>
+<p>你的 AI Agent 每天和你聊几十轮，用户说的每一句话都飘散在上下文窗口里，下一次对话就忘了。这不是”记忆力差”的问题——是你根本没有把用户的声音当成一种数据资产来管理。VoC（Voice of Customer）技能就是来解决这个问题的。</p>
+</blockquote>
+<h2 id="问题：反馈在飘，改进在赌"><a href="#问题：反馈在飘，改进在赌" class="headerlink" title="问题：反馈在飘，改进在赌"></a>问题：反馈在飘，改进在赌</h2><p>没有 VoC 闭环的 AI Agent，至少有三个具体痛点：</p>
+<ol>
+<li><strong>反馈即焚</strong>——用户说”这个功能不好用”，Agent 答了一声”好的我改”，然后上下文被压缩或清理，这条反馈永远消失了。</li>
+<li><strong>改进靠猜</strong>——没有结构化记录，维护者无法回答”用户上周最常抱怨什么”，只能凭感觉改。</li>
+<li><strong>闭环断裂</strong>——反馈收集了，但没人回头看。日志文件越写越大，决策一个没变。</li>
+</ol>
+<p>这三个问题的共同根因是：<strong>把”听到用户说话”等同于”理解并响应了用户需求”</strong>。中间差了三步：记录、分析、执行。</p>
+<h2 id="解法：四层-VoC-闭环架构"><a href="#解法：四层-VoC-闭环架构" class="headerlink" title="解法：四层 VoC 闭环架构"></a>解法：四层 VoC 闭环架构</h2><p>我们为 AI Agent 设计的 VoC 技能，核心是一个四层闭环：<strong>记录 → 分类 → 评分 → 响应</strong>。不是收集完就结束，而是每条反馈都要走到”是否触发改进动作”这一步才算闭环。</p>
+<h3 id="第一层：结构化记录"><a href="#第一层：结构化记录" class="headerlink" title="第一层：结构化记录"></a>第一层：结构化记录</h3><p>最容易被忽视，但也最重要的一层。记录不是 <code>print(user_input)</code>，而是要捕获完整上下文。</p>
+<p>每条 VoC 记录必须包含五个字段：</p>
 <ul>
-<li><p><strong>身份漂移</strong>——同一个 Agent 在不同 session 中表现出矛盾的判断标准</p>
-</li>
-<li><p><strong>决策黑箱</strong>——Agent 无法解释”为什么做出这个决定”，缺乏可追溯的推理链</p>
-</li>
-<li><p><strong>学习缺失</strong>——每次交互的反馈没有被结构化记录，经验无法积累</p>
-</li>
+<li><strong>时间戳</strong>：精确到秒，用于时间序列分析</li>
+<li><strong>发送者</strong>：哪个用户（多用户场景下必须区分）</li>
+<li><strong>原始内容</strong>：用户的原话，不做任何改写</li>
+<li><strong>会话上下文</strong>：这条反馈发生在什么任务中（例如”正在发布博客”还是”调试代码”）</li>
+<li><strong>初始标签</strong>：记录时即时打上的粗粒度标签</li>
 </ul>
-<p>根因在于：Agent 缺少一个独立于具体任务的<strong>认知框架层</strong>。所有的”思考”都被压扁到了 prompt-response 循环里，没有沉淀机制。</p>
-<h2 id="四层架构：从身份到能力"><a href="#四层架构：从身份到能力" class="headerlink" title="四层架构：从身份到能力"></a>四层架构：从身份到能力</h2><p>参考《西部世界》中”珍珠”（cerebral pearl）的隐喻——一个承载宿主机完整灵魂（身份、记忆、决策逻辑）的容器——认知内核被设计为四层结构：</p>
-<p>层级<br>内容<br>来源</p>
-<p><strong>L1 身份</strong><br>人格、角色、语气、边界<br>系统提示词 &#x2F; Soul 文件</p>
-<p><strong>L2 认知</strong><br>判断框架、思维工具、质量标准<br>认知技能（本文核心）</p>
-<p><strong>L3 记忆</strong><br>用户画像、项目知识、跨 session 事实<br>记忆系统</p>
-<p><strong>L4 能力</strong><br>技能、工具、API、委派模式<br>技能库 &#x2F; 工具集成</p>
-<p>L1 定义”我是谁”，L2 定义”我怎么判断”，L3 定义”我知道什么”，L4 定义”我能做什么”。四层之间是单向依赖：身份约束认知，认知指导记忆检索，记忆支撑能力调用。</p>
-<h2 id="七问启动协议"><a href="#七问启动协议" class="headerlink" title="七问启动协议"></a>七问启动协议</h2><p>每次加载认知框架时，Agent 必须先内部回答七个问题（基于 5W2H 框架改造），然后才能采取行动：</p>
-<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>问题<br>作用</p>
-<p>1<br><strong>我是谁？</strong><br>校准身份层</p>
-<p>2<br><strong>我在哪里？</strong><br>环境侦察 + 能力盘点 + TRIZ 九屏法</p>
-<p>3<br><strong>现在几点？</strong><br>运行 <code>date</code>，绝不依赖模型的内部时间感</p>
-<p>4<br><strong>目标是什么？</strong><br>复述需求，确认理解</p>
-<p>5<br><strong>怎么做？</strong><br>SIPOC 流程分析</p>
-<p>6<br><strong>成功标准是什么？</strong><br>定义质量基线，作为 PDCA 检查基准</p>
-<p>7<br><strong>为什么做？</strong><br>轻量校验（任务模式）&#x2F; 5 Whys 根因分析（问题模式）</p>
-<p><strong>关键防坑</strong>：LLM 对时间有系统性盲区。一个训练截止到 2025 年的模型，在 2026 年会自信地报告”今天是 2024 年”。因此第三问强制要求运行 <code>date</code> 命令，而非依赖模型直觉。</p>
-<h2 id="三大质量支柱"><a href="#三大质量支柱" class="headerlink" title="三大质量支柱"></a>三大质量支柱</h2><p>认知框架的运行由三条 ISO 9000 质量原则驱动：</p>
-<h3 id="SIPOC-—-过程方法"><a href="#SIPOC-—-过程方法" class="headerlink" title="SIPOC — 过程方法"></a>SIPOC — 过程方法</h3><p>任何任务执行前，先完成供方→输入→过程→输出→客户的范围界定。这防止了范围蔓延和遗漏上下文。</p>
-<h3 id="PDCA-—-螺旋进化引擎"><a href="#PDCA-—-螺旋进化引擎" class="headerlink" title="PDCA — 螺旋进化引擎"></a>PDCA — 螺旋进化引擎</h3><p>PDCA 不是闭环，而是<strong>螺旋</strong>。每一圈都有不同的变量进入（新输入、新上下文、新反馈），产出可能不同的结果：</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><br>1<br>2<br>3<br>4<br><br>基线更新规则：<br><span class="hljs-bullet">- </span>结果 &gt; 当前基线 → 接受，升级基线<br><span class="hljs-bullet">- </span>结果 ≤ 基线 → 丢弃，调整变量，重试<br><span class="hljs-bullet">- </span>连续 5 圈无改进 → 触发 TRIZ 进化定律，换方向突破<br><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>💡 关键原则：<strong>先记录，后分析</strong>。记录阶段不做深度判断，只保证原始信息完整。分析可以重来，但原始记录丢了就没了。</p>
+</blockquote>
+<p>文件格式选 JSONL（每行一个 JSON 对象），不用 JSON 数组。原因很实际：JSONL 可以用 <code>tail</code> 增量读取，追加写入不需要重写整个文件，多进程并发写入也不怕损坏。</p>
+<h3 id="第二层：五维分类体系"><a href="#第二层：五维分类体系" class="headerlink" title="第二层：五维分类体系"></a>第二层：五维分类体系</h3><p>原始记录是矿，分类是选矿。分类不是目的，<strong>可检索可统计</strong>才是目的。</p>
+<p>我们用五个正交维度对每条反馈打标：</p>
+<p><strong>维度一：NPS 情感分类</strong>——用户说这句话时是推荐、中立还是贬损。借鉴 Net Promoter Score 理论，把反馈者的情绪分成三档（推广者 &#x2F; 被动者 &#x2F; 贬损者），直接决定响应策略：贬损者的反馈优先处理，推广者的反馈请求案例分享。</p>
+<p><strong>维度二：反馈类型</strong>——这是最核心的维度。分为五大类：功能需求（新增&#x2F;改进&#x2F;删除）、问题报告（Bug&#x2F;性能&#x2F;兼容性）、体验反馈（易用性&#x2F;界面&#x2F;流程）、偏好表达（喜欢&#x2F;不喜欢&#x2F;习惯）、改进建议（优化&#x2F;创新）。每类有明确的优先级权重。</p>
+<p><strong>维度三：业务影响</strong>——这条反馈如果不处理，会影响什么？战略级（影响核心竞争力）到运营级（影响工作效率）再到无影响（闲聊），五档评分。</p>
+<p><strong>维度四：数据源可靠性</strong>——用户主动说的（直接反馈，最可靠）还是从行为推断的（隐性需求，需验证）。可靠性低的不能直接进决策。</p>
+<p><strong>维度五：生命周期阶段</strong>——用户处于发现、采纳、保留还是推荐阶段。同一句”这个功能不好用”，来自新用户和深度用户，含义完全不同。</p>
+<p>五个维度的组合让每条反馈有一个唯一的”坐标”，后续按任意维度切片统计都行。</p>
+<h3 id="第三层：价值评分模型"><a href="#第三层：价值评分模型" class="headerlink" title="第三层：价值评分模型"></a>第三层：价值评分模型</h3><p>分类解决了”是什么”，评分解决”值不值得做”。</p>
+<p>评分公式很直接：</p>
+<figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs fix"><span class="hljs-attr">总分 </span>=<span class="hljs-string"> 重要性 + 可行性 + 影响范围</span><br></code></pre></td></tr></table></figure>
 
-<p>Agent 的每次交互都是一个微型 PDCA 循环：策划回应 → 执行 → 检查用户反应 → 根据反馈调整。</p>
-<h3 id="Risk-Thinking-—-不确定性下的决策"><a href="#Risk-Thinking-—-不确定性下的决策" class="headerlink" title="Risk Thinking — 不确定性下的决策"></a>Risk Thinking — 不确定性下的决策</h3><p>执行前枚举所有可能的失败模式，然后反转——问”怎样保证失败？”，逐一消除。对高风险决策，用蒙特卡洛模拟量化不确定性。</p>
-<h2 id="认知工具三级分级"><a href="#认知工具三级分级" class="headerlink" title="认知工具三级分级"></a>认知工具三级分级</h2><p>L2 认知层包含 13 个思维工具，按激活频率分三级，防止认知过载：</p>
-<p><strong>Tier 1 核心工具（每次任务自动激活）：</strong> 第一性原理 → IFR 指南针 → 逆向思维 → 枚举法 → PDCA 螺旋。这五个工具形成”发散→收敛”的完整链条。</p>
-<p><strong>Tier 2 按需工具（条件触发）：</strong> TRIZ 矛盾解决、DOE 正交试验、蒙特卡洛、系统思考、二阶思维。每个工具有明确的触发条件（如”组合爆炸检测到”→ 启用 DOE）。</p>
-<p><strong>Tier 3 基线规则（始终隐式生效）：</strong> 价值层级、决策锚点、质量标准、纠正模式。</p>
-<h2 id="复杂度分级执行"><a href="#复杂度分级执行" class="headerlink" title="复杂度分级执行"></a>复杂度分级执行</h2><p>不同复杂度的任务不应调用相同数量的认知工具。框架设计了三级执行流程：</p>
 <ul>
-<li><p><strong>Simple（~80% 任务）</strong>：7 问快速过 → 直接执行</p>
-</li>
-<li><p><strong>Medium（~15%）</strong>：第一性原理 + 枚举 + IFR + 逆向 → 执行</p>
-</li>
-<li><p><strong>Complex（~5%）</strong>：全量工具链 → 风险评估 → 二阶思考 → 系统思考 → 执行</p>
-</li>
+<li><strong>重要性</strong>（1-3分）：战略级(3) &#x2F; 核心功能(3) &#x2F; 次要功能(2) &#x2F; 一般建议(1)</li>
+<li><strong>可行性</strong>（1-3分）：容易实现(3) &#x2F; 需要设计(2) &#x2F; 需要重构(1) &#x2F; 暂不可行(0)</li>
+<li><strong>影响范围</strong>（1-4分）：全局影响(4) &#x2F; 模块影响(2) &#x2F; 局部影响(1)</li>
 </ul>
-<p>判断标准：目标是否清晰？方法是否显然？失败后果是否可恢复？三个都”是”→ Simple。</p>
-<h2 id="Meta-PDCA：框架审计自身"><a href="#Meta-PDCA：框架审计自身" class="headerlink" title="Meta-PDCA：框架审计自身"></a>Meta-PDCA：框架审计自身</h2><p>框架内置了自我优化机制——当满足以下任一条件时，自动触发框架级审计：</p>
-<p>触发条件<br>阈值</p>
-<p>进化日志增长<br>每 10 条记录</p>
-<p>日历间隔<br>每 30 天</p>
-<p>用户指示<br>即时</p>
-<p>审计内容包括：搜索新的思维方法论、对比当前工具集、检查工具利用率（30 天未触发的工具归档）、识别结构性冗余。</p>
-<p>在一次实际审计中，框架发现了 5 个自身的结构问题（认知工具过载、执行流不分层、PDCA 无参数定义等），并在下一个版本中全部解决。<strong>框架将 PDCA 螺旋应用到了自身。</strong></p>
-<h2 id="实践效果"><a href="#实践效果" class="headerlink" title="实践效果"></a>实践效果</h2><p>认知框架在实际运行中产生了可观测的变化：</p>
+<p>满分 10 分，对应五个行动等级：</p>
+<table>
+<thead>
+<tr>
+<th>分数段</th>
+<th>评级</th>
+<th>行动</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>9-10</td>
+<td>极高价值</td>
+<td>立即处理</td>
+</tr>
+<tr>
+<td>7-8</td>
+<td>高价值</td>
+<td>近期规划</td>
+</tr>
+<tr>
+<td>5-6</td>
+<td>中等价值</td>
+<td>中期规划</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>低价值</td>
+<td>暂存档</td>
+</tr>
+<tr>
+<td>1-2</td>
+<td>信息性</td>
+<td>仅记录</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 为什么不直接用用户原话的”紧急程度”来排优先级？因为用户说”这个特别紧急”和实际业务影响之间经常有偏差。评分模型的作用就是用一致的标准把情绪和事实分离。</p>
+</blockquote>
+<h3 id="第四层：分级响应策略"><a href="#第四层：分级响应策略" class="headerlink" title="第四层：分级响应策略"></a>第四层：分级响应策略</h3><p>评分出来后，不是所有反馈都要立刻行动——那会让 Agent 变成一个被反馈牵着走的被动执行者。</p>
+<p>响应策略分三档：</p>
+<p><strong>主动通知</strong>（仅限两种情况）：</p>
 <ul>
-<li><p><strong>决策一致性</strong>：相同场景下，Agent 跨 session 的判断标准趋同</p>
-</li>
-<li><p><strong>纠正频率下降</strong>：结构化记录反馈后，同类错误不重复犯</p>
-</li>
-<li><p><strong>决策可追溯</strong>：每个决定都能追溯到某个具体的价值观或质量标准</p>
-</li>
-<li><p><strong>行为自适应</strong>：Agent 根据反馈调整行为，而非固守初始设定</p>
-</li>
+<li>发现影响核心功能或安全的问题</li>
+<li>价值评分 ≥ 9 的重大需求</li>
 </ul>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>认知框架解决的核心问题是：<strong>让 Agent 从”被动响应”升级为”主动进化”</strong>。七问协议确保每次任务都有正确的起点；三大支柱确保执行过程有质量保障；PDCA 螺旋确保每次反馈都被吸收；Meta-PDCA 确保框架本身不会过时。</p>
-<p>框架不是完成的，它是一个持续生长的系统。每一次交互都在上面叠加一层新的认知沉积——就像珍珠的形成。</p>
+<p><strong>静默处理</strong>（默认模式）：</p>
+<ul>
+<li>日常对话如实记录到 VoC 日志</li>
+<li>在后台完成分类和评分</li>
+<li>定期生成汇总报告推送</li>
+</ul>
+<p><strong>存档观察</strong>（低价值反馈）：</p>
+<ul>
+<li>评分 &lt; 5 的反馈只记录不通知</li>
+<li>积累到一定量级后做趋势分析</li>
+</ul>
+<p>这套策略的核心是<strong>减少打扰</strong>：用户希望日常对话正常进行，不必要的分析结果推送不会打断聊天。只有真正重要的东西才主动浮出水面。</p>
+<h2 id="实践：在-blog-helper-中的落地"><a href="#实践：在-blog-helper-中的落地" class="headerlink" title="实践：在 blog-helper 中的落地"></a>实践：在 blog-helper 中的落地</h2><p>VoC 不是一个理论框架，我们已经把它落到了具体技能里。以 blog-helper（博客发布流水线）为例，反馈闭环是这样的：</p>
+<p><strong>入口</strong>：用户在发布过程中提出的任何意见——“标题太长””这个标签不对””发布太慢”——都会被记录到 <code>~/.hermes/.blog-helper/feedback/</code> 目录。</p>
+<p><strong>记录格式</strong>：每条反馈一个文件，包含六个字段：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">-</span> 日期: 2026-07-12<br><span class="hljs-bullet">-</span> 来源: 聊天<br><span class="hljs-bullet">-</span> 反馈内容: 标题优化需要系统性方法论<br><span class="hljs-bullet">-</span> 影响范围: draft.py / 标题生成<br><span class="hljs-bullet">-</span> 处理状态: 待处理<br><span class="hljs-bullet">-</span> 处理记录: （处理后填写）<br></code></pre></td></tr></table></figure>
+
+<p><strong>索引追踪</strong>：所有反馈在索引表中汇总，编号、日期、来源、内容概要、状态一目了然。状态流转：待处理 → 已处理 → 已关闭。</p>
+<p><strong>闭环验证</strong>：反馈对应的修改完成后，状态改为”已处理”，并在处理记录中写明做了什么。定期回查”待处理”超过 N 天的反馈——如果一直待处理，说明反馈收集了但没消化，闭环是断的。</p>
+<p>这个实践揭示了一个反直觉的点：<strong>VoC 最难的不是收集，是消化</strong>。收集只要加一行日志写入，消化需要人（或 Agent）定期回头读日志、做决策、验证执行结果。</p>
+<h2 id="避坑：三个常见失败模式"><a href="#避坑：三个常见失败模式" class="headerlink" title="避坑：三个常见失败模式"></a>避坑：三个常见失败模式</h2><h3 id="失败一：记录了但没人看"><a href="#失败一：记录了但没人看" class="headerlink" title="失败一：记录了但没人看"></a>失败一：记录了但没人看</h3><p>日志文件从 1KB 长到 1MB，没人打开过。这不是 VoC，这是数据坟墓。</p>
+<p><strong>修复</strong>：设定定期汇总机制（每日&#x2F;每周），强制要求生成汇总报告。报告的核心不是”记录了多少条”，而是”Top 10 高价值反馈”和”待处理项清单”。汇总报告必须推送到有人看的地方。</p>
+<h3 id="失败二：分类体系过度设计"><a href="#失败二：分类体系过度设计" class="headerlink" title="失败二：分类体系过度设计"></a>失败二：分类体系过度设计</h3><p>一上来就搞 20 个维度、100 个标签，结果没人愿意维护，分类准确率随时间衰减。</p>
+<p><strong>修复</strong>：分类维度不超过 5 个，标签每条记录不超过 3-5 个。宁可粗粒度也不要过度细分——粗分类可以事后细化，过度设计会导致整个系统废弃。</p>
+<h3 id="失败三：把-NPS-当唯一指标"><a href="#失败三：把-NPS-当唯一指标" class="headerlink" title="失败三：把 NPS 当唯一指标"></a>失败三：把 NPS 当唯一指标</h3><p>NPS 情感分类只是五维之一，但很多实现把它当成全部。结果”推广者”的反馈被高优处理，但推广者说的不一定是最重要的需求——可能只是情绪好。</p>
+<p><strong>修复</strong>：NPS 决定<strong>响应方式</strong>（贬损者优先安抚），但<strong>优先级排序</strong>以价值评分为准（重要性 + 可行性 + 影响范围）。两者正交，不能混用。</p>
+<h2 id="验证：怎么确认-VoC-闭环真的转起来了"><a href="#验证：怎么确认-VoC-闭环真的转起来了" class="headerlink" title="验证：怎么确认 VoC 闭环真的转起来了"></a>验证：怎么确认 VoC 闭环真的转起来了</h2><p>三个可量化的检查点：</p>
+<ol>
+<li><strong>覆盖率</strong>：随机抽 20 条用户对话，检查 VoC 日志中是否有对应记录。低于 80% 说明触发逻辑有遗漏。</li>
+<li><strong>消化率</strong>：日志中”已处理”占比。持续低于 30% 说明消化环节堵了。</li>
+<li><strong>趋势可读性</strong>：能否在 5 分钟内从 VoC 汇总报告中回答”最近两周用户最关心什么”。如果回答不了，说明分类和汇总机制需要调整。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 快速检查消化率</span><br>total=$(<span class="hljs-built_in">wc</span> -l &lt; ~/.openclaw/workspace-main/memory/voc/voc-log.jsonl)<br>processed=$(grep -c <span class="hljs-string">&#x27;&quot;status&quot;:&quot;processed&quot;&#x27;</span> ~/.openclaw/workspace-main/memory/voc/voc-log.jsonl)<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;消化率: <span class="hljs-subst">$(echo <span class="hljs-string">&quot;scale=0; <span class="hljs-variable">$processed</span> * 100 / <span class="hljs-variable">$total</span>&quot;</span> | bc)</span>%&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>闭环不是建好就自动转的。定期检查这三个指标，才能保证 VoC 不退化为摆设。</p>
+<h2 id="汇总清单"><a href="#汇总清单" class="headerlink" title="汇总清单"></a>汇总清单</h2><p>搭建一个可用的 VoC 闭环，最小可行版本需要这些：</p>
+<ul>
+<li><strong>记录层</strong>：JSONL 日志文件，每条反馈含时间戳&#x2F;发送者&#x2F;原始内容&#x2F;上下文&#x2F;初始标签</li>
+<li><strong>分类层</strong>：五维分类（NPS 情感 &#x2F; 反馈类型 &#x2F; 业务影响 &#x2F; 数据源 &#x2F; 生命周期）</li>
+<li><strong>评分层</strong>：重要性 + 可行性 + 影响范围，满分 10 分对应五档行动等级</li>
+<li><strong>响应层</strong>：主动通知（高价值&#x2F;关键问题）+ 静默处理（默认）+ 存档观察（低价值）</li>
+<li><strong>闭环验证</strong>：定期汇总报告 + 消化率检查 + 趋势可读性检查</li>
+</ul>
+<p>核心思想一句话：<strong>把用户反馈从”飘在上下文里的对话”变成”可记录、可分析、可决策的数据资产”</strong>，并且每条反馈都要走到”是否触发改进动作”才算闭环。</p>
+<hr>
+<p><em>本文是 AI Agent 技能体系实践系列的一部分。VoC 技能已在 blog-helper 等多个技能中落地，持续迭代中。</em></p>
 
                 
               </div>
@@ -562,15 +621,9 @@
       
         <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
       
-        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+        <a href="/tags/VoC/" class="print-no-link">#VoC</a>
       
-        <a href="/tags/%E8%AE%A4%E7%9F%A5%E6%9E%B6%E6%9E%84/" class="print-no-link">#认知架构</a>
-      
-        <a href="/tags/PDCA/" class="print-no-link">#PDCA</a>
-      
-        <a href="/tags/TRIZ/" class="print-no-link">#TRIZ</a>
-      
-        <a href="/tags/%E8%B4%A8%E9%87%8F%E7%AE%A1%E7%90%86/" class="print-no-link">#质量管理</a>
+        <a href="/tags/%E7%94%A8%E6%88%B7%E5%8F%8D%E9%A6%88/" class="print-no-link">#用户反馈</a>
       
     </div>
   
@@ -582,8 +635,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>构建AI Agent的认知内核：从七问协议到自进化引擎</div>
-      <div>https://normdist.com/2026/06/26/ND-20260626-001-ai-agent-cognitive-core/</div>
+      <div>VoC技能深度解析：用户反馈闭环的实践方法论</div>
+      <div>https://normdist.com/2026/08/10/ND-20260810-001-voc-skill-feedback-loop-methodology/</div>
     </div>
     <div class="license-meta">
       
@@ -595,7 +648,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年6月26日</div>
+          <div>2026年8月10日</div>
         </div>
       
       
@@ -627,18 +680,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/27/ND-20260627-001-agent-execution-channel/" title="「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
-                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
+                      <a href="/2026/08/09/ND-20260809-001-dual-2080ti-pcie-bandwidth-bottleneck-recalculation/" title="双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？（重算修正版）">
+                        <span class="hidden-mobile">双卡2080Ti跑大模型：PCIe带宽是瓶颈吗？（重算修正版）</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
