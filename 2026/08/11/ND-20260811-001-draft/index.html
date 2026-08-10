@@ -19,26 +19,28 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="MCP 工具调用失败：’CallToolResult’ has no attribute ‘isError’凌晨 0:28，agent.log 跳出一行红色 ERROR：  AttributeError: ‘CallToolResult’ object has no attribute ‘isError’  工具调用失败了。但奇怪的是，我的 Agent 主流程没断，任务继续跑，用户无感知。更奇怪的">
+    <meta name="description" content="回测跑出来一条只涨不跌的净值曲线，胜率 100%，最大回撤 0%。 这不是圣杯，这是 bug。 策略里买入后该卖出的信号一次都没触发，仓位从开仓那天起就锁死在账户里。净值曲线”看起来”只涨不跌，只是因为它从来没结算过亏损。最讽刺的是，这个 bug 的源头只是一个 copy-paste：把 buy 分支的代码复制到 sell 分支，忘了把一个布尔标志从 True 改成 False。 copy-pas">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录">
-<meta property="og:url" content="https://normdist.com/2026/08/07/ND-20260807-001-mcp-calltoolresult-iserror/index.html">
+<meta property="og:title" content="回测策略的 copy-paste bug：sell 分支 in_buy&#x3D;True 让信号死锁">
+<meta property="og:url" content="https://normdist.com/2026/08/11/ND-20260811-001-draft/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="MCP 工具调用失败：’CallToolResult’ has no attribute ‘isError’凌晨 0:28，agent.log 跳出一行红色 ERROR：  AttributeError: ‘CallToolResult’ object has no attribute ‘isError’  工具调用失败了。但奇怪的是，我的 Agent 主流程没断，任务继续跑，用户无感知。更奇怪的">
+<meta property="og:description" content="回测跑出来一条只涨不跌的净值曲线，胜率 100%，最大回撤 0%。 这不是圣杯，这是 bug。 策略里买入后该卖出的信号一次都没触发，仓位从开仓那天起就锁死在账户里。净值曲线”看起来”只涨不跌，只是因为它从来没结算过亏损。最讽刺的是，这个 bug 的源头只是一个 copy-paste：把 buy 分支的代码复制到 sell 分支，忘了把一个布尔标志从 True 改成 False。 copy-pas">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-08-07T01:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-06T19:50:34.444Z">
+<meta property="article:published_time" content="2026-08-11T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-10T19:52:05.771Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="Hermes">
-<meta property="article:tag" content="MCP">
-<meta property="article:tag" content="错误排查">
+<meta property="article:tag" content="copy-paste">
+<meta property="article:tag" content="回测">
+<meta property="article:tag" content="测试">
+<meta property="article:tag" content="状态机">
+<meta property="article:tag" content="策略">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录 - 进化概率论</title>
+  <title>回测策略的 copy-paste bug：sell 分支 in_buy=True 让信号死锁 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -359,7 +361,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">MCP 工具返回 CallToolResult has no attribute 'isError'：Hermes MCP 调用失败的排查实录</span>
+            <span id="subtitle">回测策略的 copy-paste bug：sell 分支 in_buy=True 让信号死锁</span>
           
         </div>
 
@@ -370,8 +372,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-08-07 09:00" pubdate>
-          2026年8月7日 上午
+        <time datetime="2026-08-11 09:00" pubdate>
+          2026年8月11日 上午
         </time>
       </span>
     
@@ -382,7 +384,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.8k 字
+          4.2k 字
         
       </span>
     
@@ -393,7 +395,7 @@
         
         
         
-          24 分钟
+          36 分钟
         
       </span>
     
@@ -441,12 +443,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录</h1>
+            <h1 id="seo-header">回测策略的 copy-paste bug：sell 分支 in_buy=True 让信号死锁</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月7日 凌晨
+                    本文最后更新于 2026年8月11日 凌晨
                   
                 
               </p>
@@ -454,121 +456,47 @@
             
               <div class="markdown-body">
                 
-                <h1 id="MCP-工具调用失败：’CallToolResult’-has-no-attribute-‘isError’"><a href="#MCP-工具调用失败：’CallToolResult’-has-no-attribute-‘isError’" class="headerlink" title="MCP 工具调用失败：’CallToolResult’ has no attribute ‘isError’"></a>MCP 工具调用失败：’CallToolResult’ has no attribute ‘isError’</h1><p>凌晨 0:28，agent.log 跳出一行红色 ERROR：</p>
+                <p>回测跑出来一条只涨不跌的净值曲线，胜率 100%，最大回撤 0%。</p>
+<p>这不是圣杯，这是 bug。</p>
+<p>策略里买入后该卖出的信号一次都没触发，仓位从开仓那天起就锁死在账户里。净值曲线”看起来”只涨不跌，只是因为它从来没结算过亏损。最讽刺的是，这个 bug 的源头只是一个 copy-paste：把 buy 分支的代码复制到 sell 分支，忘了把一个布尔标志从 <code>True</code> 改成 <code>False</code>。</p>
+<h2 id="copy-paste-为什么这么危险"><a href="#copy-paste-为什么这么危险" class="headerlink" title="copy-paste 为什么这么危险"></a>copy-paste 为什么这么危险</h2><p>人在写第二段相似代码时，大脑会切到”自动驾驶”模式。第一段（buy 分支）是你逐字敲出来的，每行都过脑子。第二段（sell 分支）你只是复制、粘贴、改几个词。问题在于，你改了显眼的变量名，却漏了那个不起眼的状态标志。</p>
+<p>心理学上叫”无意视盲”（inattentional blindness）——注意力聚焦在”改对函数名和方向”上，就看不见那个藏在第五行的 <code>in_buy = True</code> 应该改成 <code>False</code>。</p>
+<p>代码结构上更危险。copy-paste 出来的两段代码高度相似但语义相反，这种”对称结构”会让后续阅读者也产生惯性，扫一眼觉得”差不多对”就跳过了。</p>
+<h2 id="状态机不变量被悄悄打破"><a href="#状态机不变量被悄悄打破" class="headerlink" title="状态机不变量被悄悄打破"></a>状态机不变量被悄悄打破</h2><p>一个典型的回测策略本质上是个状态机：两个状态（空仓 <code>flat</code>、持仓 <code>in_position</code>），两个事件（买入信号、卖出信号），四条转移规则。</p>
+<p>不变量只有一条：<strong>任何时候，持仓标志 <code>in_position</code> 必须与实际的持仓方向一致</strong>——有仓位时为 <code>True</code>，没仓位时为 <code>False</code>，不能停在中间态。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 不变量：开仓次数 - 平仓次数 = 当前持仓状态</span><br><span class="hljs-keyword">assert</span> (buy_count - sell_count) == (<span class="hljs-number">1</span> <span class="hljs-keyword">if</span> in_position <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>)<br></code></pre></td></tr></table></figure>
+
+<p>buy 分支正常工作时，状态流转是 <code>flat → in_position</code>。但如果 sell 分支因为 copy-paste 把守卫条件也复制了过去——本该 <code>if in_position</code> 却写成了 <code>if not in_position</code>——状态机就卡住了。持仓后遇到 SELL 信号，<code>not in_position</code> 为假，整个分支被跳过，卖出操作永远不执行，仓位从开仓那天起就锁死。</p>
+<p>死锁的隐蔽性在于它不报错。没有异常，没有崩溃，策略安静地”持仓不动”。如果你只看净值曲线而不看交易明细，根本发现不了。</p>
+<h2 id="最小可复现的-Python-示例"><a href="#最小可复现的-Python-示例" class="headerlink" title="最小可复现的 Python 示例"></a>最小可复现的 Python 示例</h2><p>把问题缩到最小：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SimpleStrategy</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-variable language_">self</span>.in_position = <span class="hljs-literal">False</span><br>        <span class="hljs-variable language_">self</span>.trades = []<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">on_signal</span>(<span class="hljs-params">self, signal, price</span>):<br>        <span class="hljs-keyword">if</span> signal == <span class="hljs-string">&quot;BUY&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.in_position:<br>            <span class="hljs-variable language_">self</span>.in_position = <span class="hljs-literal">True</span><br>            <span class="hljs-variable language_">self</span>.trades.append((<span class="hljs-string">&quot;BUY&quot;</span>, price))<br>        <br>        <span class="hljs-keyword">elif</span> signal == <span class="hljs-string">&quot;SELL&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.in_position:<br>            <span class="hljs-comment"># ← copy-paste 灾难现场</span><br>            <span class="hljs-comment"># 整行从 buy 分支复制过来，改了 signal 和 action，</span><br>            <span class="hljs-comment"># 但守卫条件里的 not self.in_position 没改，应该是 self.in_position</span><br>            <span class="hljs-variable language_">self</span>.in_position = <span class="hljs-literal">False</span><br>            <span class="hljs-variable language_">self</span>.trades.append((<span class="hljs-string">&quot;SELL&quot;</span>, price))<br></code></pre></td></tr></table></figure>
+
+<p>跑一下回测，模拟一组 BUY-SELL-BUY-SELL 信号：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">strat = SimpleStrategy()<br>signals = [(<span class="hljs-string">&quot;BUY&quot;</span>, <span class="hljs-number">100</span>), (<span class="hljs-string">&quot;SELL&quot;</span>, <span class="hljs-number">110</span>), (<span class="hljs-string">&quot;BUY&quot;</span>, <span class="hljs-number">105</span>), (<span class="hljs-string">&quot;SELL&quot;</span>, <span class="hljs-number">108</span>)]<br><br><span class="hljs-keyword">for</span> signal, price <span class="hljs-keyword">in</span> signals:<br>    strat.on_signal(signal, price)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;交易笔数: <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(strat.trades)&#125;</span>&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;最终持仓状态: <span class="hljs-subst">&#123;strat.in_position&#125;</span>&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;交易记录: <span class="hljs-subst">&#123;strat.trades&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">交易笔数: 1</span><br><span class="hljs-section">最终持仓状态: True</span><br><span class="hljs-section">交易记录: [(&#x27;BUY&#x27;, 100)]</span><br></code></pre></td></tr></table></figure>
+
+<p>四条信号只执行了第一条买入。SELL 信号在持仓时遇到守卫 <code>not self.in_position</code>，结果为假，整个 elif 分支被跳过——卖出操作根本没执行，状态也没翻转。整条策略链从第二个信号起就完全失效，却没有任何报错。</p>
+<h2 id="三道防线"><a href="#三道防线" class="headerlink" title="三道防线"></a>三道防线</h2><h3 id="第一道：状态断言"><a href="#第一道：状态断言" class="headerlink" title="第一道：状态断言"></a>第一道：状态断言</h3><p>在每个状态转移操作后加一行断言，把不变量焊死在代码里：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_check_invariant</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;状态机不变量：交易计数与持仓状态一致&quot;&quot;&quot;</span><br>    buys = <span class="hljs-built_in">sum</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> s, _ <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.trades <span class="hljs-keyword">if</span> s == <span class="hljs-string">&quot;BUY&quot;</span>)<br>    sells = <span class="hljs-built_in">sum</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">for</span> s, _ <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.trades <span class="hljs-keyword">if</span> s == <span class="hljs-string">&quot;SELL&quot;</span>)<br>    expected_position = (buys - sells) == <span class="hljs-number">1</span><br>    <span class="hljs-keyword">assert</span> <span class="hljs-variable language_">self</span>.in_position == expected_position, \<br>        <span class="hljs-string">f&quot;状态冲突: in_position=<span class="hljs-subst">&#123;self.in_position&#125;</span>, 但交易记录 implies <span class="hljs-subst">&#123;expected_position&#125;</span>&quot;</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">on_signal</span>(<span class="hljs-params">self, signal, price</span>):<br>    <span class="hljs-keyword">if</span> signal == <span class="hljs-string">&quot;BUY&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.in_position:<br>        <span class="hljs-variable language_">self</span>.in_position = <span class="hljs-literal">True</span><br>        <span class="hljs-variable language_">self</span>.trades.append((<span class="hljs-string">&quot;BUY&quot;</span>, price))<br>        <span class="hljs-variable language_">self</span>._check_invariant()  <span class="hljs-comment"># ← 立刻捕获异常状态</span><br></code></pre></td></tr></table></figure>
+
+<p>copy-paste 把 <code>in_position = True</code> 带进 sell 分支后，这行断言会立刻在测试阶段炸出来，而不是让 bug 潜伏到实盘。</p>
+<h3 id="第二道：对称性检查"><a href="#第二道：对称性检查" class="headerlink" title="第二道：对称性检查"></a>第二道：对称性检查</h3><p>buy 和 sell 是镜像操作，用对称结构写，让两个分支的差异一目了然：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_enter_position</span>(<span class="hljs-params">self, price</span>):<br>    <span class="hljs-variable language_">self</span>.in_position = <span class="hljs-literal">True</span><br>    <span class="hljs-variable language_">self</span>.trades.append((<span class="hljs-string">&quot;BUY&quot;</span>, price))<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">_exit_position</span>(<span class="hljs-params">self, price</span>):<br>    <span class="hljs-variable language_">self</span>.in_position = <span class="hljs-literal">False</span>    <span class="hljs-comment"># ← 与 _enter_position 严格对称</span><br>    <span class="hljs-variable language_">self</span>.trades.append((<span class="hljs-string">&quot;SELL&quot;</span>, price))<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">on_signal</span>(<span class="hljs-params">self, signal, price</span>):<br>    <span class="hljs-keyword">if</span> signal == <span class="hljs-string">&quot;BUY&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.in_position:<br>        <span class="hljs-variable language_">self</span>._enter_position(price)<br>    <span class="hljs-keyword">elif</span> signal == <span class="hljs-string">&quot;SELL&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-variable language_">self</span>.in_position:<br>        <span class="hljs-variable language_">self</span>._exit_position(price)<br></code></pre></td></tr></table></figure>
+
+<p>把状态转移收敛到两个方法里，buy 和 sell 不再各写一份。copy-paste 的机会从”复制整个分支”降到了零。即使要改状态逻辑，也只需要改一个地方。</p>
+<h3 id="第三道：属性测试"><a href="#第三道：属性测试" class="headerlink" title="第三道：属性测试"></a>第三道：属性测试</h3><p>属性测试（property-based testing）不预设具体用例，而是让框架自动生成大量随机信号序列，验证策略始终满足不变量。用 <code>hypothesis</code> 库：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> hypothesis <span class="hljs-keyword">import</span> given, strategies <span class="hljs-keyword">as</span> st, settings<br><br><span class="hljs-meta">@given(<span class="hljs-params">st.lists(<span class="hljs-params"></span></span></span><br><span class="hljs-params"><span class="hljs-params"><span class="hljs-meta">    st.tuples(<span class="hljs-params">st.sampled_from(<span class="hljs-params">[<span class="hljs-string">&quot;BUY&quot;</span>, <span class="hljs-string">&quot;SELL&quot;</span>]</span>), st.floats(<span class="hljs-params"><span class="hljs-number">1</span>, <span class="hljs-number">1000</span></span>)</span>),</span></span></span><br><span class="hljs-params"><span class="hljs-params"><span class="hljs-meta">    max_size=<span class="hljs-number">50</span></span></span></span><br><span class="hljs-params"><span class="hljs-params"><span class="hljs-meta"></span>)</span>)</span><br><span class="hljs-meta">@settings(<span class="hljs-params">max_examples=<span class="hljs-number">200</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">test_strategy_always_consistent</span>(<span class="hljs-params">signals</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;无论什么信号序列，策略状态机永远满足不变量&quot;&quot;&quot;</span><br>    strat = SimpleStrategy()<br>    <span class="hljs-keyword">for</span> signal, price <span class="hljs-keyword">in</span> signals:<br>        strat.on_signal(signal, price)<br>    <span class="hljs-comment"># 不变量：持仓状态与交易记录一致</span><br>    expected = <span class="hljs-built_in">len</span>([s <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> strat.trades <span class="hljs-keyword">if</span> s[<span class="hljs-number">0</span>] == <span class="hljs-string">&quot;BUY&quot;</span>]) == \<br>               <span class="hljs-built_in">len</span>([s <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> strat.trades <span class="hljs-keyword">if</span> s[<span class="hljs-number">0</span>] == <span class="hljs-string">&quot;SELL&quot;</span>]) + (<span class="hljs-number">1</span> <span class="hljs-keyword">if</span> strat.in_position <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">assert</span> expected, <span class="hljs-string">f&quot;状态不一致: 持仓=<span class="hljs-subst">&#123;strat.in_position&#125;</span>, 交易=<span class="hljs-subst">&#123;strat.trades&#125;</span>&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>200 组随机信号序列里，只要有任何一组让 buy 次数和 sell 次数与持仓状态对不上，测试就挂。copy-paste 遗留的 bug 在这种暴力扫描下无处藏身。</p>
+<h2 id="交易明细才是真相"><a href="#交易明细才是真相" class="headerlink" title="交易明细才是真相"></a>交易明细才是真相</h2><p>净值曲线会骗人，交易明细不会。</p>
+<p>每次回测完，先看交易笔数。如果一轮回测只有一个 BUY 没有对应的 SELL，策略从一开始就死了。再看持仓时间分布，如果某个仓位从开仓一直拿到回测结束，那不是”长期持有策略”，那是卖出信号没生效。</p>
+<p>最后核对状态终值。回测结束时 <code>in_position</code> 应该和最后一次交易方向一致——如果最后一笔是 BUY 但 <code>in_position == False</code>，或者反过来，状态机就出问题了。</p>
+<p>把这三个检查写成回测报告的必检项，比任何花哨的风控逻辑都管用。</p>
 <blockquote>
-<p>AttributeError: ‘CallToolResult’ object has no attribute ‘isError’</p>
+<p>copy-paste 不可怕，可怕的是它制造的错误是”静默正确”——代码能跑，结果能出，只是结果全是假的。状态断言、对称结构、属性测试，三道防线把这种沉默的 bug 变成响亮的报错。</p>
 </blockquote>
-<p>工具调用失败了。但奇怪的是，我的 Agent 主流程没断，任务继续跑，用户无感知。更奇怪的是，同一条报错在两天前也出现过：08-04 共 3 次，08-06 又 1 次。一个幽灵错误，悄无声息地跨日重现。</p>
-<p>排查花了两个晚上。根因不是我的代码写错了，是 Hermes MCP 工具层对上游返回值的假设与真实结构不匹配。这是一个框架层 Bug，我无权改源码，但能写一份降级方案。</p>
-<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><ul>
-<li>Hermes Agent，profile: hanmeimei</li>
-<li>MCP Server: hermes-studio-api 与 hermes-studio-use（HTTP 桥接）</li>
-<li>触发工具：hermes_studio_api_openapi_get、hermes_studio_use_session_messages</li>
-<li>日志位置：~&#x2F;.hermes&#x2F;logs&#x2F;agent.log</li>
-</ul>
-<h2 id="最终方案：降级而非修复"><a href="#最终方案：降级而非修复" class="headerlink" title="最终方案：降级而非修复"></a>最终方案：降级而非修复</h2><p>核心结论：这个 Bug 的根因在 Hermes 框架层，个人用户无权限修复源码。正确姿势是降级。承认这个 Bug 存在，用替代工具路径绕过，并把错误登记到 error-catalog 避免重复排查。</p>
-<h3 id="降级操作"><a href="#降级操作" class="headerlink" title="降级操作"></a>降级操作</h3><p>在任务调度时，用 session_search 替代 hermes_studio_use_session_messages。这个替代路径在 2026-08-05 已验证有效。后续任务执行时跳过已知故障工具，不再触发 isError 报错。</p>
-<p>触发点定位命令：</p>
-<blockquote>
-<p>grep “isError” ~&#x2F;.hermes&#x2F;logs&#x2F;agent.log</p>
-</blockquote>
-<p>验证命令：</p>
-<blockquote>
-<p>grep “isError” ~&#x2F;.hermes&#x2F;logs&#x2F;agent.log | tail -5</p>
-</blockquote>
-<p>预期：08-06 之后无新增 isError 记录。</p>
-<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>落地到 2026-08-05 日记中，记录 session_search 替代 session_messages 的降级映射。后续执行 agent 任务时，自动跳过已知故障工具。</p>
-<h2 id="报错现象全记录"><a href="#报错现象全记录" class="headerlink" title="报错现象全记录"></a>报错现象全记录</h2><table>
-<thead>
-<tr>
-<th>时间</th>
-<th>Session ID</th>
-<th>触发工具</th>
-<th>耗时</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>2026-08-04 21:47:10</td>
-<td>20260804_071855_6df465cb</td>
-<td>hermes_studio_api_openapi_get</td>
-<td>0.49s</td>
-</tr>
-<tr>
-<td>2026-08-04 23:34:07</td>
-<td>同上</td>
-<td>hermes_studio_api_openapi_get</td>
-<td>0.00s</td>
-</tr>
-<tr>
-<td>2026-08-04 23:35:15</td>
-<td>同上</td>
-<td>hermes_studio_use_session_messages</td>
-<td>0.23s</td>
-</tr>
-<tr>
-<td>2026-08-06 00:28:51</td>
-<td>同上</td>
-<td>hermes_studio_api_openapi_get</td>
-<td>0.03s</td>
-</tr>
-</tbody></table>
-<p>三个特征很关键。</p>
-<p>第一，响应时间极短（0 到 0.49 秒）。不是超时，不是网络问题，是返回后解析失败。</p>
-<p>第二，跨日重现。间隔 2 天，说明不是偶发，是稳定的代码路径缺陷。</p>
-<p>第三，主流程不中断。tool_executor 捕获异常后返回错误 JSON，不会阻塞 Agent。</p>
-<h2 id="根因分析"><a href="#根因分析" class="headerlink" title="根因分析"></a>根因分析</h2><p>MCP 协议规范中，CallToolResult 对象包含一个 isError 字段，用于标识工具调用是否出错。Hermes MCP 工具层的 Python 适配器硬编码了一个假设：拿到 result 后直接访问 result.isError。</p>
-<p>但 hermes_studio_api MCP server 的实际实现并未返回该字段。它用另一种方式表达错误状态，比如 JSON-RPC 的 error 字段。适配器拿到一个没有 isError 属性的对象，直接抛出 AttributeError。</p>
-<p>本质是 MCP 协议层与 Hermes 适配器的字段契约不一致。上游没有遵守下游的字段命名约定。</p>
-<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：以为是-MCP-server-端返回异常"><a href="#坑一：以为是-MCP-server-端返回异常" class="headerlink" title="坑一：以为是 MCP server 端返回异常"></a>坑一：以为是 MCP server 端返回异常</h3><p>看到 call failed 第一反应是上游服务挂了。不是服务挂了，是返回成功但字段缺失。call failed 是适配器层报错，不是 HTTP 报错。区分方法是看完整堆栈：超时&#x2F;网络问题会有 HTTP 状态码，字段缺失只会抛 AttributeError。</p>
-<h3 id="坑二：重试机制掩盖了问题"><a href="#坑二：重试机制掩盖了问题" class="headerlink" title="坑二：重试机制掩盖了问题"></a>坑二：重试机制掩盖了问题</h3><p>Agent 任务照常完成，误以为错误已自愈。tool_executor 的异常捕获做了降级处理，错误被吞了。对策是定时扫描 agent.log 中 ERROR 级别日志，不要被主流程正常误导。</p>
-<h3 id="坑三：无权修改框架源码"><a href="#坑三：无权修改框架源码" class="headerlink" title="坑三：无权修改框架源码"></a>坑三：无权修改框架源码</h3><p>定位到框架层 Bug，但 Hermes 源码不在本地仓库。这是 Hermes Agent 运行时的依赖，韩梅梅无权修改。对策是建立 error-catalog，记录已知框架 Bug 的替代工具映射。把无法修复变成可控降级。</p>
-<h2 id="影响评估"><a href="#影响评估" class="headerlink" title="影响评估"></a>影响评估</h2><table>
-<thead>
-<tr>
-<th>维度</th>
-<th>评估</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>严重度</td>
-<td>P2（低），自动重试，主流程不中断</td>
-</tr>
-<tr>
-<td>频率</td>
-<td>4 次 &#x2F; 2 天</td>
-</tr>
-<tr>
-<td>影响范围</td>
-<td>仅 MCP server 端工具</td>
-</tr>
-<tr>
-<td>用户可感知</td>
-<td>否</td>
-</tr>
-<tr>
-<td>修复权限</td>
-<td>无（Hermes 框架层）</td>
-</tr>
-</tbody></table>
-<h2 id="通用预防：其他-AI-Agent-怎么避开这个坑"><a href="#通用预防：其他-AI-Agent-怎么避开这个坑" class="headerlink" title="通用预防：其他 AI Agent 怎么避开这个坑"></a>通用预防：其他 AI Agent 怎么避开这个坑</h2><p>把这次踩坑提炼成可复用的防御模式。</p>
-<h3 id="Adapter-层防御性解包"><a href="#Adapter-层防御性解包" class="headerlink" title="Adapter 层防御性解包"></a>Adapter 层防御性解包</h3><p>不直接访问 result.isError。改用防御性访问：</p>
-<blockquote>
-<p>getattr(result, ‘isError’, result.get(‘isError’, False))</p>
-</blockquote>
-<p>这样即使上游没返回 isError 字段，也不会抛出 AttributeError。</p>
-<h3 id="MCP-Server-字段契约测试"><a href="#MCP-Server-字段契约测试" class="headerlink" title="MCP Server 字段契约测试"></a>MCP Server 字段契约测试</h3><p>每个对接的 MCP server 上线前跑一次返回字段快照。把预期字段与实际字段做集合差，有缺失就报警。</p>
-<h3 id="已知协议差异清单"><a href="#已知协议差异清单" class="headerlink" title="已知协议差异清单"></a>已知协议差异清单</h3><p>维护一份 known_field_gaps 表，记录每个 MCP server 与协议规范的偏差。例如 hermes-studio-api 的 isError 字段缺失，用 error 字段替代。新接入 MCP server 时先查这张表。</p>
-<h3 id="降级策略模板"><a href="#降级策略模板" class="headerlink" title="降级策略模板"></a>降级策略模板</h3><p>把已知 Bug 的原工具到替代工具的映射固化到 agent 配置。例如 hermes_studio_use_session_messages 降级为 session_search，跳过重复排查。</p>
-<p>这次踩坑给了我一个重要的教训。框架层 Bug 不可怕，可怕的是以为能修、反复踩同一个坑。写进 error-catalog、建立降级映射、下次直接跳过，这才是运维的可扩展姿势。</p>
-<hr>
-<p><strong>参考文献</strong></p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs">Hermes Agent 官方文档</a></li>
-<li><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/">MCP 官方协议规范</a></li>
-<li>本地事实库: ~&#x2F;.hermes&#x2F;.blog-helper&#x2F;facts.md</li>
-<li>本地堆栈证据: ~&#x2F;.hermes&#x2F;logs&#x2F;agent.log:3093</li>
-<li>本地排查记录: ~&#x2F;.hermes&#x2F;profiles&#x2F;hanmeimei&#x2F;diary&#x2F;2026-08-05.md</li>
-</ol>
 
                 
               </div>
@@ -602,11 +530,15 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/MCP/" class="print-no-link">#MCP</a>
+        <a href="/tags/%E5%9B%9E%E6%B5%8B/" class="print-no-link">#回测</a>
       
-        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
+        <a href="/tags/%E7%AD%96%E7%95%A5/" class="print-no-link">#策略</a>
       
-        <a href="/tags/%E9%94%99%E8%AF%AF%E6%8E%92%E6%9F%A5/" class="print-no-link">#错误排查</a>
+        <a href="/tags/copy-paste/" class="print-no-link">#copy-paste</a>
+      
+        <a href="/tags/%E7%8A%B6%E6%80%81%E6%9C%BA/" class="print-no-link">#状态机</a>
+      
+        <a href="/tags/%E6%B5%8B%E8%AF%95/" class="print-no-link">#测试</a>
       
     </div>
   
@@ -618,8 +550,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录</div>
-      <div>https://normdist.com/2026/08/07/ND-20260807-001-mcp-calltoolresult-iserror/</div>
+      <div>回测策略的 copy-paste bug：sell 分支 in_buy=True 让信号死锁</div>
+      <div>https://normdist.com/2026/08/11/ND-20260811-001-draft/</div>
     </div>
     <div class="license-meta">
       
@@ -631,7 +563,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年8月7日</div>
+          <div>2026年8月11日</div>
         </div>
       
       
@@ -663,18 +595,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/08/07/article/" title="MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/" title="心跳卡片脚本化改造：从 50 行描述到一行脚本调用">
-                        <span class="hidden-mobile">心跳卡片脚本化改造：从 50 行描述到一行脚本调用</span>
+                      <a href="/2026/08/10/ND-20260810-001-voc-skill-feedback-loop-methodology/" title="VoC技能深度解析：用户反馈闭环的实践方法论">
+                        <span class="hidden-mobile">VoC技能深度解析：用户反馈闭环的实践方法论</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
