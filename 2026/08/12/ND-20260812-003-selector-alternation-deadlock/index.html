@@ -1,0 +1,1006 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="我的回测引擎里有一个隐蔽的 bug，藏了三个月才被发现：RSI、布林带、肯特纳通道三个策略，每个都只产生了第一次买入信号，之后再也没卖过。 回测报告显示”100% 胜率、单笔交易”，看起来完美——实际上是信号死了。 根因是一行 copy-paste：卖出分支里把 in_buy 设成了 True，本该是 False。结果卖出后买入锁一直挂着，下一个买入信号永远被”已持仓”挡住，整条信号链断裂。这不是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="回测策略 selector 交替逻辑设计：防止信号死锁的代码模式">
+<meta property="og:url" content="https://normdist.com/2026/08/12/ND-20260812-003-selector-alternation-deadlock/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="我的回测引擎里有一个隐蔽的 bug，藏了三个月才被发现：RSI、布林带、肯特纳通道三个策略，每个都只产生了第一次买入信号，之后再也没卖过。 回测报告显示”100% 胜率、单笔交易”，看起来完美——实际上是信号死了。 根因是一行 copy-paste：卖出分支里把 in_buy 设成了 True，本该是 False。结果卖出后买入锁一直挂着，下一个买入信号永远被”已持仓”挡住，整条信号链断裂。这不是">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-12T03:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-12T19:47:15.175Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="信号死锁">
+<meta property="article:tag" content="回测">
+<meta property="article:tag" content="状态机">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>回测策略 selector 交替逻辑设计：防止信号死锁的代码模式 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">回测策略 selector 交替逻辑设计：防止信号死锁的代码模式</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-12 11:00" pubdate>
+          2026年8月12日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          62 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">回测策略 selector 交替逻辑设计：防止信号死锁的代码模式</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年8月13日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>我的回测引擎里有一个隐蔽的 bug，藏了三个月才被发现：<strong>RSI、布林带、肯特纳通道三个策略，每个都只产生了第一次买入信号，之后再也没卖过。</strong> 回测报告显示”100% 胜率、单笔交易”，看起来完美——实际上是信号死了。</p>
+<p>根因是一行 copy-paste：卖出分支里把 <code>in_buy</code> 设成了 <code>True</code>，本该是 <code>False</code>。结果卖出后买入锁一直挂着，下一个买入信号永远被”已持仓”挡住，整条信号链断裂。这不是孤例，而是一类问题的典型——<strong>回测里的状态机一旦复位分支写错，就会”信号死锁”：两个方向互相等待对方释放，谁也动不了。</strong></p>
+<p>这篇文章拆解我在 AutoQuant 回测框架里怎么设计 selector 的交替逻辑，怎么用状态机模式根治这类死锁。所有代码来自真实提交，不是编的。</p>
+<h2 id="问题：什么叫信号死锁"><a href="#问题：什么叫信号死锁" class="headerlink" title="问题：什么叫信号死锁"></a>问题：什么叫信号死锁</h2><p>回测策略的核心是一个循环：遍历每个交易日，根据指标判断买&#x2F;卖，产出信号序列。一个”干净”的信号序列应该是严格交替的——买、卖、买、卖……因为你的持仓状态是二值的，买入后只有卖出才能回到空仓，反过来也一样。</p>
+<p>但指标不会这么配合。RSI 可能在超买区连续停留 5 天，SMA 快慢线可能缠绕几十个来回。如果不加约束，你会拿到这样的信号序列：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">buy, </span><span class="hljs-keyword">buy, </span><span class="hljs-keyword">buy, </span><span class="hljs-keyword">buy, </span><span class="hljs-keyword">buy, </span>sell, <span class="hljs-keyword">buy, </span><span class="hljs-keyword">buy, </span>sell, ...<br></code></pre></td></tr></table></figure>
+
+<p>连续的 <code>buy</code> 没有意义——你已经买过了，再买就是”加仓”，但回测引擎的记账逻辑（单仓、固定仓位）处理不了。这种信号喂给回测，要么报错，要么悄悄算错。</p>
+<p>更恶心的是另一种情况：<strong>两个方向的信号互相锁死。</strong> 假设你的状态机有两个锁 <code>in_buy</code> 和 <code>in_sell</code>，买入时置 <code>in_buy=True</code>，卖出时置 <code>in_sell=True</code>。如果卖出分支忘了把 <code>in_buy</code> 复位回 <code>False</code>，那么——</p>
+<ul>
+<li>卖出后，<code>in_buy</code> 仍是 <code>True</code>；</li>
+<li>下一个买入信号来了，检查 <code>if not in_buy</code>，条件为假，不触发；</li>
+<li>于是再也买不进去，<code>in_buy</code> 永远是 <code>True</code>。</li>
+</ul>
+<p>这就是”信号死锁”：不是程序卡住，而是信号永远不再产生，回测在第一笔交易后就”冻住”了。表面看是高胜率，实际是样本量 1。</p>
+<h2 id="复现现场：一行-copy-paste-的杀伤力"><a href="#复现现场：一行-copy-paste-的杀伤力" class="headerlink" title="复现现场：一行 copy-paste 的杀伤力"></a>复现现场：一行 copy-paste 的杀伤力</h2><p>这个 bug 的真实出处是 AutoQuant 的 <code>scripts/backtest/strategies.py</code>。我有一份原始的提交记录（commit <code>01c0838</code>），它修复了三个策略的同款错误。下面是修复前的 RSI 策略 sell 分支：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ 修复前：sell 分支把 in_buy 设成了 True（copy-paste 自 buy 分支）</span><br><span class="hljs-keyword">elif</span> sell_cond:<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> in_sell:<br>        signals.append(build_sell(i))<br>        in_sell = <span class="hljs-literal">True</span><br>    in_buy = <span class="hljs-literal">True</span>   <span class="hljs-comment"># ← BUG：应该是 False</span><br></code></pre></td></tr></table></figure>
+
+<p>看出问题了吗？<code>in_buy = True</code> 是从 buy 分支复制过来忘改的。正确逻辑是：<strong>卖出后，买入锁应该释放（<code>False</code>），这样下一次买入信号才能触发。</strong> 但这里设成了 <code>True</code>，等于永远锁死买入。</p>
+<p>这个错误同时出现在 RSI、布林带、肯特纳通道三个策略里，因为它们都是从 SMA 交叉策略 copy 出来的模板。<strong>copy-paste 是状态机 bug 的头号来源——每复制一次，就要改一次状态转移，漏改就是死锁。</strong></p>
+<p>修复版本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 修复后：sell 分支正确释放买入锁</span><br><span class="hljs-keyword">elif</span> sell_cond:<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> in_sell:<br>        signals.append(build_sell(i))<br>        in_sell = <span class="hljs-literal">True</span><br>    in_buy = <span class="hljs-literal">False</span>  <span class="hljs-comment"># ← 正确：卖出后释放买入锁</span><br></code></pre></td></tr></table></figure>
+
+<p>一个字符之差（<code>True</code> → <code>False</code>），但回测结果天翻地覆。修复前，RSI 策略在某只 ETF 上一整年只产生 1 笔交易；修复后，正常交替，产生了 14 笔。</p>
+<h2 id="解法：把交替锁封装成基类方法"><a href="#解法：把交替锁封装成基类方法" class="headerlink" title="解法：把交替锁封装成基类方法"></a>解法：把交替锁封装成基类方法</h2><p>修掉这一行只是治标。真正的病灶是——<strong>8 个策略各自手写交替锁循环，逻辑重复了 8 遍，每遍都有写错的自由。</strong> 只要这个模式还散落在各处，下一个 copy-paste 还会埋下新的死锁。</p>
+<p>治本的方法是把交替锁逻辑提取成一个不可写错的黑盒，所有策略只调用、不复写。我在 commit <code>47439fb</code> 里做了这次重构，核心是给 <code>BaseStrategy</code> 加了一个 <code>_detect_with_locks</code> 方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># strategies.py — BaseStrategy 基类</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">BaseStrategy</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_detect_with_locks</span>(<span class="hljs-params">self, df, buy_cond, sell_cond, build_buy, build_sell</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;封装交替锁去重循环：买入后必须卖出才能再买入，反之亦然。</span><br><span class="hljs-string"></span><br><span class="hljs-string">        交替锁避免连续同向信号；中性区（buy_cond 与 sell_cond 均为 False）</span><br><span class="hljs-string">        不改变锁状态，避免震荡区域重复信号。</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        signals = []<br>        in_buy = <span class="hljs-literal">False</span><br>        in_sell = <span class="hljs-literal">False</span><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> df.index:<br>            <span class="hljs-keyword">if</span> buy_cond.iloc[i]:<br>                <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> in_buy:<br>                    signals.append(build_buy(i))<br>                    in_buy = <span class="hljs-literal">True</span><br>                in_sell = <span class="hljs-literal">False</span>          <span class="hljs-comment"># 释放对向锁</span><br>            <span class="hljs-keyword">elif</span> sell_cond.iloc[i]:<br>                <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> in_sell:<br>                    signals.append(build_sell(i))<br>                    in_sell = <span class="hljs-literal">True</span><br>                in_buy = <span class="hljs-literal">False</span>           <span class="hljs-comment"># 释放对向锁</span><br>            <span class="hljs-comment"># 中性区不重置状态，保持交替锁</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._dedupe_same_day(signals)<br></code></pre></td></tr></table></figure>
+
+<p>看清楚这套状态机的三条规则：</p>
+<ol>
+<li><strong>买入触发时</strong>：若未在买入态（<code>not in_buy</code>），产出买入信号并置 <code>in_buy=True</code>；同时无条件释放卖出锁 <code>in_sell=False</code>。因为你既然在买，就一定不在卖。</li>
+<li><strong>卖出触发时</strong>：镜像对称——释放买入锁。</li>
+<li><strong>中性区</strong>（两个条件都不满足）：<strong>什么都不做</strong>。这条最关键，下一节单独讲。</li>
+</ol>
+<p>关键在于，<code>in_sell = False</code> 和 <code>in_buy = False</code> 这两行复位是<strong>写死在基类里的，子类碰不到</strong>。子类只负责提供 <code>buy_cond</code>&#x2F;<code>sell_cond</code>（布尔条件）和 <code>build_buy</code>&#x2F;<code>build_sell</code>（信号构造回调），状态转移逻辑完全由基类托管。<strong>只要基类的两行复位是对的，所有子类就都是对的。</strong></p>
+<h2 id="子策略的写法简化了多少"><a href="#子策略的写法简化了多少" class="headerlink" title="子策略的写法简化了多少"></a>子策略的写法简化了多少</h2><p>重构前后，RSI 策略的 <code>detect</code> 方法从 30 多行手写循环，缩成了纯声明：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 重构后：RSI 策略只声明&quot;什么时候买、什么时候卖、信号长什么样&quot;</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">RSI_Strategy</span>(<span class="hljs-title class_ inherited__">BaseStrategy</span>):<br>    name = <span class="hljs-string">&quot;rsi&quot;</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">detect</span>(<span class="hljs-params">self, df</span>):<br>        close = df[<span class="hljs-string">&quot;close&quot;</span>]<br>        <span class="hljs-comment"># ... 计算 rsi ...</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._detect_with_locks(<br>            df,<br>            buy_cond=rsi &lt; <span class="hljs-variable language_">self</span>.params[<span class="hljs-string">&quot;oversold&quot;</span>],   <span class="hljs-comment"># RSI&lt;30 买入</span><br>            sell_cond=rsi &gt; <span class="hljs-variable language_">self</span>.params[<span class="hljs-string">&quot;overbought&quot;</span>], <span class="hljs-comment"># RSI&gt;70 卖出</span><br>            build_buy=<span class="hljs-keyword">lambda</span> i: StrategySignal(..., direction=<span class="hljs-string">&quot;buy&quot;</span>, ...),<br>            build_sell=<span class="hljs-keyword">lambda</span> i: StrategySignal(..., direction=<span class="hljs-string">&quot;sell&quot;</span>, ...),<br>        )<br></code></pre></td></tr></table></figure>
+
+<p>8 个策略全部变成这个模板：<strong>算指标 → 声明两个条件 → 传两个回调。</strong> 信号去重、交替锁、状态复位，全部不可见、不可错。重构后净减少 14 行代码（重复逻辑消灭了），54 个测试全绿。</p>
+<h2 id="关键设计：中性区不重置状态"><a href="#关键设计：中性区不重置状态" class="headerlink" title="关键设计：中性区不重置状态"></a>关键设计：中性区不重置状态</h2><p>前面提到第三条规则”中性区不重置状态”，这是整套设计里最容易踩坑、也最容易被忽略的一点。展开讲讲。</p>
+<p>假设 RSI 从超买区（&gt;70）回落，在 50-70 之间徘徊了 10 天，然后再次冲上 75。这 10 天里，<code>buy_cond</code>（RSI&lt;30）和 <code>sell_cond</code>（RSI&gt;70）都是 <code>False</code>——这就是”中性区”。</p>
+<p>中性区应该做什么？有两种选择，结果截然不同：</p>
+<p><strong>错误选择：中性区重置两个锁。</strong> 也就是把 else 分支写成 <code>in_buy = in_sell = False</code>。这样做的后果是——RSI 第二次冲上 75 时，因为 <code>in_sell</code> 已经被中性区重置成 <code>False</code>，会<strong>再产出一个卖出信号</strong>。但这不应该：你根本没有在两次超买之间买过，何来”再卖”？连续的卖出信号就这么产生了，交替锁形同虚设。</p>
+<p><strong>正确选择：中性区什么都不做。</strong> 锁状态保持原样。你卖出后 <code>in_sell=True</code>，中性区不碰它；RSI 再次超买时，<code>if not in_sell</code> 为假，不会重复卖出。只有当买入条件触发、把 <code>in_sell</code> 释放掉之后，下一次卖出才有资格发生。<strong>这才是真正的”交替”——用对向锁来决定本向信号能否触发。</strong></p>
+<p>这条规则的价值在震荡市尤其明显。窄幅震荡时指标会频繁穿越中性区，如果每次穿越都重置锁，信号会被刷成一片噪声。不重置，则信号保持稀疏、干净。</p>
+<p>代码里只有一行注释保证这一点不会被人”优化”掉：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> df.index:<br>    <span class="hljs-keyword">if</span> buy_cond.iloc[i]:<br>        ...<br>    <span class="hljs-keyword">elif</span> sell_cond.iloc[i]:<br>        ...<br>    <span class="hljs-comment"># 中性区不重置状态，保持交替锁   ← 这行注释是设计契约，别删</span><br></code></pre></td></tr></table></figure>
+
+<p>我把这条规则连同前面的双锁释放，用单测钉死了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># test_dedupe_locks.py — 中性区不重置锁</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">test_locks_neutral_zone</span>(<span class="hljs-params">self</span>):<br>    df = _make_df([<span class="hljs-string">&quot;2024-01-01&quot;</span>, <span class="hljs-string">&quot;2024-01-02&quot;</span>, <span class="hljs-string">&quot;2024-01-03&quot;</span>, <span class="hljs-string">&quot;2024-01-04&quot;</span>],<br>                  [<span class="hljs-number">100</span>, <span class="hljs-number">101</span>, <span class="hljs-number">100</span>, <span class="hljs-number">101</span>])<br>    <span class="hljs-comment"># Day1 买，Day2-3 中性，Day4 卖</span><br>    buy_cond  = pd.Series([<span class="hljs-literal">True</span>, <span class="hljs-literal">False</span>, <span class="hljs-literal">False</span>, <span class="hljs-literal">False</span>])<br>    sell_cond = pd.Series([<span class="hljs-literal">False</span>, <span class="hljs-literal">False</span>, <span class="hljs-literal">False</span>, <span class="hljs-literal">True</span>])<br><br>    result = s._detect_with_locks(df, buy_cond, sell_cond, build_buy, build_sell)<br>    <span class="hljs-comment"># 只有 buy 和 sell，中间两天不产出任何信号</span><br>    <span class="hljs-keyword">assert</span> [x.direction <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> result] == [<span class="hljs-string">&quot;buy&quot;</span>, <span class="hljs-string">&quot;sell&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<h2 id="用单测把状态机的不变量焊死"><a href="#用单测把状态机的不变量焊死" class="headerlink" title="用单测把状态机的不变量焊死"></a>用单测把状态机的不变量焊死</h2><p>状态机的 bug 有个共同特征：<strong>运行时不报错，只是悄悄产出错误结果。</strong> 100% 胜率、1 笔交易——程序照样跑完，报告照样生成。这种 bug 只有靠测试主动去抓。</p>
+<p>我给交替锁写了四类测试，覆盖状态机的所有转移路径（<code>test_dedupe_locks.py</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">TestDetectWithLocks</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_locks_alternate</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;严格交替：buy→sell→buy→sell&quot;&quot;&quot;</span><br>        <span class="hljs-comment"># buy/sell 条件交替为 True，断言输出严格交替</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_locks_neutral_zone</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;中性区不改变锁状态、不产出信号&quot;&quot;&quot;</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_locks_start_with_sell</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;第一个信号可以是 sell（不假设必须先 buy）&quot;&quot;&quot;</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_locks_long_streak</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;连续同向条件只产出第一个信号（锁住后续）&quot;&quot;&quot;</span><br>        <span class="hljs-comment"># buy_cond 连续 4 天 True，但只有第一天产出 buy 信号</span><br>        <span class="hljs-keyword">assert</span> [x.direction <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> result] == [<span class="hljs-string">&quot;buy&quot;</span>, <span class="hljs-string">&quot;sell&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<p>这四个测试覆盖了状态机的全部转移：<strong>交替、中性、起始方向、长连。</strong> 只要这些不变量不破，死锁类的 bug 就无所遁形。</p>
+<p>特别值得强调 <code>test_locks_long_streak</code>——它直接对应死锁的反面。连续买入条件只产出第一个信号，是因为 <code>in_buy</code> 锁住了后续；而能产出后续卖出信号，是因为卖出分支正确释放了 <code>in_buy</code>。<strong>如果有人把 <code>in_buy = False</code> 改回 <code>True</code>，这个测试立刻红。</strong> 这就是用测试守住关键不变量的意义。</p>
+<h2 id="番外：迟滞保护防止-selector-级”横跳”"><a href="#番外：迟滞保护防止-selector-级”横跳”" class="headerlink" title="番外：迟滞保护防止 selector 级”横跳”"></a>番外：迟滞保护防止 selector 级”横跳”</h2><p>交替锁解决的是<strong>单策略内部</strong>的信号死锁。但在策略 selector（选优器）层面，还有一个对称的”死锁”——策略之间来回横跳。</p>
+<p><code>strategy_selector.py</code> 会给每只标的选出”最优买入策略”和”最优卖出策略”。问题在于：评分是浮动的，今天 VWAP 得分 60、Turtle 得分 58，明天数据更新后可能反过来。如果每次都纯取 max，selector 就会在两个策略间反复切换——今天用 VWAP，明天用 Turtle，后天又回 VWAP。这不是死锁，但性质类似：<strong>两个选项互相等待对方让位，系统无法稳定在一个决策上。</strong></p>
+<p>解法是<strong>迟滞（hysteresis）</strong>，和硬件里的施密特触发器一个原理——加一个切换阈值，得分差距不够大就不切：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># strategy_selector.py — 迟滞保护</span><br>STRATEGY_HYSTERESIS = <span class="hljs-built_in">float</span>(os.environ.get(<span class="hljs-string">&quot;STRATEGY_HYSTERESIS&quot;</span>, <span class="hljs-string">&quot;5&quot;</span>))<br><br><span class="hljs-keyword">if</span> hysteresis &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> prev_best_buy:<br>    prev_buy_score = lookup_score(prev_best_buy)<br>    <span class="hljs-keyword">if</span> abs_best_buy[<span class="hljs-number">0</span>] != prev_best_buy:<br>        <span class="hljs-keyword">if</span> abs_best_buy[<span class="hljs-number">1</span>] - prev_buy_score &lt; hysteresis:<br>            <span class="hljs-comment"># 得分差距不足 5 分，不切换，保持原策略</span><br>            best_buy = (prev_best_buy, prev_buy_score)<br>        <span class="hljs-keyword">else</span>:<br>            buy_switched = <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
+
+<p>这套迟滞逻辑同样有单测覆盖（<code>test_hysteresis.py</code>，14 个用例）：差距小于阈值保持原策略、等于阈值允许切换、<code>hysteresis=0</code> 退化为纯取 max、边界场景全覆盖。</p>
+<p><strong>交替锁和迟滞保护是同一个设计哲学的两面</strong>：交替锁防止单策略内连续同向信号（内部死锁），迟滞防止多策略间频繁切换（外部横跳）。两者都通过”加一个状态约束，让转移不那么自由”来换取稳定性。自由度降下来了，可预测性就上去了。</p>
+<h2 id="避坑清单"><a href="#避坑清单" class="headerlink" title="避坑清单"></a>避坑清单</h2><p>总结这套设计里最容易踩的四个坑，每一个都用血泪换的：</p>
+<p><strong>坑一：复位分支漏写或写错。</strong> 最经典。buy 分支要对向锁复位 <code>in_sell=False</code>，sell 分支要对向锁复位 <code>in_buy=False</code>。copy-paste 时极易漏改。解法：<strong>把复位逻辑关进基类黑盒，子类碰不到。</strong></p>
+<p><strong>坑二：中性区重置锁。</strong> 看起来”干净”，实际破坏交替性。震荡市里会刷出一片重复信号。解法：<strong>中性区显式什么都不做，并用注释和单测标明这是设计契约。</strong></p>
+<p><strong>坑三：假设首信号一定是 buy。</strong> 有的策略（比如唐奇安通道突破）第一信号可能是卖出。如果状态机初始化时假设 <code>in_buy=False, in_sell=False</code> 且不处理”先卖后买”，就会漏信号。解法：<strong>两个锁都从 <code>False</code> 起步，谁先触发都行</strong>——上面的状态机天然满足这点。</p>
+<p><strong>坑四：用单测试跑指标、不测状态转移。</strong> 很多回测测试只验证”RSI 算得对不对”，不验证”信号序列是否严格交替”。状态机 bug 恰恰藏在转移里，指标算对了信号照样能死锁。解法：<strong>独立测 <code>_detect_with_locks</code>，不依赖具体策略和行情数据，直接喂布尔条件。</strong></p>
+<h2 id="这套模式的边界"><a href="#这套模式的边界" class="headerlink" title="这套模式的边界"></a>这套模式的边界</h2><p>交替锁 + 基类封装，解决的是”严格交替”场景的信号死锁。但它有适用边界，不是银弹。</p>
+<p><strong>只适合单仓位的二值状态。</strong> 你的回测如果支持加仓、减仓、多空双向、不同仓位档位，那持仓状态就不是 buy&#x2F;sell 二值，交替锁会过度约束。这时状态机要扩展成”仓位档位”枚举，锁的逻辑相应复杂。</p>
+<p><strong>严格交替可能漏掉合理信号。</strong> 现实中”买入后再买入”（加仓）有时是合理的，比如金字塔加仓法。交替锁会一刀切掉这类信号。如果你的策略需要加仓，得在交替锁之外另开一条加仓逻辑，和主锁解耦。</p>
+<p><strong>基类黑盒牺牲灵活性换安全。</strong> 把逻辑关进基类后，个别策略想要非标准行为（比如”允许连续两个 buy”）就没法用 <code>_detect_with_locks</code> 了，得自己写循环——而这正是死锁重新抬头的地方。权衡是：<strong>用黑盒保护 90% 的标准场景，只对 10% 的特例开窗，并对每个特例单独测试。</strong></p>
+<p>把重复的、易错的状态逻辑收敛到一个经过充分测试的地方，让业务代码只描述”什么时候买、什么时候卖”——这个朴素的原则，比任何花哨的框架都更能防住死锁。信号会交替，但你的代码不该在同一个坑里交替摔倒。</p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li>AutoQuant 回测框架源码 <code>scripts/backtest/strategies.py</code> — <code>_detect_with_locks</code> 基类实现</li>
+<li>AutoQuant <code>scripts/backtest/strategy_selector.py</code> — 迟滞保护 <code>STRATEGY_HYSTERESIS</code> 逻辑</li>
+<li>AutoQuant <code>scripts/backtest/test_dedupe_locks.py</code> — 交替锁状态机单测（4 类不变量）</li>
+<li>AutoQuant <code>scripts/backtest/test_hysteresis.py</code> — selector 迟滞单测（14 用例）</li>
+<li>相关前置文章：《回测策略的 copy-paste bug：sell 分支 in_buy&#x3D;True 让信号死锁》— 同一系列的死锁 bug 根因分析</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%9B%9E%E6%B5%8B/" class="print-no-link">#回测</a>
+      
+        <a href="/tags/%E7%8A%B6%E6%80%81%E6%9C%BA/" class="print-no-link">#状态机</a>
+      
+        <a href="/tags/%E4%BF%A1%E5%8F%B7%E6%AD%BB%E9%94%81/" class="print-no-link">#信号死锁</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>回测策略 selector 交替逻辑设计：防止信号死锁的代码模式</div>
+      <div>https://normdist.com/2026/08/12/ND-20260812-003-selector-alternation-deadlock/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/" title="回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪">
+                        <span class="hidden-mobile">回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1019 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="凌晨三点，我像往常一样跑 systemctl restart autoquant。日志里一行红字刺眼：service autoquant.service: restart counter 10637 hit max, refusing to start。 10637 次。这个服务在过去 24 小时里被 systemd 反复拉起、反复杀掉，像被谁下了一个死循环的咒。而罪魁祸首，是半年前一个再”顺手”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="幽灵进程导致 systemd 重启 10637 次：手动 uvicorn 的隐蔽陷阱">
+<meta property="og:url" content="https://normdist.com/2026/08/12/ND-20260812-001-systemd-ghost-uvicorn-10637-restarts/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="凌晨三点，我像往常一样跑 systemctl restart autoquant。日志里一行红字刺眼：service autoquant.service: restart counter 10637 hit max, refusing to start。 10637 次。这个服务在过去 24 小时里被 systemd 反复拉起、反复杀掉，像被谁下了一个死循环的咒。而罪魁祸首，是半年前一个再”顺手”">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-12T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-11T19:47:24.733Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AutoQuant">
+<meta property="article:tag" content="systemd">
+<meta property="article:tag" content="踩坑">
+<meta property="article:tag" content="运维">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>幽灵进程导致 systemd 重启 10637 次：手动 uvicorn 的隐蔽陷阱 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">幽灵进程导致 systemd 重启 10637 次：手动 uvicorn 的隐蔽陷阱</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-12 09:00" pubdate>
+          2026年8月12日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">幽灵进程导致 systemd 重启 10637 次：手动 uvicorn 的隐蔽陷阱</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年8月12日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>凌晨三点，我像往常一样跑 <code>systemctl restart autoquant</code>。日志里一行红字刺眼：<code>service autoquant.service: restart counter 10637 hit max, refusing to start</code>。</p>
+<p>10637 次。这个服务在过去 24 小时里被 systemd 反复拉起、反复杀掉，像被谁下了一个死循环的咒。而罪魁祸首，是半年前一个再”顺手”不过的决定——直接 <code>nohup uvicorn ... &amp;</code> 手动启动。</p>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><p>复现本文现象，你需要的是这套环境：</p>
+<ul>
+<li><strong>OS</strong>：Ubuntu 22.04 &#x2F; Debian 12</li>
+<li><strong>系统</strong>：systemd 249+，启用了 <code>Restart=on-failure</code> 的单元</li>
+<li><strong>应用</strong>：Python FastAPI + uvicorn，端口固定（例如 8000）</li>
+<li><strong>触发条件</strong>：手动 <code>uvicorn</code> 或 <code>python -m uvicorn</code> 曾在某次调试中启动过，且未被正确清理</li>
+</ul>
+<p>这个场景在 AutoQuant 迁移期出现过：Docker 拆掉后为了赶进度裸跑，<code>uvicorn --reload</code> 调试忘关；后来写 systemd 单元想”正规化”，却忘了把那条僵尸的 <code>uvicorn</code> 进程杀干净。</p>
+<h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p>一句话讲清楚：<strong>systemd 单元里不要直接启动 uvicorn，改走 <code>uvicorn</code> 命令行，或显式指定 <code>WorkingDirectory + EnvironmentFile + ExecStart=&lt;/path/to/uvicorn&gt;</code>，并确保没有同端口的手动进程残留。</strong></p>
+<h3 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h3><h4 id="第-1-步：把残留的-uvicorn-全部找出来"><a href="#第-1-步：把残留的-uvicorn-全部找出来" class="headerlink" title="第 1 步：把残留的 uvicorn 全部找出来"></a>第 1 步：把残留的 uvicorn 全部找出来</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 搜占用端口的进程</span><br><span class="hljs-built_in">sudo</span> ss -tlnp | grep 8000<br><br><span class="hljs-comment"># 搜所有 uvicorn 进程</span><br>ps auxf | grep -E <span class="hljs-string">&#x27;uvicorn|gunicorn&#x27;</span> | grep -v grep<br><br><span class="hljs-comment"># 强杀（只在你确认是&quot;自己的&quot;的时候）</span><br><span class="hljs-built_in">sudo</span> pkill -9 -f <span class="hljs-string">&#x27;uvicorn.*app.main:app&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="第-2-步：写一份干净的-systemd-单元"><a href="#第-2-步：写一份干净的-systemd-单元" class="headerlink" title="第 2 步：写一份干净的 systemd 单元"></a>第 2 步：写一份<strong>干净</strong>的 systemd 单元</h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=AutoQuant API<br><span class="hljs-attr">After</span>=network.target postgresql.service<br><span class="hljs-attr">Wants</span>=postgresql.service<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=simple<br><span class="hljs-attr">User</span>=tony<br><span class="hljs-attr">Group</span>=tony<br><span class="hljs-attr">WorkingDirectory</span>=/home/tony/projects/autoquant<br><span class="hljs-attr">EnvironmentFile</span>=/home/tony/projects/autoquant/.env<br><span class="hljs-attr">ExecStart</span>=/home/tony/.venvs/autoquant/bin/uvicorn \<br>    app.main:app \<br>    --host 0.0.0.0 \<br>    --port 8000 \<br>    --log-level info \<br>    --access-log<br><span class="hljs-attr">Restart</span>=<span class="hljs-literal">on</span>-failure<br><span class="hljs-attr">RestartSec</span>=<span class="hljs-number">5</span><br><span class="hljs-attr">StandardOutput</span>=journal<br><span class="hljs-attr">StandardError</span>=journal<br><br><span class="hljs-comment"># 防止 systemd 认为服务&quot;没启动&quot;时反复重启</span><br><span class="hljs-attr">WatchdogSec</span>=<span class="hljs-number">30</span><br><span class="hljs-attr">TimeoutStartSec</span>=<span class="hljs-number">60</span><br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=multi-user.target<br></code></pre></td></tr></table></figure>
+
+<p><strong>关键差异</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>错误写法</th>
+<th>正确写法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>启动方式</td>
+<td><code>nohup python -m uvicorn ... &amp;</code></td>
+<td>systemd <code>ExecStart</code> 直起 uvicorn</td>
+</tr>
+<tr>
+<td>端口占用</td>
+<td>手动进程残留，systemd 起不来</td>
+<td>先 <code>ss</code> 排查，再无残留后 reload</td>
+</tr>
+<tr>
+<td>日志</td>
+<td>丢到 <code>nohup.out</code></td>
+<td>走 <code>journalctl -u autoquant</code></td>
+</tr>
+<tr>
+<td>重启策略</td>
+<td>systemd 因端口占满一直 fail→restart</td>
+<td>清干净后正常启动</td>
+</tr>
+</tbody></table>
+<h4 id="第-3-步：加载并启动"><a href="#第-3-步：加载并启动" class="headerlink" title="第 3 步：加载并启动"></a>第 3 步：加载并启动</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl daemon-reload<br><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">enable</span> autoquant<br><span class="hljs-built_in">sudo</span> systemctl start autoquant<br></code></pre></td></tr></table></figure>
+
+<h4 id="第-4-步：验证是否真的生效"><a href="#第-4-步：验证是否真的生效" class="headerlink" title="第 4 步：验证是否真的生效"></a>第 4 步：验证是否真的生效</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 服务状态</span><br>systemctl status autoquant --no-pager<br><br><span class="hljs-comment"># 重启次数（关键指标，必须为 0 或很少）</span><br>systemctl show autoquant | grep -E <span class="hljs-string">&#x27;NRestarts|ActiveEnterTimestamp&#x27;</span><br><br><span class="hljs-comment"># 日志</span><br>journalctl -u autoquant --since <span class="hljs-string">&quot;1 hour ago&quot;</span> --no-pager<br></code></pre></td></tr></table></figure>
+
+<p><code>NRestarts=0</code> 才是健康的。如果数字还在涨，说明你漏了什么——继续往下看。</p>
+<h3 id="为什么是-10637-次？"><a href="#为什么是-10637-次？" class="headerlink" title="为什么是 10637 次？"></a>为什么是 10637 次？</h3><p>systemd 默认 <code>StartLimitIntervalSec=10s</code>（新版）或 <code>10s</code> 内的阈值触发 <code>StartLimit</code>。当 <code>Restart=on-failure</code> 遇上”端口已被占用 → 立刻退出 → 立刻重启”的死循环，一分钟能撞 60 次。24 小时理论上限接近数万。10637 次这个数字，恰好对应”服务挂了 40 分钟左右，每秒失败一次”——也就是一个 uvicorn 占住端口、systemd 又不断起新实例的最小复现窗口。</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：nohup-留下的”孤儿”"><a href="#坑一：nohup-留下的”孤儿”" class="headerlink" title="坑一：nohup &amp; 留下的”孤儿”"></a>坑一：<code>nohup &amp;</code> 留下的”孤儿”</h3><p><strong>现象</strong>：<code>systemctl status autoquant</code> 显示 <code>active (exited)</code> 或反复 <code>activating (auto-restart)</code>，端口明明没被别的程序占用，却怎么都起不来。</p>
+<p><strong>根因</strong>：半年前调试留下的 <code>nohup uvicorn ... &amp;</code> 进程，bash 会话关了、SSH 断了，但进程还在，端口还被占着。systemd 想绑 8000，被占；进程退；systemd 重启；再被占——循环 10637 次就是这么来的。</p>
+<p><strong>解法</strong>：<code>sudo ss -tlnp | grep 8000</code> 找 PID，<code>kill -9 &lt;pid&gt;</code>。之后写 <code>ExecStart</code> 时明确路径（不要用 <code>-m uvicorn</code>，避免 <code>python</code> 路径解析歧义）。</p>
+<h3 id="坑二：WorkingDirectory-不写，uvicorn-找不到-app"><a href="#坑二：WorkingDirectory-不写，uvicorn-找不到-app" class="headerlink" title="坑二：WorkingDirectory 不写，uvicorn 找不到 app"></a>坑二：<code>WorkingDirectory</code> 不写，uvicorn 找不到 app</h3><p><strong>现象</strong>：<code>ExecStart</code> 里写了 <code>uvicorn app.main:app</code>，结果 <code>journalctl</code> 报 <code>ModuleNotFoundError: No module named &#39;app&#39;</code>。</p>
+<p><strong>根因</strong>：systemd 的默认 <code>WorkingDirectory=/</code>，不是你项目目录。</p>
+<p><strong>解法</strong>：在 <code>[Service]</code> 里显式 <code>WorkingDirectory=/home/tony/projects/autoquant</code>。</p>
+<h3 id="坑三：-env-里带空格或-export-前缀，EnvironmentFile-会报错"><a href="#坑三：-env-里带空格或-export-前缀，EnvironmentFile-会报错" class="headerlink" title="坑三：.env 里带空格或 export 前缀，EnvironmentFile 会报错"></a>坑三：<code>.env</code> 里带空格或 <code>export</code> 前缀，EnvironmentFile 会报错</h3><p><strong>现象</strong>：<code>systemctl start autoquant</code> 后立刻 <code>inactive (dead)</code>，日志里 <code>Failed to set environment from file</code>。</p>
+<p><strong>根因</strong>：<code>EnvironmentFile</code> 期望的格式是 <code>KEY=VALUE</code>，不要 <code>export KEY=VALUE</code>，不要在值里放未转义的空格。</p>
+<p><strong>解法</strong>：把 <code>.env</code> 改写成 <code>KEY=VALUE</code> 一行一个；或者用 <code>Environment=&quot;KEY=VALUE&quot;</code> 在单元里内联。</p>
+<h3 id="坑四：重启后-systemd-自动清了残留进程"><a href="#坑四：重启后-systemd-自动清了残留进程" class="headerlink" title="坑四：重启后 systemd 自动清了残留进程"></a>坑四：重启后 systemd 自动清了残留进程</h3><p><strong>现象</strong>：手动 <code>kill -9</code> 掉了残留 uvicorn，服务正常了； reboot 后又崩。</p>
+<p><strong>根因</strong>：残留进程来自一个 shell 会话启动的 <code>tmux/screen</code> 或者 <code>.bashrc</code> 里的自启脚本，reboot 后重新起来。</p>
+<p><strong>解法</strong>：搜 <code>grep -r uvicorn ~/.bashrc ~/.profile /etc/profile.d/ ~/.*rc</code>，把所有”自启 uvicorn”的入口干掉。</p>
+<h4 id="顺手自查清单"><a href="#顺手自查清单" class="headerlink" title="顺手自查清单"></a>顺手自查清单</h4><p>遇到 systemd 反复重启、RestartCounter 异常升高的时候，依次过一遍这 6 条：</p>
+<ol>
+<li><code>systemctl show &lt;svc&gt; | grep NRestarts</code> —— 先确认是不是真的在爆</li>
+<li><code>ss -tlnp | grep &lt;port&gt;</code> —— 端口是否被别的 PID 占</li>
+<li><code>ps auxf | grep &lt;app&gt;</code> —— 是否有”手起”的孤儿进程</li>
+<li><code>journalctl -u &lt;svc&gt; --since &quot;1 hour ago&quot;</code> —— 看 <code>ExecStart</code> 的实际 stderr</li>
+<li><code>systemctl cat &lt;svc&gt;</code> —— 单元里 <code>WorkingDirectory</code> &#x2F; <code>EnvironmentFile</code> 是否写对</li>
+<li><code>systemctl status &lt;svc&gt; --no-pager</code> —— <code>Active:</code> 是 <code>active (running)</code> 还是 <code>active (exited)</code></li>
+</ol>
+<h3 id="一个值得收藏的排查脚本"><a href="#一个值得收藏的排查脚本" class="headerlink" title="一个值得收藏的排查脚本"></a>一个值得收藏的排查脚本</h3><p>把这段扔进 <code>~/.local/bin/check-service.sh</code>，下次再遇到 10637 次这种数字，先跑它：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br>svc=<span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== Restart ===&quot;</span><br>systemctl show <span class="hljs-string">&quot;<span class="hljs-variable">$svc</span>&quot;</span> | grep -E <span class="hljs-string">&#x27;NRestarts|ActiveEnterTimestamp|Result&#x27;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== Port occupancy ===&quot;</span><br>port=$(systemctl show <span class="hljs-string">&quot;<span class="hljs-variable">$svc</span>&quot;</span> -p ExecStart --value | grep -oE -- <span class="hljs-string">&#x27;--port [0-9]+&#x27;</span> | <span class="hljs-built_in">head</span> -1 | awk <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span>)<br>[ -n <span class="hljs-string">&quot;<span class="hljs-variable">$port</span>&quot;</span> ] &amp;&amp; <span class="hljs-built_in">sudo</span> ss -tlnp | grep <span class="hljs-string">&quot;<span class="hljs-variable">$port</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;=== Journal tail ===&quot;</span><br>journalctl -u <span class="hljs-string">&quot;<span class="hljs-variable">$svc</span>&quot;</span> -n 40 --no-pager<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>通用教训：<strong>永远不要让”手动启动”和”systemd 托管”两种启动方式共存于同一端口</strong>。一旦共存，systemd 会成为你手动进程的”背锅侠”——所有故障日志、重启计数，全记在它的头上，排查时第一眼就会怀疑是系统问题，而真正的元凶（你半年前随手敲的一行 <code>&amp;</code>）早已被遗忘。</p>
+</blockquote>
+<h2 id="结语：给半年前的自己留一句话"><a href="#结语：给半年前的自己留一句话" class="headerlink" title="结语：给半年前的自己留一句话"></a>结语：给半年前的自己留一句话</h2><p>如果你正在看这篇文章，说明你也遇到了类似 10637 这个数字。恭喜，你已经站在”只差一步”的位置：清掉手动 uvicorn、重写单元、<code>daemon-reload</code>，世界就安静了。</p>
+<p>顺便留个问题给读者：<strong>你的生产服务里，有没有那种”当初为了图省事手敲的命令”，现在想来后怕的？</strong> 欢迎在评论区留言，把你的”10637”故事讲出来。</p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li>systemd.service 手册: <code>Restart=</code> &#x2F; <code>StartLimit=</code> &#x2F; <code>RestartSec=</code> 语义.</li>
+<li>uvicorn 官方部署文档: Running uvicorn under systemd.</li>
+<li>系列文章：<a href="https://normdist.com/nd-20260617-001-llamacpp-install-models-ini-guide">llama.cpp 从零安装配置指南</a>、<a href="https://normdist.com/nd-20260620-001-hermes-gateway-management-pitfalls">Hermes 网关管理踩坑实录</a>、<a href="https://normdist.com/nd-20260704-003-docker-to-bare-metal-migration">量化系统 Docker→裸跑迁移</a>。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AutoQuant/" class="print-no-link">#AutoQuant</a>
+      
+        <a href="/tags/%E8%B8%A9%E5%9D%91/" class="print-no-link">#踩坑</a>
+      
+        <a href="/tags/systemd/" class="print-no-link">#systemd</a>
+      
+        <a href="/tags/%E8%BF%90%E7%BB%B4/" class="print-no-link">#运维</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>幽灵进程导致 systemd 重启 10637 次：手动 uvicorn 的隐蔽陷阱</div>
+      <div>https://normdist.com/2026/08/12/ND-20260812-001-systemd-ghost-uvicorn-10637-restarts/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/" title="回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/11/ND-20260811-001-copy-paste-state-machine-deadlock/" title="回测策略的 copy-paste bug：sell 分支 in_buy=True 让信号死锁">
+                        <span class="hidden-mobile">回测策略的 copy-paste bug：sell 分支 in_buy=True 让信号死锁</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

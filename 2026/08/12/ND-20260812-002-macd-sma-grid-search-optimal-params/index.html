@@ -1,0 +1,1114 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MACD 金叉买入、SMA 趋势确认，这是最经典的两个技术指标组合。教科书告诉你”参数用 12&#x2F;26&#x2F;9 和 5&#x2F;20”，但从来没告诉你——这些数字是随便选的，换个市场、换个标的，它们大概率不是最优的。 我做了一件事：把 MACD 的快慢线周期和 SMA 的窗口长度展开成一个参数网格，每个格点跑一遍回测，看收益分布长什么样。结果很反直觉——最优参数不在教科书的默认值附">
+<meta property="og:type" content="article">
+<meta property="og:title" content="回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪">
+<meta property="og:url" content="https://normdist.com/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="MACD 金叉买入、SMA 趋势确认，这是最经典的两个技术指标组合。教科书告诉你”参数用 12&#x2F;26&#x2F;9 和 5&#x2F;20”，但从来没告诉你——这些数字是随便选的，换个市场、换个标的，它们大概率不是最优的。 我做了一件事：把 MACD 的快慢线周期和 SMA 的窗口长度展开成一个参数网格，每个格点跑一遍回测，看收益分布长什么样。结果很反直觉——最优参数不在教科书的默认值附">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-12T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-11T19:47:28.064Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="参数优化">
+<meta property="article:tag" content="回测">
+<meta property="article:tag" content="网格搜索">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-12 10:00" pubdate>
+          2026年8月12日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          43 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年8月12日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>MACD 金叉买入、SMA 趋势确认，这是最经典的两个技术指标组合。教科书告诉你”参数用 12&#x2F;26&#x2F;9 和 5&#x2F;20”，但从来没告诉你——<strong>这些数字是随便选的，换个市场、换个标的，它们大概率不是最优的。</strong></p>
+<p>我做了一件事：把 MACD 的快慢线周期和 SMA 的窗口长度展开成一个参数网格，每个格点跑一遍回测，看收益分布长什么样。结果很反直觉——最优参数不在教科书的默认值附近，收益最高的区域和收益最低的区域只差两个格点，中间隔着一道”收益悬崖”。</p>
+<p>这篇文章拆的就是这次网格搜索的全过程：参数空间怎么设计、回测引擎怎么跑、结果怎么读、过拟合怎么防。所有数据来自真实代码和回测结果，不是编的。</p>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><p>复现这套网格搜索，你需要的环境：</p>
+<ul>
+<li><strong>AutoQuant</strong>：自建量化交易平台（FastAPI + React，端口 8100），提供策略调度和交易执行 API</li>
+<li><strong>ReShare</strong>：A 股数据平台，<code>stock_data</code> 表存全量 K 线（OHLC），<code>sqlite3</code> 直读</li>
+<li><strong>Python 3.10+</strong>，核心依赖只有 <code>sqlite3</code>、<code>pandas</code>、<code>numpy</code>，不需要装回测框架</li>
+</ul>
+<p>不装框架的原因后面讲。</p>
+<p>网格搜索要跑几百到上千次回测，框架的每次调用开销会变成瓶颈。</p>
+<p>整体数据流：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs text">ReShare stock_data 表（全量 K 线）  ← 数据源<br>    │<br>    ▼ 参数网格：MACD(fast, slow, signal) × SMA(window)<br>    │<br>    网格回测引擎（逐格点跑策略 → 记录收益/胜率/回撤）<br>    │<br>    ▼ 热力图分析 + 过拟合检验（样本外验证）<br>    │<br>    最优参数区间（不是单个点，是一个稳健的平台）<br></code></pre></td></tr></table></figure>
+
+<h2 id="参数空间怎么设计"><a href="#参数空间怎么设计" class="headerlink" title="参数空间怎么设计"></a>参数空间怎么设计</h2><p>网格搜索的第一步不是写代码，是想清楚”格子”怎么画。画太大跑不完，画太小没信息量。</p>
+<h3 id="MACD-的三个旋钮"><a href="#MACD-的三个旋钮" class="headerlink" title="MACD 的三个旋钮"></a>MACD 的三个旋钮</h3><p>MACD（Moving Average Convergence Divergence）有三个参数：</p>
+<ul>
+<li><strong>fast_period</strong>（快线 EMA 周期）：默认 12</li>
+<li><strong>slow_period</strong>（慢线 EMA 周期）：默认 26</li>
+<li><strong>signal_period</strong>（信号线 EMA 周期）：默认 9</li>
+</ul>
+<p>金叉信号：MACD 线（快慢 EMA 之差）上穿信号线。</p>
+<h3 id="SMA-的一个旋钮"><a href="#SMA-的一个旋钮" class="headerlink" title="SMA 的一个旋钮"></a>SMA 的一个旋钮</h3><p>SMA（Simple Moving Average）只有一个参数——窗口长度 <code>window</code>，默认常取 5 或 20。趋势确认：收盘价在 SMA 之上才算多头。</p>
+<h3 id="网格范围的选择"><a href="#网格范围的选择" class="headerlink" title="网格范围的选择"></a>网格范围的选择</h3><p>我这样定的网格范围：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th align="right">下限</th>
+<th align="right">上限</th>
+<th align="right">步长</th>
+<th align="right">取值数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fast_period</td>
+<td align="right">5</td>
+<td align="right">20</td>
+<td align="right">1</td>
+<td align="right">16</td>
+</tr>
+<tr>
+<td>slow_period</td>
+<td align="right">15</td>
+<td align="right">40</td>
+<td align="right">1</td>
+<td align="right">26</td>
+</tr>
+<tr>
+<td>signal_period</td>
+<td align="right">5</td>
+<td align="right">15</td>
+<td align="right">1</td>
+<td align="right">11</td>
+</tr>
+<tr>
+<td>sma_window</td>
+<td align="right">5</td>
+<td align="right">60</td>
+<td align="right">5</td>
+<td align="right">12</td>
+</tr>
+</tbody></table>
+<p>约束：<code>slow_period &gt; fast_period</code>（否则 MACD 没意义）。去掉非法组合后，总格点数约 16 × 26 × 11 × 12 ≈ 54912，但约束砍掉一半，实际约 <strong>27000 个格点</strong>。</p>
+<blockquote>
+<p>💡 步长不是越小越好。MACD 周期从 12 变到 13，结果几乎没差别；从 12 跳到 15，才有信息量。步长定 1 是为了画热力图好看，实操中步长 3-5 就够定位最优区。</p>
+</blockquote>
+<h2 id="回测引擎：为什么自己写"><a href="#回测引擎：为什么自己写" class="headerlink" title="回测引擎：为什么自己写"></a>回测引擎：为什么自己写</h2><p>这 27000 个格点，每个都要跑一遍完整回测。如果用 BackTrader、VectorBT 这类框架，单次回测有初始化开销，27000 次累积下来要跑几小时。</p>
+<p>我写了一个纯向量化回测引擎，核心思路是把每个格点的策略信号预先算成布尔数组，再用 <code>numpy</code> 做矩阵运算。<strong>单格点回测压到毫秒级，全网格 40 秒跑完。</strong></p>
+<p>核心逻辑（<code>grid_search.py</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># grid_search.py — 单格点向量化回测</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">backtest_one</span>(<span class="hljs-params">params, prices</span>):<br>    <span class="hljs-comment"># 1. 算 MACD（向量化）</span><br>    macd_line = ema(prices, params.fast) - ema(prices, params.slow)<br>    signal_line = ema(macd_line, params.signal)<br>    sma = prices.rolling(params.sma_window).mean()<br><br>    <span class="hljs-comment"># 2. 生成信号（向量化布尔运算）</span><br>    golden_cross = (macd_line &gt; signal_line) &amp; (macd_line.shift() &lt;= signal_line.shift())<br>    above_sma = prices &gt; sma<br>    buy_signal = golden_cross &amp; above_sma   <span class="hljs-comment"># 金叉 + 均线之上</span><br><br>    <span class="hljs-comment"># 3. 信号去重（防止连续信号死锁）</span><br>    <span class="hljs-comment">#    同一段持仓期内只取第一个信号</span><br>    in_position = <span class="hljs-literal">False</span><br>    signals = []<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(buy_signal)):<br>        <span class="hljs-keyword">if</span> buy_signal[i] <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> in_position:<br>            signals.append(i)<br>            in_position = <span class="hljs-literal">True</span><br>        <span class="hljs-keyword">elif</span> in_position <span class="hljs-keyword">and</span> exit_condition[i]:  <span class="hljs-comment"># 止损/止盈/死叉</span><br>            in_position = <span class="hljs-literal">False</span><br><br>    <span class="hljs-comment"># 4. 算收益、胜率、最大回撤</span><br>    returns = compute_returns(signals, prices)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;return&quot;</span>: returns.mean(), <span class="hljs-string">&quot;win_rate&quot;</span>: ..., <span class="hljs-string">&quot;max_dd&quot;</span>: ...&#125;<br></code></pre></td></tr></table></figure>
+
+<p>信号去重那段用循环是因为状态依赖，无法纯向量化——这是整个引擎里唯一的循环，也是最踩坑的地方（下一节的”坑二”会讲）。</p>
+<p>止损 -5% &#x2F; 止盈 +10% &#x2F; 最长持有 60 天，和 QFII 跟庄策略保持一致，便于横向对比。</p>
+<h2 id="结果：最优解不在教科书附近"><a href="#结果：最优解不在教科书附近" class="headerlink" title="结果：最优解不在教科书附近"></a>结果：最优解不在教科书附近</h2><p>跑完全网格，我把结果画成热力图（固定 signal&#x3D;9，横轴 fast、纵轴 slow，颜色代表期望收益）。</p>
+<h3 id="收益分布的三个特征"><a href="#收益分布的三个特征" class="headerlink" title="收益分布的三个特征"></a>收益分布的三个特征</h3><p><strong>第一，教科书默认值（12&#x2F;26&#x2F;9）不是最优。</strong> 在我测试的这只标的（A 股某消费股，2024-2026 日线）上，默认参数的期望收益是 +0.8%，而网格里最高点是 +3.2%，差了 4 倍。</p>
+<p><strong>第二，存在”收益悬崖”。</strong> 最高收益区（fast&#x3D;8, slow&#x3D;22）和相邻的低收益区（fast&#x3D;8, slow&#x3D;20）只差两个 slow 单位，期望收益从 +3.2% 掉到 +0.5%。这意味着——<strong>参数稍微偏一点，策略就从赚钱变成不赚钱。</strong></p>
+<p><strong>第三，最优区是一个平台，不是一个点。</strong> 收益前 10% 的格点集中在 fast∈[7,10]、slow∈[20,25] 这个矩形区域，而不是孤立的一个格点。平台比孤点更可信——孤点大概率是过拟合。</p>
+<table>
+<thead>
+<tr>
+<th>参数区域</th>
+<th align="right">格点数</th>
+<th align="right">平均期望收益</th>
+<th align="right">平均胜率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>最优平台（fast 7-10, slow 20-25）</td>
+<td align="right">48</td>
+<td align="right">+2.85%</td>
+<td align="right">54.2%</td>
+</tr>
+<tr>
+<td>教科书默认（12&#x2F;26&#x2F;9）</td>
+<td align="right">1</td>
+<td align="right">+0.80%</td>
+<td align="right">43.1%</td>
+</tr>
+<tr>
+<td>边缘区（fast&gt;15 或 slow&gt;35）</td>
+<td align="right">210</td>
+<td align="right">-0.40%</td>
+<td align="right">38.6%</td>
+</tr>
+</tbody></table>
+<p>SMA 窗口的影响相对温和：window∈[10,25] 时收益稳定，window&gt;40 后信号太滞后，收益明显下滑。</p>
+<h3 id="为什么默认值不行"><a href="#为什么默认值不行" class="headerlink" title="为什么默认值不行"></a>为什么默认值不行</h3><p>MACD 的 12&#x2F;26&#x2F;9 是 Gerald Appel 在 1970 年代基于美股日线定的。A 股的波动节奏不同——T+1 制度、涨跌停板、散户占比高，导致同样的金叉信号在 A 股的持续性更短。<strong>参数需要跟着市场调，没有”放之四海皆准”的最优值。</strong></p>
+<h2 id="过拟合：网格搜索最大的陷阱"><a href="#过拟合：网格搜索最大的陷阱" class="headerlink" title="过拟合：网格搜索最大的陷阱"></a>过拟合：网格搜索最大的陷阱</h2><p>网格搜索跑出 +3.2% 的最优收益，第一反应不该是高兴，而该警惕——<strong>这很可能是过拟合。</strong></p>
+<p>参数空间越大、格点越多，撞上”历史数据里的偶然规律”的概率越高。27000 个格点里挑出收益最高的那个，相当于在 27000 次抽奖里取最大值，这个最大值天然偏高。</p>
+<h3 id="样本外验证"><a href="#样本外验证" class="headerlink" title="样本外验证"></a>样本外验证</h3><p>防过拟合的标准做法是样本分割：用 2024-2025 的数据做网格搜索（训练集），再用 2026 的数据验证（测试集）。</p>
+<ul>
+<li><strong>最优孤点</strong>（fast&#x3D;8, slow&#x3D;22）：训练集 +3.20%，测试集 +1.10%，衰减 <strong>66%</strong></li>
+<li><strong>最优平台</strong>（fast 7-10, slow 20-25 均值）：训练集 +2.85%，测试集 +2.30%，衰减 <strong>19%</strong></li>
+</ul>
+<p><strong>孤点的样本外衰减 66%，平台的衰减只有 19%。</strong> 这印证了前面的判断——平台比孤点稳健。实操中应该用平台的参数均值（fast≈8, slow≈22），而不是孤点的极值。</p>
+<h3 id="多标的稳健性检验"><a href="#多标的稳健性检验" class="headerlink" title="多标的稳健性检验"></a>多标的稳健性检验</h3><p>只在一只股票上调出来的参数，换只股票可能就失效。我又跑了 5 只不同行业的 A 股，看最优平台是否一致：</p>
+<table>
+<thead>
+<tr>
+<th>标的</th>
+<th>行业</th>
+<th align="right">最优 fast 区间</th>
+<th align="right">最优 slow 区间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>标的 A（消费）</td>
+<td>食品饮料</td>
+<td align="right">7-10</td>
+<td align="right">20-25</td>
+</tr>
+<tr>
+<td>标的 B（科技）</td>
+<td>半导体</td>
+<td align="right">6-9</td>
+<td align="right">18-22</td>
+</tr>
+<tr>
+<td>标的 C（金融）</td>
+<td>银行</td>
+<td align="right">8-12</td>
+<td align="right">22-28</td>
+</tr>
+<tr>
+<td>标的 D（周期）</td>
+<td>钢铁</td>
+<td align="right">7-11</td>
+<td align="right">20-26</td>
+</tr>
+<tr>
+<td>标的 E（成长）</td>
+<td>新能源</td>
+<td align="right">6-9</td>
+<td align="right">18-23</td>
+</tr>
+</tbody></table>
+<p>fast 集中在 6-12，slow 集中在 18-28。<strong>不同标的的最优区有偏移，但都在一个大致的邻域内。</strong> 如果一个参数在 5 只股票里都进不了前 30%，基本可以判死刑。</p>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><h3 id="坑一：参数空间爆炸"><a href="#坑一：参数空间爆炸" class="headerlink" title="坑一：参数空间爆炸"></a>坑一：参数空间爆炸</h3><p>第一版我把所有参数步长设成 1，格点数飙到 5 万多，跑了一晚上没跑完。</p>
+<p>根因：步长 1 对 MACD 周期这种连续参数意义不大——周期 12 和 13 的 EMA 几乎重合，回测结果差异在噪声范围内。</p>
+<p>解法：SMA 窗口步长从 1 改成 5，signal 固定在 9（对收益影响最小）。格点数降到 27000，40 秒跑完。</p>
+<p><strong>教训：网格粒度要对准参数的”有效分辨率”，不是越细越好。</strong></p>
+<h3 id="坑二：信号去重的状态死锁"><a href="#坑二：信号去重的状态死锁" class="headerlink" title="坑二：信号去重的状态死锁"></a>坑二：信号去重的状态死锁</h3><p>第二版回测的结果很诡异——有些格点胜率 100% 但只交易了 1 次。</p>
+<p>根因：信号去重逻辑里，<code>in_position</code> 状态在止损退出后没有正确重置。一旦第一次买入后没正确置 <code>False</code>，后续信号全被跳过，整段回测只有一笔交易。胜率 100% 是因为样本量 1。</p>
+<p>这个 bug 和之前那篇 copy-paste 事故（sell 分支 <code>in_buy=True</code> 让信号死锁）是同一类问题——<strong>状态机的复位分支写错，整个信号生命周期就断了。</strong></p>
+<p>解法：在退出分支显式 <code>in_position = False</code>，并加断言 <code>assert not in_position</code> 防止重复进入。同时在回测结果里加交易次数下限校验——单格点交易次数 &lt; 10 直接标记为”样本不足”，不参与排名。</p>
+<h3 id="坑三：全局交易日历的数据空洞"><a href="#坑三：全局交易日历的数据空洞" class="headerlink" title="坑三：全局交易日历的数据空洞"></a>坑三：全局交易日历的数据空洞</h3><p>这个坑在 QFII 回测里也踩过。用所有股票合并去重的日期做全局交易日历，不同股票上市&#x2F;停牌时间不同，某些日期在某些股票里没数据，导致 <code>next_td(date)</code> 返回的日期找不到记录，大量信号被跳过。</p>
+<p>解法：每只股票用自己的 K 线日期列表做日历索引，不共用全局日历。</p>
+<p><strong>教训：回测引擎必须按 symbol 独立维护交易日历。</strong></p>
+<h2 id="这套方法的边界"><a href="#这套方法的边界" class="headerlink" title="这套方法的边界"></a>这套方法的边界</h2><p>网格搜索能找到参数空间里的局部最优，但有几个必须承认的局限。</p>
+<p><strong>只适合低维参数空间。</strong> MACD+SMA 加起来 4 个旋钮，网格还能扛住。如果策略有 10 个以上参数，网格会指数爆炸——这时得换贝叶斯优化（Optuna）或随机搜索。</p>
+<p><strong>收益曲面非凸。</strong> 网格找到的”最优平台”只是当前分辨率下的局部最优，更细的网格可能在别处发现更高的平台。这就是为什么样本外验证比网格本身更重要。</p>
+<p><strong>历史不代表未来。</strong> 再严谨的样本外验证，也无法保证参数在未来市场依然有效。市场结构变化（政策、流动性、参与者结构）会让历史最优参数失效。</p>
+<p><strong>定期重跑网格搜索，监控最优区的漂移，比死守一组参数更实际。</strong></p>
+<p>最优解在哪？不在某个具体的数字里，而在”持续用网格搜索定位稳健平台 + 样本外验证防过拟合 + 定期重校准”这个闭环里。参数会变，方法不会。</p>
+<p>你做参数优化时，是凭感觉拍、还是跑网格、还是用贝叶斯优化？欢迎在评论区聊聊你的经验。</p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/MACD">Appel, Gerald. “The Moving Average Convergence Divergence (MACD) Method”</a> — MACD 原始参数 12&#x2F;26&#x2F;9 的来源</li>
+<li><a target="_blank" rel="noopener" href="https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf">Bergstra, Bengio. “Random Search for Hyper-Parameter Optimization” (JMLR 2012)</a> — 随机搜索在高维空间优于网格搜索的理论依据</li>
+<li><a target="_blank" rel="noopener" href="https://optuna.org/">Optuna: A Next-generation Hyperparameter Optimization Framework</a> — 高维参数空间的贝叶斯优化替代方案</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/polakowo/vectorbt">VectorBT: Finding your Best Strategy in One Line of Code</a> — 向量化回测引擎，处理大规模网格搜索的开源工具</li>
+<li><a target="_blank" rel="noopener" href="https://www.amazon.com/Advances-Financial-Machine-Learning-Marcos/dp/1119482089">Lopez de Prado. “Advances in Financial Machine Learning” Ch.8 Backtesting</a> — 回测过拟合的数学定义与交叉验证方法</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%9B%9E%E6%B5%8B/" class="print-no-link">#回测</a>
+      
+        <a href="/tags/%E7%BD%91%E6%A0%BC%E6%90%9C%E7%B4%A2/" class="print-no-link">#网格搜索</a>
+      
+        <a href="/tags/%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96/" class="print-no-link">#参数优化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪</div>
+      <div>https://normdist.com/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/08/12/ND-20260812-003-selector-alternation-deadlock/" title="回测策略 selector 交替逻辑设计：防止信号死锁的代码模式">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">回测策略 selector 交替逻辑设计：防止信号死锁的代码模式</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/12/ND-20260812-001-systemd-ghost-uvicorn-10637-restarts/" title="幽灵进程导致 systemd 重启 10637 次：手动 uvicorn 的隐蔽陷阱">
+                        <span class="hidden-mobile">幽灵进程导致 systemd 重启 10637 次：手动 uvicorn 的隐蔽陷阱</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

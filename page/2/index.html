@@ -389,6 +389,201 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/" target="_self">
+          五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/" target="_self">
+        <div>
+          每次给 AI Agent 开一个新 profile（韩梅梅、李雷、露西……），都会顺手起一个 hermes gateway run。一个 profile 一个进程，五个 profile 五个进程，听着很合理——直到微信 bot 突然全线失联，日志里全是 “Weixin bot token already in use”。 这就是多 Gateway 进程的 Token 锁冲突。表面看是微信 bot
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-05 09:30" pubdate>
+              2026-08-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/Gateway/">#Gateway</a>
+            
+              <a href="/tags/%E5%BE%AE%E4%BF%A1/">#微信</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/" target="_self">
+          为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/" target="_self">
+        <div>
+          翻车现场一个扫码页面，在电脑浏览器上看着一切正常——卡片撑满屏幕，底部对齐手机 home 指示线。 切到手机上，卡片高度比屏幕多出了几十像素。没有滚动条，但手指能从下往上拖动，页面会回弹。看起来像是：内容比视口”大了一圈”，但又没有大到需要滚动条。 同一个 div，同一套 CSS，PC 完美、手机溢出。 第一轮排查：是不是父容器没撑高直觉反应：肯定有某个父容器没设 h-full，导致子元素的高度计
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-05 09:00" pubdate>
+              2026-08-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/CSS/">#CSS</a>
+            
+              <a href="/tags/%E7%A7%BB%E5%8A%A8%E7%AB%AF/">#移动端</a>
+            
+              <a href="/tags/%E5%89%8D%E7%AB%AF/">#前端</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/08/04/ND-20260804-001-sandtable-six-bug-fixes-mathematical-correction/" target="_self">
+          六个 Bug 修复实战：沙盘推演引擎的数学纠正
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/04/ND-20260804-001-sandtable-six-bug-fixes-mathematical-correction/" target="_self">
+        <div>
+          沙盘推演引擎（Sandtable）上线后跑了两个月，黄金价格的多模型融合分析结果看起来挺合理——直到我打算认真审计它的数学层。 不审不知道，一审头皮麻。 四个推理引擎（贝叶斯、决策树、蒙特卡洛、因果链）里，六个数学 Bug 同时在跑。有些是 off-by-one，有些是概率没归一化，有些是时间单位跨层不一致。六个 Bug 各自的偏差方向不同，恰好相互抵消，让最终输出看起来”正常”——这正是最危险的
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-04 16:00" pubdate>
+              2026-08-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B2%99%E7%9B%98%E6%8E%A8%E6%BC%94/">#沙盘推演</a>
+            
+              <a href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/">#贝叶斯</a>
+            
+              <a href="/tags/Bug%E4%BF%AE%E5%A4%8D/">#Bug修复</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/03/ND-20260803-001-sandbox-simulation-gold-price-analysis/" target="_self">
           沙盘推演引擎实战：黄金价格的多模型融合分析
         </a>
@@ -837,207 +1032,6 @@
               <a href="/tags/%E8%B5%84%E6%BA%90%E7%AB%9E%E4%BA%89/">#资源竞争</a>
             
               <a href="/tags/%E8%BF%90%E7%BB%B4%E8%B8%A9%E5%9D%91/">#运维踩坑</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/27/ND-20260727-001-css-button-min-width-trap/" target="_self">
-          一个 CSS 按钮的寻踪记：从 24×24 到 min-width 陷阱
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/27/ND-20260727-001-css-button-min-width-trap/" target="_self">
-        <div>
-          一个 CSS 按钮的寻踪记——调试花了两个小时，修好了两行代码 起因项目 BarcodeApi 的移动端顶部有一个主题切换按钮（月亮图标）。用户反馈：按钮偏大，浅灰色的圆角矩形看着是月亮图标的两倍。 代码里写的是 width: 24px。用户说 24px 偏大，改成 20px 还是大，改成 18px 还是大。CSS 看起来完全正确，但渲染出来就是不对。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-27 23:00" pubdate>
-              2026-07-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" class="category-chain-item">前端开发</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/CSS/">#CSS</a>
-            
-              <a href="/tags/%E7%A7%BB%E5%8A%A8%E7%AB%AF/">#移动端</a>
-            
-              <a href="/tags/%E5%89%8D%E7%AB%AF/">#前端</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/27/ND-20260727-003-zero-cost-cron-governance/" target="_self">
-          零成本运维：5 人 AI Agent 团队的 cron 治理
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/27/ND-20260727-003-zero-cost-cron-governance/" target="_self">
-        <div>
-          50 个定时任务，5 个 AI Agent，1 个人管。没有运维 SaaS、没有告警平台、没有值班排班。凌晨三点，六个任务同时醒来，抢着用同一张显卡。 这篇文章记录的是我们的 AI Agent 团队怎么用 cron 治理这套系统——调度、监控、降级、自愈，四板斧，零成本。 1234567891011121314┌───────────────────────────────────────────
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-27 20:30" pubdate>
-              2026-07-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="category-chain-item">最佳实践</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/cron/">#cron</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
-          <img src="/img/cover-backtest-cache-key-collision.jpg" srcset="/img/loading.gif" lazyload alt="回测缓存串号：日期做 key 的隐蔽数据污染">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
-          回测缓存串号：日期做 key 的隐蔽数据污染
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
-        <div>
-          回测系统用日期做缓存 key，同日不同参数的回测会命中同一份缓存返回错配数据。根因是 key 设计缺参数指纹。用 hashlib.md5 取 12 位指纹拼入文件名修复。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-27 10:00" pubdate>
-              2026-07-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%9B%9E%E6%B5%8B/">#回测</a>
-            
-              <a href="/tags/%E7%BC%93%E5%AD%98/">#缓存</a>
-            
-              <a href="/tags/bug%E4%BF%AE%E5%A4%8D/">#bug修复</a>
             
           </div>
         
