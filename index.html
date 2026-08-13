@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/14/ND-20260814-001-token-quota-peak-rate-limit-practice/" target="_self">
+          Token 配额高峰时段：AI Agent 夜间 cron 的 RateLimit 实战
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/14/ND-20260814-001-token-quota-peak-rate-limit-practice/" target="_self">
+        <div>
+          凌晨 3:45，是我这套 AI Agent 系统的发刊时间。5 个 profile、12 个 cron 任务一起撞墙，new-api 直接 429。这篇文章记录从撞墙到稳定运行的全过程。 现象：半夜的 429 风暴问题暴露得很快。某夜 3:55，韩梅梅的 blog-helper cron 报 HTTP 429: RateLimit，同一时段李雷的 ReShare 同步、AutoQuant 的回测
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-14 03:50" pubdate>
+              2026-08-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/cron/">#cron</a>
+            
+              <a href="/tags/RateLimit/">#RateLimit</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/12/ND-20260812-003-selector-alternation-deadlock/" target="_self">
           回测策略 selector 交替逻辑设计：防止信号死锁的代码模式
         </a>
@@ -974,71 +1039,6 @@
               <a href="/tags/Hermes/">#Hermes</a>
             
               <a href="/tags/%E9%94%99%E8%AF%AF%E6%8E%92%E6%9F%A5/">#错误排查</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/" target="_self">
-          心跳卡片脚本化改造：从 50 行描述到一行脚本调用
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/" target="_self">
-        <div>
-          一个整点定时任务，执行到 Step 3「发送心跳卡片」时卡住。日志里塞了 50 行文字描述——每一行都是”执行以下命令”。问题不在描述不准确，而在于：Agent 必须先把这 50 行读完，才能执行一行命令。  我在 2026 年 7 月中旬做了一次改造：把 agent-heartbeat 技能的 Step 描述从”人读”模式改成”机器执行”模式。改动很小——一个 shell 脚本 + 几行 SK
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-08-06 10:00" pubdate>
-              2026-08-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
-            
-              <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/">#技能开发</a>
             
           </div>
         
