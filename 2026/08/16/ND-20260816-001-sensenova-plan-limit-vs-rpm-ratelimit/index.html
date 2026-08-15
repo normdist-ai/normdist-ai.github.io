@@ -19,26 +19,28 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="凌晨 3:45，是我这套 AI Agent 系统的发刊时间。5 个 profile、12 个 cron 任务一起撞墙，new-api 直接 429。这篇文章记录从撞墙到稳定运行的全过程。 现象：半夜的 429 风暴问题暴露得很快。某夜 3:55，韩梅梅的 blog-helper cron 报 HTTP 429: RateLimit，同一时段李雷的 ReShare 同步、AutoQuant 的回测">
+    <meta name="description" content="sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError凌晨 03:00，Hermes 的 cron 心跳脚本突然连续抛出 RateLimitError。我看了一眼异常栈，第一反应是加个 time.sleep(60) 重试——过去遇到这种报错都是这么解决的。 结果重试了 200 次全部失败。 问题不在频率，在配额：免费套">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Token 配额高峰时段：AI Agent 夜间 cron 的 RateLimit 实战">
-<meta property="og:url" content="https://normdist.com/2026/08/14/ND-20260814-001-token-quota-peak-rate-limit-practice/index.html">
+<meta property="og:title" content="sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError">
+<meta property="og:url" content="https://normdist.com/2026/08/16/ND-20260816-001-sensenova-plan-limit-vs-rpm-ratelimit/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="凌晨 3:45，是我这套 AI Agent 系统的发刊时间。5 个 profile、12 个 cron 任务一起撞墙，new-api 直接 429。这篇文章记录从撞墙到稳定运行的全过程。 现象：半夜的 429 风暴问题暴露得很快。某夜 3:55，韩梅梅的 blog-helper cron 报 HTTP 429: RateLimit，同一时段李雷的 ReShare 同步、AutoQuant 的回测">
+<meta property="og:description" content="sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError凌晨 03:00，Hermes 的 cron 心跳脚本突然连续抛出 RateLimitError。我看了一眼异常栈，第一反应是加个 time.sleep(60) 重试——过去遇到这种报错都是这么解决的。 结果重试了 200 次全部失败。 问题不在频率，在配额：免费套">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-08-13T19:50:00.000Z">
-<meta property="article:modified_time" content="2026-08-13T19:47:49.315Z">
+<meta property="article:published_time" content="2026-08-16T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-15T19:47:53.674Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="Hermes">
 <meta property="article:tag" content="RateLimit">
-<meta property="article:tag" content="cron">
+<meta property="article:tag" content="sensenova">
+<meta property="article:tag" content="运维">
+<meta property="article:tag" content="配额管理">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Token 配额高峰时段：AI Agent 夜间 cron 的 RateLimit 实战 - 进化概率论</title>
+  <title>sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -359,7 +361,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Token 配额高峰时段：AI Agent 夜间 cron 的 RateLimit 实战</span>
+            <span id="subtitle">sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError</span>
           
         </div>
 
@@ -370,8 +372,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-08-14 03:50" pubdate>
-          2026年8月14日 凌晨
+        <time datetime="2026-08-16 09:00" pubdate>
+          2026年8月16日 上午
         </time>
       </span>
     
@@ -382,7 +384,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3k 字
+          4.6k 字
         
       </span>
     
@@ -393,7 +395,7 @@
         
         
         
-          26 分钟
+          39 分钟
         
       </span>
     
@@ -441,12 +443,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Token 配额高峰时段：AI Agent 夜间 cron 的 RateLimit 实战</h1>
+            <h1 id="seo-header">sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月14日 凌晨
+                    本文最后更新于 2026年8月16日 凌晨
                   
                 
               </p>
@@ -454,55 +456,119 @@
             
               <div class="markdown-body">
                 
-                <p>凌晨 3:45，是我这套 AI Agent 系统的发刊时间。5 个 profile、12 个 cron 任务一起撞墙，new-api 直接 429。这篇文章记录从撞墙到稳定运行的全过程。</p>
-<h2 id="现象：半夜的-429-风暴"><a href="#现象：半夜的-429-风暴" class="headerlink" title="现象：半夜的 429 风暴"></a>现象：半夜的 429 风暴</h2><p>问题暴露得很快。某夜 3:55，韩梅梅的 blog-helper cron 报 <code>HTTP 429: RateLimit</code>，同一时段李雷的 ReShare 同步、AutoQuant 的回测 cron、日记 cron、Git 心跳 cron 全部失败。凌晨日志里一片 <code>[429] Too Many Requests</code>。</p>
-<p>排查时看到的现象：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">2026-08-14 03:45:02 [blog-helper] dailysummary cron start<br>2026-08-14 03:45:11 [agentic-diary] cron start<br>2026-08-14 03:46:04 [reshare-sync] cron start<br>2026-08-14 03:46:33 [heartbeat-git] cron start<br>2026-08-14 03:47:12 [voc-review] cron start<br></code></pre></td></tr></table></figure>
+                <h1 id="sensenova-免费模型的隐藏坑：token-plan-limit-exhausted-vs-RPM-RateLimitError"><a href="#sensenova-免费模型的隐藏坑：token-plan-limit-exhausted-vs-RPM-RateLimitError" class="headerlink" title="sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError"></a>sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError</h1><p>凌晨 03:00，Hermes 的 cron 心跳脚本突然连续抛出 <code>RateLimitError</code>。我看了一眼异常栈，第一反应是<strong>加个 <code>time.sleep(60)</code> 重试</strong>——过去遇到这种报错都是这么解决的。</p>
+<p>结果重试了 200 次全部失败。</p>
+<p>问题不在频率，在配额：免费套餐的月 token 额度已经用光，<code>retry-after</code> 头根本没返回。两种 RateLimitError 共用同一个异常类型，但应对策略截然相反。这篇写清楚如何区分，以及为什么要区分。</p>
+<h2 id="一、同一个异常，两种死法"><a href="#一、同一个异常，两种死法" class="headerlink" title="一、同一个异常，两种死法"></a>一、同一个异常，两种死法</h2><p>openai 兼容 SDK（Python &#x2F; JS &#x2F; LangChain）把”频率超限”和”配额耗尽”都归到 <code>RateLimitError</code> 类，HTTP 状态码也同样是 <code>429 Too Many Requests</code>。区别藏在 <code>error.message</code> 和响应头里：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>RPM &#x2F; RPD 频率超限</th>
+<th>Token plan limit exhausted</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HTTP 状态码</td>
+<td>429</td>
+<td>429（偶尔 503）</td>
+</tr>
+<tr>
+<td><code>error.type</code></td>
+<td><code>rate_limit_exceeded</code></td>
+<td><code>rate_limit_exceeded</code>（同名）</td>
+</tr>
+<tr>
+<td><code>error.message</code> 关键词</td>
+<td><code>Rate limit</code> &#x2F; <code>RPM</code> &#x2F; <code>RPD</code> &#x2F; <code>x-rpm-limit</code></td>
+<td><code>plan limit exhausted</code> &#x2F; <code>quota exceeded</code> &#x2F; <code>monthly</code></td>
+</tr>
+<tr>
+<td><code>retry-after</code> header</td>
+<td><strong>有</strong>（明确秒数）</td>
+<td><strong>无</strong>，或为 3600+ 大值</td>
+</tr>
+<tr>
+<td><code>x-rpm-limit</code> &#x2F; <code>x-rpd-limit</code> 头</td>
+<td>有，当前值接近上限</td>
+<td>无或为 0</td>
+</tr>
+<tr>
+<td>重试有效？</td>
+<td>是，睡 <code>retry-after</code> 秒</td>
+<td>否，月底重置或换 key</td>
+</tr>
+<tr>
+<td>典型触发</td>
+<td>并发请求 &#x2F; 高频 cron</td>
+<td>免费套餐月额度用光</td>
+</tr>
+</tbody></table>
+<h2 id="二、为什么容易判错"><a href="#二、为什么容易判错" class="headerlink" title="二、为什么容易判错"></a>二、为什么容易判错</h2><p>Agent 框架的默认 retry 逻辑几乎总是”见 <code>RateLimitError</code> 就退避重试”，因为绝大部分场景确实只是频率问题。但当你的 free tier 月额度清零时，SDK 依然抛出同名异常，retry 层毫无察觉，开始疯狂重试——每一次重试都是 0 token 成功、几百毫秒的耗时、一次无效 HTTP 请求。</p>
+<p>我的 cron 那次，200 次重试 ≈ 13 分钟空转，直到触发外层超时才停下来。如果换成付费套餐的 key 也会是同一个异常，只是月额度够大而已。<strong>问题不是”会不会遇到”，是”什么时候遇到”。</strong></p>
+<h2 id="三、判定逻辑：先查-message，再决定重试策略"><a href="#三、判定逻辑：先查-message，再决定重试策略" class="headerlink" title="三、判定逻辑：先查 message，再决定重试策略"></a>三、判定逻辑：先查 message，再决定重试策略</h2><p>核心思路：<strong>429 + message 含配额关键词 &#x3D; 硬失败；429 + 有 retry-after &#x3D; 软失败重试。</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> json<br><span class="hljs-keyword">import</span> time<br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI, APIConnectionError<br><br>client = OpenAI(base_url=<span class="hljs-string">&quot;https://api.sensenova.cn/v1&quot;</span>, api_key=<span class="hljs-string">&quot;...&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">_is_quota_exhausted</span>(<span class="hljs-params">error_message: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;硬失败信号：月/日配额耗尽，重试无效&quot;&quot;&quot;</span><br>    msg = error_message.lower()<br>    keywords = [<br>        <span class="hljs-string">&quot;plan limit exhausted&quot;</span>,<br>        <span class="hljs-string">&quot;quota exceeded&quot;</span>,<br>        <span class="hljs-string">&quot;monthly&quot;</span>,<br>        <span class="hljs-string">&quot;daily quota&quot;</span>,<br>        <span class="hljs-string">&quot;no available plan&quot;</span>,<br>        <span class="hljs-string">&quot;balance insufficient&quot;</span>,<br>    ]<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">any</span>(k <span class="hljs-keyword">in</span> msg <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> keywords)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">call_with_quota_aware_retry</span>(<span class="hljs-params">messages, max_retries=<span class="hljs-number">5</span></span>):<br>    <span class="hljs-keyword">for</span> attempt <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(max_retries + <span class="hljs-number">1</span>):<br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-keyword">return</span> client.chat.completions.create(<br>                model=<span class="hljs-string">&quot;sensenova-6.7-flash-lite&quot;</span>,<br>                messages=messages,<br>            )<br>        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>            <span class="hljs-comment"># 先尝试从 error 对象拿 status_code 和 message</span><br>            status_code = <span class="hljs-built_in">getattr</span>(e, <span class="hljs-string">&quot;status_code&quot;</span>, <span class="hljs-literal">None</span>)<br>            message = <span class="hljs-string">&quot;&quot;</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(e, <span class="hljs-string">&quot;response&quot;</span>) <span class="hljs-keyword">and</span> e.response <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>                <span class="hljs-keyword">try</span>:<br>                    body = json.loads(e.response.text)<br>                    message = body.get(<span class="hljs-string">&quot;error&quot;</span>, &#123;&#125;).get(<span class="hljs-string">&quot;message&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)<br>                    <span class="hljs-comment"># 优先用 body 里的状态码（有些 SDK 会包一层）</span><br>                    <span class="hljs-keyword">if</span> status_code <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>                        status_code = body.get(<span class="hljs-string">&quot;status&quot;</span>, <span class="hljs-literal">None</span>)<br>                <span class="hljs-keyword">except</span> Exception:<br>                    <span class="hljs-keyword">pass</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> message:<br>                message = <span class="hljs-built_in">str</span>(e)<br><br>            <span class="hljs-comment"># 分支 1：硬失败（配额耗尽）</span><br>            <span class="hljs-keyword">if</span> status_code == <span class="hljs-number">429</span> <span class="hljs-keyword">and</span> _is_quota_exhausted(message):<br>                <span class="hljs-keyword">raise</span> RuntimeError(<br>                    <span class="hljs-string">f&quot;[HARD FAIL] 配额已耗尽，不可重试。&quot;</span><br>                    <span class="hljs-string">f&quot;message=<span class="hljs-subst">&#123;message[:<span class="hljs-number">200</span>]&#125;</span>&quot;</span><br>                ) <span class="hljs-keyword">from</span> e<br><br>            <span class="hljs-comment"># 分支 2：软失败（RPM 频率限制）</span><br>            <span class="hljs-keyword">if</span> status_code == <span class="hljs-number">429</span>:<br>                retry_after = <span class="hljs-built_in">getattr</span>(e, <span class="hljs-string">&quot;retry_after&quot;</span>, <span class="hljs-literal">None</span>)<br>                <span class="hljs-keyword">if</span> retry_after <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">hasattr</span>(e, <span class="hljs-string">&quot;response&quot;</span>):<br>                    retry_after = <span class="hljs-built_in">int</span>(<br>                        e.response.headers.get(<span class="hljs-string">&quot;retry-after&quot;</span>, <span class="hljs-number">60</span>)<br>                    )<br>                <span class="hljs-keyword">if</span> attempt &gt;= max_retries:<br>                    <span class="hljs-keyword">raise</span><br>                time.sleep(<span class="hljs-built_in">min</span>(retry_after, <span class="hljs-number">120</span>))<br>                <span class="hljs-keyword">continue</span><br><br>            <span class="hljs-comment"># 分支 3：503 上游过载（sensenova 后端模型侧拥堵）</span><br>            <span class="hljs-keyword">if</span> status_code == <span class="hljs-number">503</span>:<br>                <span class="hljs-keyword">if</span> attempt &gt;= max_retries:<br>                    <span class="hljs-keyword">raise</span><br>                backoff = <span class="hljs-built_in">min</span>(<span class="hljs-number">2</span> ** attempt, <span class="hljs-number">60</span>)<br>                time.sleep(backoff)<br>                <span class="hljs-keyword">continue</span><br><br>            <span class="hljs-comment"># 其他异常：不重试，直接抛出</span><br>            <span class="hljs-keyword">raise</span><br></code></pre></td></tr></table></figure>
 
-<p>5 个 cron 在 3 分钟内全部启动。new-api 代理层背后是 deepseek-ai&#x2F;DeepSeek-V4-Flash 和 HauhauCS&#x2F;Qwen3.6-35B-A3B-Uncensored 两条 channel。并发请求一多，上游 openai-compatible 接口直接限流。</p>
-<h2 id="根因：cron-时间集中-每个-cron-内又开多-Agent-并发"><a href="#根因：cron-时间集中-每个-cron-内又开多-Agent-并发" class="headerlink" title="根因：cron 时间集中 + 每个 cron 内又开多 Agent 并发"></a>根因：cron 时间集中 + 每个 cron 内又开多 Agent 并发</h2><p>两个层级的并发叠加：</p>
-<ol>
-<li><strong>cron 层</strong>：多个 profile 的 cron 默认在 03:45 触发，彼此只有分钟级偏差，实际效果等于并发启动。</li>
-<li><strong>Agent 层</strong>：blog-helper 一个 draft 里会并发调 3 个 LLM（MoA 梯队），ReShare 同步单次请求会带多轮上下文，Heartbeat 心跳每次也要 LLM 判定。</li>
-</ol>
-<p>两层相乘：30 分钟内 60+ 次 LLM 调用挤在同一条代理 channel 上。</p>
-<h2 id="修复一：错开-cron-触发时间"><a href="#修复一：错开-cron-触发时间" class="headerlink" title="修复一：错开 cron 触发时间"></a>修复一：错开 cron 触发时间</h2><p>先解决最直接的叠加——把 cron 触发时间打散。原则是每个 profile 错开 5 分钟以上。</p>
-<p>Hermes 的 cron 定义在 profile 的 <code>cron.yaml</code> 里。示例：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># 韩梅梅 blog 发布 — 原来 03:45，改到 03:50</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">blog-publish</span><br>  <span class="hljs-attr">schedule:</span> <span class="hljs-string">&quot;50 3 * * *&quot;</span><br><br><span class="hljs-comment"># 李雷 diary — 改到 04:05</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">diary</span><br>  <span class="hljs-attr">schedule:</span> <span class="hljs-string">&quot;05 4 * * *&quot;</span><br><br><span class="hljs-comment"># AutoQuant 回测 — 改到 04:30</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">backtest</span><br>  <span class="hljs-attr">schedule:</span> <span class="hljs-string">&quot;30 4 * * *&quot;</span><br><br><span class="hljs-comment"># Git 心跳 — 改到 05:00</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">heartbeat-git</span><br>  <span class="hljs-attr">schedule:</span> <span class="hljs-string">&quot;0 5 * * *&quot;</span><br></code></pre></td></tr></table></figure>
-
-<p>把 5 个 profile 的 cron 打散到 03:50 – 05:00 这一小时窗口内，峰值并发从 5 降到 1。</p>
-<h2 id="修复二：草稿-MoA-改为串行，单模型-Fallback"><a href="#修复二：草稿-MoA-改为串行，单模型-Fallback" class="headerlink" title="修复二：草稿 MoA 改为串行，单模型 Fallback"></a>修复二：草稿 MoA 改为串行，单模型 Fallback</h2><p>blog-helper 的 draft.py 默认会并发调用 3 个模型（MoA 梯队）。在夜间窗口窄的情况下，并发 MoA 等于把 1 个 cron 变成 3 个 LLM 请求。</p>
-<p>在 config.yaml 里加 <code>writing_mode: creative</code> 之外，把 MoA 强制降级为串行单模型，让单次 draft 只占一条 channel：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># ~/.hermes/.blog-helper/config.yaml</span><br><span class="hljs-attr">llm:</span><br>  <span class="hljs-attr">fallback_base_url:</span> <span class="hljs-string">&quot;http://your-new-api-endpoint/v1&quot;</span><br>  <span class="hljs-attr">fallback_model:</span> <span class="hljs-string">&quot;deepseek-ai/DeepSeek-V4-Flash&quot;</span><br>  <span class="hljs-attr">fallback_key_env:</span> <span class="hljs-string">NEW_API_KEY</span><br>  <span class="hljs-attr">writing_mode:</span> <span class="hljs-string">creative</span><br></code></pre></td></tr></table></figure>
-
-<p>实际执行时用 <code>--single</code> 参数直接跳过 MoA，减少 2&#x2F;3 并发。</p>
-<h2 id="修复三：LLM-端显式限速（client-side-backoff）"><a href="#修复三：LLM-端显式限速（client-side-backoff）" class="headerlink" title="修复三：LLM 端显式限速（client-side backoff）"></a>修复三：LLM 端显式限速（client-side backoff）</h2><p>单模型调用的代码里，遇到 429 后不立即重试，而是指数退避：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> time, random<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">call_llm</span>(<span class="hljs-params">request, max_retries=<span class="hljs-number">4</span></span>):<br>    <span class="hljs-keyword">for</span> attempt <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(max_retries):<br>        resp = requests.post(url, headers=headers, json=request, timeout=<span class="hljs-number">60</span>)<br>        <span class="hljs-keyword">if</span> resp.status_code == <span class="hljs-number">429</span>:<br>            backoff = <span class="hljs-built_in">min</span>(<span class="hljs-number">2</span> ** attempt * <span class="hljs-number">30</span>, <span class="hljs-number">300</span>)  <span class="hljs-comment"># 最长 5 分钟</span><br>            sleep = backoff + random.randint(<span class="hljs-number">0</span>, <span class="hljs-built_in">int</span>(backoff * <span class="hljs-number">0.2</span>))<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;RateLimit, 第 <span class="hljs-subst">&#123;attempt+<span class="hljs-number">1</span>&#125;</span> 次重试，等待 <span class="hljs-subst">&#123;sleep&#125;</span>s&quot;</span>)<br>            time.sleep(sleep)<br>            <span class="hljs-keyword">continue</span><br>        <span class="hljs-keyword">return</span> resp.json()<br>    <span class="hljs-keyword">raise</span> RuntimeError(<span class="hljs-string">&quot;LLM 持续限流&quot;</span>)<br></code></pre></td></tr></table></figure>
-
-<p>关键点：退避时间要足够长。new-api 的上游一般是 RPM（每分钟请求数）限制，<code>2^attempt * 30s</code> 意味着 30s &#x2F; 90s &#x2F; 270s &#x2F; 810s，4 次重试覆盖 15 分钟，足够越过限流窗口。</p>
-<h2 id="修复四：关键-cron-设优先级，允许低优先级失败"><a href="#修复四：关键-cron-设优先级，允许低优先级失败" class="headerlink" title="修复四：关键 cron 设优先级，允许低优先级失败"></a>修复四：关键 cron 设优先级，允许低优先级失败</h2><p>不是所有 cron 都要跑完。把 12 个 cron 分三级：</p>
+<p>三段分支覆盖了三种典型场景：</p>
 <ul>
-<li><strong>P0 关键</strong>：blog 发布、Git 心跳、AutoQuant 策略计算</li>
-<li><strong>P1 重要</strong>：diary、ReShare 同步、心跳</li>
-<li><strong>P2 可延迟</strong>：review、proofread 复读、封面图生成</li>
+<li><strong>429 + 配额关键词</strong> → 硬失败，立即抛出，交给上层决定是否切 key。</li>
+<li><strong>429 + 有 retry-after</strong> → 软失败，按秒退避。</li>
+<li><strong>503</strong> → 上游过载，指数退避重试。</li>
 </ul>
-<p>P2 在遇到 429 时直接退出让路，让 P0 优先吃 token。用 cron 的 <code>on_failure: skip_next</code> 控制退避窗口。</p>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>实施完四步之后，凌晨观察日志：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">2026-08-14 03:50:02 [blog-helper] cron start<br>2026-08-14 03:52:17 [blog-helper] LLM call ok 4.2s<br>2026-08-14 04:05:01 [diary] cron start<br>2026-08-14 04:05:11 [diary] LLM call ok 1.1s<br>2026-08-14 04:30:01 [backtest] cron start<br></code></pre></td></tr></table></figure>
+<h2 id="四、sensenova-的几个响应头，值得存进日志"><a href="#四、sensenova-的几个响应头，值得存进日志" class="headerlink" title="四、sensenova 的几个响应头，值得存进日志"></a>四、sensenova 的几个响应头，值得存进日志</h2><p>sensenova（及 new-api 后端）会回传以下响应头，监控时建议都抓下来：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">x-rpm-limit:</span>        <span class="hljs-number">1000</span>        <span class="hljs-comment"># 每分钟配额上限</span><br><span class="hljs-attr">x-rpm-remaining:</span>    <span class="hljs-number">3</span>           <span class="hljs-comment"># 剩多少</span><br><span class="hljs-attr">x-rpd-limit:</span>        <span class="hljs-number">100000</span>      <span class="hljs-comment"># 每天配额上限</span><br><span class="hljs-attr">x-rpd-remaining:</span>    <span class="hljs-number">12</span>          <span class="hljs-comment"># 剩多少</span><br><span class="hljs-attr">x-tokens-per-minute-limit:</span>      <span class="hljs-number">60000</span><br><span class="hljs-attr">x-tokens-per-minute-remaining:</span>  <span class="hljs-number">4500</span><br><span class="hljs-attr">retry-after:</span>        <span class="hljs-number">60</span>          <span class="hljs-comment"># 仅频率超限时出现</span><br><span class="hljs-attr">x-request-id:</span>       <span class="hljs-string">xxx</span>         <span class="hljs-comment"># 提工单必备</span><br></code></pre></td></tr></table></figure>
 
-<p><strong>429 完全消失</strong>，5 个 profile 错峰跑完，最长 cron（blog draft）从 9 分钟缩短到 4 分钟（因为不再 MoA 并发）。</p>
-<h2 id="教训"><a href="#教训" class="headerlink" title="教训"></a>教训</h2><ol>
-<li><strong>cron 时间是共享资源</strong>。多 profile 系统里，触发时间就是隐式同步点，必须显式错开。</li>
-<li><strong>MoA 不是免费的并发</strong>。每个 Agent 的每一个阶段，都要算清楚 LLM 请求数再决定并发。</li>
-<li><strong>退避要用指数级</strong>。线性退避在 RPM 限流下几乎无解——30s&#x2F;90s&#x2F;270s 才有希望错开限流窗口。</li>
-<li><strong>低优先级要会主动让路</strong>。P2 任务失败不算失败，P2 撑住才导致 P0 饿死。</li>
+<p><code>x-rpm-remaining</code> 和 <code>x-tokens-per-minute-remaining</code> 是<strong>提前预警</strong>的最佳指标——剩 0 之前 30 秒就降频，比踩了 429 再退避要好得多。</p>
+<h2 id="五、落地：在-Agent-里加一层配额守门"><a href="#五、落地：在-Agent-里加一层配额守门" class="headerlink" title="五、落地：在 Agent 里加一层配额守门"></a>五、落地：在 Agent 里加一层配额守门</h2><p>单纯靠 SDK retry 不够，建议在 Agent 框架外面再包一层<strong>配额守门</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">QuotaGate</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;每 N 分钟检查一次月额度，超限则提前切 provider&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, quota_url, api_key, warn_threshold=<span class="hljs-number">0.8</span></span>):<br>        <span class="hljs-variable language_">self</span>.quota_url = quota_url<br>        <span class="hljs-variable language_">self</span>.api_key = api_key<br>        <span class="hljs-variable language_">self</span>.warn_threshold = warn_threshold<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">check</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">dict</span>:<br>        r = requests.get(<br>            <span class="hljs-variable language_">self</span>.quota_url,<br>            headers=&#123;<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">&#123;self.api_key&#125;</span>&quot;</span>&#125;,<br>            timeout=<span class="hljs-number">5</span>,<br>        )<br>        data = r.json()<br>        used = data.get(<span class="hljs-string">&quot;used&quot;</span>, <span class="hljs-number">0</span>)<br>        total = data.get(<span class="hljs-string">&quot;total&quot;</span>, <span class="hljs-number">1</span>)<br>        ratio = used / total <span class="hljs-keyword">if</span> total <span class="hljs-keyword">else</span> <span class="hljs-number">0</span><br>        <span class="hljs-keyword">return</span> &#123;<br>            <span class="hljs-string">&quot;used&quot;</span>: used,<br>            <span class="hljs-string">&quot;total&quot;</span>: total,<br>            <span class="hljs-string">&quot;ratio&quot;</span>: ratio,<br>            <span class="hljs-string">&quot;should_switch&quot;</span>: ratio &gt; <span class="hljs-variable language_">self</span>.warn_threshold,<br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>主 key 使用率 &gt; 80% 时，切换 fallback key（DeepSeek &#x2F; Qwen）。</li>
+<li>连续 3 次硬失败 → 发飞书&#x2F;钉钉通知，<strong>不要死循环</strong>。</li>
+<li>每 1 小时聚合一次用量，记录到 metrics，月底自动出报表。</li>
+</ul>
+<h2 id="六、踩坑清单"><a href="#六、踩坑清单" class="headerlink" title="六、踩坑清单"></a>六、踩坑清单</h2><table>
+<thead>
+<tr>
+<th>坑</th>
+<th>表象</th>
+<th>根因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>见 429 就重试</td>
+<td>重试 200 次全失败</td>
+<td>未区分配额耗尽 vs 频率超限</td>
+</tr>
+<tr>
+<td>只捕获 <code>RateLimitError</code></td>
+<td>503 直接 crash</td>
+<td>SDK 把 503 归为 <code>APIUnavailableError</code></td>
+</tr>
+<tr>
+<td>忽略 <code>retry-after</code> 头</td>
+<td>固定 sleep 60 秒</td>
+<td>实际 30 秒就够了，浪费 30 秒</td>
+</tr>
+<tr>
+<td>免费套餐无预警</td>
+<td>半夜突然 429</td>
+<td>没用 <code>x-xxx-remaining</code> 头做监控</td>
+</tr>
+<tr>
+<td>多 key 轮询不记账</td>
+<td>每个 key 都被打穿</td>
+<td>未聚合 usage 到总账本</td>
+</tr>
+</tbody></table>
+<h2 id="七、系列文章位置"><a href="#七、系列文章位置" class="headerlink" title="七、系列文章位置"></a>七、系列文章位置</h2><p>这是”RateLimit 判定”系列第 4 篇，串联起来看：</p>
+<ol>
+<li><code>ND-20260814-001</code> Token 配额高峰时段：夜间 cron 的 RateLimit 实战</li>
+<li><code>ND-20260731-001</code> GitHub 五连坑实录（token 失效）</li>
+<li><code>ND-20260805-002</code> Gateway Token 锁冲突</li>
+<li><strong>本文</strong>：从”重试就行”到”先判定再决定”</li>
 </ol>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
-<li><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs">Hermes Agent 文档</a> — cron 配置与任务管理</li>
-<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429">HTTP 429 Too Many Requests (MDN)</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/nicepkg/new-api">new-api 官方文档</a> — 模型代理与 RateLimit 处理</li>
-<li>本机事实库 <code>~/.hermes/.blog-helper/facts.md</code> — ModelBase 服务器与 LLM channel 配置</li>
-</ol>
+<p>一句话总结：<strong>永远不要把 <code>RateLimitError</code> 当同一个异常处理。</strong></p>
 
                 
               </div>
@@ -511,36 +577,19 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
         <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
       
-        <a href="/tags/cron/" class="print-no-link">#cron</a>
+        <a href="/tags/%E8%BF%90%E7%BB%B4/" class="print-no-link">#运维</a>
       
         <a href="/tags/RateLimit/" class="print-no-link">#RateLimit</a>
+      
+        <a href="/tags/sensenova/" class="print-no-link">#sensenova</a>
+      
+        <a href="/tags/%E9%85%8D%E9%A2%9D%E7%AE%A1%E7%90%86/" class="print-no-link">#配额管理</a>
       
     </div>
   
@@ -552,8 +601,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Token 配额高峰时段：AI Agent 夜间 cron 的 RateLimit 实战</div>
-      <div>https://normdist.com/2026/08/14/ND-20260814-001-token-quota-peak-rate-limit-practice/</div>
+      <div>sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError</div>
+      <div>https://normdist.com/2026/08/16/ND-20260816-001-sensenova-plan-limit-vs-rpm-ratelimit/</div>
     </div>
     <div class="license-meta">
       
@@ -565,7 +614,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年8月14日</div>
+          <div>2026年8月16日</div>
         </div>
       
       
@@ -597,18 +646,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/08/16/ND-20260816-001-sensenova-plan-limit-vs-rpm-ratelimit/" title="sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">sensenova 免费模型的隐藏坑：token plan limit exhausted vs RPM RateLimitError</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/08/12/ND-20260812-003-selector-alternation-deadlock/" title="回测策略 selector 交替逻辑设计：防止信号死锁的代码模式">
-                        <span class="hidden-mobile">回测策略 selector 交替逻辑设计：防止信号死锁的代码模式</span>
+                      <a href="/2026/08/14/ND-20260814-001-token-quota-peak-rate-limit-practice/" title="Token 配额高峰时段：AI Agent 夜间 cron 的 RateLimit 实战">
+                        <span class="hidden-mobile">Token 配额高峰时段：AI Agent 夜间 cron 的 RateLimit 实战</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
