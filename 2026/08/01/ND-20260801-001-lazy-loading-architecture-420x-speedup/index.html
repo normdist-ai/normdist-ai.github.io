@@ -27,7 +27,7 @@
 <meta property="og:description" content="一次被 72 秒吓到的启动上周把 AutoQuant 量化系统从 Docker 迁到裸跑后，我发现一个隐蔽问题：每次 Git 心跳触发一次 commit，systemd 服务会短暂重启，整个系统冷启动一次。日志里记录着 Jul 15 08:31:22——从进程启动到第一条量化心跳跑完，72 秒。 72 秒意味着什么？在 5 分钟心跳间隔下，相当于每个周期有 24% 的时间在空转。如果心跳压到 1">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-07-31T19:47:33.000Z">
-<meta property="article:modified_time" content="2026-07-31T19:53:08.873Z">
+<meta property="article:modified_time" content="2026-08-23T10:22:54.466Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="启动优化">
 <meta property="article:tag" content="懒加载">
@@ -446,7 +446,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月1日 凌晨
+                    本文最后更新于 2026年8月23日 晚上
                   
                 
               </p>
