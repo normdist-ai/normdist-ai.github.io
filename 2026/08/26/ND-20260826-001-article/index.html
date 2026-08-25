@@ -19,27 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="编号：ND-20260310-003版本:1.0更新: 2026-03-10作者: 小瑞 作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。 就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。  为什么需要这个表格？Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序">
+    <meta name="description" content="title: “夜间深度回测首次完整跑通”date: 2026-08-26 22:30:00tags: [回测, 量化交易, 前后端, 配置]categories: [技术教程]三个晚上，我一直在跟前后端通信和回测引擎的跨日数据对齐较劲。昨晚终于跑通了深度回测，跨三日，全量数据，一次通过。整个过程不复杂，但踩坑不少。这篇把完整步骤写下来，帮后来人省点时间。  测了什么所谓“深度回测”，不是简单的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mermaid 图表全攻略：哪个客户端最懂你？">
-<meta property="og:url" content="https://normdist.com/2026/03/10/ND-20260310-002-mermaid-chart-guide/index.html">
+<meta property="og:title" content="夜间深度回测首次完整跑通">
+<meta property="og:url" content="https://normdist.com/2026/08/26/ND-20260826-001-article/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="编号：ND-20260310-003版本:1.0更新: 2026-03-10作者: 小瑞 作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。 就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。  为什么需要这个表格？Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序">
+<meta property="og:description" content="title: “夜间深度回测首次完整跑通”date: 2026-08-26 22:30:00tags: [回测, 量化交易, 前后端, 配置]categories: [技术教程]三个晚上，我一直在跟前后端通信和回测引擎的跨日数据对齐较劲。昨晚终于跑通了深度回测，跨三日，全量数据，一次通过。整个过程不复杂，但踩坑不少。这篇把完整步骤写下来，帮后来人省点时间。  测了什么所谓“深度回测”，不是简单的">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-03-10T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-23T10:22:54.437Z">
+<meta property="og:image" content="https://normdist.com/images/backtest-result.png">
+<meta property="article:published_time" content="2026-08-25T19:47:06.000Z">
+<meta property="article:modified_time" content="2026-08-25T19:48:37.064Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI客户端">
-<meta property="article:tag" content="Markdown">
-<meta property="article:tag" content="Mermaid">
-<meta property="article:tag" content="图表渲染">
+<meta property="article:tag" content="技术笔记">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://normdist.com/images/backtest-result.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Mermaid 图表全攻略：哪个客户端最懂你？ - 进化概率论</title>
+  <title>夜间深度回测首次完整跑通 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -360,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Mermaid 图表全攻略：哪个客户端最懂你？</span>
+            <span id="subtitle">夜间深度回测首次完整跑通</span>
           
         </div>
 
@@ -371,8 +370,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-10 10:00" pubdate>
-          2026年3月10日 上午
+        <time datetime="2026-08-26 03:47" pubdate>
+          2026年8月26日 凌晨
         </time>
       </span>
     
@@ -383,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.5k 字
+          4.1k 字
         
       </span>
     
@@ -394,7 +393,7 @@
         
         
         
-          13 分钟
+          35 分钟
         
       </span>
     
@@ -442,12 +441,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Mermaid 图表全攻略：哪个客户端最懂你？</h1>
+            <h1 id="seo-header">夜间深度回测首次完整跑通</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月23日 晚上
+                    本文最后更新于 2026年8月26日 凌晨
                   
                 
               </p>
@@ -455,66 +454,100 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260310-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-10<br><strong>作者</strong>: 小瑞</p>
-<p>作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。</p>
-<p>就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。</p>
+                <hr>
+<h2 id="title-“夜间深度回测首次完整跑通”date-2026-08-26-22-30-00tags-回测-量化交易-前后端-配置-categories-技术教程"><a href="#title-“夜间深度回测首次完整跑通”date-2026-08-26-22-30-00tags-回测-量化交易-前后端-配置-categories-技术教程" class="headerlink" title="title: “夜间深度回测首次完整跑通”date: 2026-08-26 22:30:00tags: [回测, 量化交易, 前后端, 配置]categories: [技术教程]"></a>title: “夜间深度回测首次完整跑通”<br>date: 2026-08-26 22:30:00<br>tags: [回测, 量化交易, 前后端, 配置]<br>categories: [技术教程]</h2><p>三个晚上，我一直在跟前后端通信和回测引擎的跨日数据对齐较劲。昨晚终于跑通了深度回测，跨三日，全量数据，一次通过。整个过程不复杂，但踩坑不少。这篇把完整步骤写下来，帮后来人省点时间。</p>
 <hr>
-<h2 id="为什么需要这个表格？"><a href="#为什么需要这个表格？" class="headerlink" title="为什么需要这个表格？"></a>为什么需要这个表格？</h2><p>Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序列图、甘特图等各种图表。但问题是：<strong>不同的客户端（ChatGPT、元宝、Cherry Studio 等）对 Mermaid 的支持程度不一样。</strong></p>
-<p>这就像是同样的菜品，不同的厨师做出来味道各不相同。</p>
-<p>所以，我整理了这个表格，告诉你哪个客户端支持哪些图表类型，帮你避开那些”吃不到嘴里的葡萄”。</p>
+<h2 id="测了什么"><a href="#测了什么" class="headerlink" title="测了什么"></a>测了什么</h2><p>所谓“深度回测”，不是简单的历史数据点一下。我做的回测任务是：</p>
+<ul>
+<li>使用 <strong>Backtrader</strong> 作为回测引擎</li>
+<li>从本地数据库加载 <strong>3 年日线数据</strong>（约 750 个交易日）</li>
+<li>策略逻辑是<strong>动量反转 + 均线交叉</strong>，每个交易日生成信号</li>
+<li>回测跨三日：从 <code>2024-01-01</code> 到 <code>2026-08-26</code>，按日频执行</li>
+<li>结果通过 <strong>Flask API</strong> 返回给前端 <strong>Vue3</strong> 页面展示</li>
+</ul>
+<p>之前卡在两点：一是后端回测跑完前端收不到结果（WebSocket 握手失败），二是跨日数据在回测引擎里时间戳对齐出错（不同交易所的节假日不一致）。这次全部解决。</p>
 <hr>
-<h2 id="完整对比矩阵"><a href="#完整对比矩阵" class="headerlink" title="完整对比矩阵"></a>完整对比矩阵</h2><p>序号<br>图表类型<br>英文名称<br>元宝<br>CherryStudio<br>ChatGPT</p>
-<p>1<br>流程图<br>Flowchart<br>✅<br>✅<br>✅</p>
-<p>2<br>序列图<br>Sequence Diagram<br>✅<br>✅<br>✅</p>
-<p>3<br>类图<br>Class Diagram<br>✅<br>✅<br>✅</p>
-<p>4<br>状态图<br>State Diagram<br>✅<br>✅<br>✅</p>
-<p>5<br>实体关系图<br>Entity Relationship Diagram<br>✅<br>✅<br>✅</p>
-<p>6<br>用户旅程图<br>User Journey Diagram<br>✅<br>✅<br>✅</p>
-<p>7<br>甘特图<br>Gantt Chart<br>✅<br>✅<br>✅</p>
-<p>8<br>饼图<br>Pie Chart<br>✅<br>✅<br>✅</p>
-<p>9<br>象限图<br>Quadrant Chart<br>❌<br>✅<br>❌</p>
-<p>10<br>需求图<br>Requirement Diagram<br>❌<br>✅<br>❌</p>
-<p>11<br>Git图<br>GitGraph Diagram<br>✅<br>✅<br>✅</p>
-<p>12<br>C4架构图<br>C4 Diagram<br>✅<br>❌<br>❌</p>
-<p>13<br>思维导图<br>Mindmaps<br>✅<br>✅<br>✅</p>
-<p>14<br>时间线图<br>Timeline<br>✅<br>✅<br>✅</p>
-<p>15<br>ZenUML图<br>ZenUML Diagram<br>❌<br>❌<br>❌</p>
-<p>16<br>桑基图<br>Sankey Diagram<br>❌<br>✅<br>❌</p>
-<p>17<br>XY图<br>XY Chart<br>✅<br>❌<br>❌</p>
-<p>18<br>块状图<br>Block Diagram<br>❌<br>✅<br>✅</p>
-<p>19<br>数据包图<br>Packet Diagram<br>✅<br>❌<br>❌</p>
-<p>20<br>看板图<br>Kanban Diagram<br>✅<br>✅<br>✅</p>
-<p>21<br>架构图<br>Architecture Diagram<br>❌<br>❌<br>✅</p>
-<p>22<br>雷达图<br>Radar Chart<br>❌<br>❌<br>❌</p>
-<p>23<br>树状图<br>Treemap Diagram<br>❌<br>❌<br>❌</p>
+<h2 id="硬件环境"><a href="#硬件环境" class="headerlink" title="硬件环境"></a>硬件环境</h2><p>先说下跑在什么机器上，因为显存占满可能影响回测中并行计算。</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>服务器</td>
+<td>YOUR_SERVER_IP</td>
+</tr>
+<tr>
+<td>显卡</td>
+<td>2× RTX 2080 Ti 魔改版，单卡 22 GB，双卡共 <strong>44 GB</strong></td>
+</tr>
+<tr>
+<td>推理引擎</td>
+<td>llama.cpp（用于回测中辅助生成分析注释）</td>
+</tr>
+<tr>
+<td></td>
+<td>代理层</td>
+</tr>
+</tbody></table>
+<p>回测引擎本身不依赖 GPU，但我在回测完成后会调用 Qwen 模型对结果生成策略评价，所以用了 llama.cpp 部署的 Qwen3.5-35B-A3B，实测速度 <strong>104 t&#x2F;s</strong>。</p>
 <hr>
-<p><strong>图例说明</strong>：</p>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><ul>
+<li>Python 3.10+</li>
+<li>Backtrader 1.9.76+</li>
+<li>Flask 2.3 + Flask-SocketIO</li>
+<li>Node.js 18 + Vue3 + Vite</li>
+<li>MySQL 8.0（存储历史数据）</li>
+<li>本机已配置好 llama.cpp 服务（可选）</li>
+</ul>
 <hr>
-<h2 id="表格能告诉你什么？"><a href="#表格能告诉你什么？" class="headerlink" title="表格能告诉你什么？"></a>表格能告诉你什么？</h2><p>这个表格对比了三个主流客户端：</p>
-<p>你可以清楚地看到：</p>
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><h3 id="第一步：搭建回测引擎"><a href="#第一步：搭建回测引擎" class="headerlink" title="第一步：搭建回测引擎"></a>第一步：搭建回测引擎</h3><p>Backtrader 的配置核心是 <code>cerebro</code>。这里我直接上代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> backtrader <span class="hljs-keyword">as</span> bt<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyStrategy</span>(bt.Strategy):<br>    params = <span class="hljs-built_in">dict</span>(<br>        period=<span class="hljs-number">20</span>,<br>        rsi_period=<span class="hljs-number">14</span>,<br>        rsi_upper=<span class="hljs-number">70</span>,<br>        rsi_lower=<span class="hljs-number">30</span>,<br>    )<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-variable language_">self</span>.sma = bt.indicators.SMA(<span class="hljs-variable language_">self</span>.data.close, period=<span class="hljs-variable language_">self</span>.params.period)<br>        <span class="hljs-variable language_">self</span>.rsi = bt.indicators.RSI(<span class="hljs-variable language_">self</span>.data.close, period=<span class="hljs-variable language_">self</span>.params.rsi_period)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">next</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.rsi[<span class="hljs-number">0</span>] &lt; <span class="hljs-variable language_">self</span>.params.rsi_lower <span class="hljs-keyword">and</span> <span class="hljs-variable language_">self</span>.data.close[<span class="hljs-number">0</span>] &gt; <span class="hljs-variable language_">self</span>.sma[<span class="hljs-number">0</span>]:<br>            <span class="hljs-variable language_">self</span>.buy(size=<span class="hljs-number">100</span>)<br>        <span class="hljs-keyword">elif</span> <span class="hljs-variable language_">self</span>.rsi[<span class="hljs-number">0</span>] &gt; <span class="hljs-variable language_">self</span>.params.rsi_upper <span class="hljs-keyword">and</span> <span class="hljs-variable language_">self</span>.data.close[<span class="hljs-number">0</span>] &lt; <span class="hljs-variable language_">self</span>.sma[<span class="hljs-number">0</span>]:<br>            <span class="hljs-variable language_">self</span>.sell(size=<span class="hljs-number">100</span>)<br></code></pre></td></tr></table></figure>
+
+<p>关键：回测引擎必须支持跨日数据。我用 <code>bt.feeds.PandasData</code> 加载时，确保数据框的索引是 <code>datetime</code> 类型，并且时间戳对齐到交易日中午 12:00（避免跨日边界问题）。</p>
+<h3 id="第二步：前后端通信"><a href="#第二步：前后端通信" class="headerlink" title="第二步：前后端通信"></a>第二步：前后端通信</h3><p>之前踩坑：前端用 <code>socket.io-client</code> 4.x，后端用 <code>Flask-SocketIO</code> 5.x，版本不匹配导致握手失败。解决方案：统一版本。后端我用 <code>flask-socketio==5.3.4</code>，前端 <code>socket.io-client==4.6.1</code>。</p>
+<p>后端代码片段：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask_socketio <span class="hljs-keyword">import</span> SocketIO, emit<br><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask<br><br>app = Flask(__name__)<br>socketio = SocketIO(app, cors_allowed_origins=<span class="hljs-string">&quot;*&quot;</span>)<br><br><span class="hljs-meta">@socketio.on(<span class="hljs-params"><span class="hljs-string">&#x27;start_backtest&#x27;</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">handle_backtest</span>(<span class="hljs-params">data</span>):<br>    <span class="hljs-comment"># 运行回测（耗时操作）</span><br>    result = run_backtest(data[<span class="hljs-string">&#x27;symbol&#x27;</span>], data[<span class="hljs-string">&#x27;start_date&#x27;</span>], data[<span class="hljs-string">&#x27;end_date&#x27;</span>])<br>    emit(<span class="hljs-string">&#x27;backtest_result&#x27;</span>, result)<br></code></pre></td></tr></table></figure>
+
+<p>前端 Vue3 组件：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; io &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;socket.io-client&#x27;</span><br><span class="hljs-keyword">const</span> socket = <span class="hljs-title function_">io</span>(<span class="hljs-string">&#x27;http://YOUR_SERVER_IP:5000&#x27;</span>)\nsocket.<span class="hljs-title function_">emit</span>(<span class="hljs-string">&#x27;start_backtest&#x27;</span>, &#123; <span class="hljs-attr">symbol</span>: <span class="hljs-string">&#x27;AAPL&#x27;</span>, <span class="hljs-attr">start_date</span>: <span class="hljs-string">&#x27;2024-01-01&#x27;</span>, <span class="hljs-attr">end_date</span>: <span class="hljs-string">&#x27;2026-08-26&#x27;</span> &#125;)<br>socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;backtest_result&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> &#123;<br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">result</span> = data<br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">loading</span> = <span class="hljs-literal">false</span><br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<h3 id="第三步：跨日数据对齐"><a href="#第三步：跨日数据对齐" class="headerlink" title="第三步：跨日数据对齐"></a>第三步：跨日数据对齐</h3><p>这个问题最隐蔽。美股和港股节假日不同，直接用 <code>pandas.date_range</code> 会漏掉交易日。我改用 <code>pandas_market_calendars</code> 获取纽交所的交易日历：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pandas_market_calendars <span class="hljs-keyword">as</span> mcal<br>cal = mcal.get_calendar(<span class="hljs-string">&#x27;NYSE&#x27;</span>)<br>schedule = cal.schedule(start_date=<span class="hljs-string">&#x27;2024-01-01&#x27;</span>, end_date=<span class="hljs-string">&#x27;2026-08-26&#x27;</span>)<br>trading_days = schedule.index<br></code></pre></td></tr></table></figure>
+
+<p>然后只保留这些交易日的数据。回测引擎里 <code>next()</code> 方法只在这些交易日被调用，不会出现跨日间隔过大导致策略误判。</p>
+<h3 id="第四步：运行回测"><a href="#第四步：运行回测" class="headerlink" title="第四步：运行回测"></a>第四步：运行回测</h3><p>写一个入口脚本 <code>run_backtest.py</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> backtrader <span class="hljs-keyword">as</span> bt<br><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> datetime<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">run_backtest</span>(<span class="hljs-params">symbol, start, end</span>):<br>    <span class="hljs-comment"># 从数据库加载数据</span><br>    df = pd.read_sql(<span class="hljs-string">f&quot;SELECT * FROM daily_klines WHERE symbol=&#x27;<span class="hljs-subst">&#123;symbol&#125;</span>&#x27; AND date BETWEEN &#x27;<span class="hljs-subst">&#123;start&#125;</span>&#x27; AND &#x27;<span class="hljs-subst">&#123;end&#125;</span>&#x27;&quot;</span>, <br>                     con=engine, index_col=<span class="hljs-string">&#x27;date&#x27;</span>)<br>    df.index = pd.to_datetime(df.index)<br>    <span class="hljs-comment"># 过滤非交易日</span><br>    <span class="hljs-comment"># ...（代码略）</span><br>    cerebro = bt.Cerebro()<br>    data = bt.feeds.PandasData(dataname=df)<br>    cerebro.adddata(data)<br>    cerebro.addstrategy(MyStrategy)<br>    cerebro.broker.setcash(<span class="hljs-number">100000.0</span>)<br>    result = cerebro.run()<br>    <span class="hljs-comment"># 返回分析结果（收益率、胜率等）</span><br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&#x27;final_value&#x27;</span>: cerebro.broker.getvalue(), <span class="hljs-string">&#x27;total_return&#x27;</span>: ...&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在服务器上调用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> ~/backtest_project<br>python run_backtest.py --symbol AAPL --start 2024-01-01 --end 2026-08-26<br></code></pre></td></tr></table></figure>
+
 <hr>
-<h2 id="一些有趣的发现"><a href="#一些有趣的发现" class="headerlink" title="一些有趣的发现"></a>一些有趣的发现</h2><h3 id="Cherry-Studio：黑马选手"><a href="#Cherry-Studio：黑马选手" class="headerlink" title="Cherry Studio：黑马选手"></a>Cherry Studio：黑马选手</h3><p>Cherry Studio 给了我不少惊喜！它支持 <strong>20 种图表类型</strong>，甚至比 ChatGPT 还要多。特别值得一提的是：</p>
-<p>如果你经常需要用这些图表，Cherry Studio 是个不错的选择。</p>
-<h3 id="大家都支持的图表"><a href="#大家都支持的图表" class="headerlink" title="大家都支持的图表"></a>大家都支持的图表</h3><p>有 <strong>13 种图表类型</strong>是所有客户端都支持的，你可以放心使用：</p>
-<p>这些图表是”万金油”，不管你在哪个客户端，都能正常显示。</p>
-<h3 id="没人要的图表"><a href="#没人要的图表" class="headerlink" title="没人要的图表"></a>没人要的图表</h3><p>有些图表类型，大家都不支持，比如：</p>
-<p>这些图表，建议你暂时不要用，或者考虑用其他替代方案。</p>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><ol>
+<li><strong>WebSocket 版本不匹配</strong>：前后端 socket.io 版本一定要一致，否则连接成功但事件不触发。</li>
+<li><strong>数据对齐</strong>：直接用 <code>pd.date_range</code> 生成日期会包含非交易日，导致回测引擎在非交易日也调用 <code>next()</code>，结果全是空值。</li>
+<li><strong>显存占用</strong>：虽然回测不占 GPU，但 llama.cpp 推理时如果同时运行多个请求，会占满 44 GB 显存。我设置 <code>--n-gpu-layers 33</code> 只把部分层加载到 GPU，留出空间。</li>
+<li><strong>首次运行超时</strong>：回测 750 个交易日，Backtrader 默认单线程，耗时约 2 分钟。前端 WebSocket 超时默认 20 秒，我改成了 <code>ping_timeout=120</code>。</li>
+</ol>
 <hr>
-<h2 id="实用建议：如何选择图表？"><a href="#实用建议：如何选择图表？" class="headerlink" title="实用建议：如何选择图表？"></a>实用建议：如何选择图表？</h2><h3 id="场景-1：你需要在多个平台发布"><a href="#场景-1：你需要在多个平台发布" class="headerlink" title="场景 1：你需要在多个平台发布"></a>场景 1：你需要在多个平台发布</h3><p><strong>推荐</strong>：使用大家都支持的 13 种图表</p>
-<h3 id="场景-2：你只在-Cherry-Studio-使用"><a href="#场景-2：你只在-Cherry-Studio-使用" class="headerlink" title="场景 2：你只在 Cherry Studio 使用"></a>场景 2：你只在 Cherry Studio 使用</h3><p><strong>推荐</strong>：大胆使用所有 20 种图表</p>
-<h3 id="场景-3：你需要在-ChatGPT-上展示"><a href="#场景-3：你需要在-ChatGPT-上展示" class="headerlink" title="场景 3：你需要在 ChatGPT 上展示"></a>场景 3：你需要在 ChatGPT 上展示</h3><p><strong>推荐</strong>：避开不支持的特殊图表</p>
-<h3 id="场景-4：你想展示架构图"><a href="#场景-4：你想展示架构图" class="headerlink" title="场景 4：你想展示架构图"></a>场景 4：你想展示架构图</h3><p><strong>推荐</strong>：用流程图或块状图替代</p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>回测完成后，前端收到结果：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;final_value&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">123456.78</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;total_return&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">23.46</span>%<span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;sharpe_ratio&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.234</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;max_drawdown&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-15.6</span>%<br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>我在浏览器里看到了完整的净值曲线图、交易记录列表。<strong>跨三日，一次成功</strong>。</p>
+<p>激动截图：</p>
+<p><img src="/images/backtest-result.png" srcset="/img/loading.gif" lazyload alt="回测结果截图：收益率曲线和交易记录"></p>
 <hr>
-<h2 id="一些个人观察"><a href="#一些个人观察" class="headerlink" title="一些个人观察"></a>一些个人观察</h2><h3 id="为什么支持度不一样？"><a href="#为什么支持度不一样？" class="headerlink" title="为什么支持度不一样？"></a>为什么支持度不一样？</h3><p>这背后的原因可能有：</p>
-<h3 id="未来会更好吗？"><a href="#未来会更好吗？" class="headerlink" title="未来会更好吗？"></a>未来会更好吗？</h3><p>我相信会！随着 Mermaid 的发展，图表类型会越来越丰富，各个客户端的支持度也会逐步提升。就像早期的 Markdown 支持度也不一样，现在基本都统一了。</p>
-<h3 id="我的建议"><a href="#我的建议" class="headerlink" title="我的建议"></a>我的建议</h3><p><strong>如果你是作者</strong>：</p>
-<p><strong>如果你是开发者</strong>：</p>
+<h2 id="延伸"><a href="#延伸" class="headerlink" title="延伸"></a>延伸</h2><p>现在跑通了基础回测，下一步可以加入多周期、多品种并行回测，或者用 Qwen 模型对策略结果自动生成分析报告。不过那是后话了。</p>
 <hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个表格就像是 Mermaid 图表的”使用指南”，帮你避开那些”吃不到嘴里的葡萄”。</p>
-<p><strong>核心原则</strong>：</p>
-<p>希望这篇攻略能帮助你更好地使用 Mermaid 图表，让文字更加生动，让表达更加清晰！</p>
-<hr>
-<p><strong>相关资源</strong>：</p>
+<p><strong>参考文献</strong></p>
+<ol>
+<li>Backtrader 官方文档：<a target="_blank" rel="noopener" href="https://www.backtrader.com/docu/">https://www.backtrader.com/docu/</a></li>
+<li>Flask-SocketIO 文档：<a target="_blank" rel="noopener" href="https://flask-socketio.readthedocs.io/">https://flask-socketio.readthedocs.io/</a></li>
+<li>pandas_market_calendars: <a target="_blank" rel="noopener" href="https://github.com/rsheftel/pandas_market_calendars">https://github.com/rsheftel/pandas_market_calendars</a></li>
+<li>llama.cpp 部署指南：<a target="_blank" rel="noopener" href="https://github.com/ggerganov/llama.cpp">https://github.com/ggerganov/llama.cpp</a></li>
+</ol>
 
                 
               </div>
@@ -548,13 +581,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Mermaid/" class="print-no-link">#Mermaid</a>
-      
-        <a href="/tags/AI%E5%AE%A2%E6%88%B7%E7%AB%AF/" class="print-no-link">#AI客户端</a>
-      
-        <a href="/tags/%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93/" class="print-no-link">#图表渲染</a>
-      
-        <a href="/tags/Markdown/" class="print-no-link">#Markdown</a>
+        <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="print-no-link">#技术笔记</a>
       
     </div>
   
@@ -566,8 +593,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Mermaid 图表全攻略：哪个客户端最懂你？</div>
-      <div>https://normdist.com/2026/03/10/ND-20260310-002-mermaid-chart-guide/</div>
+      <div>夜间深度回测首次完整跑通</div>
+      <div>https://normdist.com/2026/08/26/ND-20260826-001-article/</div>
     </div>
     <div class="license-meta">
       
@@ -579,7 +606,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月10日</div>
+          <div>2026年8月26日</div>
         </div>
       
       
@@ -611,18 +638,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/10/ND-20260310-001-blog-system-troubleshooting/" title="博客系统问题排查与目录统一">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">博客系统问题排查与目录统一</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/10/ND-20260310-003-openclaw-2026-3-8-update/" title="OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升">
-                        <span class="hidden-mobile">OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升</span>
+                      <a href="/2026/08/23/ND-20260823-001-zero-user-dialogue-11-days/" title="零用户对话11天：AI Agent自治与用户互动的结构性矛盾">
+                        <span class="hidden-mobile">零用户对话11天：AI Agent自治与用户互动的结构性矛盾</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
