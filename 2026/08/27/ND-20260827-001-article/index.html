@@ -1,0 +1,1009 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构ReShare 8200 端口连续 5 天返回 500，监控面板上一片绿。我查了三天才发现：健康检查只检查了进程活着，没检查依赖活着。这篇讲清楚我从「假装健康」到「多源熔断」的全过程，以及最终怎么让服务在数据源挂掉时依然可用。 前置条件先交代环境，方便你对号入座：  服务器：ModelBase（内部网络），双卡">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构">
+<meta property="og:url" content="https://normdist.com/2026/08/27/ND-20260827-001-article/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构ReShare 8200 端口连续 5 天返回 500，监控面板上一片绿。我查了三天才发现：健康检查只检查了进程活着，没检查依赖活着。这篇讲清楚我从「假装健康」到「多源熔断」的全过程，以及最终怎么让服务在数据源挂掉时依然可用。 前置条件先交代环境，方便你对号入座：  服务器：ModelBase（内部网络），双卡">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-27T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-26T20:05:51.117Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="技术笔记">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-27 09:00" pubdate>
+          2026年8月27日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          43 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年8月27日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="ReShare-8200-连续-5-天-500：健康检查盲区、单点故障到多源熔断架构重构"><a href="#ReShare-8200-连续-5-天-500：健康检查盲区、单点故障到多源熔断架构重构" class="headerlink" title="ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构"></a>ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构</h1><p>ReShare 8200 端口连续 5 天返回 500，监控面板上一片绿。我查了三天才发现：健康检查只检查了进程活着，没检查依赖活着。这篇讲清楚我从「假装健康」到「多源熔断」的全过程，以及最终怎么让服务在数据源挂掉时依然可用。</p>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><p>先交代环境，方便你对号入座：</p>
+<ul>
+<li>服务器：ModelBase（内部网络），双卡 RTX 2080 Ti 魔改版（单卡 22 GB，双卡 44 GB）</li>
+<li>推理引擎：llama.cpp，models-preset 多模型模式</li>
+<li>代理层：new-api（内部网络：3000 端口）</li>
+<li>数据管道：ReShare 服务，监听 8200 端口</li>
+<li>监控：Prometheus + Alertmanager，健康检查走 HTTP <code>/healthz</code></li>
+</ul>
+<h2 id="问题是什么"><a href="#问题是什么" class="headerlink" title="问题是什么"></a>问题是什么</h2><p>ReShare 8200 端口从 8 月 20 日开始，连续 5 天返回 HTTP 500。奇怪的是，监控面板上 <code>up</code> 状态一直是 1，<code>/healthz</code> 永远返回 200。业务方天天催，我天天查日志，日志显示「上游数据源连接超时」。</p>
+<p><strong>这就是第一个盲区</strong>：健康检查只检查了进程是否存活，没检查依赖是否可用。进程活着，但 ReShare 依赖的上游数据源（一个外部 API）已经挂了 5 天。</p>
+<p>我一开始没意识到这点，白白浪费了两天。</p>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><h3 id="坑一：健康检查只看进程活着"><a href="#坑一：健康检查只看进程活着" class="headerlink" title="坑一：健康检查只看进程活着"></a>坑一：健康检查只看进程活着</h3><p>ReShare 的 <code>healthz</code> 最初长这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@app.get(<span class="hljs-params"><span class="hljs-string">&quot;/healthz&quot;</span></span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">healthz</span>():<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;ok&quot;</span>&#125;  <span class="hljs-comment"># 永远返回 200</span><br></code></pre></td></tr></table></figure>
+
+<p>这是典型的「假装健康」。进程活着不代表服务可用。上游数据源挂了，<code>healthz</code> 照样 200，Prometheus 认为一切正常，告警永远不触发。</p>
+<p><strong>修法</strong>：健康检查必须包含依赖检查。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@app.get(<span class="hljs-params"><span class="hljs-string">&quot;/healthz&quot;</span></span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">healthz</span>():<br>    <span class="hljs-comment"># 检查上游数据源是否可达</span><br>    <span class="hljs-keyword">try</span>:<br>        upstream_status = <span class="hljs-keyword">await</span> check_upstream()<br>        <span class="hljs-keyword">if</span> upstream_status != <span class="hljs-string">&quot;ok&quot;</span>:<br>            <span class="hljs-keyword">return</span> JSONResponse(status_code=<span class="hljs-number">503</span>, content=&#123;<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;degraded&quot;</span>&#125;)<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-keyword">return</span> JSONResponse(status_code=<span class="hljs-number">503</span>, content=&#123;<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;unavailable&quot;</span>, <span class="hljs-string">&quot;detail&quot;</span>: <span class="hljs-built_in">str</span>(e)&#125;)<br><br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;ok&quot;</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>改完后，数据源挂掉时 <code>/healthz</code> 返回 503，Prometheus 立刻告警。<strong>但这只解决了「发现」问题，没解决「恢复」问题。</strong></p>
+<h3 id="坑二：单一数据源是定时炸弹"><a href="#坑二：单一数据源是定时炸弹" class="headerlink" title="坑二：单一数据源是定时炸弹"></a>坑二：单一数据源是定时炸弹</h3><p>ReShare 管道只连了一个数据源。这个源挂了，整个服务就瘫了。没有备选，没有降级，没有熔断。</p>
+<p>这时候我想起了之前写过一篇断路器模式的文章（见文末参考），但当时只是理论，没落地到 ReShare 上。现在报应来了。</p>
+<p><strong>修法</strong>：引入第二个数据源，加熔断器。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">CircuitBreaker</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, failure_threshold=<span class="hljs-number">3</span>, cooldown=<span class="hljs-number">30</span></span>):<br>        <span class="hljs-variable language_">self</span>.failure_count = <span class="hljs-number">0</span><br>        <span class="hljs-variable language_">self</span>.failure_threshold = failure_threshold<br>        <span class="hljs-variable language_">self</span>.state = <span class="hljs-string">&quot;closed&quot;</span>  <span class="hljs-comment"># closed: 正常, open: 熔断, half-open: 试探</span><br>        <span class="hljs-variable language_">self</span>.last_failure_time = <span class="hljs-literal">None</span><br>        <span class="hljs-variable language_">self</span>.cooldown = cooldown<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">call</span>(<span class="hljs-params">self, func, *args, **kwargs</span>):<br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.state == <span class="hljs-string">&quot;open&quot;</span>:<br>            <span class="hljs-keyword">if</span> time.time() - <span class="hljs-variable language_">self</span>.last_failure_time &gt; <span class="hljs-variable language_">self</span>.cooldown:<br>                <span class="hljs-variable language_">self</span>.state = <span class="hljs-string">&quot;half-open&quot;</span>  <span class="hljs-comment"># 试探一下</span><br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-keyword">raise</span> CircuitOpenError(<span class="hljs-string">&quot;断路器已打开，请求降级&quot;</span>)<br><br>        <span class="hljs-keyword">try</span>:<br>            result = func(*args, **kwargs)<br>            <span class="hljs-variable language_">self</span>.failure_count = <span class="hljs-number">0</span><br>            <span class="hljs-variable language_">self</span>.state = <span class="hljs-string">&quot;closed&quot;</span><br>            <span class="hljs-keyword">return</span> result<br>        <span class="hljs-keyword">except</span> Exception:<br>            <span class="hljs-variable language_">self</span>.failure_count += <span class="hljs-number">1</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.failure_count &gt;= <span class="hljs-variable language_">self</span>.failure_threshold:<br>                <span class="hljs-variable language_">self</span>.state = <span class="hljs-string">&quot;open&quot;</span><br>                <span class="hljs-variable language_">self</span>.last_failure_time = time.time()<br>            <span class="hljs-keyword">raise</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="怎么做的：多源熔断架构重构"><a href="#怎么做的：多源熔断架构重构" class="headerlink" title="怎么做的：多源熔断架构重构"></a>怎么做的：多源熔断架构重构</h2><p>核心思路：<strong>一个源挂了，自动切到另一个源，业务无感知。</strong></p>
+<h3 id="第一步：接上第二个数据源"><a href="#第一步：接上第二个数据源" class="headerlink" title="第一步：接上第二个数据源"></a>第一步：接上第二个数据源</h3><p>ReShare 原本只连 <code>source_a</code>，我加了 <code>source_b</code> 作为备选：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment">#### ReShare 配置</span><br><span class="hljs-attr">data_sources:</span><br>  <span class="hljs-attr">primary:</span><br>    <span class="hljs-attr">name:</span> <span class="hljs-string">source_a</span><br>    <span class="hljs-attr">url:</span> <span class="hljs-string">https://api.example.com/v1/data</span><br>    <span class="hljs-attr">timeout:</span> <span class="hljs-number">5</span><br>    <span class="hljs-attr">circuit_breaker:</span><br>      <span class="hljs-attr">failure_threshold:</span> <span class="hljs-number">3</span><br>      <span class="hljs-attr">cooldown:</span> <span class="hljs-number">30</span><br>  <span class="hljs-attr">backup:</span><br>    <span class="hljs-attr">name:</span> <span class="hljs-string">source_b</span><br>    <span class="hljs-attr">url:</span> <span class="hljs-string">https://backup.example.org/v2/data</span><br>    <span class="hljs-attr">timeout:</span> <span class="hljs-number">8</span><br>    <span class="hljs-attr">circuit_breaker:</span><br>      <span class="hljs-attr">failure_threshold:</span> <span class="hljs-number">3</span><br>      <span class="hljs-attr">cooldown:</span> <span class="hljs-number">60</span><br></code></pre></td></tr></table></figure>
+
+<p><code>source_b</code> 是同一个数据的镜像源，平时流量不大，但关键时候能救命。</p>
+<h3 id="第二步：熔断器-自动切换"><a href="#第二步：熔断器-自动切换" class="headerlink" title="第二步：熔断器 + 自动切换"></a>第二步：熔断器 + 自动切换</h3><p>在 ReShare 的数据获取层加了一层「多源路由」：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">fetch_data</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-comment"># 主源优先，熔断后自动切备源</span><br>    <span class="hljs-keyword">for</span> source <span class="hljs-keyword">in</span> [primary_source, backup_source]:<br>        <span class="hljs-keyword">try</span>:<br>            data = <span class="hljs-keyword">await</span> source.fetch(request)<br>            <span class="hljs-keyword">return</span> data<br>        <span class="hljs-keyword">except</span> CircuitOpenError:<br>            logger.warning(<span class="hljs-string">f&quot;源 <span class="hljs-subst">&#123;source.name&#125;</span> 熔断中，尝试备用源&quot;</span>)<br>            <span class="hljs-keyword">continue</span><br>        <span class="hljs-keyword">except</span> TimeoutError:<br>            logger.warning(<span class="hljs-string">f&quot;源 <span class="hljs-subst">&#123;source.name&#125;</span> 超时，尝试备用源&quot;</span>)<br>            <span class="hljs-keyword">continue</span><br><br>    <span class="hljs-comment"># 两个源都挂了，返回降级响应</span><br>    <span class="hljs-keyword">return</span> JSONResponse(status_code=<span class="hljs-number">503</span>, content=&#123;<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;unavailable&quot;</span>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>配合熔断器，<code>source_a</code> 连续失败 3 次后熔断 30 秒，这 30 秒内所有请求直接走 <code>source_b</code>，不再超时等待。</p>
+<h3 id="第三步：健康检查覆盖依赖"><a href="#第三步：健康检查覆盖依赖" class="headerlink" title="第三步：健康检查覆盖依赖"></a>第三步：健康检查覆盖依赖</h3><p><code>/healthz</code> 改为检查所有依赖：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@app.get(<span class="hljs-params"><span class="hljs-string">&quot;/healthz&quot;</span></span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">healthz</span>():<br>    checks = []<br><br>    <span class="hljs-comment"># 检查主源</span><br>    primary_ok = <span class="hljs-keyword">await</span> check_source(primary_source)<br>    checks.append(&#123;<span class="hljs-string">&quot;source&quot;</span>: <span class="hljs-string">&quot;primary&quot;</span>, <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;ok&quot;</span> <span class="hljs-keyword">if</span> primary_ok <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;down&quot;</span>&#125;)<br><br>    <span class="hljs-comment"># 检查备源</span><br>    backup_ok = <span class="hljs-keyword">await</span> check_source(backup_source)<br>    checks.append(&#123;<span class="hljs-string">&quot;source&quot;</span>: <span class="hljs-string">&quot;backup&quot;</span>, <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;ok&quot;</span> <span class="hljs-keyword">if</span> backup_ok <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;down&quot;</span>&#125;)<br><br>    <span class="hljs-comment"># 只要有一个源活着，服务就可用</span><br>    <span class="hljs-keyword">if</span> primary_ok <span class="hljs-keyword">or</span> backup_ok:<br>        <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;ok&quot;</span>, <span class="hljs-string">&quot;checks&quot;</span>: checks&#125;<br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-keyword">return</span> JSONResponse(status_code=<span class="hljs-number">503</span>, content=&#123;<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;unavailable&quot;</span>, <span class="hljs-string">&quot;checks&quot;</span>: checks&#125;)<br></code></pre></td></tr></table></figure>
+
+<h3 id="第四步：告警规则跟着改"><a href="#第四步：告警规则跟着改" class="headerlink" title="第四步：告警规则跟着改"></a>第四步：告警规则跟着改</h3><p>Prometheus 告警规则从「进程挂了」改为「所有源都挂了」：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">groups:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">reshare-alerts</span><br>    <span class="hljs-attr">rules:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">alert:</span> <span class="hljs-string">ReShareAllSourcesDown</span><br>        <span class="hljs-attr">expr:</span> <span class="hljs-string">probe_success&#123;job=&quot;reshare&quot;,</span> <span class="hljs-string">target=&quot;primary&quot;&#125;</span> <span class="hljs-string">==</span> <span class="hljs-number">0</span> <span class="hljs-string">AND</span> <span class="hljs-string">probe_success&#123;job=&quot;reshare&quot;,</span> <span class="hljs-string">target=&quot;backup&quot;&#125;</span> <span class="hljs-string">==</span> <span class="hljs-number">0</span><br>        <span class="hljs-attr">for:</span> <span class="hljs-string">5m</span><br>        <span class="hljs-attr">labels:</span><br>          <span class="hljs-attr">severity:</span> <span class="hljs-string">critical</span><br>        <span class="hljs-attr">annotations:</span><br>          <span class="hljs-attr">summary:</span> <span class="hljs-string">&quot;ReShare 所有数据源均不可用&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>单个源挂了不再触发告警（因为业务无感知），所有源都挂了才告警。</p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>重构完成后，我做了故障演练：</p>
+<ol>
+<li>手动停掉 <code>source_a</code>，观察 ReShare 行为</li>
+<li>预期：请求自动切到 <code>source_b</code>，8200 端口保持 200</li>
+</ol>
+<p>实际效果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 停掉 source_a 后</span><br>curl -i http://localhost:8200/healthz<br><span class="hljs-comment"># HTTP/1.1 200 OK</span><br><span class="hljs-comment"># &#123;&quot;status&quot;:&quot;ok&quot;,&quot;checks&quot;:[&#123;&quot;source&quot;:&quot;primary&quot;,&quot;status&quot;:&quot;down&quot;&#125;,&#123;&quot;source&quot;:&quot;backup&quot;,&quot;status&quot;:&quot;ok&quot;&#125;]&#125;</span><br><br>curl -i http://localhost:8200/api/v1/data<br><span class="hljs-comment"># HTTP/1.1 200 OK</span><br><span class="hljs-comment"># &#123;&quot;data&quot;:&quot;from backup source&quot;,&quot;source&quot;:&quot;source_b&quot;&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>3 秒内完成自动切换，业务方零感知。再也没出现连续 5 天 500 的情况。</p>
+<p>故障恢复时间从 <strong>5 天</strong>（人肉发现 + 人肉修复）降到 <strong>30 秒</strong>（熔断器冷却时间），如果算上自动切换，实际恢复时间不到 <strong>1 秒</strong>。</p>
+<h2 id="踩坑记录汇总"><a href="#踩坑记录汇总" class="headerlink" title="踩坑记录汇总"></a>踩坑记录汇总</h2><table>
+<thead>
+<tr>
+<th>坑</th>
+<th>表现</th>
+<th>根因</th>
+<th>解法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>健康检查盲区</td>
+<td>监控全绿，实际 500</td>
+<td><code>/healthz</code> 不检查依赖</td>
+<td>依赖纳入健康检查</td>
+</tr>
+<tr>
+<td>单点故障</td>
+<td>数据源挂了整个服务瘫</td>
+<td>只有一个上游源</td>
+<td>加备用源 + 熔断器</td>
+</tr>
+<tr>
+<td>告警失效</td>
+<td>挂了 5 天没人发现</td>
+<td>告警规则只看进程存活</td>
+<td>告警改为「所有源都挂」</td>
+</tr>
+<tr>
+<td>恢复靠人肉</td>
+<td>周末还要爬起来修</td>
+<td>没有自动恢复机制</td>
+<td>熔断器自动切换</td>
+</tr>
+</tbody></table>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/07/22/circuit-breaker-for-data-pipeline/">断路器模式：让 AI 数据管道不怕外部源抽风</a> — 我之前写的理论文章，这次实践落地了</li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/07/24/collect-cron-false-negative/">删症状≠修根因：collect_cron_results 连续三天假阴性的教训</a> — 同样是「监控说没事，实际有问题」的案例</li>
+<li><a target="_blank" rel="noopener" href="https://www.normdist.com/2026/07/15/reshare-db-merge/">ReShare 数据库迁移合并：8887+1511→8908</a> — ReShare 系列文章</li>
+<li><a target="_blank" rel="noopener" href="https://prometheus.io/docs/guides/health-checks/">Prometheus 健康检查指南</a> — Prometheus 官方健康检查最佳实践</li>
+<li><a target="_blank" rel="noopener" href="https://martinfowler.com/bliki/CircuitBreaker.html">Circuit Breaker Pattern - Martin Fowler</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="print-no-link">#技术笔记</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构</div>
+      <div>https://normdist.com/2026/08/27/ND-20260827-001-article/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/26/ND-20260826-001-article/" title="夜间深度回测首次完整跑通">
+                        <span class="hidden-mobile">夜间深度回测首次完整跑通</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
