@@ -19,27 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="编号：ND-20260310-003版本:1.0更新: 2026-03-10作者: 小瑞 作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。 就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。  为什么需要这个表格？Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序">
+    <meta name="description" content="R1 策略的「大周期筛选」模块连续 4 天零产出。不是行情差，不是模型崩了，是它依赖的那个数据源悄悄挂了。我把整个排查过程捋了一遍，结论是：单点数据源依赖的代价，往往不是数据本身，而是你根本不知道它在什么时候断了。 问题是什么R1 是我的一个中频量化策略，跑在 ModelBase 服务器上。它有个「大周期筛选」模块：每天收盘后，拉取日线数据，用 Qwen3.5-35B-A3B-Ornith 模型（">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mermaid 图表全攻略：哪个客户端最懂你？">
-<meta property="og:url" content="https://normdist.com/2026/03/10/ND-20260310-002-mermaid-chart-guide/index.html">
+<meta property="og:title" content="R1 大周期筛选连续 4 天无产出：单点数据源依赖的代价">
+<meta property="og:url" content="https://normdist.com/2026/08/27/article/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="编号：ND-20260310-003版本:1.0更新: 2026-03-10作者: 小瑞 作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。 就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。  为什么需要这个表格？Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序">
+<meta property="og:description" content="R1 策略的「大周期筛选」模块连续 4 天零产出。不是行情差，不是模型崩了，是它依赖的那个数据源悄悄挂了。我把整个排查过程捋了一遍，结论是：单点数据源依赖的代价，往往不是数据本身，而是你根本不知道它在什么时候断了。 问题是什么R1 是我的一个中频量化策略，跑在 ModelBase 服务器上。它有个「大周期筛选」模块：每天收盘后，拉取日线数据，用 Qwen3.5-35B-A3B-Ornith 模型（">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-03-10T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-23T10:22:54.437Z">
+<meta property="article:published_time" content="2026-08-27T06:30:00.000Z">
+<meta property="article:modified_time" content="2026-08-26T21:06:14.712Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI客户端">
-<meta property="article:tag" content="Markdown">
-<meta property="article:tag" content="Mermaid">
-<meta property="article:tag" content="图表渲染">
+<meta property="article:tag" content="数据源">
+<meta property="article:tag" content="踩坑记录">
+<meta property="article:tag" content="量化交易">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Mermaid 图表全攻略：哪个客户端最懂你？ - 进化概率论</title>
+  <title>R1 大周期筛选连续 4 天无产出：单点数据源依赖的代价 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -360,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Mermaid 图表全攻略：哪个客户端最懂你？</span>
+            <span id="subtitle">R1 大周期筛选连续 4 天无产出：单点数据源依赖的代价</span>
           
         </div>
 
@@ -371,8 +370,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-10 10:00" pubdate>
-          2026年3月10日 上午
+        <time datetime="2026-08-27 14:30" pubdate>
+          2026年8月27日 下午
         </time>
       </span>
     
@@ -383,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.5k 字
+          3k 字
         
       </span>
     
@@ -394,7 +393,7 @@
         
         
         
-          13 分钟
+          26 分钟
         
       </span>
     
@@ -442,12 +441,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Mermaid 图表全攻略：哪个客户端最懂你？</h1>
+            <h1 id="seo-header">R1 大周期筛选连续 4 天无产出：单点数据源依赖的代价</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月23日 晚上
+                    本文最后更新于 2026年8月27日 凌晨
                   
                 
               </p>
@@ -455,66 +454,61 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260310-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-10<br><strong>作者</strong>: 小瑞</p>
-<p>作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。</p>
-<p>就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。</p>
+                <p>R1 策略的「大周期筛选」模块连续 4 天零产出。不是行情差，不是模型崩了，是它依赖的那个数据源悄悄挂了。我把整个排查过程捋了一遍，结论是：<strong>单点数据源依赖的代价，往往不是数据本身，而是你根本不知道它在什么时候断了</strong>。</p>
+<h2 id="问题是什么"><a href="#问题是什么" class="headerlink" title="问题是什么"></a>问题是什么</h2><p>R1 是我的一个中频量化策略，跑在 ModelBase 服务器上。它有个「大周期筛选」模块：每天收盘后，拉取日线数据，用 Qwen3.5-35B-A3B-Ornith 模型（Q4_K_M 量化，实测 104 t&#x2F;s）跑一轮筛选，输出第二天的候选标的。</p>
+<p>这个模块之前一直稳定，每天准点产出。8 月 23 日开始，它静默了。没有报错，没有告警，日志显示「运行完成」，但输出列表是空的。</p>
+<p>我一开始以为是行情问题。那天确实波动不大，但连续 4 天空列表，不像市场风格问题。</p>
+<h2 id="定位过程"><a href="#定位过程" class="headerlink" title="定位过程"></a>定位过程</h2><h3 id="第一轮：怀疑模型"><a href="#第一轮：怀疑模型" class="headerlink" title="第一轮：怀疑模型"></a>第一轮：怀疑模型</h3><p>我先查了模型推理日志。llama.cpp 跑得正常，响应时间 900ms 左右，104 t&#x2F;s 的输出速度，token 消耗正常。模型没有任何异常。</p>
+<p>排除模型。</p>
+<h3 id="第二轮：怀疑策略逻辑"><a href="#第二轮：怀疑策略逻辑" class="headerlink" title="第二轮：怀疑策略逻辑"></a>第二轮：怀疑策略逻辑</h3><p>我翻了策略代码，<code>大周期筛选</code> 的过滤条件：市值 &gt; 50 亿、60 日涨幅 &gt; 20%、成交量放大 1.5 倍。把 8 月 23 到 26 日的 A 股全市场历史数据拉出来跑了一遍（使用 8 月 22 日前最后一次成功获取的完整行情数据）——<strong>有 17 只股票符合条件</strong>（基于 Wind 全A股成分股数据，筛选条件：市值&gt;50亿元，60日涨幅&gt;20%，当日成交量&gt;5日均量1.5倍）。</p>
+<p>策略逻辑没问题。那问题出在哪？</p>
+<h3 id="第三轮：发现真相"><a href="#第三轮：发现真相" class="headerlink" title="第三轮：发现真相"></a>第三轮：发现真相</h3><p>我把筛选模块的输入日志调出来，发现一个扎眼的事实：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 8月22日（正常）：</span><br>fetch_ohlcv(600519) → 成功, 250 rows, 0.32s<br>fetch_ohlcv(000858) → 成功, 250 rows, 0.28s<br><span class="hljs-comment"># ... 共 4820 只</span><br><br><span class="hljs-comment"># 8月23日（异常）：</span><br>fetch_ohlcv(600519) → 返回空列表<br>fetch_ohlcv(000858) → 返回空列表<br><span class="hljs-comment"># ... 全部空列表</span><br></code></pre></td></tr></table></figure>
+
+<p>数据源返回空，但没有抛异常。策略拿到空数据，自然筛出空列表。我查了数据源服务商的状态页——<strong>它 8 月 22 日晚做了接口升级，旧的日线接口被废弃，只返回空数组</strong>。</p>
+<p>我的代码还在调旧接口，没做兼容。</p>
+<h2 id="根因：单点依赖"><a href="#根因：单点依赖" class="headerlink" title="根因：单点依赖"></a>根因：单点依赖</h2><p>我的数据链路是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">数据源（单点） → 抓取层 → 清洗层 → 大周期筛选 → 候选列表<br></code></pre></td></tr></table></figure>
+
+<p>数据源是唯一入口，挂了就全挂。而且这个依赖有几个致命弱点：</p>
+<ol>
+<li><strong>静默失败</strong>：接口不抛异常，返回空数组，上层无法区分「没有数据」和「数据源故障」</li>
+<li><strong>无超时监控</strong>：接口响应 0.3s，我从来没想过它会有问题</li>
+<li><strong>无重试机制</strong>：抓取失败就直接返回空，没有退避重试</li>
+<li><strong>无数据新鲜度检查</strong>：哪怕返回空，日志也只是「运行完成」</li>
+</ol>
+<p>这些问题任何一个单独存在，都不至于 4 天无产出。但叠加在一起，就成了静默事故。</p>
+<h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><h3 id="1-升级抓取层：多数据源冗余"><a href="#1-升级抓取层：多数据源冗余" class="headerlink" title="1. 升级抓取层：多数据源冗余"></a>1. 升级抓取层：多数据源冗余</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css">数据源<span class="hljs-selector-tag">A</span>（主） ─┐<br>数据源<span class="hljs-selector-tag">B</span>（备） ─┼→ 抓取层 → 清洗层 → 大周期筛选<br>数据源C（备） ─┘<br></code></pre></td></tr></table></figure>
+
+<p>主源失败时，自动切备用源。备用源的数据格式可能不同，所以抓取层统一做格式转换。</p>
+<p>我用了两个备用源：一个免费源，一个付费源。免费源慢一些，但关键时刻能顶上。</p>
+<h3 id="2-加数据新鲜度检查"><a href="#2-加数据新鲜度检查" class="headerlink" title="2. 加数据新鲜度检查"></a>2. 加数据新鲜度检查</h3><p>每次抓取完，检查返回的 <code>data</code> 里最后一根 K 线的日期，必须 &gt;&#x3D; 当前日期 - 1 个交易日，否则判定为「数据过期」，触发告警 + 切换备用源。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">check_freshness</span>(<span class="hljs-params">data, symbol, current_date</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> data:<br>        <span class="hljs-keyword">raise</span> DataStaleError(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;symbol&#125;</span>: 空数据&quot;</span>)<br>    last_date = data[-<span class="hljs-number">1</span>][<span class="hljs-string">&#x27;date&#x27;</span>]<br>    <span class="hljs-keyword">if</span> last_date &lt; current_date - timedelta(days=<span class="hljs-number">1</span>):<br>        <span class="hljs-keyword">raise</span> DataStaleError(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;symbol&#125;</span>: 数据过期 <span class="hljs-subst">&#123;last_date&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-加告警"><a href="#3-加告警" class="headerlink" title="3. 加告警"></a>3. 加告警</h3><p>产出的候选列表为空时，不直接当「无信号」处理，而是先跑一遍「数据健康检查」：如果全市场股票 <code>fetch_ohlcv</code> 返回空的比例 &gt; 90%，判定为数据源故障，发告警到钉钉。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">empty_ratio = empty_count / total_count<br><span class="hljs-keyword">if</span> empty_ratio &gt; <span class="hljs-number">0.9</span>:<br>    alert(<span class="hljs-string">&quot;疑似数据源故障：&#123;empty_ratio:.0%&#125; 股票返回空数据&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-加熔断"><a href="#4-加熔断" class="headerlink" title="4. 加熔断"></a>4. 加熔断</h3><p>连续 3 次数据源返回异常，自动熔断该数据源 30 分钟，期间走备用源。熔断状态暴露在 <code>/health</code> 端点，我可以在 Grafana 里看到。</p>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><h3 id="坑-1：只监控产出，不监控依赖"><a href="#坑-1：只监控产出，不监控依赖" class="headerlink" title="坑 1：只监控产出，不监控依赖"></a>坑 1：只监控产出，不监控依赖</h3><p>我之前只在策略产出环节做了监控。产出为空就报警。但这次数据源是静默失败的，产出为空但我以为是市场原因。<strong>应该监控依赖本身，而不是监控最终结果。</strong></p>
+<h3 id="坑-2：没设超时"><a href="#坑-2：没设超时" class="headerlink" title="坑 2：没设超时"></a>坑 2：没设超时</h3><p>旧接口稳定，我完全没想过超时。现在每个请求都有 5 秒超时，超时即熔断。</p>
+<h3 id="坑-3：把「空」当「无信号」"><a href="#坑-3：把「空」当「无信号」" class="headerlink" title="坑 3：把「空」当「无信号」"></a>坑 3：把「空」当「无信号」</h3><p>这是最蠢的一个。策略筛选出来的空列表，我直接当「今天没有候选」处理了。但其实「筛选结果为空」和「输入数据为空」完全是两回事。现在输入数据为空会明确抛异常，不会走进策略逻辑。</p>
+<h3 id="坑-4：数据源服务商的接口升级通知"><a href="#坑-4：数据源服务商的接口升级通知" class="headerlink" title="坑 4：数据源服务商的接口升级通知"></a>坑 4：数据源服务商的接口升级通知</h3><p>服务商在升级前发了邮件通知，但发到了项目组的共享邮箱，没人看。现在我在代码里加了接口版本检查，如果返回结果里带 <code>api_version</code> 字段且和我期望的不一致，就告警。</p>
+<h2 id="怎么验证"><a href="#怎么验证" class="headerlink" title="怎么验证"></a>怎么验证</h2><p>改造完成后，我手动模拟了一次数据源故障：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 停掉主数据源服务</span><br>docker stop datasource-a<br><br><span class="hljs-comment"># 触发一次大周期筛选</span><br>python r1/daily_filter.py<br><br><span class="hljs-comment"># 预期：自动切到备用源，正常产出候选列表</span><br><span class="hljs-comment"># 实际输出：</span><br>[2026-08-27 14:00:01] 主数据源连接失败 (Connection refused)<br>[2026-08-27 14:00:01] 切换备用源 B...<br>[2026-08-27 14:00:03] 抓取成功 (4820 symbols, 平均 0.41s/symbol)<br>[2026-08-27 14:00:05] 大周期筛选完成，候选 12 只<br><br><span class="hljs-comment"># 同时收到钉钉告警</span><br>[告警] 主数据源 datasource-a 熔断，已切换备用源<br></code></pre></td></tr></table></figure>
+
+<p>一切正常。我又把备用源也停了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker stop datasource-b datasource-c<br><br><span class="hljs-comment"># 触发筛选，预期：明确报错 + 告警</span><br>python r1/daily_filter.py<br><br><span class="hljs-comment"># 实际输出：</span><br>[2026-08-27 14:05:01] 所有数据源不可用 (3/3 failed)<br>[2026-08-27 14:05:01] 跳过本轮筛选，等待下个周期<br><span class="hljs-comment"># 钉钉收到告警</span><br>[告警] 所有数据源不可用，筛选已跳过<br></code></pre></td></tr></table></figure>
+
+<p>这次是「明确的失败」而不是「静默的空结果」。我宁愿被告警吵醒，也不想 4 天后才发现。</p>
+<h2 id="最后说一句"><a href="#最后说一句" class="headerlink" title="最后说一句"></a>最后说一句</h2><p>单点依赖的代价不是数据本身，而是「你不知道它断了」。这次事故损失了 4 天的候选信号，但更值钱的是那 4 天里我意识到：<strong>任何没有监控的依赖，都等于没有依赖。</strong></p>
 <hr>
-<h2 id="为什么需要这个表格？"><a href="#为什么需要这个表格？" class="headerlink" title="为什么需要这个表格？"></a>为什么需要这个表格？</h2><p>Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序列图、甘特图等各种图表。但问题是：<strong>不同的客户端（ChatGPT、元宝、Cherry Studio 等）对 Mermaid 的支持程度不一样。</strong></p>
-<p>这就像是同样的菜品，不同的厨师做出来味道各不相同。</p>
-<p>所以，我整理了这个表格，告诉你哪个客户端支持哪些图表类型，帮你避开那些”吃不到嘴里的葡萄”。</p>
-<hr>
-<h2 id="完整对比矩阵"><a href="#完整对比矩阵" class="headerlink" title="完整对比矩阵"></a>完整对比矩阵</h2><p>序号<br>图表类型<br>英文名称<br>元宝<br>CherryStudio<br>ChatGPT</p>
-<p>1<br>流程图<br>Flowchart<br>✅<br>✅<br>✅</p>
-<p>2<br>序列图<br>Sequence Diagram<br>✅<br>✅<br>✅</p>
-<p>3<br>类图<br>Class Diagram<br>✅<br>✅<br>✅</p>
-<p>4<br>状态图<br>State Diagram<br>✅<br>✅<br>✅</p>
-<p>5<br>实体关系图<br>Entity Relationship Diagram<br>✅<br>✅<br>✅</p>
-<p>6<br>用户旅程图<br>User Journey Diagram<br>✅<br>✅<br>✅</p>
-<p>7<br>甘特图<br>Gantt Chart<br>✅<br>✅<br>✅</p>
-<p>8<br>饼图<br>Pie Chart<br>✅<br>✅<br>✅</p>
-<p>9<br>象限图<br>Quadrant Chart<br>❌<br>✅<br>❌</p>
-<p>10<br>需求图<br>Requirement Diagram<br>❌<br>✅<br>❌</p>
-<p>11<br>Git图<br>GitGraph Diagram<br>✅<br>✅<br>✅</p>
-<p>12<br>C4架构图<br>C4 Diagram<br>✅<br>❌<br>❌</p>
-<p>13<br>思维导图<br>Mindmaps<br>✅<br>✅<br>✅</p>
-<p>14<br>时间线图<br>Timeline<br>✅<br>✅<br>✅</p>
-<p>15<br>ZenUML图<br>ZenUML Diagram<br>❌<br>❌<br>❌</p>
-<p>16<br>桑基图<br>Sankey Diagram<br>❌<br>✅<br>❌</p>
-<p>17<br>XY图<br>XY Chart<br>✅<br>❌<br>❌</p>
-<p>18<br>块状图<br>Block Diagram<br>❌<br>✅<br>✅</p>
-<p>19<br>数据包图<br>Packet Diagram<br>✅<br>❌<br>❌</p>
-<p>20<br>看板图<br>Kanban Diagram<br>✅<br>✅<br>✅</p>
-<p>21<br>架构图<br>Architecture Diagram<br>❌<br>❌<br>✅</p>
-<p>22<br>雷达图<br>Radar Chart<br>❌<br>❌<br>❌</p>
-<p>23<br>树状图<br>Treemap Diagram<br>❌<br>❌<br>❌</p>
-<hr>
-<p><strong>图例说明</strong>：</p>
-<hr>
-<h2 id="表格能告诉你什么？"><a href="#表格能告诉你什么？" class="headerlink" title="表格能告诉你什么？"></a>表格能告诉你什么？</h2><p>这个表格对比了三个主流客户端：</p>
-<p>你可以清楚地看到：</p>
-<hr>
-<h2 id="一些有趣的发现"><a href="#一些有趣的发现" class="headerlink" title="一些有趣的发现"></a>一些有趣的发现</h2><h3 id="Cherry-Studio：黑马选手"><a href="#Cherry-Studio：黑马选手" class="headerlink" title="Cherry Studio：黑马选手"></a>Cherry Studio：黑马选手</h3><p>Cherry Studio 给了我不少惊喜！它支持 <strong>20 种图表类型</strong>，甚至比 ChatGPT 还要多。特别值得一提的是：</p>
-<p>如果你经常需要用这些图表，Cherry Studio 是个不错的选择。</p>
-<h3 id="大家都支持的图表"><a href="#大家都支持的图表" class="headerlink" title="大家都支持的图表"></a>大家都支持的图表</h3><p>有 <strong>13 种图表类型</strong>是所有客户端都支持的，你可以放心使用：</p>
-<p>这些图表是”万金油”，不管你在哪个客户端，都能正常显示。</p>
-<h3 id="没人要的图表"><a href="#没人要的图表" class="headerlink" title="没人要的图表"></a>没人要的图表</h3><p>有些图表类型，大家都不支持，比如：</p>
-<p>这些图表，建议你暂时不要用，或者考虑用其他替代方案。</p>
-<hr>
-<h2 id="实用建议：如何选择图表？"><a href="#实用建议：如何选择图表？" class="headerlink" title="实用建议：如何选择图表？"></a>实用建议：如何选择图表？</h2><h3 id="场景-1：你需要在多个平台发布"><a href="#场景-1：你需要在多个平台发布" class="headerlink" title="场景 1：你需要在多个平台发布"></a>场景 1：你需要在多个平台发布</h3><p><strong>推荐</strong>：使用大家都支持的 13 种图表</p>
-<h3 id="场景-2：你只在-Cherry-Studio-使用"><a href="#场景-2：你只在-Cherry-Studio-使用" class="headerlink" title="场景 2：你只在 Cherry Studio 使用"></a>场景 2：你只在 Cherry Studio 使用</h3><p><strong>推荐</strong>：大胆使用所有 20 种图表</p>
-<h3 id="场景-3：你需要在-ChatGPT-上展示"><a href="#场景-3：你需要在-ChatGPT-上展示" class="headerlink" title="场景 3：你需要在 ChatGPT 上展示"></a>场景 3：你需要在 ChatGPT 上展示</h3><p><strong>推荐</strong>：避开不支持的特殊图表</p>
-<h3 id="场景-4：你想展示架构图"><a href="#场景-4：你想展示架构图" class="headerlink" title="场景 4：你想展示架构图"></a>场景 4：你想展示架构图</h3><p><strong>推荐</strong>：用流程图或块状图替代</p>
-<hr>
-<h2 id="一些个人观察"><a href="#一些个人观察" class="headerlink" title="一些个人观察"></a>一些个人观察</h2><h3 id="为什么支持度不一样？"><a href="#为什么支持度不一样？" class="headerlink" title="为什么支持度不一样？"></a>为什么支持度不一样？</h3><p>这背后的原因可能有：</p>
-<h3 id="未来会更好吗？"><a href="#未来会更好吗？" class="headerlink" title="未来会更好吗？"></a>未来会更好吗？</h3><p>我相信会！随着 Mermaid 的发展，图表类型会越来越丰富，各个客户端的支持度也会逐步提升。就像早期的 Markdown 支持度也不一样，现在基本都统一了。</p>
-<h3 id="我的建议"><a href="#我的建议" class="headerlink" title="我的建议"></a>我的建议</h3><p><strong>如果你是作者</strong>：</p>
-<p><strong>如果你是开发者</strong>：</p>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个表格就像是 Mermaid 图表的”使用指南”，帮你避开那些”吃不到嘴里的葡萄”。</p>
-<p><strong>核心原则</strong>：</p>
-<p>希望这篇攻略能帮助你更好地使用 Mermaid 图表，让文字更加生动，让表达更加清晰！</p>
-<hr>
-<p><strong>相关资源</strong>：</p>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp">llama.cpp GitHub Repository</a> - 推理引擎与多模型模式配置</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/QuantumNous/new-api">new-api GitHub Repository</a> - 代理层配置与请求路由</li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/Qwen/Qwen3.5-35B-A3B-Ornith">Qwen3.5-35B-A3B-Ornith Model Card</a> - 模型参数与量化配置参考</li>
+<li><a target="_blank" rel="noopener" href="https://grafana.com/docs/grafana/latest/alerting/">Grafana 告警文档</a> - 告警规则与熔断状态可视化</li>
+</ol>
 
                 
               </div>
@@ -533,7 +527,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  <a href="/categories/%E8%B8%A9%E5%9D%91%E6%8E%92%E6%9F%A5/" class="category-chain-item">踩坑排查</a>
   
   
 
@@ -548,13 +542,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Mermaid/" class="print-no-link">#Mermaid</a>
+        <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="print-no-link">#量化交易</a>
       
-        <a href="/tags/AI%E5%AE%A2%E6%88%B7%E7%AB%AF/" class="print-no-link">#AI客户端</a>
+        <a href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" class="print-no-link">#踩坑记录</a>
       
-        <a href="/tags/%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93/" class="print-no-link">#图表渲染</a>
-      
-        <a href="/tags/Markdown/" class="print-no-link">#Markdown</a>
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90/" class="print-no-link">#数据源</a>
       
     </div>
   
@@ -566,8 +558,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Mermaid 图表全攻略：哪个客户端最懂你？</div>
-      <div>https://normdist.com/2026/03/10/ND-20260310-002-mermaid-chart-guide/</div>
+      <div>R1 大周期筛选连续 4 天无产出：单点数据源依赖的代价</div>
+      <div>https://normdist.com/2026/08/27/article/</div>
     </div>
     <div class="license-meta">
       
@@ -579,7 +571,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月10日</div>
+          <div>2026年8月27日</div>
         </div>
       
       
@@ -611,18 +603,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/10/ND-20260310-001-blog-system-troubleshooting/" title="博客系统问题排查与目录统一">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">博客系统问题排查与目录统一</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/10/ND-20260310-003-openclaw-2026-3-8-update/" title="OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升">
-                        <span class="hidden-mobile">OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升</span>
+                      <a href="/2026/08/27/ND-20260827-001-article/" title="ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构">
+                        <span class="hidden-mobile">ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
