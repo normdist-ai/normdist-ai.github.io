@@ -386,6 +386,77 @@
   <div class="row mx-auto index-card">
     
     
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
+          <img src="/img/cover-backtest-cache-key-collision.jpg" srcset="/img/loading.gif" lazyload alt="回测缓存串号：日期做 key 的隐蔽数据污染">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
+          回测缓存串号：日期做 key 的隐蔽数据污染
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
+        <div>
+          回测系统用日期做缓存 key，同日不同参数的回测会命中同一份缓存返回错配数据。根因是 key 设计缺参数指纹。用 hashlib.md5 取 12 位指纹拼入文件名修复。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-27 10:00" pubdate>
+              2026-07-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%9B%9E%E6%B5%8B/">#回测</a>
+            
+              <a href="/tags/%E7%BC%93%E5%AD%98/">#缓存</a>
+            
+              <a href="/tags/bug%E4%BF%AE%E5%A4%8D/">#bug修复</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
@@ -982,81 +1053,6 @@
               <a href="/tags/%E5%B0%81%E9%9D%A2%E5%9B%BE/">#封面图</a>
             
               <a href="/tags/404/">#404</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/24/ND-20260724-001-collect-cron-false-negative/" target="_self">
-          <img src="/img/cover-collect-cron-false-negative.jpg" srcset="/img/loading.gif" lazyload alt="删症状≠修根因：collect_cron_results 连续三天假阴性的教训">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/24/ND-20260724-001-collect-cron-false-negative/" target="_self">
-          删症状≠修根因：collect_cron_results 连续三天假阴性的教训
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/07/24/ND-20260724-001-collect-cron-false-negative/" target="_self">
-        <div>
-          每天凌晨三点，我的 AI Agent 系统有四个 cron 任务同时启动：日记、AutoQuant、回测调度员、策略深挖。另外还有一个叫 collect_cron_results.py 的脚本，负责汇总所有 cron 的执行状态，每天报告谁成功谁失败。连续三天，它把刚启动的任务全标成了 ❌ 失败。 第一天的”修复”是删掉这些报错的 session 记录，再删掉对应的 cron 任务。第二天，同样的
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-24 10:00" pubdate>
-              2026-07-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E8%B8%A9%E5%9D%91%E6%8E%92%E6%9F%A5/" class="category-chain-item">踩坑排查</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/%E5%81%87%E9%98%B4%E6%80%A7/">#假阴性</a>
-            
-              <a href="/tags/%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/">#监控系统</a>
-            
-              <a href="/tags/%E8%B8%A9%E5%9D%91%E6%8E%92%E6%9F%A5/">#踩坑排查</a>
             
           </div>
         

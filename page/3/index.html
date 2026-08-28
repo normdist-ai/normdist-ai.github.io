@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/04/ND-20260804-001-sandtable-six-bug-fixes-mathematical-correction/" target="_self">
+          六个 Bug 修复实战：沙盘推演引擎的数学纠正
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/04/ND-20260804-001-sandtable-six-bug-fixes-mathematical-correction/" target="_self">
+        <div>
+          沙盘推演引擎（Sandtable）上线后跑了两个月，黄金价格的多模型融合分析结果看起来挺合理——直到我打算认真审计它的数学层。 不审不知道，一审头皮麻。 四个推理引擎（贝叶斯、决策树、蒙特卡洛、因果链）里，六个数学 Bug 同时在跑。有些是 off-by-one，有些是概率没归一化，有些是时间单位跨层不一致。六个 Bug 各自的偏差方向不同，恰好相互抵消，让最终输出看起来”正常”——这正是最危险的
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-04 16:00" pubdate>
+              2026-08-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B2%99%E7%9B%98%E6%8E%A8%E6%BC%94/">#沙盘推演</a>
+            
+              <a href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/">#贝叶斯</a>
+            
+              <a href="/tags/Bug%E4%BF%AE%E5%A4%8D/">#Bug修复</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/03/ND-20260803-001-sandbox-simulation-gold-price-analysis/" target="_self">
           沙盘推演引擎实战：黄金价格的多模型融合分析
         </a>
@@ -967,77 +1032,6 @@
               <a href="/tags/Hermes/">#Hermes</a>
             
               <a href="/tags/cron/">#cron</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
-          <img src="/img/cover-backtest-cache-key-collision.jpg" srcset="/img/loading.gif" lazyload alt="回测缓存串号：日期做 key 的隐蔽数据污染">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
-          回测缓存串号：日期做 key 的隐蔽数据污染
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
-        <div>
-          回测系统用日期做缓存 key，同日不同参数的回测会命中同一份缓存返回错配数据。根因是 key 设计缺参数指纹。用 hashlib.md5 取 12 位指纹拼入文件名修复。
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-27 10:00" pubdate>
-              2026-07-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%9B%9E%E6%B5%8B/">#回测</a>
-            
-              <a href="/tags/%E7%BC%93%E5%AD%98/">#缓存</a>
-            
-              <a href="/tags/bug%E4%BF%AE%E5%A4%8D/">#bug修复</a>
             
           </div>
         

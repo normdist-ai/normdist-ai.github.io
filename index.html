@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/29/ND-20260829-001-param-grid-search-mdd-sharpe-risk-scoring/" target="_self">
+          param_grid_search 补全回撤/Sharpe 指标：从&#34;胜率游戏&#34;到完整风险评估
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/29/ND-20260829-001-param-grid-search-mdd-sharpe-risk-scoring/" target="_self">
+        <div>
+          我曾经只看胜率做网格搜索，挑出一组胜率 78% 的参数，上线后当天回撤 15%。后来才明白：胜率高不等于抗跌强，最大回撤和 Sharpe 才是参数搜索真正的底线。 下面用纯 pandas 写一版 param_grid_search，把这两个指标塞进评分函数。 只按胜率排序，错在哪胜率只是赢利交易占总交易的比例，它完全不说输的时候有多狠。 做 100 笔交易，赢 70 笔每笔赚 1 元，输 30 笔
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-29 09:00" pubdate>
+              2026-08-29
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+            
+              <a href="/tags/%E7%BD%91%E6%A0%BC%E6%90%9C%E7%B4%A2/">#网格搜索</a>
+            
+              <a href="/tags/%E9%A3%8E%E9%99%A9%E7%AE%A1%E7%90%86/">#风险管理</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/27/article/" target="_self">
           R1 大周期筛选连续 4 天无产出：单点数据源依赖的代价
         </a>
@@ -936,73 +1001,6 @@
               <a href="/tags/%E7%BD%91%E6%A0%BC%E6%90%9C%E7%B4%A2/">#网格搜索</a>
             
               <a href="/tags/%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96/">#参数优化</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/08/12/ND-20260812-001-systemd-ghost-uvicorn-10637-restarts/" target="_self">
-          幽灵进程导致 systemd 重启 10637 次：手动 uvicorn 的隐蔽陷阱
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/12/ND-20260812-001-systemd-ghost-uvicorn-10637-restarts/" target="_self">
-        <div>
-          凌晨三点，我像往常一样跑 systemctl restart autoquant。日志里一行红字刺眼：service autoquant.service: restart counter 10637 hit max, refusing to start。 10637 次。这个服务在过去 24 小时里被 systemd 反复拉起、反复杀掉，像被谁下了一个死循环的咒。而罪魁祸首，是半年前一个再”顺手”
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-08-12 09:00" pubdate>
-              2026-08-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AutoQuant/">#AutoQuant</a>
-            
-              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
-            
-              <a href="/tags/systemd/">#systemd</a>
-            
-              <a href="/tags/%E8%BF%90%E7%BB%B4/">#运维</a>
             
           </div>
         

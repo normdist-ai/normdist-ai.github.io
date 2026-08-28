@@ -1,0 +1,1014 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="我曾经只看胜率做网格搜索，挑出一组胜率 78% 的参数，上线后当天回撤 15%。后来才明白：胜率高不等于抗跌强，最大回撤和 Sharpe 才是参数搜索真正的底线。 下面用纯 pandas 写一版 param_grid_search，把这两个指标塞进评分函数。 只按胜率排序，错在哪胜率只是赢利交易占总交易的比例，它完全不说输的时候有多狠。 做 100 笔交易，赢 70 笔每笔赚 1 元，输 30 笔">
+<meta property="og:type" content="article">
+<meta property="og:title" content="param_grid_search 补全回撤&#x2F;Sharpe 指标：从&quot;胜率游戏&quot;到完整风险评估">
+<meta property="og:url" content="https://normdist.com/2026/08/29/ND-20260829-001-param-grid-search-mdd-sharpe-risk-scoring/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="我曾经只看胜率做网格搜索，挑出一组胜率 78% 的参数，上线后当天回撤 15%。后来才明白：胜率高不等于抗跌强，最大回撤和 Sharpe 才是参数搜索真正的底线。 下面用纯 pandas 写一版 param_grid_search，把这两个指标塞进评分函数。 只按胜率排序，错在哪胜率只是赢利交易占总交易的比例，它完全不说输的时候有多狠。 做 100 笔交易，赢 70 笔每笔赚 1 元，输 30 笔">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-29T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-28T18:27:56.696Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="网格搜索">
+<meta property="article:tag" content="量化交易">
+<meta property="article:tag" content="风险管理">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>param_grid_search 补全回撤/Sharpe 指标：从&#34;胜率游戏&#34;到完整风险评估 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">param_grid_search 补全回撤/Sharpe 指标：从"胜率游戏"到完整风险评估</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-29 09:00" pubdate>
+          2026年8月29日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">param_grid_search 补全回撤/Sharpe 指标：从&#34;胜率游戏&#34;到完整风险评估</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年8月29日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>我曾经只看胜率做网格搜索，挑出一组胜率 78% 的参数，上线后当天回撤 15%。后来才明白：胜率高不等于抗跌强，最大回撤和 Sharpe 才是参数搜索真正的底线。</p>
+<p>下面用纯 pandas 写一版 <code>param_grid_search</code>，把这两个指标塞进评分函数。</p>
+<h2 id="只按胜率排序，错在哪"><a href="#只按胜率排序，错在哪" class="headerlink" title="只按胜率排序，错在哪"></a>只按胜率排序，错在哪</h2><p>胜率只是赢利交易占总交易的比例，它完全不说输的时候有多狠。</p>
+<p>做 100 笔交易，赢 70 笔每笔赚 1 元，输 30 笔每笔亏 3 元。胜率 70%，净亏 20 元。</p>
+<p>网格搜索里，按胜率排序就会专挑这种「赢小钱、输大钱」的脆弱参数组。它们胜率可能漂亮到 80%，但偶尔一次爆仓就把前几个月的利润吞干净。</p>
+<p>所以评分函数至少要知道三件事：赚得多吗（收益）、赚得稳吗（波动）、亏得狠吗（回撤）。胜率只回答了一半。</p>
+<h2 id="回撤要算权益曲线"><a href="#回撤要算权益曲线" class="headerlink" title="回撤要算权益曲线"></a>回撤要算权益曲线</h2><p>很多人直接用收盘价算回撤。这会把持仓期间的浮盈浮亏全部漏掉。</p>
+<p>持有一笔多单，盘内最高涨 3%，收盘跌回原点。用收盘价算，回撤 0%。真实账户明明摸到过 +3%，然后全吐回去。</p>
+<p>正确的做法是用权益曲线（equity curve）——账上现金加所有持仓的市值，也就是你随时能变现的总资产。比例回撤的标准公式是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">drawdown = equity / equity.cummax() - <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<p><code>equity.cummax()</code> 是从起点到当前点的历史最高点。当前权益除以它再减一，就是从峰到谷的跌幅百分比。</p>
+<p>拿权益曲线 <code>[100, 110, 90, 95]</code> 举例，历史最高点序列是 <code>[100, 110, 110, 110]</code>，对应 drawdown 为 <code>[0, 0, -0.1818, -0.1364]</code>，最大回撤就是 <code>-0.1818</code>，约 18.2%。</p>
+<p><strong>这里用的是除法，不是减法。</strong> 算 <code>equity.cummax() - equity</code> 得到的是绝对亏损额，比如上面例子里的 <code>[0, 0, 20, 15]</code>。这在不同资金规模下不可比——10 万账户亏 2 万和 100 万账户亏 2 万，意义完全不同。我们要比例，才能跨策略、跨资金量比较抗压能力。</p>
+<p>实现时还要确保权益曲线的索引是单调递增的时间序列，否则 <code>cummax()</code> 会给出错误结果。</p>
+<h2 id="Sharpe-的年化因子要对频率"><a href="#Sharpe-的年化因子要对频率" class="headerlink" title="Sharpe 的年化因子要对频率"></a>Sharpe 的年化因子要对频率</h2><p>Sharpe 比率等于年化收益率除以年化波动率。看起来简单，年化因子一旦用错，结果立刻失真。</p>
+<p>因子取决于数据频率：</p>
+<table>
+<thead>
+<tr>
+<th>数据频率</th>
+<th>年化因子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>日线</td>
+<td>252</td>
+</tr>
+<tr>
+<td>周线</td>
+<td>52</td>
+</tr>
+<tr>
+<td>小时线</td>
+<td>252 × 6（假设每天 6 个交易小时）</td>
+</tr>
+</tbody></table>
+<p>关键点在于：<strong>分子分母都要年化，缺一不可。</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">sharpe = (mean_return * ppy) / (std_return * np.sqrt(ppy))<br></code></pre></td></tr></table></figure>
+
+<p>如果你只把分母乘了 <code>sqrt(252)</code>，分子却忘了年化，Sharpe 会系统性偏低差不多 25 倍（就是 sqrt(252) 本身）。我自己就踩过这个坑：跑出来的 Sharpe 全是 0.3 左右，以为策略完全不行，其实是公式少了一头。</p>
+<p>再看因子方向。我用同一条权益曲线测了三种频率，结果是：</p>
+<ul>
+<li>日线（252）→ Sharpe 13.70</li>
+<li>周线（52）→ Sharpe 6.23</li>
+<li>小时线（252×6）→ Sharpe 33.57</li>
+</ul>
+<p>也就是说，日线数据误套小时线因子，Sharpe 被抬高 2.4 倍；误套周线因子，被压掉一半多。两种错法都不报错，数字照样打印出来，只是完全不可信。</p>
+<p>另外，交易次数太少时 Sharpe 没有统计意义。只跑了两笔交易，赢一输一，胜率 50%，这种小样本算出的 Sharpe 基本是噪声。所以评分前要加 <code>min_trades</code> 过滤。阈值看策略频率，日线策略 30 笔够用，高频策略可能要几百笔。</p>
+<h2 id="评分函数：Sharpe-除以绝对回撤"><a href="#评分函数：Sharpe-除以绝对回撤" class="headerlink" title="评分函数：Sharpe 除以绝对回撤"></a>评分函数：Sharpe 除以绝对回撤</h2><p>我常用的组合是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">score = sharpe / <span class="hljs-built_in">abs</span>(mdd)<br></code></pre></td></tr></table></figure>
+
+<p><code>mdd</code> 是最大回撤（负数），取绝对值后变成正数当惩罚项。分子越大越好（收益好、波动小），分母越小越好（抗跌强），用除法刚好兼顾两头。</p>
+<p>这不是唯一选择：</p>
+<ul>
+<li>更看重绝对收益：<code>score = sharpe * (1 - abs(mdd))</code></li>
+<li>极度怕回撤：<code>score = sharpe / (abs(mdd) ** 2)</code>，回撤惩罚更重</li>
+</ul>
+<p>关键是把风险指标塞进评分逻辑，别让胜率一家独大。</p>
+<h2 id="纯-pandas-实现"><a href="#纯-pandas-实现" class="headerlink" title="纯 pandas 实现"></a>纯 pandas 实现</h2><p>假设你有一个 <code>run_backtest(params)</code>，接收参数字典，返回权益曲线和交易记录：</p>
+<ul>
+<li><code>equity</code>：时间索引的 <code>pd.Series</code>，<strong>必须包含未平仓浮盈亏</strong></li>
+<li><code>trades</code>：含 <code>pnl</code> 列的 <code>pd.DataFrame</code>，每笔交易一行，正为赢、负为输</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> itertools<br><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">compute_metrics</span>(<span class="hljs-params">equity: pd.Series, trades: pd.DataFrame,</span><br><span class="hljs-params">                    periods_per_year: <span class="hljs-built_in">int</span> = <span class="hljs-number">252</span></span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;计算单组参数的关键风险收益指标。&quot;&quot;&quot;</span><br>    returns = equity.pct_change().dropna()<br><br>    ppy = <span class="hljs-built_in">float</span>(periods_per_year)<br>    mean_ret = returns.mean()<br>    std_ret = returns.std(ddof=<span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">if</span> std_ret &gt; <span class="hljs-number">0</span>:<br>        <span class="hljs-comment"># 分子分母都要年化，缺一头就偏约 sqrt(ppy) 倍</span><br>        sharpe = (mean_ret * ppy) / (std_ret * np.sqrt(ppy))<br>    <span class="hljs-keyword">else</span>:<br>        sharpe = <span class="hljs-number">0.0</span><br><br>    <span class="hljs-comment"># 比例最大回撤，基于权益曲线</span><br>    drawdown = equity / equity.cummax() - <span class="hljs-number">1</span><br>    mdd = drawdown.<span class="hljs-built_in">min</span>()  <span class="hljs-comment"># 负数，比如 -0.18 表示 18% 回撤</span><br><br>    win_rate = (trades[<span class="hljs-string">&#x27;pnl&#x27;</span>] &gt; <span class="hljs-number">0</span>).mean() <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(trades) &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> <span class="hljs-number">0.0</span><br>    <span class="hljs-keyword">return</span> &#123;<br>        <span class="hljs-string">&#x27;sharpe&#x27;</span>: <span class="hljs-built_in">round</span>(<span class="hljs-built_in">float</span>(sharpe), <span class="hljs-number">3</span>),<br>        <span class="hljs-string">&#x27;mdd&#x27;</span>: <span class="hljs-built_in">round</span>(<span class="hljs-built_in">float</span>(mdd), <span class="hljs-number">3</span>),<br>        <span class="hljs-string">&#x27;win_rate&#x27;</span>: <span class="hljs-built_in">round</span>(<span class="hljs-built_in">float</span>(win_rate), <span class="hljs-number">3</span>),<br>        <span class="hljs-string">&#x27;trade_count&#x27;</span>: <span class="hljs-built_in">int</span>(<span class="hljs-built_in">len</span>(trades)),<br>        <span class="hljs-string">&#x27;abs_mdd&#x27;</span>: <span class="hljs-built_in">abs</span>(<span class="hljs-built_in">float</span>(mdd)),<br>    &#125;<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">param_grid_search</span>(<span class="hljs-params">param_grid: <span class="hljs-built_in">dict</span>, run_backtest, min_trades: <span class="hljs-built_in">int</span> = <span class="hljs-number">30</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;执行参数网格搜索，返回含风险指标的结果 DataFrame。&quot;&quot;&quot;</span><br>    results = []<br>    keys, values = <span class="hljs-built_in">zip</span>(*param_grid.items())<br>    <span class="hljs-keyword">for</span> combo <span class="hljs-keyword">in</span> itertools.product(*values):<br>        params = <span class="hljs-built_in">dict</span>(<span class="hljs-built_in">zip</span>(keys, combo))<br>        equity, trades = run_backtest(params)<br><br>        m = compute_metrics(equity, trades)<br>        m.update(params)  <span class="hljs-comment"># 参数也塞进结果，方便对照</span><br><br>        <span class="hljs-comment"># 交易不够，或回撤为 0（曲线单调上涨），都视为无效</span><br>        <span class="hljs-keyword">if</span> m[<span class="hljs-string">&#x27;trade_count&#x27;</span>] &gt;= min_trades <span class="hljs-keyword">and</span> m[<span class="hljs-string">&#x27;abs_mdd&#x27;</span>] &gt; <span class="hljs-number">1e-9</span>:<br>            m[<span class="hljs-string">&#x27;score&#x27;</span>] = m[<span class="hljs-string">&#x27;sharpe&#x27;</span>] / m[<span class="hljs-string">&#x27;abs_mdd&#x27;</span>]<br>        <span class="hljs-keyword">else</span>:<br>            m[<span class="hljs-string">&#x27;score&#x27;</span>] = -np.inf<br><br>        results.append(m)<br><br>    results_df = pd.DataFrame(results)<br>    results_df = results_df.sort_values(<br>        [<span class="hljs-string">&#x27;score&#x27;</span>, <span class="hljs-string">&#x27;sharpe&#x27;</span>], ascending=[<span class="hljs-literal">False</span>, <span class="hljs-literal">False</span>]<br>    )<br>    <span class="hljs-keyword">return</span> results_df<br></code></pre></td></tr></table></figure>
+
+<p>两个细节值得说。</p>
+<p>第一，<code>returns.std(ddof=1)</code> 用的是样本标准差。几百个点用 <code>ddof=0</code> 也差不了多少，但样本少的时候，<code>ddof=0</code> 会让 Sharpe 虚高。</p>
+<p>第二，<code>mdd</code> 为 0 必须单独处理。曲线一路单调上涨时回撤恒为 0，<code>sharpe / 0</code> 直接炸成无穷大，把这种参数组顶到第一名。这类结果通常是回测没跑满或数据没接对。标记 <code>-inf</code> 让它沉到最底下，比硬除一个 <code>1e-9</code> 干净。</p>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><p><code>run_backtest</code> 需要你自己实现，接口约定如上。这里给一个确定性的假回测函数（用三角函数造曲线，不用随机数，跑多少次结果都一样），用来跑通整条流水线：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">dummy_backtest</span>(<span class="hljs-params">params</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;假的回测函数，返回 (equity, trades)。&quot;&quot;&quot;</span><br>    ma_len, thresh = params[<span class="hljs-string">&#x27;ma_len&#x27;</span>], params[<span class="hljs-string">&#x27;thresh&#x27;</span>]<br>    t = np.arange(<span class="hljs-number">300</span>)<br><br>    equity = pd.Series(<br>        <span class="hljs-number">100</span> * (<span class="hljs-number">1</span> + <span class="hljs-number">0.002</span> * t)<br>        * (<span class="hljs-number">1</span> + <span class="hljs-number">0.05</span> * np.sin(t / (ma_len * <span class="hljs-number">3</span>))<br>              + <span class="hljs-number">0.03</span> * np.cos(t / (ma_len * <span class="hljs-number">1.7</span>))<br>              - <span class="hljs-number">0.001</span> * thresh * t),<br>        index=pd.date_range(<span class="hljs-string">&#x27;2023-01-01&#x27;</span>, periods=<span class="hljs-number">300</span>),<br>    )<br><br>    n_trades = <span class="hljs-number">35</span> + <span class="hljs-built_in">int</span>(ma_len / <span class="hljs-number">5</span>)<br>    i = np.arange(n_trades)<br>    trades = pd.DataFrame(<br>        &#123;<span class="hljs-string">&#x27;pnl&#x27;</span>: np.sin(i * (<span class="hljs-number">0.7</span> + thresh * <span class="hljs-number">40</span>)) * <span class="hljs-number">1.2</span><br>                 + np.cos(i * <span class="hljs-number">1.31</span>) * <span class="hljs-number">0.6</span>&#125;<br>    )<br>    <span class="hljs-keyword">return</span> equity, trades<br><br><br>grid = &#123;<span class="hljs-string">&#x27;ma_len&#x27;</span>: [<span class="hljs-number">5</span>, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>], <span class="hljs-string">&#x27;thresh&#x27;</span>: [<span class="hljs-number">0.01</span>, <span class="hljs-number">0.02</span>, <span class="hljs-number">0.03</span>]&#125;<br>result = param_grid_search(grid, dummy_backtest, min_trades=<span class="hljs-number">30</span>)<br><br><span class="hljs-built_in">print</span>(result[[<span class="hljs-string">&#x27;ma_len&#x27;</span>, <span class="hljs-string">&#x27;thresh&#x27;</span>, <span class="hljs-string">&#x27;win_rate&#x27;</span>, <span class="hljs-string">&#x27;mdd&#x27;</span>, <span class="hljs-string">&#x27;sharpe&#x27;</span>,<br>              <span class="hljs-string">&#x27;trade_count&#x27;</span>, <span class="hljs-string">&#x27;score&#x27;</span>]].to_string(index=<span class="hljs-literal">False</span>))<br></code></pre></td></tr></table></figure>
+
+<p>实际输出：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">ma_len</span>  thresh  win_rate    mdd  sharpe  trade_count      score<br>    <span class="hljs-attribute">10</span>    <span class="hljs-number">0</span>.<span class="hljs-number">01</span>     <span class="hljs-number">0</span>.<span class="hljs-number">541</span> -<span class="hljs-number">0</span>.<span class="hljs-number">021</span>  <span class="hljs-number">13</span>.<span class="hljs-number">828</span>           <span class="hljs-number">37</span> <span class="hljs-number">672</span>.<span class="hljs-number">561721</span><br>    <span class="hljs-attribute">10</span>    <span class="hljs-number">0</span>.<span class="hljs-number">02</span>     <span class="hljs-number">0</span>.<span class="hljs-number">486</span> -<span class="hljs-number">0</span>.<span class="hljs-number">021</span>  <span class="hljs-number">13</span>.<span class="hljs-number">703</span>           <span class="hljs-number">37</span> <span class="hljs-number">650</span>.<span class="hljs-number">332504</span><br>    <span class="hljs-attribute">10</span>    <span class="hljs-number">0</span>.<span class="hljs-number">03</span>     <span class="hljs-number">0</span>.<span class="hljs-number">568</span> -<span class="hljs-number">0</span>.<span class="hljs-number">022</span>  <span class="hljs-number">13</span>.<span class="hljs-number">578</span>           <span class="hljs-number">37</span> <span class="hljs-number">628</span>.<span class="hljs-number">982792</span><br>     <span class="hljs-attribute">5</span>    <span class="hljs-number">0</span>.<span class="hljs-number">01</span>     <span class="hljs-number">0</span>.<span class="hljs-number">528</span> -<span class="hljs-number">0</span>.<span class="hljs-number">088</span>   <span class="hljs-number">7</span>.<span class="hljs-number">636</span>           <span class="hljs-number">36</span>  <span class="hljs-number">87</span>.<span class="hljs-number">064216</span><br>     <span class="hljs-attribute">5</span>    <span class="hljs-number">0</span>.<span class="hljs-number">02</span>     <span class="hljs-number">0</span>.<span class="hljs-number">500</span> -<span class="hljs-number">0</span>.<span class="hljs-number">088</span>   <span class="hljs-number">7</span>.<span class="hljs-number">575</span>           <span class="hljs-number">36</span>  <span class="hljs-number">85</span>.<span class="hljs-number">842561</span><br>     <span class="hljs-attribute">5</span>    <span class="hljs-number">0</span>.<span class="hljs-number">03</span>     <span class="hljs-number">0</span>.<span class="hljs-number">583</span> -<span class="hljs-number">0</span>.<span class="hljs-number">089</span>   <span class="hljs-number">7</span>.<span class="hljs-number">514</span>           <span class="hljs-number">36</span>  <span class="hljs-number">84</span>.<span class="hljs-number">633644</span><br>    <span class="hljs-attribute">20</span>    <span class="hljs-number">0</span>.<span class="hljs-number">01</span>     <span class="hljs-number">0</span>.<span class="hljs-number">538</span>  <span class="hljs-number">0</span>.<span class="hljs-number">000</span>  <span class="hljs-number">28</span>.<span class="hljs-number">466</span>           <span class="hljs-number">39</span>       -inf<br>    <span class="hljs-attribute">20</span>    <span class="hljs-number">0</span>.<span class="hljs-number">02</span>     <span class="hljs-number">0</span>.<span class="hljs-number">487</span>  <span class="hljs-number">0</span>.<span class="hljs-number">000</span>  <span class="hljs-number">28</span>.<span class="hljs-number">153</span>           <span class="hljs-number">39</span>       -inf<br>    <span class="hljs-attribute">20</span>    <span class="hljs-number">0</span>.<span class="hljs-number">03</span>     <span class="hljs-number">0</span>.<span class="hljs-number">590</span>  <span class="hljs-number">0</span>.<span class="hljs-number">000</span>  <span class="hljs-number">27</span>.<span class="hljs-number">840</span>           <span class="hljs-number">39</span>       -inf<br></code></pre></td></tr></table></figure>
+
+<p>最后一行最值得看。<code>ma_len=20</code> 那三组的 Sharpe 有 28，比排第一的 13.8 高出一倍，但回撤是 0。只看 Sharpe 它会稳赢，可这个 0 说明曲线全程单调上涨，多半是回测数据有问题。标成 <code>-inf</code> 沉到最底下，比让它骗你强。</p>
+<p>再对比前六行：胜率最高的是 <code>ma_len=5, thresh=0.03</code>（0.583），排序里它排第六。按胜率选参数，你会选它；按 score 选，你会选 <code>ma_len=10, thresh=0.01</code>。两个答案差得很远，因为 0.583 那组回撤 8.9%，是 0.541 那组的四倍多。</p>
+<h2 id="怎么选"><a href="#怎么选" class="headerlink" title="怎么选"></a>怎么选</h2><ul>
+<li>旧代码能跑，只想快速止血：加一行回撤过滤，<code>if mdd &lt; -0.3: continue</code>。今天就能改完。</li>
+<li>想认真评估风险：补 Sharpe，用 <code>sharpe / abs(mdd)</code> 排序。改动就是上面三个函数。</li>
+<li>想更进一步：把胜率、回撤、Sharpe、盈亏比、交易次数一起输出，跑完先看分布再定参数。</li>
+</ul>
+<p>思路和我之前写的《用 5 个公开指标量化「美元信用健康度」》一脉相承：单一指标永远讲不清全故事，得把维度打开看。</p>
+<p>能赚钱的策略很多，能赚钱还能好好睡觉的才难得。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/s/sharperatio.asp">Sharpe Ratio — Investopedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/m/maximum-drawdown-mdd.asp">Maximum Drawdown (MDD) — Investopedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Drawdown_(economics)">Drawdown (economics) — Wikipedia</a></li>
+<li><a target="_blank" rel="noopener" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.cummax.html">pandas.DataFrame.cummax</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.backtrader.com/docu/">Backtrader 文档</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="print-no-link">#量化交易</a>
+      
+        <a href="/tags/%E7%BD%91%E6%A0%BC%E6%90%9C%E7%B4%A2/" class="print-no-link">#网格搜索</a>
+      
+        <a href="/tags/%E9%A3%8E%E9%99%A9%E7%AE%A1%E7%90%86/" class="print-no-link">#风险管理</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>param_grid_search 补全回撤/Sharpe 指标：从&#34;胜率游戏&#34;到完整风险评估</div>
+      <div>https://normdist.com/2026/08/29/ND-20260829-001-param-grid-search-mdd-sharpe-risk-scoring/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/27/article/" title="R1 大周期筛选连续 4 天无产出：单点数据源依赖的代价">
+                        <span class="hidden-mobile">R1 大周期筛选连续 4 天无产出：单点数据源依赖的代价</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
