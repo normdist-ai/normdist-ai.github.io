@@ -454,15 +454,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/08/27/article/" target="_self">
-          R1 大周期筛选连续 4 天无产出：单点数据源依赖的代价
+        <a href="/2026/08/28/article/" target="_self">
+          博客选题池被 reconcile 清空：唯一可信源的维护教训
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/27/article/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/28/article/" target="_self">
         <div>
-          R1 策略的「大周期筛选」模块连续 4 天零产出。不是行情差，不是模型崩了，是它依赖的那个数据源悄悄挂了。我把整个排查过程捋了一遍，结论是：单点数据源依赖的代价，往往不是数据本身，而是你根本不知道它在什么时候断了。 问题是什么R1 是我的一个中频量化策略，跑在 ModelBase 服务器上。它有个「大周期筛选」模块：每天收盘后，拉取日线数据，用 Qwen3.5-35B-A3B-Ornith 模型（
+          一条 reconcile 命令，把我攒了半年的 47 条博客选题全清了。根因不是脚本写错，而是我用两个源维护同一份数据，还让同步脚本只认其中一个。Git 历史救回了数据，但这个问题值得好好复盘：唯一可信源到底怎么维护。 事故现场选题池放在博客仓库的 _data/topics.yml，Hexo 站点用它在「选题池」页面渲染所有候选选题。 某天我跑了这条命令： 1npm run reconcile
         </div>
       </a>
 
@@ -470,8 +470,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-08-27 14:30" pubdate>
-              2026-08-27
+            <time datetime="2026-08-28 09:00" pubdate>
+              2026-08-28
             </time>
           </div>
         
@@ -486,7 +486,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E8%B8%A9%E5%9D%91%E6%8E%92%E6%9F%A5/" class="category-chain-item">踩坑排查</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
   
   
 
@@ -501,11 +501,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
             
-              <a href="/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">#踩坑记录</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/">#数据同步</a>
             
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90/">#数据源</a>
+              <a href="/tags/%E4%BA%8B%E6%95%85%E5%A4%8D%E7%9B%98/">#事故复盘</a>
             
           </div>
         
