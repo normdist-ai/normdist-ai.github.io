@@ -454,13 +454,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/08/28/article/" target="_self">
+        <a href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/" target="_self">
           博客选题池被 reconcile 清空：唯一可信源的维护教训
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/28/article/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/" target="_self">
         <div>
           一条 reconcile 命令，把我攒了半年的 47 条博客选题全清了。根因不是脚本写错，而是我用两个源维护同一份数据，还让同步脚本只认其中一个。Git 历史救回了数据，但这个问题值得好好复盘：唯一可信源到底怎么维护。 事故现场选题池放在博客仓库的 _data/topics.yml，Hexo 站点用它在「选题池」页面渲染所有候选选题。 某天我跑了这条命令： 1npm run reconcile
         </div>
