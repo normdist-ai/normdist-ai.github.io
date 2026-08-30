@@ -454,6 +454,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/28/ND-20260828-001-601318-selling-score-drop/" target="_self">
+          601318 卖出策略得分骤降 21.8 分：市场结构变化还是数据降级失真？得分制与胜率制的矛盾
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/28/ND-20260828-001-601318-selling-score-drop/" target="_self">
+        <div>
+          601318 的卖出策略得分，一天内降了 21.8 分。 我的第一反应是市场要变天。但把行情数据拉出来逐项排查，市场结构没有任何异常。真正的原因在两天前的一次「无感升级」：我把策略打分依赖的分类模型从 Qwen3.6-35B-A3B 换成了 Qwen3.5-35B-A3B-Ornith，输出分布漂移，得分跟着失真。 这轮排查让我想通了一件事：得分制与胜率制冲突时，先信谁，后信谁，应该有一条硬规则。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-28 09:00" pubdate>
+              2026-08-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+            
+              <a href="/tags/%E7%AD%96%E7%95%A5%E8%AF%84%E4%BC%B0/">#策略评估</a>
+            
+              <a href="/tags/%E6%A8%A1%E5%9E%8B%E6%BC%82%E7%A7%BB/">#模型漂移</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/" target="_self">
           博客选题池被 reconcile 清空：唯一可信源的维护教训
         </a>
@@ -936,71 +1001,6 @@
               <a href="/tags/%E7%8A%B6%E6%80%81%E6%9C%BA/">#状态机</a>
             
               <a href="/tags/%E4%BF%A1%E5%8F%B7%E6%AD%BB%E9%94%81/">#信号死锁</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/" target="_self">
-          回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/" target="_self">
-        <div>
-          MACD 金叉买入、SMA 趋势确认，这是最经典的两个技术指标组合。教科书告诉你”参数用 12&#x2F;26&#x2F;9 和 5&#x2F;20”，但从来没告诉你——这些数字是随便选的，换个市场、换个标的，它们大概率不是最优的。 我做了一件事：把 MACD 的快慢线周期和 SMA 的窗口长度展开成一个参数网格，每个格点跑一遍回测，看收益分布长什么样。结果很反直觉——最优参数不在教科书的默认值附
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-08-12 10:00" pubdate>
-              2026-08-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%9B%9E%E6%B5%8B/">#回测</a>
-            
-              <a href="/tags/%E7%BD%91%E6%A0%BC%E6%90%9C%E7%B4%A2/">#网格搜索</a>
-            
-              <a href="/tags/%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96/">#参数优化</a>
             
           </div>
         
