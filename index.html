@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/09/01/ND-20260901-001-autoquant-daily-health-scan-zero-issues-auto-devlog-pdca-loop/" target="_self">
+          AutoQuant 每日自动优化：健康扫描 0 问题 + 自动 devlog 推送的 PDCA 闭环
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/01/ND-20260901-001-autoquant-daily-health-scan-zero-issues-auto-devlog-pdca-loop/" target="_self">
+        <div>
+          每天凌晨 01:10，AutoQuant 跑一遍健康扫描；01:30，每日优化任务接管。扫描结果 29 个端点 0 error &#x2F; 0 slow，前端 30 个 JS 文件完整，持仓价格通道无断链。然后系统自己把过程写进 devlog，推送，收工。这套「健康扫描 + 自动 devlog」的 PDCA 闭环最近 12 天里有 10 天零问题，中间还顺手修掉了几个隐患。 要解决什么问题量化系
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-09-01 09:00" pubdate>
+              2026-09-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AutoQuant/">#AutoQuant</a>
+            
+              <a href="/tags/PDCA/">#PDCA</a>
+            
+              <a href="/tags/devlog/">#devlog</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/29/ND-20260829-001-param-grid-search-mdd-sharpe-risk-scoring/" target="_self">
           param_grid_search 补全回撤/Sharpe 指标：从&#34;胜率游戏&#34;到完整风险评估
         </a>
@@ -936,71 +1001,6 @@
               <a href="/tags/cron/">#cron</a>
             
               <a href="/tags/RateLimit/">#RateLimit</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/08/12/ND-20260812-003-selector-alternation-deadlock/" target="_self">
-          回测策略 selector 交替逻辑设计：防止信号死锁的代码模式
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/12/ND-20260812-003-selector-alternation-deadlock/" target="_self">
-        <div>
-          我的回测引擎里有一个隐蔽的 bug，藏了三个月才被发现：RSI、布林带、肯特纳通道三个策略，每个都只产生了第一次买入信号，之后再也没卖过。 回测报告显示”100% 胜率、单笔交易”，看起来完美——实际上是信号死了。 根因是一行 copy-paste：卖出分支里把 in_buy 设成了 True，本该是 False。结果卖出后买入锁一直挂着，下一个买入信号永远被”已持仓”挡住，整条信号链断裂。这不是
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-08-12 11:00" pubdate>
-              2026-08-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="category-chain-item">量化交易</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%9B%9E%E6%B5%8B/">#回测</a>
-            
-              <a href="/tags/%E7%8A%B6%E6%80%81%E6%9C%BA/">#状态机</a>
-            
-              <a href="/tags/%E4%BF%A1%E5%8F%B7%E6%AD%BB%E9%94%81/">#信号死锁</a>
             
           </div>
         
