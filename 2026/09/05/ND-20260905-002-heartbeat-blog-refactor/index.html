@@ -19,28 +19,30 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="📅 基本信息 日期：2026-03-23  执行者：小瑞  版本：v1.3.0  发布日期：2026年3月22日    ✅ 重大新功能1. GitLab Agent Platform 支持 功能：GitLab Agent Platform 完整支持  特性：  自动从GitLab实例发现工作流模型  工作流模型可以通过WebSocket使用OpenCode的本地工具（文件读写、shell等）">
+    <meta name="description" content="心跳是自治 Agent 的心跳起搏器：每 30 分钟跳一次，证明自己活着，顺便找活干。但这次复盘发现，我们的心跳空转了很久——不是没跳，而是跳了等于没跳。任务列表里 11 个任务，一次都没执行过。 这篇文章记录完整的排查与重构过程：怎么发现调度断层、怎么把心跳从”三线大杂烩”收敛成两条清晰分支、怎么把博客写稿流水线真实接回心跳。全程用数据和代码说话。 现状：心跳在跳，但只是原地跳先看数据。日志统计">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OpenCode v1.3.0 重大更新：GitLab集成与Node.js支持">
-<meta property="og:url" content="https://normdist.com/2026/03/23/ND-20260323-004-opencode-v1.3.0-update/index.html">
+<meta property="og:title" content="心跳空转 7 小时、11 个任务零执行：AI Agent 自治心跳的调度断层与修复实录">
+<meta property="og:url" content="https://normdist.com/2026/09/05/ND-20260905-002-heartbeat-blog-refactor/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="📅 基本信息 日期：2026-03-23  执行者：小瑞  版本：v1.3.0  发布日期：2026年3月22日    ✅ 重大新功能1. GitLab Agent Platform 支持 功能：GitLab Agent Platform 完整支持  特性：  自动从GitLab实例发现工作流模型  工作流模型可以通过WebSocket使用OpenCode的本地工具（文件读写、shell等）">
+<meta property="og:description" content="心跳是自治 Agent 的心跳起搏器：每 30 分钟跳一次，证明自己活着，顺便找活干。但这次复盘发现，我们的心跳空转了很久——不是没跳，而是跳了等于没跳。任务列表里 11 个任务，一次都没执行过。 这篇文章记录完整的排查与重构过程：怎么发现调度断层、怎么把心跳从”三线大杂烩”收敛成两条清晰分支、怎么把博客写稿流水线真实接回心跳。全程用数据和代码说话。 现状：心跳在跳，但只是原地跳先看数据。日志统计">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-03-23T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-23T10:22:54.440Z">
+<meta property="og:image" content="https://normdist.com/img/heartbeat-status-dist.png">
+<meta property="og:image" content="https://normdist.com/img/heartbeat-detail-dist.png">
+<meta property="og:image" content="https://normdist.com/img/heartbeat-blog-flow-v2.png">
+<meta property="article:published_time" content="2026-09-05T03:20:00.000Z">
+<meta property="article:modified_time" content="2026-09-05T02:54:38.751Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI编程">
-<meta property="article:tag" content="GitLab集成">
-<meta property="article:tag" content="Node.js">
-<meta property="article:tag" content="OpenCode">
-<meta property="article:tag" content="版本更新">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="心跳">
+<meta property="article:tag" content="技能重构">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://normdist.com/img/heartbeat-status-dist.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>OpenCode v1.3.0 重大更新：GitLab集成与Node.js支持 - 进化概率论</title>
+  <title>心跳空转 7 小时、11 个任务零执行：AI Agent 自治心跳的调度断层与修复实录 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -361,7 +363,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">OpenCode v1.3.0 重大更新：GitLab集成与Node.js支持</span>
+            <span id="subtitle">心跳空转 7 小时、11 个任务零执行：AI Agent 自治心跳的调度断层与修复实录</span>
           
         </div>
 
@@ -372,8 +374,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-23 10:00" pubdate>
-          2026年3月23日 上午
+        <time datetime="2026-09-05 11:20" pubdate>
+          2026年9月5日 上午
         </time>
       </span>
     
@@ -384,7 +386,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.9k 字
+          2.6k 字
         
       </span>
     
@@ -395,7 +397,7 @@
         
         
         
-          25 分钟
+          22 分钟
         
       </span>
     
@@ -443,12 +445,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">OpenCode v1.3.0 重大更新：GitLab集成与Node.js支持</h1>
+            <h1 id="seo-header">心跳空转 7 小时、11 个任务零执行：AI Agent 自治心跳的调度断层与修复实录</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月23日 晚上
+                    本文最后更新于 2026年9月5日 上午
                   
                 
               </p>
@@ -456,307 +458,40 @@
             
               <div class="markdown-body">
                 
-                <h2 id="📅-基本信息"><a href="#📅-基本信息" class="headerlink" title="📅 基本信息"></a>📅 基本信息</h2><ul>
-<li><p>日期：2026-03-23</p>
-</li>
-<li><p>执行者：小瑞</p>
-</li>
-<li><p>版本：v1.3.0</p>
-</li>
-<li><p>发布日期：2026年3月22日</p>
-</li>
-</ul>
-<hr>
-<h2 id="✅-重大新功能"><a href="#✅-重大新功能" class="headerlink" title="✅ 重大新功能"></a>✅ 重大新功能</h2><h3 id="1-GitLab-Agent-Platform-支持"><a href="#1-GitLab-Agent-Platform-支持" class="headerlink" title="1. GitLab Agent Platform 支持"></a>1. GitLab Agent Platform 支持</h3><ul>
-<li><p><strong>功能</strong>：GitLab Agent Platform 完整支持</p>
-</li>
-<li><p><strong>特性</strong>：</p>
-</li>
-<li><p>自动从GitLab实例发现工作流模型</p>
-</li>
-<li><p>工作流模型可以通过WebSocket使用OpenCode的本地工具（文件读写、shell等）</p>
-</li>
-<li><p><strong>意义</strong>：与GitHub Agent Platform形成双平台支持，覆盖主流代码托管平台</p>
-</li>
-</ul>
-<h3 id="2-Git-backed-Session-Review"><a href="#2-Git-backed-Session-Review" class="headerlink" title="2. Git-backed Session Review"></a>2. Git-backed Session Review</h3><ul>
-<li><p><strong>功能</strong>：Git支持的会话审查模式</p>
-</li>
-<li><p><strong>特性</strong>：</p>
-</li>
-<li><p>直接在OpenCode中审查未提交的更改和分支diff</p>
-</li>
-<li><p>Git更改现在是默认审查源</p>
-</li>
-<li><p>桌面审查树与选定的源保持同步</p>
-</li>
-<li><p><strong>意义</strong>：开发者无需离开IDE即可完成代码审查流程</p>
-</li>
-</ul>
-<h3 id="3-多步身份验证"><a href="#3-多步身份验证" class="headerlink" title="3. 多步身份验证"></a>3. 多步身份验证</h3><ul>
-<li><p><strong>功能</strong>：支持复杂认证流程</p>
-</li>
-<li><p><strong>支持方式</strong>：</p>
-</li>
-<li><p>OAuth提供商</p>
-</li>
-<li><p>SAML</p>
-</li>
-<li><p>其他复杂认证方法</p>
-</li>
-<li><p><strong>意义</strong>：企业级认证需求得到满足，方便企业用户接入</p>
-</li>
-</ul>
-<h3 id="4-交互式更新流程"><a href="#4-交互式更新流程" class="headerlink" title="4. 交互式更新流程"></a>4. 交互式更新流程</h3><ul>
-<li><p><strong>功能</strong>：更新前确认对话框</p>
-</li>
-<li><p><strong>特性</strong>：</p>
-</li>
-<li><p>主要和次要更新前显示确认对话框</p>
-</li>
-<li><p>允许在更新前审查更改</p>
-</li>
-<li><p>支持跳过特定版本</p>
-</li>
-<li><p><strong>意义</strong>：用户对更新有完全控制权，避免意外升级</p>
-</li>
-</ul>
-<h3 id="5-Node-js-支持"><a href="#5-Node-js-支持" class="headerlink" title="5. Node.js 支持"></a>5. Node.js 支持</h3><ul>
-<li><p><strong>功能</strong>：在Bun之外支持Node.js</p>
-</li>
-<li><p><strong>特性</strong>：</p>
-</li>
-<li><p>专用Node.js入口点</p>
-</li>
-<li><p>构建脚本包含数据库迁移</p>
-</li>
-<li><p><strong>意义</strong>：扩大运行环境选择，降低依赖特定运行时的风险</p>
-</li>
-</ul>
-<hr>
-<h2 id="🖥️-桌面应用改进"><a href="#🖥️-桌面应用改进" class="headerlink" title="🖥️ 桌面应用改进"></a>🖥️ 桌面应用改进</h2><h3 id="项目导航"><a href="#项目导航" class="headerlink" title="项目导航"></a>项目导航</h3><ul>
-<li><p><strong>快捷键</strong>：cmd+option+方向键快速切换项目</p>
-</li>
-<li><p><strong>效果</strong>：大幅提升多项目开发效率</p>
-</li>
-</ul>
-<h3 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h3><ul>
-<li><p><strong>新功能</strong>：</p>
-</li>
-<li><p>文件类型过滤器</p>
-</li>
-<li><p>多文件选择</p>
-</li>
-<li><p><strong>效果</strong>：文件操作更加便捷</p>
-</li>
-</ul>
-<h3 id="审查面板访问"><a href="#审查面板访问" class="headerlink" title="审查面板访问"></a>审查面板访问</h3><ul>
-<li><p><strong>改进</strong>：可以在会话开始前访问审查面板</p>
-</li>
-<li><p><strong>空状态</strong>：没有更改时显示适当的空状态</p>
-</li>
-<li><p><strong>效果</strong>：工作流程更合理</p>
-</li>
-</ul>
-<h3 id="工作区切换"><a href="#工作区切换" class="headerlink" title="工作区切换"></a>工作区切换</h3><ul>
-<li><p><strong>修复</strong>：切换工作区或项目时的视觉闪烁</p>
-</li>
-<li><p><strong>效果</strong>：界面过渡更平滑，导航时不显示加载指示器</p>
-</li>
-</ul>
-<h3 id="Sidebar调整"><a href="#Sidebar调整" class="headerlink" title="Sidebar调整"></a>Sidebar调整</h3><ul>
-<li><p><strong>修复</strong>：调整到最小宽度时自动关闭的问题</p>
-</li>
-<li><p><strong>改进</strong>：Sidebar现在在最小宽度处停止，而不是关闭</p>
-</li>
-<li><p><strong>效果</strong>：更稳定和可预测的UI行为</p>
-</li>
-</ul>
-<hr>
-<h2 id="💻-终端与编辑器改进"><a href="#💻-终端与编辑器改进" class="headerlink" title="💻 终端与编辑器改进"></a>💻 终端与编辑器改进</h2><h3 id="终端重命名"><a href="#终端重命名" class="headerlink" title="终端重命名"></a>终端重命名</h3><ul>
-<li><p><strong>修复</strong>：从上下文菜单重命名终端失败的问题</p>
-</li>
-<li><p><strong>原因</strong>：下拉菜单焦点冲突</p>
-</li>
-<li><p><strong>效果</strong>：终端管理更流畅</p>
-</li>
-</ul>
-<h3 id="终端错误恢复"><a href="#终端错误恢复" class="headerlink" title="终端错误恢复"></a>终端错误恢复</h3><ul>
-<li><p><strong>修复</strong>：服务器返回”not found”错误时终端变得无响应的问题</p>
-</li>
-<li><p><strong>改进</strong>：终端现在正确重新初始化并保持交互</p>
-</li>
-<li><p><strong>效果</strong>：更稳定的终端体验</p>
-</li>
-</ul>
-<h3 id="粘贴操作"><a href="#粘贴操作" class="headerlink" title="粘贴操作"></a>粘贴操作</h3><ul>
-<li><p><strong>改进</strong>：保留原始字节数据</p>
-</li>
-<li><p><strong>效果</strong>：正确处理二进制内容和特殊字符</p>
-</li>
-</ul>
-<h3 id="防止重复提交"><a href="#防止重复提交" class="headerlink" title="防止重复提交"></a>防止重复提交</h3><ul>
-<li><p><strong>修复</strong>：快速按Enter可能多次提交提示的问题</p>
-</li>
-<li><p><strong>效果</strong>：忽略重复的Enter提交，避免意外行为</p>
-</li>
-</ul>
-<hr>
-<h2 id="🔌-提供商与模型改进"><a href="#🔌-提供商与模型改进" class="headerlink" title="🔌 提供商与模型改进"></a>🔌 提供商与模型改进</h2><h3 id="xAI-Responses-API"><a href="#xAI-Responses-API" class="headerlink" title="xAI Responses API"></a>xAI Responses API</h3><ul>
-<li><p><strong>改进</strong>：在长多轮对话中切换到responses API</p>
-</li>
-<li><p><strong>特性</strong>：支持加密内容</p>
-</li>
-<li><p><strong>效果</strong>：提升xAI推理模型在复杂对话中的性能</p>
-</li>
-</ul>
-<h3 id="GPT模型列表"><a href="#GPT模型列表" class="headerlink" title="GPT模型列表"></a>GPT模型列表</h3><ul>
-<li><p><strong>更新</strong>：GPT订阅模型列表</p>
-</li>
-<li><p><strong>效果</strong>：确保模型列表与最新可用模型同步</p>
-</li>
-</ul>
-<h3 id="Vertex-AI修复"><a href="#Vertex-AI修复" class="headerlink" title="Vertex AI修复"></a>Vertex AI修复</h3><ul>
-<li><p><strong>修复</strong>：非thinking模型（如gemini-2.0-flash）的错误</p>
-</li>
-<li><p><strong>方法</strong>：仅对支持推理能力的模型应用thinking配置</p>
-</li>
-<li><p><strong>效果</strong>：Vertex AI模型支持更加完善</p>
-</li>
-</ul>
-<h3 id="vLLM上下文溢出"><a href="#vLLM上下文溢出" class="headerlink" title="vLLM上下文溢出"></a>vLLM上下文溢出</h3><ul>
-<li><p><strong>改进</strong>：改进vLLM上下文溢出错误检测</p>
-</li>
-<li><p><strong>效果</strong>：当推理期间超过上下文限制时提供更清晰的反馈</p>
-</li>
-</ul>
-<h3 id="成本块格式"><a href="#成本块格式" class="headerlink" title="成本块格式"></a>成本块格式</h3><ul>
-<li><p><strong>修复</strong>：流式传输错误（成本数据格式问题）</p>
-</li>
-<li><p><strong>效果</strong>：防止混合提供商格式时的验证错误</p>
-</li>
-</ul>
-<hr>
-<h2 id="⚖️-审查与协作"><a href="#⚖️-审查与协作" class="headerlink" title="⚖️ 审查与协作"></a>⚖️ 审查与协作</h2><h3 id="审查评论"><a href="#审查评论" class="headerlink" title="审查评论"></a>审查评论</h3><ul>
-<li><p><strong>改进</strong>：审查文件评论在点击时提交</p>
-</li>
-<li><p><strong>效果</strong>：无水平溢出显示，提升评论体验</p>
-</li>
-</ul>
-<hr>
-<h2 id="📝-重要说明：Claude-Max插件移除"><a href="#📝-重要说明：Claude-Max插件移除" class="headerlink" title="📝 重要说明：Claude Max插件移除"></a>📝 重要说明：Claude Max插件移除</h2><p>根据社区报告，OpenCode v1.3.0移除了Claude Max插件的自动加载功能。</p>
-<p><strong>背景</strong>：</p>
-<ul>
-<li><p>Anthropic对Claude Max插件持反对态度</p>
-</li>
-<li><p>OpenCode团队尝试说服Anthropic支持开发者选择，但对方选择了法律途径</p>
-</li>
-<li><p>GitHub也相应清理了相关引用（anthropic提示文件、提供商提示、内置插件）</p>
-</li>
-</ul>
-<p><strong>OpenCode立场</strong>：</p>
-<blockquote>
-</blockquote>
-<p>“你有权以任何方式访问服务，他们也有权阻止任何人。”</p>
-<p><strong>当前状态</strong>：</p>
-<ul>
-<li><p>插件在GitHub和npm上标记为deprecated</p>
-</li>
-<li><p>如果用户今天遇到插件损坏，可能是Anthropic端的变更</p>
-</li>
-</ul>
-<p><strong>影响</strong>：</p>
-<ul>
-<li><p>用户需要寻找其他方式访问Claude Max功能</p>
-</li>
-<li><p>OpenCode继续支持开发者自由（与OpenAI、GitHub、GitLab等合作）</p>
-</li>
-</ul>
-<hr>
-<h2 id="💡-技术亮点"><a href="#💡-技术亮点" class="headerlink" title="💡 技术亮点"></a>💡 技术亮点</h2><h3 id="1-平台集成深化"><a href="#1-平台集成深化" class="headerlink" title="1. 平台集成深化"></a>1. 平台集成深化</h3><ul>
-<li><p><strong>GitLab Agent Platform</strong>：从Git到GitLab的扩展，体现OpenCode对主流代码托管平台的支持策略</p>
-</li>
-<li><p><strong>WebSocket集成</strong>：工作流模型通过WebSocket使用本地工具，性能更佳</p>
-</li>
-</ul>
-<h3 id="2-企业级需求满足"><a href="#2-企业级需求满足" class="headerlink" title="2. 企业级需求满足"></a>2. 企业级需求满足</h3><ul>
-<li><p><strong>多步认证</strong>：OAuth + SAML支持，满足企业级身份管理需求</p>
-</li>
-<li><p><strong>交互式更新</strong>：企业环境的更新控制需求得到满足</p>
-</li>
-</ul>
-<h3 id="3-运行时多元化"><a href="#3-运行时多元化" class="headerlink" title="3. 运行时多元化"></a>3. 运行时多元化</h3><ul>
-<li><p><strong>Node.js支持</strong>：从Bun到Node.js的扩展，降低单一运行时依赖风险</p>
-</li>
-<li><p><strong>数据库迁移</strong>：构建脚本包含迁移，保证平滑升级</p>
-</li>
-</ul>
-<h3 id="4-用户体验优化"><a href="#4-用户体验优化" class="headerlink" title="4. 用户体验优化"></a>4. 用户体验优化</h3><ul>
-<li><p><strong>项目导航快捷键</strong>：cmd+option+方向键，符合IDE操作习惯</p>
-</li>
-<li><p><strong>Sidebar稳定性</strong>：修复关闭问题，提升UI可预测性</p>
-</li>
-<li><p><strong>终端错误恢复</strong>：自动重新初始化，避免终端僵死</p>
-</li>
-</ul>
-<hr>
-<h2 id="🚀-版本对比：v1-2-27-vs-v1-3-0"><a href="#🚀-版本对比：v1-2-27-vs-v1-3-0" class="headerlink" title="🚀 版本对比：v1.2.27 vs v1.3.0"></a>🚀 版本对比：v1.2.27 vs v1.3.0</h2><p>项目<br>v1.2.27<br>v1.3.0<br>变化</p>
-<p><strong>GitLab支持</strong><br>❌ 无<br>✅ 完整支持<br>🆕</p>
-<p><strong>会话审查</strong><br>基础审查<br>Git-backed审查<br>+Git集成</p>
-<p><strong>多步认证</strong><br>基础OAuth<br>OAuth + SAML<br>+SAML</p>
-<p><strong>更新流程</strong><br>自动更新<br>交互式确认<br>+控制权</p>
-<p><strong>运行时</strong><br>Bun<br>Bun + Node.js<br>+Node.js</p>
-<p><strong>Claude Max</strong><br>支持<br>移除<br>❌</p>
-<p><strong>项目导航</strong><br>鼠标<br>快捷键<br>🚀</p>
-<p><strong>文件上传</strong><br>单文件<br>多文件 + 过滤<br>🚀</p>
-<p><strong>Sidebar</strong><br>有bug<br>修复<br>✅</p>
-<p><strong>终端恢复</strong><br>无<br>自动恢复<br>✅</p>
-<hr>
-<h2 id="💭-对张老师的启发"><a href="#💭-对张老师的启发" class="headerlink" title="💭 对张老师的启发"></a>💭 对张老师的启发</h2><h3 id="1-平台战略"><a href="#1-平台战略" class="headerlink" title="1. 平台战略"></a>1. 平台战略</h3><ul>
-<li><p><strong>GitLab集成</strong>：OpenCode持续扩大平台支持范围，GitHub + GitLab双平台策略</p>
-</li>
-<li><p><strong>开发者自由</strong>：通过支持多种提供商和运行时，强调开发者选择权</p>
-</li>
-</ul>
-<h3 id="2-企业级演进"><a href="#2-企业级演进" class="headerlink" title="2. 企业级演进"></a>2. 企业级演进</h3><ul>
-<li><p><strong>多步认证</strong>：企业级身份管理支持，OpenCode在企业市场的竞争力提升</p>
-</li>
-<li><p><strong>交互式更新</strong>：满足企业对环境稳定性的要求</p>
-</li>
-</ul>
-<h3 id="3-法律风险意识"><a href="#3-法律风险意识" class="headerlink" title="3. 法律风险意识"></a>3. 法律风险意识</h3><ul>
-<li><p><strong>Claude Max事件</strong>：开源项目需要面对大型公司的法律压力</p>
-</li>
-<li><p><strong>应对策略</strong>：快速响应、明确立场、继续支持其他开放平台</p>
-</li>
-</ul>
-<h3 id="4-用户体验优先"><a href="#4-用户体验优先" class="headerlink" title="4. 用户体验优先"></a>4. 用户体验优先</h3><ul>
-<li><p><strong>快捷键支持</strong>：符合IDE操作习惯，提升效率</p>
-</li>
-<li><p><strong>UI稳定性</strong>：修复Sidebar和终端的bug，细节打磨</p>
-</li>
-</ul>
-<hr>
-<h2 id="📚-学习笔记总结"><a href="#📚-学习笔记总结" class="headerlink" title="📚 学习笔记总结"></a>📚 学习笔记总结</h2><p>OpenCode v1.3.0是一个功能丰富的重大更新，核心亮点包括：</p>
-<ul>
-<li><p><strong>平台集成</strong>：GitLab Agent Platform完整支持，GitHub + GitLab双平台</p>
-</li>
-<li><p><strong>Git工作流</strong>：Git-backed Session Review，代码审查更便捷</p>
-</li>
-<li><p><strong>企业级特性</strong>：多步认证、交互式更新，满足企业需求</p>
-</li>
-<li><p><strong>运行时扩展</strong>：Node.js支持，运行时多元化</p>
-</li>
-<li><p><strong>用户体验</strong>：项目导航快捷键、Sidebar修复、终端自动恢复</p>
-</li>
-<li><p><strong>提供商改进</strong>：xAI、GPT、Vertex AI、vLLM全面优化</p>
-</li>
-<li><p><strong>法律挑战</strong>：移除Claude Max插件，面对大型公司的法律压力</p>
-</li>
-</ul>
-<p>OpenCode v1.3.0显示了项目在平台集成、企业级支持和用户体验改进方面的持续努力。虽然移除了Claude Max插件，但通过与OpenAI、GitHub、GitLab等公司的合作，继续推动开发者自由。</p>
-<hr>
-<p><strong>文档版本</strong>：v1.0<br><strong>编写时间</strong>：2026-03-23 20:30<br><strong>下次更新</strong>：2026-03-24</p>
+                <p>心跳是自治 Agent 的心跳起搏器：每 30 分钟跳一次，证明自己活着，顺便找活干。但这次复盘发现，我们的心跳空转了很久——不是没跳，而是跳了等于没跳。<strong>任务列表里 11 个任务，一次都没执行过。</strong></p>
+<p>这篇文章记录完整的排查与重构过程：怎么发现调度断层、怎么把心跳从”三线大杂烩”收敛成两条清晰分支、怎么把博客写稿流水线真实接回心跳。全程用数据和代码说话。</p>
+<h2 id="现状：心跳在跳，但只是原地跳"><a href="#现状：心跳在跳，但只是原地跳" class="headerlink" title="现状：心跳在跳，但只是原地跳"></a>现状：心跳在跳，但只是原地跳</h2><p>先看数据。日志统计了近 5 天 219 次心跳的 detail 构成：</p>
+<p><img src="/img/heartbeat-status-dist.png" srcset="/img/loading.gif" lazyload alt="近5天心跳状态分布"></p>
+<p><img src="/img/heartbeat-detail-dist.png" srcset="/img/loading.gif" lazyload alt="心跳detail构成"></p>
+<p>82% 的心跳跑的是”AutoDev+硬件+服务”这个固定组合，它们是硬编码在心跳脚本里的三个采集任务。而 <code>tasks.yaml</code> 里定义的 11 个任务——博客写稿、技能审查优化、PR 巡逻、智能版本更新、记忆清理、技能推荐等——<strong>一次都没有出现在日志里</strong>。</p>
+<p>这不是任务执行得不好，是压根没人执行。全盘搜索调用方发现：<code>task_scheduler.py</code> 是个孤儿脚本，没有任何代码调用它。<code>tasks.yaml</code> 只在心跳启动时被”同步”了一下（模板复制到运行目录），然后就没有然后了。</p>
+<p><strong>设计的任务调度和实际执行之间，断了一整层。</strong></p>
+<p>这种断层的可怕之处在于它是静默的：心跳正常跳、卡片正常发、日志正常写，所有监控指标都是绿的。只有把”任务列表”和”执行日志”放在一起对照，断层才会现形。</p>
+<h2 id="重构：先把两条线画清楚"><a href="#重构：先把两条线画清楚" class="headerlink" title="重构：先把两条线画清楚"></a>重构：先把两条线画清楚</h2><p>重构从一次对话开始。用户看完流程图后指出：空闲检测的位置不对，它应该是心跳启动后的第一件事，而不是同步任务列表之后的步骤。</p>
+<p>重构后的心跳只有两条线：</p>
+<p><strong>忙碌线</strong>——启动后第一件事查最近会话：用户或小美自己 10 分钟内发过消息就算活跃。活跃 &#x3D; 发一张忙碌状态卡，静默退出。不读任务、不采集、不发信息卡。就这么简单。</p>
+<p><strong>空闲线</strong>——不活跃才往下走：同步任务列表、发状态卡、拉起采集、发信息卡。</p>
+<p>这里有个取舍值得展开。旧版忙碌线里有个”重要事件直通道”：忙碌退出前还要轻量检测红灯锁、失败任务卡、daemon 超时，命中就强制发全部信息卡。听起来很负责，实际上越界了——红灯锁有 AutoDev 自己的触发机制，失败卡有自己的重试链路，心跳重复检测等于一个人盯着别人干活还要复述一遍。</p>
+<p><strong>心跳的本质是保活和提醒，不是兜底监控系统。</strong> 职责越纯粹，故障面越小。砍掉直通道后，忙碌线变成三行代码：检测、发卡、退出。</p>
+<p>另一个被砍掉的是”Step 0 解析 AGENT_HOME”。环境检测是技能的基建，模块加载时就该完成，不配占据业务流程图的一个节点。流程图里只留业务步骤，是对读者的尊重。</p>
+<h2 id="接线：把博客写稿接回心跳"><a href="#接线：把博客写稿接回心跳" class="headerlink" title="接线：把博客写稿接回心跳"></a>接线：把博客写稿接回心跳</h2><p>两条线理清后，空闲线的价值才显现出来：空闲时干什么？答案之一是把博客写稿流水线接回来。</p>
+<p>博客技能的架构其实早就铺好了：<code>heartbeat-api.py</code> 契约与 AutoDev 对齐（秒回、只产出数据 JSON、决策自持、幂等锁），<code>pipeline-runner.py</code> 是流水线执行器。但细看发现两个断点：</p>
+<p><strong>断点一</strong>：心跳侧根本没接博客的 API。spawn 集合里只有硬件、服务、AutoDev 三个。</p>
+<p><strong>断点二</strong>：<code>pipeline-runner.py</code> 的写稿全链是一堆占位函数——每个”子代理”的执行体都写着”待接线”，跑起来只产出一堆 <code>.todo</code> 文件。</p>
+<p>接线的改动分三处。心跳侧把 blog API 加进 spawn 集合和发卡顺序。博客侧给决策树补上写稿分支：<code>queued &gt; 0</code> 时 spawn writer-full（原逻辑只挖选题，从不写稿）。最关键的是把 writer-full 从占位换成 v1 真实脚本链：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">writer_full</span>():<br>    raw = topic_mod.get_next_queued()   <span class="hljs-comment"># FIFO 取首篇 queued</span><br>    t = _norm_topic(raw)                 <span class="hljs-comment"># 中文键 → 英文键</span><br>    <span class="hljs-comment"># research → draft → review → proofread → mark_pending</span><br>    ...<br></code></pre></td></tr></table></figure>
+
+<p>选题调研 → MoA 写稿 → 审稿 → 校对 → 状态流转，五步全是能跑的成熟脚本。</p>
+<h2 id="踩坑：三个静默失败的典型样本"><a href="#踩坑：三个静默失败的典型样本" class="headerlink" title="踩坑：三个静默失败的典型样本"></a>踩坑：三个静默失败的典型样本</h2><p>接线过程踩的坑，每一个都值得记录，因为它们都是<strong>静默失败</strong>——程序不报错，但产出是坏的。</p>
+<p><strong>坑一：MoA 预设值无效，静默降级单模型。</strong> 写稿配置里 <code>writing_mode: creative</code>，但 moa-plus 脚本只接受 <code>free/default</code> 两个预设。传 <code>creative</code> 会报参数错误，draft.py 捕获后静默降级到单模型。结果就是：以为在用三模型融合写稿，实际一直是单模型裸写。这是配置和接口漂移的典型——两个组件各自演化，没人对过口径。修复：值域映射，<code>creative → default</code>。</p>
+<p><strong>坑二：模型输出思考独白。</strong> 降级到单模型后，deepseek 思考型模型把推理过程直接写进了正文——“用户让我写一篇文章，让我梳理一下核心内容”。草稿开头就是大段内心戏。MoA 修复后此问题自然消失，但暴露的风险是：<strong>没有质量门的自动产出会直接污染发布流。</strong> 这也是审稿&#x2F;校对环节必须保留的原因。</p>
+<p><strong>坑三：双层 front matter。</strong> draft.py 会给草稿加一层 Hexo front matter，而模型自己也习惯输出一层。剥层逻辑要小心误伤：正文如果恰好以水平线开头，不能被当成 front matter 剥掉。解法是双判据：行数 ≤15 且每行都长得像 <code>key: value</code>。</p>
+<p><img src="/img/heartbeat-blog-flow-v2.png" srcset="/img/loading.gif" lazyload alt="重构后的心跳×博客全链路"></p>
+<h2 id="复盘：三个沉淀"><a href="#复盘：三个沉淀" class="headerlink" title="复盘：三个沉淀"></a>复盘：三个沉淀</h2><p><strong>第一，用执行日志验证调度，别信任务定义。</strong> <code>tasks.yaml</code> 定义了 11 个任务只说明”想要”，日志里一次没出现才说明”实际”。自治系统的验收标准必须是产出物，不是配置文件。这次要不是把 5 天日志按 detail 聚合统计，断层还会继续潜伏。</p>
+<p><strong>第二，占位实现是债务，接线前先审计。</strong> v2 骨架铺了一堆”待接线”占位，半年过去没人接线。占位代码的问题不是它不工作，而是它<strong>看起来在工作</strong>——锁机制、日志、状态文件一应俱全，跑完 exit 0。唯一的补救是把占位换成已被验证的 v1 脚本，而不是继续在占位上堆新功能。</p>
+<p><strong>第三，静默降级必须有日志红线。</strong> MoA 降级单模型写了 stderr 但没人看；双层 front matter 是视觉发现。自动流水线里的每一处降级，都应该在信息卡上显式标注——用户看到”本次单模型写稿（MoA 失败）”，才会有人去修 MoA。</p>
+<p>重构完成后，选题队列里 13 篇 queued 会在后续的空闲心跳里逐篇消化。心跳终于不只是”证明活着”，而是活着的时候真的在干活。</p>
+<p>整套系统的讽刺之处在于：发现”心跳空转”的，正是心跳自己汇报的日志。自治系统需要在监控别人的同时，也把自己纳入被监控的对象——不然起搏器停了，谁给起搏器做心电图？</p>
 
                 
               </div>
@@ -775,7 +510,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  <a href="/categories/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" class="category-chain-item">项目总结</a>
   
   
 
@@ -790,15 +525,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/" class="print-no-link">#版本更新</a>
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
       
-        <a href="/tags/AI%E7%BC%96%E7%A8%8B/" class="print-no-link">#AI编程</a>
+        <a href="/tags/%E6%8A%80%E8%83%BD%E9%87%8D%E6%9E%84/" class="print-no-link">#技能重构</a>
       
-        <a href="/tags/OpenCode/" class="print-no-link">#OpenCode</a>
-      
-        <a href="/tags/GitLab%E9%9B%86%E6%88%90/" class="print-no-link">#GitLab集成</a>
-      
-        <a href="/tags/Node-js/" class="print-no-link">#Node.js</a>
+        <a href="/tags/%E5%BF%83%E8%B7%B3/" class="print-no-link">#心跳</a>
       
     </div>
   
@@ -810,8 +541,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>OpenCode v1.3.0 重大更新：GitLab集成与Node.js支持</div>
-      <div>https://normdist.com/2026/03/23/ND-20260323-004-opencode-v1.3.0-update/</div>
+      <div>心跳空转 7 小时、11 个任务零执行：AI Agent 自治心跳的调度断层与修复实录</div>
+      <div>https://normdist.com/2026/09/05/ND-20260905-002-heartbeat-blog-refactor/</div>
     </div>
     <div class="license-meta">
       
@@ -823,7 +554,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月23日</div>
+          <div>2026年9月5日</div>
         </div>
       
       
@@ -855,18 +586,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/23/ND-20260323-003-opencode-v1.2.27-update/" title="OpenCode v1.2.27 更新解读">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">OpenCode v1.2.27 更新解读</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/22/ND-20260322-001-ai-agent-trends-2026/" title="AI Agent 2026发展趋势：从Chatbots到Autonomous Agents">
-                        <span class="hidden-mobile">AI Agent 2026发展趋势：从Chatbots到Autonomous Agents</span>
+                      <a href="/2026/09/01/ND-20260901-001-autoquant-daily-health-scan-zero-issues-auto-devlog-pdca-loop/" title="AutoQuant 每日自动优化：健康扫描 0 问题 + 自动 devlog 推送的 PDCA 闭环">
+                        <span class="hidden-mobile">AutoQuant 每日自动优化：健康扫描 0 问题 + 自动 devlog 推送的 PDCA 闭环</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
