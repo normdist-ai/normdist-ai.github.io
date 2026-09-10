@@ -19,28 +19,26 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="背景用 AI 生成人物写真时，最头疼的问题之一是：脸像了，但表情僵了。 我用 ComfyUI + FaceID（IP-Adapter FaceID Plus V2）生成韩梅梅的虚拟写真。FaceID 的核心能力是保持面部一致性——不管换什么场景、穿什么衣服，脸都是同一个人。但代价也很明显：表情被「锁死」了。默认输出永远是平静、中性的表情，笑容若有若无。 这篇文章分享我如何突破这个限制，让虚拟人物真">
+    <meta name="description" content="上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复凌晨巡检大周期数据通道，四个标的三个秒回，只有一个卡了 30 秒超时。查完数据才发现：不是网络慢，是 000001 这个代码被同时当成了上证指数和平安银行——同一个 key，两个完全不同的标的。 前置条件 AutoQuant (AQ) + ReShare 本地数据服务（v0.25.4，端口 8200） 数据链路：AQ">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hermes Agent Gateway 多实例配置实践">
-<meta property="og:url" content="https://normdist.com/2026/05/20/ND-20260520-001-ai-portrait-expression-control/index.html">
+<meta property="og:title" content="上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复">
+<meta property="og:url" content="https://normdist.com/2026/09/11/ND-20260911-001-000001-symbol-collision-shanghai-index-vs-pingan-bank/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="背景用 AI 生成人物写真时，最头疼的问题之一是：脸像了，但表情僵了。 我用 ComfyUI + FaceID（IP-Adapter FaceID Plus V2）生成韩梅梅的虚拟写真。FaceID 的核心能力是保持面部一致性——不管换什么场景、穿什么衣服，脸都是同一个人。但代价也很明显：表情被「锁死」了。默认输出永远是平静、中性的表情，笑容若有若无。 这篇文章分享我如何突破这个限制，让虚拟人物真">
+<meta property="og:description" content="上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复凌晨巡检大周期数据通道，四个标的三个秒回，只有一个卡了 30 秒超时。查完数据才发现：不是网络慢，是 000001 这个代码被同时当成了上证指数和平安银行——同一个 key，两个完全不同的标的。 前置条件 AutoQuant (AQ) + ReShare 本地数据服务（v0.25.4，端口 8200） 数据链路：AQ">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-20T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-23T10:22:54.445Z">
+<meta property="article:published_time" content="2026-09-11T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-10T20:01:13.454Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI写真">
-<meta property="article:tag" content="ComfyUI">
-<meta property="article:tag" content="FaceID">
-<meta property="article:tag" content="Stable Diffusion">
-<meta property="article:tag" content="表情控制">
+<meta property="article:tag" content="bug修复">
+<meta property="article:tag" content="数据管道">
+<meta property="article:tag" content="符号映射">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Hermes Agent Gateway 多实例配置实践 - 进化概率论</title>
+  <title>上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -361,7 +359,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Hermes Agent Gateway 多实例配置实践</span>
+            <span id="subtitle">上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复</span>
           
         </div>
 
@@ -372,8 +370,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-20 10:00" pubdate>
-          2026年5月20日 上午
+        <time datetime="2026-09-11 09:00" pubdate>
+          2026年9月11日 上午
         </time>
       </span>
     
@@ -384,7 +382,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2k 字
+          3.5k 字
         
       </span>
     
@@ -395,7 +393,7 @@
         
         
         
-          17 分钟
+          30 分钟
         
       </span>
     
@@ -443,12 +441,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Hermes Agent Gateway 多实例配置实践</h1>
+            <h1 id="seo-header">上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月23日 晚上
+                    本文最后更新于 2026年9月11日 凌晨
                   
                 
               </p>
@@ -456,54 +454,121 @@
             
               <div class="markdown-body">
                 
-                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>用 AI 生成人物写真时，最头疼的问题之一是：<strong>脸像了，但表情僵了</strong>。</p>
-<p>我用 ComfyUI + FaceID（IP-Adapter FaceID Plus V2）生成韩梅梅的虚拟写真。FaceID 的核心能力是<strong>保持面部一致性</strong>——不管换什么场景、穿什么衣服，脸都是同一个人。但代价也很明显：<strong>表情被「锁死」了</strong>。默认输出永远是平静、中性的表情，笑容若有若无。</p>
-<p>这篇文章分享我如何突破这个限制，让虚拟人物真正「笑」起来。</p>
-<h2 id="核心问题"><a href="#核心问题" class="headerlink" title="核心问题"></a>核心问题</h2><p>FaceID 的工作原理是通过面部嵌入（face embedding）约束生成结果。权重越高，面部越像参考图——但同时也越接近参考图的表情。参考图如果是平静脸，生成的就永远是平静脸。</p>
-<p><strong>矛盾点</strong>：我们需要同时满足两个目标——</p>
-<ul>
-<li><p><strong>保持面部特征</strong>（像这个人）</p>
-</li>
-<li><p><strong>改变表情</strong>（让她笑）</p>
-</li>
+                <h1 id="上证指数与平安银行被同一个代码混淆：000001-符号映射-bug-的排查与修复"><a href="#上证指数与平安银行被同一个代码混淆：000001-符号映射-bug-的排查与修复" class="headerlink" title="上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复"></a>上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复</h1><p>凌晨巡检大周期数据通道，四个标的三个秒回，只有一个卡了 30 秒超时。查完数据才发现：不是网络慢，是 <code>000001</code> 这个代码被同时当成了上证指数和平安银行——同一个 key，两个完全不同的标的。</p>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><ul>
+<li>AutoQuant (AQ) + ReShare 本地数据服务（v0.25.4，端口 8200）</li>
+<li>数据链路：AQ → ReShare → akshare &#x2F; yfinance</li>
+<li>大周期查询范围：2021-2026</li>
 </ul>
-<p>这两个目标本质上是冲突的。面部嵌入既包含身份数据也包含表情数据，FaceID 无法只保留前者而丢弃后者。</p>
-<h2 id="解决方案：FaceDetailer-表情注入"><a href="#解决方案：FaceDetailer-表情注入" class="headerlink" title="解决方案：FaceDetailer + 表情注入"></a>解决方案：FaceDetailer + 表情注入</h2><p>我的方案是<strong>两阶段生成</strong>：</p>
-<p>1<br>2<br>3</p>
-<p>第一阶段：FaceID 生成（保持身份 + 尝试注入表情）<br>    ↓<br>第二阶段：FaceDetailer 精修（独立提示词强化表情）</p>
-<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs clean"><br>关键在于第二阶段。FaceDetailer 是 Impact-Pack 提供的节点，它会：<br><br>- 用 bbox 模型检测脸部区域<br><br>- 在检测到的脸部区域做局部重绘（inpainting）<br><br>- **使用独立的 CLIP 提示词**控制重绘内容<br><br>这个「独立的 CLIP 提示词」就是突破口。<br><br>### 具体实现<br><br>#### 第一步：FaceID 参数调整<br><br>当目标是「笑容」时，适当降低 FaceID 权重，给表情留出空间：<br><br>```python<br><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><br># 平时（无表情要求）<br>faceid = &#123;<span class="hljs-string">&quot;weight&quot;</span>: <span class="hljs-number">1.0</span>, <span class="hljs-string">&quot;weight_faceidv2&quot;</span>: <span class="hljs-number">0.7</span>, <span class="hljs-string">&quot;end_at&quot;</span>: <span class="hljs-number">0.9</span>&#125;<br><br># 需要笑容时（降低权重，释放表情自由度）<br>faceid = &#123;<span class="hljs-string">&quot;weight&quot;</span>: <span class="hljs-number">0.8</span>, <span class="hljs-string">&quot;weight_faceidv2&quot;</span>: <span class="hljs-number">0.55</span>, <span class="hljs-string">&quot;end_at&quot;</span>: <span class="hljs-number">0.8</span>&#125;<br><br></code></pre></td></tr></table></figure>
+<h2 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h2><p>2026-09-10 巡检时对 ReShare 做大周期查询测试，同一批标的只有 <code>000001.SH</code> 异常：</p>
+<table>
+<thead>
+<tr>
+<th>标的</th>
+<th>HTTP</th>
+<th>耗时</th>
+<th>记录数</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>000858.SZ</td>
+<td>200</td>
+<td>0.05s</td>
+<td>1379</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>600036.SH</td>
+<td>200</td>
+<td>3.2s</td>
+<td>3200+</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>510300.SH</td>
+<td>200</td>
+<td>0.05s</td>
+<td>893</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>000001.SH</td>
+<td>000</td>
+<td>30s</td>
+<td>-</td>
+<td>❌ 超时</td>
+</tr>
+</tbody></table>
+<p>更严重的是数据本身错了：<code>000001.SH</code> 存的是<strong>上证指数（3951 点）</strong>，不是<strong>平安银行（11.7 元）</strong>。查询历史数据时触发了指数接口，指数接口超时，用户拿到的是指数点位冒充的股价。</p>
+<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="第一步：确认不是网络问题"><a href="#第一步：确认不是网络问题" class="headerlink" title="第一步：确认不是网络问题"></a>第一步：确认不是网络问题</h3><p>其余三个标的毫秒级返回，只有 000001 超时——先排除链路问题，直接怀疑符号处理分支。</p>
+<h3 id="第二步：定位到-SH-INDICES-硬编码"><a href="#第二步：定位到-SH-INDICES-硬编码" class="headerlink" title="第二步：定位到 _SH_INDICES 硬编码"></a>第二步：定位到 <code>_SH_INDICES</code> 硬编码</h3><p>ReShare 的 akshare 数据源里维护了一个”已知上证指数代码”集合（<code>backend/src/services/sources_new/klines/akshare.py:75</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">_SH_INDICES = &#123;<span class="hljs-string">&quot;000001&quot;</span>, <span class="hljs-string">&quot;000016&quot;</span>, <span class="hljs-string">&quot;000300&quot;</span>, <span class="hljs-string">&quot;000905&quot;</span>, <span class="hljs-string">&quot;000852&quot;</span>,<br>               <span class="hljs-string">&quot;000010&quot;</span>, <span class="hljs-string">&quot;000688&quot;</span>, <span class="hljs-string">&quot;000985&quot;</span>&#125;<br></code></pre></td></tr></table></figure>
 
-<p>同时在主提示词中注入表情关键词：</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><br><span class="hljs-keyword">big </span>grin, wide toothy smile, laughing <span class="hljs-keyword">joyfully, </span><span class="hljs-keyword">showing </span>teeth,<br>a <span class="hljs-keyword">beautiful </span>young Chinese woman, ...<br><br></code></pre></td></tr></table></figure>
+<p>判断走指数分支的逻辑（<code>akshare.py:127</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_is_index</span>(<span class="hljs-params">self, pure_code: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:<br>    <span class="hljs-keyword">return</span> pure_code <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._SH_INDICES <span class="hljs-keyword">or</span> pure_code.startswith(<span class="hljs-string">&quot;399&quot;</span>)<br></code></pre></td></tr></table></figure>
 
-<p>这一步能产生「有笑容倾向」的基础图，但还不够明显——因为 FaceID 仍在约束。</p>
-<h4 id="第二步：FaceDetailer-表情强化"><a href="#第二步：FaceDetailer-表情强化" class="headerlink" title="第二步：FaceDetailer 表情强化"></a>第二步：FaceDetailer 表情强化</h4><p>这是关键一步。为 FaceDetailer 构建专用的表情提示词：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><br>fd_expression_prompt = (<br>    <span class="hljs-string">f&quot;(big grin, wide toothy smile, laughing joyfully, showing teeth:1.4), &quot;</span><br>    <span class="hljs-string">f&quot;beautiful detailed face, detailed eyes, &quot;</span><br>    <span class="hljs-string">f&quot;natural skin texture, perfect facial features, <span class="hljs-subst">&#123;prompt&#125;</span>&quot;</span><br>)<br><br></code></pre></td></tr></table></figure>
+<p><code>symbol_formatter.py</code> 同样维护了一份（<code>symbol_formatter.py:306-307</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">_SH_INDICES = &#123;<span class="hljs-string">&#x27;000001&#x27;</span>, <span class="hljs-string">&#x27;000016&#x27;</span>, <span class="hljs-string">&#x27;000300&#x27;</span>, <span class="hljs-string">&#x27;000905&#x27;</span>, <span class="hljs-string">&#x27;000852&#x27;</span>, <span class="hljs-string">&#x27;000010&#x27;</span>, <span class="hljs-string">&#x27;000688&#x27;</span>&#125;<br><span class="hljs-keyword">if</span> market <span class="hljs-keyword">in</span> (<span class="hljs-string">&#x27;SH&#x27;</span>, <span class="hljs-string">&#x27;SS&#x27;</span>) <span class="hljs-keyword">and</span> pure_code <span class="hljs-keyword">in</span> _SH_INDICES:<br>    <span class="hljs-comment"># 识别为指数</span><br></code></pre></td></tr></table></figure>
 
-<p>注意几个要点：</p>
-<ul>
-<li><p><strong>权重 <code>(expression:1.4)</code></strong>：比普通提示词更高的权重，强制模型关注表情</p>
-</li>
-<li><p><strong>保留面部质量关键词</strong>：<code>beautiful detailed face, natural skin texture</code> 等，防止重绘时破坏面部细节</p>
-</li>
-<li><p><strong>拼接主提示词</strong>：保留场景上下文，避免脸部与背景脱节</p>
-</li>
+<h3 id="第三步：确认根因"><a href="#第三步：确认根因" class="headerlink" title="第三步：确认根因"></a>第三步：确认根因</h3><p><strong><code>000001</code> 是代码冲突的重灾区：</strong></p>
+<table>
+<thead>
+<tr>
+<th>语义</th>
+<th>新浪格式</th>
+<th>东方财富 secid</th>
+<th>ReShare 标准</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>上证指数</td>
+<td>sh000001</td>
+<td>1.000001（沪&#x3D;1）</td>
+<td>SH000001</td>
+</tr>
+<tr>
+<td>平安银行</td>
+<td>sz000001</td>
+<td>0.000001（深&#x3D;0）</td>
+<td>SZ000001</td>
+</tr>
+</tbody></table>
+<p><code>000001</code> 裸数字无法区分：上证指数在上交所（sh 前缀），平安银行在深交所（sz 前缀）。系统里 <code>_SH_INDICES</code> 把裸代码 <code>000001</code> 判为”上证指数”，于是对 <code>000001.SH</code> 的请求走了 <code>stock_zh_index_daily</code> 指数接口——返回 3951 点的指数数据，且该接口在代理环境下超时。</p>
+<p><strong>本质</strong>：用裸数字代码当唯一标识，遇到跨市场同号（000001、000300 这类指数&#x2F;股票撞号）就串数据。指数和股票共用代码段是 A 股常态，区分只能靠市场前缀（sh&#x2F;sz、1.&#x2F;0.、.SH&#x2F;.SZ）。</p>
+<h2 id="修复建议"><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h2><p>devlog 中给出的修复方向（2026-09-10 记录，当前代码尚未落地）：</p>
+<ol>
+<li><strong>移除 <code>_SH_INDICES</code> 中的 <code>000001</code></strong>：裸代码 <code>000001</code> 在沪深两市分别对应上证指数（sh000001）和平安银行（SZ000001），无法通过纯数字唯一标识。硬编码集合把指数&#x2F;股票判断绑定在裸代码上，必然串号——应移除该集合里的 <code>000001</code>，指数识别改由显式市场前缀驱动。</li>
+<li><strong>区分指数与股票的符号格式</strong>：ReShare 已有 <code>SYMBOL_FORMAT_STANDARD</code>（v2.1，2026-04-17 实施），规定存储统一为 <code>SH600000</code>&#x2F;<code>SZ000001</code> 标准格式，各数据源请求时再按源格式转换（yfinance 要 <code>000001.SZ</code>，akshare 要裸代码，新浪要 <code>sh000001</code>&#x2F;<code>sz000001</code>）。指数必须显式带前缀，裸代码一律按股票处理。</li>
+</ol>
+<p>验证方式：修复后重跑 <code>000001.SH</code> 大周期查询，应返回平安银行股价（≈11.7 元）且秒级响应，不再触发指数接口。</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：裸代码当唯一标识"><a href="#坑一：裸代码当唯一标识" class="headerlink" title="坑一：裸代码当唯一标识"></a>坑一：裸代码当唯一标识</h3><p><strong>现象</strong>：<code>000001</code> 同时命中”上证指数”和”平安银行”，数据串号。</p>
+<p><strong>根因</strong>：A 股指数与股票共用代码段（000001&#x2F;000300&#x2F;000905 等），裸数字无法区分市场。</p>
+<p><strong>解法</strong>：统一 <code>SH000001</code>&#x2F;<code>SZ000001</code> 标准格式存储，显式带市场前缀。</p>
+<h3 id="坑二：指数判断靠硬编码集合"><a href="#坑二：指数判断靠硬编码集合" class="headerlink" title="坑二：指数判断靠硬编码集合"></a>坑二：指数判断靠硬编码集合</h3><p><strong>现象</strong>：<code>_SH_INDICES</code> 硬编码把 000001 判为指数，触发错误分支。</p>
+<p><strong>根因</strong>：指数集合是手工维护的，且与股票代码天然撞号。</p>
+<p><strong>解法</strong>：指数查询必须显式声明（如 <code>sh000001</code>），不能靠裸代码推断。</p>
+<h3 id="坑三：yfinance-小写前缀曾踩过同类坑"><a href="#坑三：yfinance-小写前缀曾踩过同类坑" class="headerlink" title="坑三：yfinance 小写前缀曾踩过同类坑"></a>坑三：yfinance 小写前缀曾踩过同类坑</h3><p><strong>现象</strong>：<code>sz000001</code>（小写）请求失败。</p>
+<p><strong>根因</strong>：格式归一化不完整，小写前缀未转大写。</p>
+<p><strong>解法</strong>：已在 yfinance_source 修复，<code>sz000001 → 000001.SZ ✅</code>（记录于 yfinance SIPOC 审查，2026-04-15）。</p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>修复前 <code>000001.SH</code> 返回上证指数 3951 点、HTTP 000 超时；修复后应返回平安银行行情（股价两位数的日 K 序列），与 000858.SZ&#x2F;600036.SH 同量级的秒级响应。修复落地后需重跑全量巡检表确认。</p>
+<h2 id="教训"><a href="#教训" class="headerlink" title="教训"></a>教训</h2><p><strong>证券代码永远不要只存裸数字。</strong> <code>000001</code> 可以是上证指数，也可以是平安银行，甚至更多。凡是涉及 A 股代码的管道，必须带市场前缀（<code>SH</code>&#x2F;<code>SZ</code>&#x2F;<code>BJ</code>）——存标准格式、按源转换、显示统一。这不是一次性的 bug，是数据管道的架构约束。</p>
+<p>同类事故回顾：回测缓存曾因”日期做 key”串号（ND-20260727-001），这次是”代码做 key”串号。标识符设计不严谨，迟早会以各种形式复发。</p>
+<hr>
+<h2 id="数据来源说明"><a href="#数据来源说明" class="headerlink" title="数据来源说明"></a>数据来源说明</h2><ul>
+<li>巡检数据（现象表格、3951 点、11.7 元、0.05s&#x2F;30s 耗时）取自 <strong>2026-09-10 凌晨 AQ 巡检记录</strong> <code>autoquant/.devlog/2026-09-10.md</code>（第 28-30 行巡检表格、第 49-53 行问题 1、第 75&#x2F;80 行修复建议；仓库：gitee.com&#x2F;normdist&#x2F;autoquant），测量方式为对 ReShare 大周期接口（2021-2026）的 HTTP 请求，行情数值为当时快照。修复建议为该记录中给出的原文方向。</li>
+<li>代码片段与行号引用自 ReShare 代码库（<code>backend/src/services/sources_new/klines/akshare.py:75,127</code>、<code>backend/src/services/sources/symbol_formatter.py:306-307</code>；仓库：内网 gitea normdist&#x2F;ReShare，HEAD <code>8f63e52</code>，akshare.py 最近重构 commit <code>6d2f145</code>）。</li>
+<li>规格依据：ReShare 内部文档 <code>SYMBOL_FORMAT_STANDARD.md</code>（v2.1，2026-04-17）与 <code>yfinance-sipoc-review.md</code>（2026-04-15），均为本地项目文档。</li>
+<li>外部可验证来源（代码格式规则）：</li>
 </ul>
-<p>FaceDetailer 参数配置：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><span class="hljs-number">6</span><br><br>&#123;<br>    <span class="hljs-string">&quot;enabled&quot;</span>: <span class="hljs-literal">True</span>,<br>    <span class="hljs-string">&quot;denoise&quot;</span>: <span class="hljs-number">0.35</span>,    <span class="hljs-comment"># 不宜太高，否则会「画走」脸</span><br>    <span class="hljs-string">&quot;cfg&quot;</span>: <span class="hljs-number">4.0</span>,         <span class="hljs-comment"># 略低于主采样，避免过度锐化</span><br>    <span class="hljs-string">&quot;steps&quot;</span>: <span class="hljs-number">20</span>,        <span class="hljs-comment"># 足够收敛即可</span><br>&#125;<br><br></code></pre></td></tr></table></figure>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://akshare.akfamily.xyz/data/index/index.html">AKShare 指数数据文档（历史行情数据-新浪：stock_zh_index_daily，symbol 需带 sh&#x2F;sz 前缀）</a></li>
+<li><a target="_blank" rel="noopener" href="https://quote.eastmoney.com/zs000001.html">东方财富·上证指数行情页（secid&#x3D;1.000001，沪市指数前缀 1）</a></li>
+<li><a target="_blank" rel="noopener" href="https://quote.eastmoney.com/sz000001.html">东方财富·平安银行行情页（secid&#x3D;0.000001，深市股票前缀 0）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ranaroussi/yfinance">yfinance 股票代码后缀规范（.SS 上海 &#x2F; .SZ 深圳）</a></li>
+</ol>
 
-<h4 id="为什么这个方案有效"><a href="#为什么这个方案有效" class="headerlink" title="为什么这个方案有效"></a>为什么这个方案有效</h4><ul>
-<li><p><strong>解耦了身份和表情</strong>：FaceID 负责身份，FaceDetailer 负责表情，各司其职</p>
-</li>
-<li><p><strong>局部操作</strong>：FaceDetailer 只修改脸部区域，不影响身体、衣服、背景</p>
-</li>
-<li><p><strong>低 denoise 精修</strong>：0.35 的 denoise 意味着只做小幅调整，在已有面部基础上「添加笑容」，而不是重新画一张脸</p>
-</li>
-<li><p><strong>独立提示词通道</strong>：FaceDetailer 的提示词不影响主体生成，不会破坏构图和场景</p>
-</li>
-</ul>
-<h2 id="效果对比"><a href="#效果对比" class="headerlink" title="效果对比"></a>效果对比</h2><h3 id="Before：toothy-smile（单纯靠主提示词）"><a href="#Before：toothy-smile（单纯靠主提示词）" class="headerlink" title="Before：toothy smile（单纯靠主提示词）"></a>Before：toothy smile（单纯靠主提示词）</h3><p>表情变化微弱，FaceID 权重过高锁住了表情。看起来像是嘴角微微上扬，但不是真正的笑容。</p>
-<h3 id="After：big-grin-FaceDetailer-表情增强"><a href="#After：big-grin-FaceDetailer-表情增强" class="headerlink" title="After：big grin + FaceDetailer 表情增强"></a>After：big grin + FaceDetailer 表情增强</h3>
                 
               </div>
             
@@ -536,15 +601,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/ComfyUI/" class="print-no-link">#ComfyUI</a>
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93/" class="print-no-link">#数据管道</a>
       
-        <a href="/tags/AI%E5%86%99%E7%9C%9F/" class="print-no-link">#AI写真</a>
+        <a href="/tags/bug%E4%BF%AE%E5%A4%8D/" class="print-no-link">#bug修复</a>
       
-        <a href="/tags/FaceID/" class="print-no-link">#FaceID</a>
-      
-        <a href="/tags/%E8%A1%A8%E6%83%85%E6%8E%A7%E5%88%B6/" class="print-no-link">#表情控制</a>
-      
-        <a href="/tags/Stable-Diffusion/" class="print-no-link">#Stable Diffusion</a>
+        <a href="/tags/%E7%AC%A6%E5%8F%B7%E6%98%A0%E5%B0%84/" class="print-no-link">#符号映射</a>
       
     </div>
   
@@ -556,8 +617,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Hermes Agent Gateway 多实例配置实践</div>
-      <div>https://normdist.com/2026/05/20/ND-20260520-001-ai-portrait-expression-control/</div>
+      <div>上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复</div>
+      <div>https://normdist.com/2026/09/11/ND-20260911-001-000001-symbol-collision-shanghai-index-vs-pingan-bank/</div>
     </div>
     <div class="license-meta">
       
@@ -569,7 +630,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月20日</div>
+          <div>2026年9月11日</div>
         </div>
       
       
@@ -601,18 +662,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/24/ND-20260524-001-autoquant-v2-weekly-report/" title="AutoQuant 开发周报 - 2026/05/24">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">AutoQuant 开发周报 - 2026/05/24</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/20/ND-20260520-001-hermes-gateway-multi-instance/" title="Hermes Agent Gateway 多实例配置实践">
-                        <span class="hidden-mobile">Hermes Agent Gateway 多实例配置实践</span>
+                      <a href="/2026/09/10/ND-20260910-001-r1-screen-cron-silent-fix/" title="R1 大周期筛选脚本连续 2 天静默：一次无产物校验的 cron 幽灵复发">
+                        <span class="hidden-mobile">R1 大周期筛选脚本连续 2 天静默：一次无产物校验的 cron 幽灵复发</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
