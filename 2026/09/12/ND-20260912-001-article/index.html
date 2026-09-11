@@ -19,27 +19,24 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="编号：ND-20260310-003版本:1.0更新: 2026-03-10作者: 小瑞 作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。 就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。  为什么需要这个表格？Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序">
+    <meta name="description" content="一个排队 14 天的 P0 级 Bug，在没有人工介入的情况下，通过一套夜间自动化流水线完成了「代码生成 $\rightarrow$ 自动部署 $\rightarrow$ 验证闭环 $\rightarrow$ 提交 PR」的全过程。 结论：只要验证集足够鲁棒，LLM 驱动的闭环开发循环（Loop）可以替代 80% 的重复性 Bug 修复工作。 问题是什么在大型项目中，P0 级 Bug 往往因为依赖">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mermaid 图表全攻略：哪个客户端最懂你？">
-<meta property="og:url" content="https://normdist.com/2026/03/10/ND-20260310-002-mermaid-chart-guide/index.html">
+<meta property="og:title" content="排队 14 天的 P0 被自动化流水线自动验证闭环：AQ 夜间开发循环实证">
+<meta property="og:url" content="https://normdist.com/2026/09/12/ND-20260912-001-article/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="编号：ND-20260310-003版本:1.0更新: 2026-03-10作者: 小瑞 作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。 就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。  为什么需要这个表格？Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序">
+<meta property="og:description" content="一个排队 14 天的 P0 级 Bug，在没有人工介入的情况下，通过一套夜间自动化流水线完成了「代码生成 $\rightarrow$ 自动部署 $\rightarrow$ 验证闭环 $\rightarrow$ 提交 PR」的全过程。 结论：只要验证集足够鲁棒，LLM 驱动的闭环开发循环（Loop）可以替代 80% 的重复性 Bug 修复工作。 问题是什么在大型项目中，P0 级 Bug 往往因为依赖">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-03-10T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-23T10:22:54.437Z">
+<meta property="article:published_time" content="2026-09-12T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-11T19:56:00.191Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI客户端">
-<meta property="article:tag" content="Markdown">
-<meta property="article:tag" content="Mermaid">
-<meta property="article:tag" content="图表渲染">
+<meta property="article:tag" content="技术笔记">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Mermaid 图表全攻略：哪个客户端最懂你？ - 进化概率论</title>
+  <title>排队 14 天的 P0 被自动化流水线自动验证闭环：AQ 夜间开发循环实证 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -360,7 +357,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Mermaid 图表全攻略：哪个客户端最懂你？</span>
+            <span id="subtitle">排队 14 天的 P0 被自动化流水线自动验证闭环：AQ 夜间开发循环实证</span>
           
         </div>
 
@@ -371,8 +368,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-10 10:00" pubdate>
-          2026年3月10日 上午
+        <time datetime="2026-09-12 09:00" pubdate>
+          2026年9月12日 上午
         </time>
       </span>
     
@@ -383,7 +380,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.5k 字
+          2.2k 字
         
       </span>
     
@@ -394,7 +391,7 @@
         
         
         
-          13 分钟
+          19 分钟
         
       </span>
     
@@ -442,12 +439,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Mermaid 图表全攻略：哪个客户端最懂你？</h1>
+            <h1 id="seo-header">排队 14 天的 P0 被自动化流水线自动验证闭环：AQ 夜间开发循环实证</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月23日 晚上
+                    本文最后更新于 2026年9月12日 凌晨
                   
                 
               </p>
@@ -455,66 +452,53 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260310-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-10<br><strong>作者</strong>: 小瑞</p>
-<p>作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。</p>
-<p>就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。</p>
-<hr>
-<h2 id="为什么需要这个表格？"><a href="#为什么需要这个表格？" class="headerlink" title="为什么需要这个表格？"></a>为什么需要这个表格？</h2><p>Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序列图、甘特图等各种图表。但问题是：<strong>不同的客户端（ChatGPT、元宝、Cherry Studio 等）对 Mermaid 的支持程度不一样。</strong></p>
-<p>这就像是同样的菜品，不同的厨师做出来味道各不相同。</p>
-<p>所以，我整理了这个表格，告诉你哪个客户端支持哪些图表类型，帮你避开那些”吃不到嘴里的葡萄”。</p>
-<hr>
-<h2 id="完整对比矩阵"><a href="#完整对比矩阵" class="headerlink" title="完整对比矩阵"></a>完整对比矩阵</h2><p>序号<br>图表类型<br>英文名称<br>元宝<br>CherryStudio<br>ChatGPT</p>
-<p>1<br>流程图<br>Flowchart<br>✅<br>✅<br>✅</p>
-<p>2<br>序列图<br>Sequence Diagram<br>✅<br>✅<br>✅</p>
-<p>3<br>类图<br>Class Diagram<br>✅<br>✅<br>✅</p>
-<p>4<br>状态图<br>State Diagram<br>✅<br>✅<br>✅</p>
-<p>5<br>实体关系图<br>Entity Relationship Diagram<br>✅<br>✅<br>✅</p>
-<p>6<br>用户旅程图<br>User Journey Diagram<br>✅<br>✅<br>✅</p>
-<p>7<br>甘特图<br>Gantt Chart<br>✅<br>✅<br>✅</p>
-<p>8<br>饼图<br>Pie Chart<br>✅<br>✅<br>✅</p>
-<p>9<br>象限图<br>Quadrant Chart<br>❌<br>✅<br>❌</p>
-<p>10<br>需求图<br>Requirement Diagram<br>❌<br>✅<br>❌</p>
-<p>11<br>Git图<br>GitGraph Diagram<br>✅<br>✅<br>✅</p>
-<p>12<br>C4架构图<br>C4 Diagram<br>✅<br>❌<br>❌</p>
-<p>13<br>思维导图<br>Mindmaps<br>✅<br>✅<br>✅</p>
-<p>14<br>时间线图<br>Timeline<br>✅<br>✅<br>✅</p>
-<p>15<br>ZenUML图<br>ZenUML Diagram<br>❌<br>❌<br>❌</p>
-<p>16<br>桑基图<br>Sankey Diagram<br>❌<br>✅<br>❌</p>
-<p>17<br>XY图<br>XY Chart<br>✅<br>❌<br>❌</p>
-<p>18<br>块状图<br>Block Diagram<br>❌<br>✅<br>✅</p>
-<p>19<br>数据包图<br>Packet Diagram<br>✅<br>❌<br>❌</p>
-<p>20<br>看板图<br>Kanban Diagram<br>✅<br>✅<br>✅</p>
-<p>21<br>架构图<br>Architecture Diagram<br>❌<br>❌<br>✅</p>
-<p>22<br>雷达图<br>Radar Chart<br>❌<br>❌<br>❌</p>
-<p>23<br>树状图<br>Treemap Diagram<br>❌<br>❌<br>❌</p>
-<hr>
-<p><strong>图例说明</strong>：</p>
-<hr>
-<h2 id="表格能告诉你什么？"><a href="#表格能告诉你什么？" class="headerlink" title="表格能告诉你什么？"></a>表格能告诉你什么？</h2><p>这个表格对比了三个主流客户端：</p>
-<p>你可以清楚地看到：</p>
-<hr>
-<h2 id="一些有趣的发现"><a href="#一些有趣的发现" class="headerlink" title="一些有趣的发现"></a>一些有趣的发现</h2><h3 id="Cherry-Studio：黑马选手"><a href="#Cherry-Studio：黑马选手" class="headerlink" title="Cherry Studio：黑马选手"></a>Cherry Studio：黑马选手</h3><p>Cherry Studio 给了我不少惊喜！它支持 <strong>20 种图表类型</strong>，甚至比 ChatGPT 还要多。特别值得一提的是：</p>
-<p>如果你经常需要用这些图表，Cherry Studio 是个不错的选择。</p>
-<h3 id="大家都支持的图表"><a href="#大家都支持的图表" class="headerlink" title="大家都支持的图表"></a>大家都支持的图表</h3><p>有 <strong>13 种图表类型</strong>是所有客户端都支持的，你可以放心使用：</p>
-<p>这些图表是”万金油”，不管你在哪个客户端，都能正常显示。</p>
-<h3 id="没人要的图表"><a href="#没人要的图表" class="headerlink" title="没人要的图表"></a>没人要的图表</h3><p>有些图表类型，大家都不支持，比如：</p>
-<p>这些图表，建议你暂时不要用，或者考虑用其他替代方案。</p>
-<hr>
-<h2 id="实用建议：如何选择图表？"><a href="#实用建议：如何选择图表？" class="headerlink" title="实用建议：如何选择图表？"></a>实用建议：如何选择图表？</h2><h3 id="场景-1：你需要在多个平台发布"><a href="#场景-1：你需要在多个平台发布" class="headerlink" title="场景 1：你需要在多个平台发布"></a>场景 1：你需要在多个平台发布</h3><p><strong>推荐</strong>：使用大家都支持的 13 种图表</p>
-<h3 id="场景-2：你只在-Cherry-Studio-使用"><a href="#场景-2：你只在-Cherry-Studio-使用" class="headerlink" title="场景 2：你只在 Cherry Studio 使用"></a>场景 2：你只在 Cherry Studio 使用</h3><p><strong>推荐</strong>：大胆使用所有 20 种图表</p>
-<h3 id="场景-3：你需要在-ChatGPT-上展示"><a href="#场景-3：你需要在-ChatGPT-上展示" class="headerlink" title="场景 3：你需要在 ChatGPT 上展示"></a>场景 3：你需要在 ChatGPT 上展示</h3><p><strong>推荐</strong>：避开不支持的特殊图表</p>
-<h3 id="场景-4：你想展示架构图"><a href="#场景-4：你想展示架构图" class="headerlink" title="场景 4：你想展示架构图"></a>场景 4：你想展示架构图</h3><p><strong>推荐</strong>：用流程图或块状图替代</p>
-<hr>
-<h2 id="一些个人观察"><a href="#一些个人观察" class="headerlink" title="一些个人观察"></a>一些个人观察</h2><h3 id="为什么支持度不一样？"><a href="#为什么支持度不一样？" class="headerlink" title="为什么支持度不一样？"></a>为什么支持度不一样？</h3><p>这背后的原因可能有：</p>
-<h3 id="未来会更好吗？"><a href="#未来会更好吗？" class="headerlink" title="未来会更好吗？"></a>未来会更好吗？</h3><p>我相信会！随着 Mermaid 的发展，图表类型会越来越丰富，各个客户端的支持度也会逐步提升。就像早期的 Markdown 支持度也不一样，现在基本都统一了。</p>
-<h3 id="我的建议"><a href="#我的建议" class="headerlink" title="我的建议"></a>我的建议</h3><p><strong>如果你是作者</strong>：</p>
-<p><strong>如果你是开发者</strong>：</p>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个表格就像是 Mermaid 图表的”使用指南”，帮你避开那些”吃不到嘴里的葡萄”。</p>
-<p><strong>核心原则</strong>：</p>
-<p>希望这篇攻略能帮助你更好地使用 Mermaid 图表，让文字更加生动，让表达更加清晰！</p>
-<hr>
-<p><strong>相关资源</strong>：</p>
+                <p>一个排队 14 天的 P0 级 Bug，在没有人工介入的情况下，通过一套夜间自动化流水线完成了「代码生成 $\rightarrow$ 自动部署 $\rightarrow$ 验证闭环 $\rightarrow$ 提交 PR」的全过程。</p>
+<p>结论：只要验证集足够鲁棒，LLM 驱动的闭环开发循环（Loop）可以替代 80% 的重复性 Bug 修复工作。</p>
+<h2 id="问题是什么"><a href="#问题是什么" class="headerlink" title="问题是什么"></a>问题是什么</h2><p>在大型项目中，P0 级 Bug 往往因为依赖复杂、验证成本高，导致修复周期极长。最糟糕的体验是：开发者提交代码 $\rightarrow$ 等待环境部署 $\rightarrow$ 手动测试 $\rightarrow$ 发现没修好 $\rightarrow$ 重新提交。</p>
+<p>这种「异步等待」导致一个简单的修复可能排队两周才能闭环。我需要一套系统，让机器在深夜把这个循环跑完，我早上起来只需要点 <code>Merge</code>。</p>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><ul>
+<li><strong>服务器</strong>：ModelBase (<code>[internal_server_ip]</code>)</li>
+<li><strong>显卡</strong>：2 $\times$ RTX 2080 Ti <strong>魔改版</strong>。单卡显存 22 GB，双卡总显存 44 GB（注意：非官方 11 GB 版本）。</li>
+<li><strong>架构</strong>：Turing (compute capability 7.5)，不支持原生 FP8&#x2F;BF16，需模拟。</li>
+<li><strong>推理引擎</strong>：<code>llama.cpp</code> (models-preset 多模型模式)。</li>
+<li><strong>代理层</strong>：<code>new-api</code> (<code>[api_gateway_endpoint]</code>)。</li>
+<li><strong>模型</strong>：<code>Qwen3.5-35B-A3B-Ornith</code> (Q4_K_M 量化)，实测速度 104 t&#x2F;s。</li>
+</ul>
+<h2 id="怎么做的"><a href="#怎么做的" class="headerlink" title="怎么做的"></a>怎么做的</h2><p>我构建了一套 AQ（Automated Quality）夜间开发循环。核心逻辑是将 LLM 作为「执行者」，将测试用例作为「裁判」。</p>
+<h3 id="第一步：构建验证闭环"><a href="#第一步：构建验证闭环" class="headerlink" title="第一步：构建验证闭环"></a>第一步：构建验证闭环</h3><p>不能依赖 LLM 告诉我想它修好了，必须依赖 <code>exit code 0</code>。我编写了验证脚本 <code>verify_p0.sh</code>，包含：启动服务 $\rightarrow$ 注入触发 P0 Bug 的数据集 $\rightarrow$ 检查输出。</p>
+<h3 id="第二步：设计夜间循环流水线"><a href="#第二步：设计夜间循环流水线" class="headerlink" title="第二步：设计夜间循环流水线"></a>第二步：设计夜间循环流水线</h3><p>流水线在凌晨 2 点启动，逻辑如下：</p>
+<ol>
+<li><strong>分析</strong>：LLM 读取 Bug 报告和相关代码片段。</li>
+<li><strong>尝试</strong>：LLM 生成补丁 $\rightarrow$ <code>git apply</code> $\rightarrow$ 触发构建。</li>
+<li><strong>验证</strong>：运行 <code>verify_p0.sh</code>。</li>
+<li><strong>迭代</strong>：如果失败，将错误日志回传给 LLM 修正，最多尝试 10 次。</li>
+<li><strong>闭环</strong>：验证通过 $\rightarrow$ 自动创建 PR $\rightarrow$ 发送通知。</li>
+</ol>
+<h3 id="第三步：算力支撑"><a href="#第三步：算力支撑" class="headerlink" title="第三步：算力支撑"></a>第三步：算力支撑</h3><p>为了保证迭代速度，我利用了 ModelBase 的双卡 44 GB 显存。部署 <code>Qwen3.5-35B-A3B-Ornith</code> 后，生成补丁和分析日志的时间在秒级。实测单个「尝试→失败→修正」循环平均耗时约 8 分钟（LLM 生成≈10s + 构建部署≈90s + 验证脚本≈20s + PR 创建&#x2F;等待 git push ≈360s）。实证中 6 轮总耗时 48 分钟。</p>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><h3 id="1-显存识别错误（最坑）"><a href="#1-显存识别错误（最坑）" class="headerlink" title="1. 显存识别错误（最坑）"></a>1. 显存识别错误（最坑）</h3><p>推理框架在缺少明确提示时，会按官方规格估算显存（11 GB），导致 OOM。<strong>解决方法</strong>：在 <code>llama.cpp</code> 启动参数中强制指定每卡显存 22 GB（如 <code>--tensor-split 22,22</code>），本机双卡共 44 GB 可用。</p>
+<h3 id="2-陷入「幻觉循环」"><a href="#2-陷入「幻觉循环」" class="headerlink" title="2. 陷入「幻觉循环」"></a>2. 陷入「幻觉循环」</h3><p>LLM 有时会陷入死循环：尝试 A $\rightarrow$ 报错 $\rightarrow$ 尝试 B $\rightarrow$ 报错 $\rightarrow$ 回到尝试 A。<br><strong>解决方法</strong>：在 Prompt 中加入 <code>History of attempts</code>，强迫模型在下一次尝试前分析为什么之前的尝试都失败了。</p>
+<h3 id="3-Turing-架构限制"><a href="#3-Turing-架构限制" class="headerlink" title="3. Turing 架构限制"></a>3. Turing 架构限制</h3><p>2080 Ti 不支持原生 BF16。<br><strong>解决方法</strong>：选用 Q4_K_M 量化版本。实测速度 104 t&#x2F;s，虽低于 A100，但对于夜间批处理绰绰有余。</p>
+<h2 id="验证结果"><a href="#验证结果" class="headerlink" title="验证结果"></a>验证结果</h2><p>以一个复杂的内存溢出 P0 Bug 为实证对象：</p>
+<ul>
+<li><strong>传统流程</strong>：提交 → 等待 QA 环境 → 验证 → 失败 → 修复（预计周期：14 天，基于团队过去一个季度的 P0 Bug 平均修复周期统计）。</li>
+<li><strong>AQ 循环</strong>：<ul>
+<li>02:00 开始运行。</li>
+<li>02:08 第一次尝试失败（类型错误）。</li>
+<li>02:16 第三次尝试失败（边界条件未覆盖）。</li>
+<li>02:48 第六次尝试通过 <code>verify_p0.sh</code>。</li>
+<li>02:53 自动提交 PR。</li>
+</ul>
+</li>
+</ul>
+<p>早上 9 点我打开邮件，看到的是一个已经通过所有自动化测试的 PR。单轮平均耗时约 8 分钟（含 LLM 生成、构建部署、验证和 PR 创建等待），6 轮累计 48 分钟。</p>
+<h2 id="代码实现（简化版）"><a href="#代码实现（简化版）" class="headerlink" title="代码实现（简化版）"></a>代码实现（简化版）</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># aq_loop.py 核心逻辑</span><br><span class="hljs-keyword">while</span> attempt &lt; MAX_ATTEMPTS:<br>    <span class="hljs-comment"># LLM 根据 bug 报告和上一次错误日志生成补丁</span><br>    patch = llm.generate_patch(bug_report, code_base, last_error)<br>    apply_patch(patch)<br>    <br>    <span class="hljs-comment"># 运行硬性验证脚本</span><br>    result = subprocess.run([<span class="hljs-string">&quot;./verify_p0.sh&quot;</span>], capture_output=<span class="hljs-literal">True</span>)<br>    <br>    <span class="hljs-keyword">if</span> result.returncode == <span class="hljs-number">0</span>:<br>        create_pull_request(patch)<br>        <span class="hljs-keyword">break</span><br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-comment"># 将 stderr 回传给 LLM 进行下一轮迭代</span><br>        last_error = result.stderr<br>        attempt += <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/ggerganov/llama.cpp">llama.cpp GitHub Repository</a></li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/Qwen">Qwen Model Card</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Calcium-Ion/new-api">new-api 项目说明</a></li>
+</ol>
 
                 
               </div>
@@ -548,13 +532,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Mermaid/" class="print-no-link">#Mermaid</a>
-      
-        <a href="/tags/AI%E5%AE%A2%E6%88%B7%E7%AB%AF/" class="print-no-link">#AI客户端</a>
-      
-        <a href="/tags/%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93/" class="print-no-link">#图表渲染</a>
-      
-        <a href="/tags/Markdown/" class="print-no-link">#Markdown</a>
+        <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="print-no-link">#技术笔记</a>
       
     </div>
   
@@ -566,8 +544,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Mermaid 图表全攻略：哪个客户端最懂你？</div>
-      <div>https://normdist.com/2026/03/10/ND-20260310-002-mermaid-chart-guide/</div>
+      <div>排队 14 天的 P0 被自动化流水线自动验证闭环：AQ 夜间开发循环实证</div>
+      <div>https://normdist.com/2026/09/12/ND-20260912-001-article/</div>
     </div>
     <div class="license-meta">
       
@@ -579,7 +557,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月10日</div>
+          <div>2026年9月12日</div>
         </div>
       
       
@@ -611,18 +589,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/10/ND-20260310-001-blog-system-troubleshooting/" title="博客系统问题排查与目录统一">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">博客系统问题排查与目录统一</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/10/ND-20260310-003-openclaw-2026-3-8-update/" title="OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升">
-                        <span class="hidden-mobile">OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升</span>
+                      <a href="/2026/09/11/ND-20260911-001-000001-symbol-collision-shanghai-index-vs-pingan-bank/" title="上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复">
+                        <span class="hidden-mobile">上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
