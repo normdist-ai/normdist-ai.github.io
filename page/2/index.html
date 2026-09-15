@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/" target="_self">
+          博客选题池被 reconcile 清空：唯一可信源的维护教训
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/" target="_self">
+        <div>
+          一条 reconcile 命令，把我攒了半年的 47 条博客选题全清了。根因不是脚本写错，而是我用两个源维护同一份数据，还让同步脚本只认其中一个。Git 历史救回了数据，但这个问题值得好好复盘：唯一可信源到底怎么维护。 事故现场选题池放在博客仓库的 _data/topics.yml，Hexo 站点用它在「选题池」页面渲染所有候选选题。 某天我跑了这条命令： 1npm run reconcile
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-28 09:00" pubdate>
+              2026-08-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/">#数据同步</a>
+            
+              <a href="/tags/%E4%BA%8B%E6%95%85%E5%A4%8D%E7%9B%98/">#事故复盘</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/27/ND-20260827-001-article/" target="_self">
           ReShare 8200 连续 5 天 500：健康检查盲区、单点故障到多源熔断架构重构
         </a>
@@ -938,75 +1003,6 @@
               <a href="/tags/systemd/">#systemd</a>
             
               <a href="/tags/%E8%BF%90%E7%BB%B4/">#运维</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/08/11/ND-20260811-001-copy-paste-state-machine-deadlock/" target="_self">
-          回测策略的 copy-paste bug：sell 分支 in_buy=True 让信号死锁
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/11/ND-20260811-001-copy-paste-state-machine-deadlock/" target="_self">
-        <div>
-          回测跑出来一条只涨不跌的净值曲线，胜率 100%，最大回撤 0%。 这不是圣杯，这是 bug。 策略里买入后该卖出的信号一次都没触发，仓位从开仓那天起就锁死在账户里。净值曲线”看起来”只涨不跌，只是因为它从来没结算过亏损。最讽刺的是，这个 bug 的源头只是一个 copy-paste：把 buy 分支的代码复制到 sell 分支，忘了把一个布尔标志从 True 改成 False。 copy-pas
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-08-11 09:00" pubdate>
-              2026-08-11
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%9B%9E%E6%B5%8B/">#回测</a>
-            
-              <a href="/tags/%E7%AD%96%E7%95%A5/">#策略</a>
-            
-              <a href="/tags/copy-paste/">#copy-paste</a>
-            
-              <a href="/tags/%E7%8A%B6%E6%80%81%E6%9C%BA/">#状态机</a>
-            
-              <a href="/tags/%E6%B5%8B%E8%AF%95/">#测试</a>
             
           </div>
         

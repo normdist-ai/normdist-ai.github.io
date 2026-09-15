@@ -19,27 +19,24 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="编号：ND-20260310-003版本:1.0更新: 2026-03-10作者: 小瑞 作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。 就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。  为什么需要这个表格？Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序">
+    <meta name="description" content="“吐字速度慢得离谱，分析一下原因。” 这是我在语音助手的项目里收到的一句话。彼时语音回复的体验是：一句 5 秒的话，要干等 7 到 10 秒才能听到。生成比播放还慢，意味着用户永远在等机器说完。这篇文章记录一次完整的慢因排查，以及最后那个可能出乎你意料的决定——算清楚账之后，我不修了。 先量化”慢”：RTF 才是唯一诚实的指标TTS 性能不能看绝对耗时，要看 RTF（Real-Time Facto">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mermaid 图表全攻略：哪个客户端最懂你？">
-<meta property="og:url" content="https://normdist.com/2026/03/10/ND-20260310-002-mermaid-chart-guide/index.html">
+<meta property="og:title" content="单卡GPU上的全精度TTS为何吐字慢：FP16 vs GGUF的RTF实测与显存权衡">
+<meta property="og:url" content="https://normdist.com/2026/09/16/ND-20260916-001-draft/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="编号：ND-20260310-003版本:1.0更新: 2026-03-10作者: 小瑞 作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。 就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。  为什么需要这个表格？Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序">
+<meta property="og:description" content="“吐字速度慢得离谱，分析一下原因。” 这是我在语音助手的项目里收到的一句话。彼时语音回复的体验是：一句 5 秒的话，要干等 7 到 10 秒才能听到。生成比播放还慢，意味着用户永远在等机器说完。这篇文章记录一次完整的慢因排查，以及最后那个可能出乎你意料的决定——算清楚账之后，我不修了。 先量化”慢”：RTF 才是唯一诚实的指标TTS 性能不能看绝对耗时，要看 RTF（Real-Time Facto">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-03-10T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-23T10:22:54.437Z">
+<meta property="article:published_time" content="2026-09-16T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-15T19:54:19.744Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="AI客户端">
-<meta property="article:tag" content="Markdown">
-<meta property="article:tag" content="Mermaid">
-<meta property="article:tag" content="图表渲染">
+<meta property="article:tag" content="技术笔记">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Mermaid 图表全攻略：哪个客户端最懂你？ - 进化概率论</title>
+  <title>单卡GPU上的全精度TTS为何吐字慢：FP16 vs GGUF的RTF实测与显存权衡 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -360,7 +357,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Mermaid 图表全攻略：哪个客户端最懂你？</span>
+            <span id="subtitle">单卡GPU上的全精度TTS为何吐字慢：FP16 vs GGUF的RTF实测与显存权衡</span>
           
         </div>
 
@@ -371,8 +368,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-10 10:00" pubdate>
-          2026年3月10日 上午
+        <time datetime="2026-09-16 09:00" pubdate>
+          2026年9月16日 上午
         </time>
       </span>
     
@@ -383,7 +380,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.5k 字
+          2.4k 字
         
       </span>
     
@@ -394,7 +391,7 @@
         
         
         
-          13 分钟
+          21 分钟
         
       </span>
     
@@ -442,12 +439,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Mermaid 图表全攻略：哪个客户端最懂你？</h1>
+            <h1 id="seo-header">单卡GPU上的全精度TTS为何吐字慢：FP16 vs GGUF的RTF实测与显存权衡</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月23日 晚上
+                    本文最后更新于 2026年9月16日 凌晨
                   
                 
               </p>
@@ -455,66 +452,73 @@
             
               <div class="markdown-body">
                 
-                <p><strong>编号</strong>：ND-20260310-003<br><strong>版本</strong>:1.0<br><strong>更新</strong>: 2026-03-10<br><strong>作者</strong>: 小瑞</p>
-<p>作为一个经常用 Markdown 写作的人，我经常遇到这样的困扰：辛辛苦苦画了一个漂亮的图表，结果发到不同的平台，有的显示正常，有的却是一片空白。</p>
-<p>就像你精心准备了一份礼物，对方却不领情一样——这种感觉太糟糕了。</p>
-<hr>
-<h2 id="为什么需要这个表格？"><a href="#为什么需要这个表格？" class="headerlink" title="为什么需要这个表格？"></a>为什么需要这个表格？</h2><p>Mermaid 是一款强大的文本转图表工具，用简单的代码就能画出流程图、序列图、甘特图等各种图表。但问题是：<strong>不同的客户端（ChatGPT、元宝、Cherry Studio 等）对 Mermaid 的支持程度不一样。</strong></p>
-<p>这就像是同样的菜品，不同的厨师做出来味道各不相同。</p>
-<p>所以，我整理了这个表格，告诉你哪个客户端支持哪些图表类型，帮你避开那些”吃不到嘴里的葡萄”。</p>
-<hr>
-<h2 id="完整对比矩阵"><a href="#完整对比矩阵" class="headerlink" title="完整对比矩阵"></a>完整对比矩阵</h2><p>序号<br>图表类型<br>英文名称<br>元宝<br>CherryStudio<br>ChatGPT</p>
-<p>1<br>流程图<br>Flowchart<br>✅<br>✅<br>✅</p>
-<p>2<br>序列图<br>Sequence Diagram<br>✅<br>✅<br>✅</p>
-<p>3<br>类图<br>Class Diagram<br>✅<br>✅<br>✅</p>
-<p>4<br>状态图<br>State Diagram<br>✅<br>✅<br>✅</p>
-<p>5<br>实体关系图<br>Entity Relationship Diagram<br>✅<br>✅<br>✅</p>
-<p>6<br>用户旅程图<br>User Journey Diagram<br>✅<br>✅<br>✅</p>
-<p>7<br>甘特图<br>Gantt Chart<br>✅<br>✅<br>✅</p>
-<p>8<br>饼图<br>Pie Chart<br>✅<br>✅<br>✅</p>
-<p>9<br>象限图<br>Quadrant Chart<br>❌<br>✅<br>❌</p>
-<p>10<br>需求图<br>Requirement Diagram<br>❌<br>✅<br>❌</p>
-<p>11<br>Git图<br>GitGraph Diagram<br>✅<br>✅<br>✅</p>
-<p>12<br>C4架构图<br>C4 Diagram<br>✅<br>❌<br>❌</p>
-<p>13<br>思维导图<br>Mindmaps<br>✅<br>✅<br>✅</p>
-<p>14<br>时间线图<br>Timeline<br>✅<br>✅<br>✅</p>
-<p>15<br>ZenUML图<br>ZenUML Diagram<br>❌<br>❌<br>❌</p>
-<p>16<br>桑基图<br>Sankey Diagram<br>❌<br>✅<br>❌</p>
-<p>17<br>XY图<br>XY Chart<br>✅<br>❌<br>❌</p>
-<p>18<br>块状图<br>Block Diagram<br>❌<br>✅<br>✅</p>
-<p>19<br>数据包图<br>Packet Diagram<br>✅<br>❌<br>❌</p>
-<p>20<br>看板图<br>Kanban Diagram<br>✅<br>✅<br>✅</p>
-<p>21<br>架构图<br>Architecture Diagram<br>❌<br>❌<br>✅</p>
-<p>22<br>雷达图<br>Radar Chart<br>❌<br>❌<br>❌</p>
-<p>23<br>树状图<br>Treemap Diagram<br>❌<br>❌<br>❌</p>
-<hr>
-<p><strong>图例说明</strong>：</p>
-<hr>
-<h2 id="表格能告诉你什么？"><a href="#表格能告诉你什么？" class="headerlink" title="表格能告诉你什么？"></a>表格能告诉你什么？</h2><p>这个表格对比了三个主流客户端：</p>
-<p>你可以清楚地看到：</p>
-<hr>
-<h2 id="一些有趣的发现"><a href="#一些有趣的发现" class="headerlink" title="一些有趣的发现"></a>一些有趣的发现</h2><h3 id="Cherry-Studio：黑马选手"><a href="#Cherry-Studio：黑马选手" class="headerlink" title="Cherry Studio：黑马选手"></a>Cherry Studio：黑马选手</h3><p>Cherry Studio 给了我不少惊喜！它支持 <strong>20 种图表类型</strong>，甚至比 ChatGPT 还要多。特别值得一提的是：</p>
-<p>如果你经常需要用这些图表，Cherry Studio 是个不错的选择。</p>
-<h3 id="大家都支持的图表"><a href="#大家都支持的图表" class="headerlink" title="大家都支持的图表"></a>大家都支持的图表</h3><p>有 <strong>13 种图表类型</strong>是所有客户端都支持的，你可以放心使用：</p>
-<p>这些图表是”万金油”，不管你在哪个客户端，都能正常显示。</p>
-<h3 id="没人要的图表"><a href="#没人要的图表" class="headerlink" title="没人要的图表"></a>没人要的图表</h3><p>有些图表类型，大家都不支持，比如：</p>
-<p>这些图表，建议你暂时不要用，或者考虑用其他替代方案。</p>
-<hr>
-<h2 id="实用建议：如何选择图表？"><a href="#实用建议：如何选择图表？" class="headerlink" title="实用建议：如何选择图表？"></a>实用建议：如何选择图表？</h2><h3 id="场景-1：你需要在多个平台发布"><a href="#场景-1：你需要在多个平台发布" class="headerlink" title="场景 1：你需要在多个平台发布"></a>场景 1：你需要在多个平台发布</h3><p><strong>推荐</strong>：使用大家都支持的 13 种图表</p>
-<h3 id="场景-2：你只在-Cherry-Studio-使用"><a href="#场景-2：你只在-Cherry-Studio-使用" class="headerlink" title="场景 2：你只在 Cherry Studio 使用"></a>场景 2：你只在 Cherry Studio 使用</h3><p><strong>推荐</strong>：大胆使用所有 20 种图表</p>
-<h3 id="场景-3：你需要在-ChatGPT-上展示"><a href="#场景-3：你需要在-ChatGPT-上展示" class="headerlink" title="场景 3：你需要在 ChatGPT 上展示"></a>场景 3：你需要在 ChatGPT 上展示</h3><p><strong>推荐</strong>：避开不支持的特殊图表</p>
-<h3 id="场景-4：你想展示架构图"><a href="#场景-4：你想展示架构图" class="headerlink" title="场景 4：你想展示架构图"></a>场景 4：你想展示架构图</h3><p><strong>推荐</strong>：用流程图或块状图替代</p>
-<hr>
-<h2 id="一些个人观察"><a href="#一些个人观察" class="headerlink" title="一些个人观察"></a>一些个人观察</h2><h3 id="为什么支持度不一样？"><a href="#为什么支持度不一样？" class="headerlink" title="为什么支持度不一样？"></a>为什么支持度不一样？</h3><p>这背后的原因可能有：</p>
-<h3 id="未来会更好吗？"><a href="#未来会更好吗？" class="headerlink" title="未来会更好吗？"></a>未来会更好吗？</h3><p>我相信会！随着 Mermaid 的发展，图表类型会越来越丰富，各个客户端的支持度也会逐步提升。就像早期的 Markdown 支持度也不一样，现在基本都统一了。</p>
-<h3 id="我的建议"><a href="#我的建议" class="headerlink" title="我的建议"></a>我的建议</h3><p><strong>如果你是作者</strong>：</p>
-<p><strong>如果你是开发者</strong>：</p>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个表格就像是 Mermaid 图表的”使用指南”，帮你避开那些”吃不到嘴里的葡萄”。</p>
-<p><strong>核心原则</strong>：</p>
-<p>希望这篇攻略能帮助你更好地使用 Mermaid 图表，让文字更加生动，让表达更加清晰！</p>
-<hr>
-<p><strong>相关资源</strong>：</p>
+                <p>“吐字速度慢得离谱，分析一下原因。”</p>
+<p>这是我在语音助手的项目里收到的一句话。彼时语音回复的体验是：一句 5 秒的话，要干等 7 到 10 秒才能听到。生成比播放还慢，意味着用户永远在等机器说完。这篇文章记录一次完整的慢因排查，以及最后那个可能出乎你意料的决定——算清楚账之后，我不修了。</p>
+<h2 id="先量化”慢”：RTF-才是唯一诚实的指标"><a href="#先量化”慢”：RTF-才是唯一诚实的指标" class="headerlink" title="先量化”慢”：RTF 才是唯一诚实的指标"></a>先量化”慢”：RTF 才是唯一诚实的指标</h2><p>TTS 性能不能看绝对耗时，要看 RTF（Real-Time Factor）：合成耗时除以音频时长。RTF &lt; 1 表示生成比播放快，可以边生成边播；RTF &gt; 1 则用户必然等待。</p>
+<p>从服务日志里抓出两个响应头字段：<code>X-Synthesis-Time-S</code>（合成耗时）和 <code>X-Audio-Duration-S</code>（音频时长），一除，稳定在 1.5 到 2.0 之间。也就是说，每说一句话，机器要花接近两倍的时间先把它”想”出来。5 秒的语音等 10 秒，不是玄学，是 RTF 1.8 的必然结果。</p>
+<h2 id="排查三步：进程、GPU、模型文件"><a href="#排查三步：进程、GPU、模型文件" class="headerlink" title="排查三步：进程、GPU、模型文件"></a>排查三步：进程、GPU、模型文件</h2><p><strong>第一步看进程参数。</strong> <code>ps</code> 抓出服务的启动命令，两个关键信息：<code>--device cuda:1</code> 和端口 8701。这台双卡 2080Ti 改装 22G 的服务器上，主卡 GPU0 被 llama-server 长期占着跑对话模型，TTS 被挤到了副卡 GPU1。</p>
+<p><strong>第二步看 GPU 实时状态。</strong> <code>nvidia-smi</code> 显示：GPU0 显存 75%、利用率 90%；GPU1 显存 83%、利用率 63%。注意 GPU1 的利用率并没有打满——如果是算力瓶颈，利用率应该常年 95% 以上。63% 的利用率配上慢吞吞的响应，指向一个经典嫌疑：内存带宽瓶颈，GPU 大量时间在等数据搬运。</p>
+<p><strong>第三步看模型文件。</strong> 这是最关键的一步。磁盘上有两个模型目录，服务实际加载的是 <code>Qwen3-TTS-Base</code>——Safetensors 格式，FP16 全精度，1.7B 参数，未做任何量化。GGUF 量化版本根本不存在，<code>find</code> 全盘搜索确认无一结果。</p>
+<h2 id="根因：一笔带宽账"><a href="#根因：一笔带宽账" class="headerlink" title="根因：一笔带宽账"></a>根因：一笔带宽账</h2><p>把数字摆出来算：</p>
+<ul>
+<li>FP16 每个参数 2 字节，1.7B 参数 ≈ 3.4GB 权重，加上 embedding 和开销，每个自回归步要完整读一遍约 6GB 权重；</li>
+<li>2080Ti 的显存带宽约 696 GB&#x2F;s；</li>
+<li>仅主干权重读取的理论下限就是 6GB ÷ 696GB&#x2F;s ≈ 8.6ms&#x2F;token。</li>
+</ul>
+<p>要把这个理论值和实测 RTF 对上账，得先看清 8.6ms 只覆盖了 talker 主干这一环。文本到语音是一条多级流水线：主干逐 token 输出语义 token，code predictor 要在每个音频帧上跨多码本（codebook）自回归预测 codec token，最后还有 codec 解码成波形。语义 token 12Hz 意味着 1 秒音频至少 12 步主干推理，每步又触发一整串 predictor 与解码计算；再加上 transformers 非融合推理路径的 Python 侧调度开销，单步实际耗时从理论下限的 8.6ms 膨胀一个数量级是常态。旁证就在 nvidia-smi 里：GPU1 利用率 63%，远没吃满算力——卡住的不是计算，是逐级搬运与调度。所以诚实的结论是：权重读取是开销的大头之一，但完整解释 RTF 1.5-2.0 需要”带宽 + 多级流水线 + 框架开销”三项叠加。而这三项里，量化对前两项都有直接缓解——这正是下一节预期 GGUF 能提速的原因，注意那是预期，不是本机实测：我们最终没有做这次切换。</p>
+<h2 id="FP16-vs-GGUF：dense-模型的反直觉"><a href="#FP16-vs-GGUF：dense-模型的反直觉" class="headerlink" title="FP16 vs GGUF：dense 模型的反直觉"></a>FP16 vs GGUF：dense 模型的反直觉</h2><p>理论对比很清晰：</p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>Safetensors FP16</th>
+<th>GGUF Q4_K_M</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>每参数字节</td>
+<td>2.0</td>
+<td>~0.6</td>
+</tr>
+<tr>
+<td>显存占用</td>
+<td>~6GB</td>
+<td>~1.8GB</td>
+</tr>
+<tr>
+<td>每步权重读取</td>
+<td>~6GB</td>
+<td>~1.8GB</td>
+</tr>
+<tr>
+<td>反量化开销</td>
+<td>无</td>
+<td>有（实时反量化）</td>
+</tr>
+<tr>
+<td>RTF（本机实测&#x2F;预期）</td>
+<td>1.5-2.0</td>
+<td>0.5-0.8</td>
+</tr>
+</tbody></table>
+<p>反直觉的地方在于：反量化要额外消耗算力，按理说量化应该更慢才对。但这条经验有一条清晰的分界线——<strong>密集访问权重的 dense 模型，压缩收益远大于反量化开销</strong>。TTS 恰好是最典型的场景：模型小、每步都要扫全部权重、串行自回归步数多，权重读取占了绝对大头，把权重压到三分之一，带宽压力直接降 3 倍，速度立竿见影。</p>
+<p>而 llama.cpp 的转换代码里确实已经有 Qwen3-TTS 的支持（把 talker 主干映射到文本推理路径、说话人编码器映射到音频编码路径），技术上这条路是通的。</p>
+<h2 id="算清了账，然后我决定不修"><a href="#算清了账，然后我决定不修" class="headerlink" title="算清了账，然后我决定不修"></a>算清了账，然后我决定不修</h2><p>修复方案有三个：转 GGUF 量化（预期 RTF 1.8 → 0.6）、挤回 GPU0（但主卡只剩 5GB 空闲，有 OOM 风险）、双卡重新分工（要动主力 LLM 服务的部署）。听起来方案 A 稳赢，但把使用数据摆进来算总账：</p>
+<ul>
+<li><strong>使用频率</strong>：语音合成是低频功能，每天调用次数两只手数得过来，等待者是我自己，不是付费用户；</li>
+<li><strong>优化成本</strong>：模型转换、服务改造、音质回归验证，一次完整的折腾加回归测试；</li>
+<li><strong>稳定性代价</strong>：当前部署是”开机自启 + 副卡固定 + 10 分钟闲置自动卸载”的稳定态，量化引入的是新的变量。音质劣化这种事，等用户听出来了再回头排查，成本更高。</li>
+</ul>
+<p>于是最终决定：<strong>保持 FP16，不动</strong>。RTF 1.8 在”低频 + 自用 + 已稳定”的约束下，是一个可接受的数字。性能优化文章的默认叙事是”快就是好”，但真实的工程决策里，慢本身不是问题，慢造成的代价才是。没有代价的慢，修它是纯支出。</p>
+<h2 id="留下决策清单"><a href="#留下决策清单" class="headerlink" title="留下决策清单"></a>留下决策清单</h2><p>这次排查沉淀下来的判断流程，比结论本身更值钱：</p>
+<ol>
+<li><strong>先量化</strong>：任何”感觉慢”先算 RTF &#x2F; P99 &#x2F; 吞吐，拒绝凭印象优化；</li>
+<li><strong>看利用率辨瓶颈</strong>：GPU 利用率不满 + 响应慢 ≈ 带宽瓶颈；利用率打满才是算力瓶颈；</li>
+<li><strong>查模型格式</strong>：Safetensors 全精度 + dense 小模型 + 长自回归 &#x3D; 量化的教科书场景；</li>
+<li><strong>优化前先算使用账</strong>：频率 × 等待人数 × 单次代价，三个因子有一个趋近于零，优化收益就趋近于零；</li>
+<li><strong>把”暂不修”也写成决策</strong>：记录前提条件（当前低频、无外部用户），条件变了——比如语音功能要对外——这个决定自动失效，届时再启动方案 A。</li>
+</ol>
+<p>工程上最贵的不是慢，而是不知道为什么慢、以及不知道自己为什么决定不修。</p>
 
                 
               </div>
@@ -548,13 +552,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Mermaid/" class="print-no-link">#Mermaid</a>
-      
-        <a href="/tags/AI%E5%AE%A2%E6%88%B7%E7%AB%AF/" class="print-no-link">#AI客户端</a>
-      
-        <a href="/tags/%E5%9B%BE%E8%A1%A8%E6%B8%B2%E6%9F%93/" class="print-no-link">#图表渲染</a>
-      
-        <a href="/tags/Markdown/" class="print-no-link">#Markdown</a>
+        <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="print-no-link">#技术笔记</a>
       
     </div>
   
@@ -566,8 +564,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Mermaid 图表全攻略：哪个客户端最懂你？</div>
-      <div>https://normdist.com/2026/03/10/ND-20260310-002-mermaid-chart-guide/</div>
+      <div>单卡GPU上的全精度TTS为何吐字慢：FP16 vs GGUF的RTF实测与显存权衡</div>
+      <div>https://normdist.com/2026/09/16/ND-20260916-001-draft/</div>
     </div>
     <div class="license-meta">
       
@@ -579,7 +577,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月10日</div>
+          <div>2026年9月16日</div>
         </div>
       
       
@@ -611,18 +609,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/10/ND-20260310-001-blog-system-troubleshooting/" title="博客系统问题排查与目录统一">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">博客系统问题排查与目录统一</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/10/ND-20260310-003-openclaw-2026-3-8-update/" title="OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升">
-                        <span class="hidden-mobile">OpenClaw 2026.3.8 更新：安全修复、CLI 补全和体验提升</span>
+                      <a href="/2026/09/14/ND-20260914-001-draft/" title="AI 委派的工作如何验收：子代理“幽灵完成”的 3 天模式与逐项核对清单">
+                        <span class="hidden-mobile">AI 委派的工作如何验收：子代理“幽灵完成”的 3 天模式与逐项核对清单</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

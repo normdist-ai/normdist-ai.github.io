@@ -389,6 +389,67 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/09/16/ND-20260916-001-draft/" target="_self">
+          单卡GPU上的全精度TTS为何吐字慢：FP16 vs GGUF的RTF实测与显存权衡
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/16/ND-20260916-001-draft/" target="_self">
+        <div>
+          “吐字速度慢得离谱，分析一下原因。” 这是我在语音助手的项目里收到的一句话。彼时语音回复的体验是：一句 5 秒的话，要干等 7 到 10 秒才能听到。生成比播放还慢，意味着用户永远在等机器说完。这篇文章记录一次完整的慢因排查，以及最后那个可能出乎你意料的决定——算清楚账之后，我不修了。 先量化”慢”：RTF 才是唯一诚实的指标TTS 性能不能看绝对耗时，要看 RTF（Real-Time Facto
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-09-16 09:00" pubdate>
+              2026-09-16
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">#技术笔记</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/09/14/ND-20260914-001-draft/" target="_self">
           AI 委派的工作如何验收：子代理“幽灵完成”的 3 天模式与逐项核对清单
         </a>
@@ -953,71 +1014,6 @@
               <a href="/tags/%E7%AD%96%E7%95%A5%E8%AF%84%E4%BC%B0/">#策略评估</a>
             
               <a href="/tags/%E6%A8%A1%E5%9E%8B%E6%BC%82%E7%A7%BB/">#模型漂移</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/" target="_self">
-          博客选题池被 reconcile 清空：唯一可信源的维护教训
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/" target="_self">
-        <div>
-          一条 reconcile 命令，把我攒了半年的 47 条博客选题全清了。根因不是脚本写错，而是我用两个源维护同一份数据，还让同步脚本只认其中一个。Git 历史救回了数据，但这个问题值得好好复盘：唯一可信源到底怎么维护。 事故现场选题池放在博客仓库的 _data/topics.yml，Hexo 站点用它在「选题池」页面渲染所有候选选题。 某天我跑了这条命令： 1npm run reconcile
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-08-28 09:00" pubdate>
-              2026-08-28
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/" class="category-chain-item">技术教程</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/">#数据同步</a>
-            
-              <a href="/tags/%E4%BA%8B%E6%95%85%E5%A4%8D%E7%9B%98/">#事故复盘</a>
             
           </div>
         
