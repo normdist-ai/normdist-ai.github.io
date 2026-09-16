@@ -19,29 +19,27 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="连续 5 天，git log 一条新提交都没有。 不是没干活。夜间心跳 cron 跑得飞起——OpenCode 一晚上改了 96 条消息、54 次工具调用，代码质量实打实在提升。李雷的参数网格搜索也跑完了，策略深挖任务闭环。但这些改动全躺在工作区里，没一个人记得 git add &amp;&amp; git commit &amp;&amp; git push。 代码资产没入库，版本追溯断裂。这叫">
+    <meta name="description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例： Profile端口用途 default8642默认代理通信 hanmeimei8643韩梅">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Git 自动化提交系统：心跳代码改动的终极闭环">
-<meta property="og:url" content="https://normdist.com/2026/07/28/ND-20260728-002-git-automated-heartbeat-commit-loop/index.html">
+<meta property="og:title" content="Hermes Agent Gateway 多实例配置实践">
+<meta property="og:url" content="https://normdist.com/2026/05/20/ND-20260520-003-hermes-gateway-multi-instance/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="连续 5 天，git log 一条新提交都没有。 不是没干活。夜间心跳 cron 跑得飞起——OpenCode 一晚上改了 96 条消息、54 次工具调用，代码质量实打实在提升。李雷的参数网格搜索也跑完了，策略深挖任务闭环。但这些改动全躺在工作区里，没一个人记得 git add &amp;&amp; git commit &amp;&amp; git push。 代码资产没入库，版本追溯断裂。这叫">
+<meta property="og:description" content="背景最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。 问题描述初始状态（v0.13.0）在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例： Profile端口用途 default8642默认代理通信 hanmeimei8643韩梅">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://normdist.com/images/git-heartbeat-commit/deviation-chain.png">
-<meta property="og:image" content="https://normdist.com/images/git-heartbeat-commit/heartbeat-loop.png">
-<meta property="article:published_time" content="2026-07-28T07:08:00.000Z">
-<meta property="article:modified_time" content="2026-08-23T10:22:54.465Z">
+<meta property="article:published_time" content="2026-05-20T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-23T10:22:54.445Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="Git">
-<meta property="article:tag" content="心跳">
-<meta property="article:tag" content="自动化">
+<meta property="article:tag" content="AI-Agent">
+<meta property="article:tag" content="Gateway">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="服务器运维">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://normdist.com/images/git-heartbeat-commit/deviation-chain.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Git 自动化提交系统：心跳代码改动的终极闭环 - 进化概率论</title>
+  <title>Hermes Agent Gateway 多实例配置实践 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -362,7 +360,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">Git 自动化提交系统：心跳代码改动的终极闭环</span>
+            <span id="subtitle">Hermes Agent Gateway 多实例配置实践</span>
           
         </div>
 
@@ -373,8 +371,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-07-28 15:08" pubdate>
-          2026年7月28日 下午
+        <time datetime="2026-05-20 10:00" pubdate>
+          2026年5月20日 上午
         </time>
       </span>
     
@@ -385,7 +383,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.8k 字
+          3k 字
         
       </span>
     
@@ -396,7 +394,7 @@
         
         
         
-          23 分钟
+          26 分钟
         
       </span>
     
@@ -444,7 +442,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Git 自动化提交系统：心跳代码改动的终极闭环</h1>
+            <h1 id="seo-header">Hermes Agent Gateway 多实例配置实践</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
@@ -457,83 +455,98 @@
             
               <div class="markdown-body">
                 
-                <p>连续 5 天，<code>git log</code> 一条新提交都没有。</p>
-<p>不是没干活。夜间心跳 cron 跑得飞起——OpenCode 一晚上改了 96 条消息、54 次工具调用，代码质量实打实在提升。李雷的参数网格搜索也跑完了，策略深挖任务闭环。但这些改动全躺在工作区里，没一个人记得 <code>git add &amp;&amp; git commit &amp;&amp; git push</code>。</p>
-<p>代码资产没入库，版本追溯断裂。这叫「系统性缺陷」，不叫「忘了」。</p>
-<p>问题出在哪？心跳任务的设计有个盲区：它负责<strong>干活</strong>，但不负责<strong>收尾</strong>。改完代码、跑完回测、写完文档——然后就结束了。提交这个动作被当成「可选步骤」，而不是「必须步骤」。一天忘提交，两天忘提交，五天以后，工作区里积了一堆说不清状态的改动，谁也不敢随便 commit 了。</p>
-<p>要彻底关掉这个口子，不能靠「下次记得」，得让提交变成心跳流程里不可绕过的一环。</p>
-<h2 id="缺陷是怎么长到-5-天的"><a href="#缺陷是怎么长到-5-天的" class="headerlink" title="缺陷是怎么长到 5 天的"></a>缺陷是怎么长到 5 天的</h2><p>复盘 2026-07-13 的日记，这条偏差的演化路径很清晰：</p>
-<p><img src="/images/git-heartbeat-commit/deviation-chain.png" srcset="/img/loading.gif" lazyload alt="偏差演化路径"></p>
-<p>第 1 天，零提交。日记里标了⚠️，但纠正措施是「明天补」。第 2 天，又是零提交，「明天补」变成了「后天补」。到第 5 天，偏差从⚠️升级成了⚠️⚠️⚠️，被定性为系统性缺陷。</p>
-<p>根本原因只有一个：<strong>心跳 prompt 里没有 git 提交步骤</strong>。</p>
-<p>心跳 cron 的设计目标是「自主完成任务」，任务清单里有代码改进、回测验证、文档撰写，唯独没有「把改动提交到版本库」。这就像流水线生产了产品，却没有打包入库的工位——产品全堆在车间地上。</p>
-<p>日记里记了一条教训，说得很直白：</p>
-<blockquote>
-<p>💡 心跳 Git 提交铁律：代码改动必须同 session 内 commit+push，不留给次日。</p>
-</blockquote>
-<p>这是用 5 天零提交换来的认知。</p>
-<h2 id="终极闭环的设计"><a href="#终极闭环的设计" class="headerlink" title="终极闭环的设计"></a>终极闭环的设计</h2><p>解决思路一句话：<strong>把 git 提交焊死在心跳流程的末尾，变成最后一步，不可跳过。</strong></p>
-<p><img src="/images/git-heartbeat-commit/heartbeat-loop.png" srcset="/img/loading.gif" lazyload alt="心跳闭环架构"></p>
-<p>整个闭环分三个阶段，严格串行执行：</p>
-<p><strong>阶段一：检测改动</strong></p>
-<p>心跳任务完成后，脚本检查工作区状态。这一步不是「看一眼有没有改」，而是用 <code>git status --porcelain</code> 拿到确定性的结果。空输出说明没有任何改动，直接跳过提交阶段；非空输出进入下一步。</p>
-<p>这里有个关键设计：<strong>检测必须用直接数据源</strong>。不能靠日志里写没写「已完成」，不能靠任务状态字段，只能靠 <code>git status</code> 的实际输出。日记里另一条教训说的就是这事——topics.md 里的记录数不等于实际发布数，间接数据源会骗你。</p>
-<p><strong>阶段二：提交改动</strong></p>
-<p>检测到改动后，执行 commit。这里要处理三个现实问题：</p>
-<p>一是<strong>提交信息</strong>。不能让心跳写「heartbeat update」这种没营养的 message，得让 AI 根据本轮改动内容自动生成描述性信息。改了什么就写什么，是修 bug 就写 fix，是加功能就写 feat。</p>
-<p>二是<strong>提交粒度</strong>。一次心跳可能涉及多个文件改动，不要拆成 N 个零碎提交，也不要一股脑塞进一个 commit。按逻辑单元分组，一次心跳产生 1-3 个提交为宜。</p>
-<p>三是<strong>冲突处理</strong>。提交前先 <code>git pull --rebase</code>，如果远程有新提交，rebase 之后再 push。万一 rebase 冲突，心跳脚本要有兜底逻辑——记录冲突状态，通知人工介入，而不是静默失败。</p>
-<p><strong>阶段三：推送验证</strong></p>
-<p>push 之后不是结束，必须<strong>验证</strong>。<code>git log origin/main -1</code> 确认远程仓库的最新提交确实是刚推上去的。这又是一条铁律的应用：验证状态用直接数据源，不用「push 命令没报错」这种间接证据。</p>
-<h2 id="心跳-prompt-改造"><a href="#心跳-prompt-改造" class="headerlink" title="心跳 prompt 改造"></a>心跳 prompt 改造</h2><p>落地到心跳 cron 的 prompt，核心改动是在任务清单末尾追加一个不可绕过的收尾段：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">## 收尾检查（必须执行，不可跳过）<br><br>1. 执行 `git status --porcelain`，检查工作区是否有改动<br>2. 如有改动：<br>   a. 根据改动内容生成提交信息<br>   b. `git add -A &amp;&amp; git commit -m &quot;&lt;描述性信息&gt;&quot;`<br>   c. `git pull --rebase origin main`<br>   d. `git push origin main`<br>3. 执行 `git log origin/main -1 --oneline`，确认远程已更新<br>4. 如果上述任何一步失败，记录错误并通知<br></code></pre></td></tr></table></figure>
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近将 Hermes Agent 从 v0.13.0 升级到了 v0.14.0，发现之前配置的两个 Gateway 实例无法同时运行了。特此记录完整的排查过程和解决方案，供有同样需求的开发者参考。</p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><h3 id="初始状态（v0-13-0）"><a href="#初始状态（v0-13-0）" class="headerlink" title="初始状态（v0.13.0）"></a>初始状态（v0.13.0）</h3><p>在 v0.13.0 版本中，成功配置了两个独立的 Gateway 实例：</p>
+<p>Profile<br>端口<br>用途</p>
+<p>default<br>8642<br>默认代理通信</p>
+<p>hanmeimei<br>8643<br>韩梅梅数字人通信</p>
+<p>两个实例通过 systemd 服务自动管理，运行稳定。</p>
+<h3 id="升级后问题"><a href="#升级后问题" class="headerlink" title="升级后问题"></a>升级后问题</h3><p>升级到 v0.14.0 后，两个 Gateway 无法同时在线。表现为：</p>
+<ul>
+<li><p>启动第二个 Gateway 时，第一个被踢下线</p>
+</li>
+<li><p>端口冲突，<code>ss -tlnp | grep :864[23]</code> 只显示一个端口</p>
+</li>
+<li><p>systemd 服务频繁重启</p>
+</li>
+</ul>
+<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="1-版本差异分析"><a href="#1-版本差异分析" class="headerlink" title="1. 版本差异分析"></a>1. 版本差异分析</h3><p>通过阅读 v0.14.0 的变更日志和 Gateway 模块源码，发现关键变化：</p>
+<p>v0.14.0 引入了 <code>--replace</code> 参数作为默认行为。当两个实例使用相同配置启动时，新的实例会自动替换旧的实例，导致”此起彼伏”的现象。</p>
+<h3 id="2-端口冲突排查"><a href="#2-端口冲突排查" class="headerlink" title="2. 端口冲突排查"></a>2. 端口冲突排查</h3><p>检查了 <code>/etc/services</code>、<code>/etc/sysctl.conf</code> 以及所有配置文件中的端口绑定设置，确认没有端口冲突。问题出在应用层而非系统层。</p>
+<h3 id="3-根因定位"><a href="#3-根因定位" class="headerlink" title="3. 根因定位"></a>3. 根因定位</h3><p><strong>核心发现：不要使用 <code>--replace</code> 参数！</strong></p>
+<p>这是本次排查最重要的经验。<code>--replace</code> 的设计初衷是用于单实例场景下的优雅重启，但在多实例配置中会导致实例间的互相替换。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案一：手动启动（推荐验证用）"><a href="#方案一：手动启动（推荐验证用）" class="headerlink" title="方案一：手动启动（推荐验证用）"></a>方案一：手动启动（推荐验证用）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br><br><span class="hljs-comment"># 停止所有现有 Gateway</span><br>pkill -f <span class="hljs-string">&#x27;hermes_cli.main gateway&#x27;</span><br><br><span class="hljs-comment"># 等待清理完成</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-comment"># 分别启动两个实例</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
 
-<p>这段 prompt 的设计遵循三条原则：</p>
-<p><strong>强制优先级</strong>。标题里写明「必须执行，不可跳过」，不是建议，是命令。心跳 AI 读到这段，必须在任务结束时执行，不能因为「看起来没改动」就跳过检测步骤。</p>
-<p><strong>确定性验证</strong>。每一步都有明确的成功标准。<code>git status --porcelain</code> 的输出是确定性的，<code>git log origin/main</code> 的输出也是确定性的。不靠 AI 自己判断「差不多行了」。</p>
-<p><strong>失败可见</strong>。任何一步出错都要记录，而不是吞掉异常。静默失败比不提交更危险——你以为闭环了，其实没有。</p>
-<h2 id="效果：从-5-天归零到每天闭环"><a href="#效果：从-5-天归零到每天闭环" class="headerlink" title="效果：从 5 天归零到每天闭环"></a>效果：从 5 天归零到每天闭环</h2><p>改造后的第一个验证周期，Git 提交数据立刻恢复：</p>
-<table>
-<thead>
-<tr>
-<th>指标</th>
-<th>改造前（07-08 ~ 07-12）</th>
-<th>改造后</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>日均提交</td>
-<td>0</td>
-<td>≥1</td>
-</tr>
-<tr>
-<td>连续零提交天数</td>
-<td>5</td>
-<td>0</td>
-</tr>
-<tr>
-<td>工作区积压</td>
-<td>严重（多文件未入库）</td>
-<td>清零</td>
-</tr>
-</tbody></table>
-<p><code>git log --oneline --since=&quot;2026-07-14&quot;</code> 现在每天都有提交记录，工作区始终保持干净状态。长期目标进度表里，「Git 每日提交」从🔴变成了✅。</p>
-<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><h3 id="坑一：心跳改了文件但-git-status-显示干净"><a href="#坑一：心跳改了文件但-git-status-显示干净" class="headerlink" title="坑一：心跳改了文件但 git status 显示干净"></a>坑一：心跳改了文件但 git status 显示干净</h3><p><strong>现象</strong>：心跳明明修改了代码，但 <code>git status --porcelain</code> 输出为空。</p>
-<p><strong>根因</strong>：心跳脚本在临时目录里干活，改完忘了把文件同步回 Git 仓库目录。<code>git status</code> 检查的是仓库工作区，不是临时目录。</p>
-<p><strong>解法</strong>：心跳脚本开头就 <code>cd</code> 到仓库目录，所有文件操作在仓库内完成。或者收尾阶段加一步 <code>rsync</code> 把临时目录的改动同步回来，再检测。</p>
-<h3 id="坑二：push-被拒，静默吞掉错误"><a href="#坑二：push-被拒，静默吞掉错误" class="headerlink" title="坑二：push 被拒，静默吞掉错误"></a>坑二：push 被拒，静默吞掉错误</h3><p><strong>现象</strong>：<code>git push</code> 返回 non-fast-forward 错误，但心跳脚本没报错，日记里写的是「提交完成」。</p>
-<p><strong>根因</strong>：脚本用了 <code>git push origin main 2&gt;/dev/null</code>，把 stderr 吞了。命令「执行了」但没「成功」，AI 误判为完成。</p>
-<p><strong>解法</strong>：检查 <code>git push</code> 的退出码（<code>$?</code>），非 0 就记录错误。推送失败的提交不算闭环。</p>
-<h3 id="坑三：rebase-冲突卡死整个心跳"><a href="#坑三：rebase-冲突卡死整个心跳" class="headerlink" title="坑三：rebase 冲突卡死整个心跳"></a>坑三：rebase 冲突卡死整个心跳</h3><p><strong>现象</strong>：远程有人手动推了提交，心跳 <code>git pull --rebase</code> 遇到冲突，rebase 卡在中途，后续所有步骤全被阻塞。</p>
-<p><strong>根因</strong>：冲突解决逻辑没设计好，心跳 AI 不知道怎么处理冲突文件，卡在原地反复尝试。</p>
-<p><strong>解法</strong>：检测到冲突立即 <code>git rebase --abort</code> 回滚，记录冲突信息到任务池，标记为需要人工介入。心跳任务正常结束，不卡死。人工处理完冲突后，下一次心跳自动恢复提交。</p>
+<p><strong>关键参数说明：</strong></p>
+<ul>
+<li><p><code>-p &lt;profile&gt;</code>：指定 profile，确保每个实例使用独立的配置目录和数据库</p>
+</li>
+<li><p><strong>不使用 <code>--replace</code></strong>：这是多实例共存的前提</p>
+</li>
+<li><p><code>sleep 8</code>：两个 Gateway 之间需要足够的启动间隔（建议至少 5-8 秒）</p>
+</li>
+</ul>
+<h3 id="方案二：systemd-统一管理"><a href="#方案二：systemd-统一管理" class="headerlink" title="方案二：systemd 统一管理"></a>方案二：systemd 统一管理</h3><p>创建统一的 systemd 服务来管理所有 Gateway 实例。</p>
+<h4 id="1-创建启动脚本"><a href="#1-创建启动脚本" class="headerlink" title="1. 创建启动脚本"></a>1. 创建启动脚本</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br><br><span class="hljs-comment">#!/bin/bash</span><br><span class="hljs-comment"># /home/jarvis/.local/bin/hermes-gateway-start.sh</span><br><br>pkill -f hermes_cli.main || <span class="hljs-literal">true</span><br><span class="hljs-built_in">sleep</span> 3<br><br><span class="hljs-built_in">cd</span> /home/jarvis/.hermes/hermes-agent<br><br><span class="hljs-comment"># 启动 default Gateway</span><br><span class="hljs-built_in">nohup</span> hermes -p default gateway run &gt; /tmp/hermes-default.log 2&gt;&amp;1 &amp;<br><span class="hljs-built_in">sleep</span> 8<br><br><span class="hljs-comment"># 启动 hanmeimei Gateway  </span><br><span class="hljs-built_in">nohup</span> hermes -p hanmeimei gateway run &gt; /tmp/hermes-hanmeimei.log 2&gt;&amp;1 &amp;<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br><br><span class="hljs-built_in">chmod</span> +x ~/.local/bin/hermes-gateway-start.sh<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-创建-systemd-服务文件"><a href="#2-创建-systemd-服务文件" class="headerlink" title="2. 创建 systemd 服务文件"></a>2. 创建 systemd 服务文件</h4><p><code>~/.config/systemd/user/hermes-gateway-all.service</code>:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br><br><span class="hljs-section">[Unit]</span><br><span class="hljs-attr">Description</span>=Hermes Agent Gateway - All Profiles<br><span class="hljs-attr">After</span>=network.target<br><br><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Type</span>=<span class="hljs-literal">on</span>eshot<br><span class="hljs-attr">ExecStart</span>=/home/jarvis/.local/bin/hermes-gateway-start.sh<br><span class="hljs-attr">RemainAfterExit</span>=<span class="hljs-literal">yes</span><br><br><span class="hljs-section">[Install]</span><br><span class="hljs-attr">WantedBy</span>=default.target<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-安装和启用"><a href="#3-安装和启用" class="headerlink" title="3. 安装和启用"></a>3. 安装和启用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br><br>systemctl --user daemon-reload<br>systemctl --user <span class="hljs-built_in">enable</span> hermes-gateway-all.service<br>systemctl --user start hermes-gateway-all.service<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="验证结果"><a href="#验证结果" class="headerlink" title="验证结果"></a>验证结果</h3><p>启动后通过以下命令确认两个实例都正常运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br><br>ss -tlnp | grep -E <span class="hljs-string">&#x27;:(8642|8643)&#x27;</span><br><span class="hljs-comment"># 预期输出两行，分别对应两个端口</span><br><br>hermes gateway list<br><span class="hljs-comment"># 预期显示两个在线实例</span><br><br></code></pre></td></tr></table></figure>
+
+<h2 id="配置详情"><a href="#配置详情" class="headerlink" title="配置详情"></a>配置详情</h2><h3 id="Profile-配置要点"><a href="#Profile-配置要点" class="headerlink" title="Profile 配置要点"></a>Profile 配置要点</h3><p>每个 Gateway profile 需要以下关键配置：</p>
+<ul>
+<li><p><strong>独立的 <code>HERMES_HOME</code> 目录</strong> — 确保数据库、状态文件互不干扰</p>
+</li>
+<li><p><strong>不同的消息平台应用凭证</strong> — 避免会话冲突</p>
+</li>
+<li><p><strong>合理的端口分配</strong> — 建议在同一网段内连续分配，便于管理</p>
+</li>
+</ul>
+<h3 id="systemd-服务对比"><a href="#systemd-服务对比" class="headerlink" title="systemd 服务对比"></a>systemd 服务对比</h3><p>方式<br>优点<br>缺点</p>
+<p>单实例独立 service<br>配置简单、隔离性好<br>需要维护多个 service 文件</p>
+<p>统一 oneshot service<br>统一管理、一个命令启停<br>启动顺序依赖脚本逻辑</p>
+<p>推荐使用 <strong>方案二</strong>（统一 oneshot service），特别是当 Gateway 实例数量较多时。</p>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="Q1-为什么不能直接用-replace？"><a href="#Q1-为什么不能直接用-replace？" class="headerlink" title="Q1: 为什么不能直接用 --replace？"></a>Q1: 为什么不能直接用 <code>--replace</code>？</h3><p><code>--replace</code> 的实现原理是找到并终止同配置的其他实例，然后接管其连接。在多实例场景下，这会导致”谁后启动谁存活”的不可预期行为。</p>
+<h3 id="Q2-两个-Gateway-之间需要多少启动间隔？"><a href="#Q2-两个-Gateway-之间需要多少启动间隔？" class="headerlink" title="Q2: 两个 Gateway 之间需要多少启动间隔？"></a>Q2: 两个 Gateway 之间需要多少启动间隔？</h3><p>实测建议 <strong>至少 8 秒</strong>。这是因为每个 Gateway 启动时需要：</p>
+<ul>
+<li><p>初始化数据库连接池</p>
+</li>
+<li><p>加载 profile 配置</p>
+</li>
+<li><p>注册消息平台回调</p>
+</li>
+<li><p>建立 WebSocket 监听</p>
+</li>
+</ul>
+<p>这些步骤在资源紧张时可能需要较长时间。间隔过短可能导致第二个实例启动时发现端口已被占用（第一个尚未完全释放）。</p>
+<h3 id="Q3-如何排查-Gateway-启动失败？"><a href="#Q3-如何排查-Gateway-启动失败？" class="headerlink" title="Q3: 如何排查 Gateway 启动失败？"></a>Q3: 如何排查 Gateway 启动失败？</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br><br><span class="hljs-comment"># 查看详细日志</span><br><span class="hljs-built_in">tail</span> -f /tmp/hermes-default.log<br><span class="hljs-built_in">tail</span> -f /tmp/hermes-hanmeimei.log<br><br><span class="hljs-comment"># 检查端口占用</span><br>ss -tlnp | grep :864[23]<br><br><span class="hljs-comment"># 查看 systemd 状态</span><br>systemctl --user status hermes-gateway-all.service<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><ul>
+<li><p><strong>升级前务必阅读变更日志</strong> — v0.14.0 的 <code>--replace</code> 默认行为是本次问题的根源</p>
+</li>
+<li><p><strong>多实例场景下避免使用替换参数</strong> — 这是通用原则，不仅限于 Hermes</p>
+</li>
+<li><p><strong>给每个实例独立的资源空间</strong> — 数据库、配置目录、日志文件都要隔离</p>
+</li>
+<li><p><strong>启动间隔不可省略</strong> — 即使是 fast startup 的服务，也建议保留合理间隔</p>
+</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs">Hermes Agent 官方文档</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://hermes-agent.nousresearch.com/docs/user-guide/messaging/">Messaging Gateway 配置指南</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.freedesktop.org/software/systemd/man/latest/systemd-user@.service.html">systemd user services 文档</a></p>
+</li>
+</ul>
 <hr>
-<p><strong>参考文献</strong></p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://git-scm.com/docs/git-status">Git Documentation — git-status</a></li>
-<li><a target="_blank" rel="noopener" href="https://git-scm.com/docs/git-rebase">Git Documentation — git-rebase</a></li>
-<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Pro Git Book — Recording Changes to the Repository</a></li>
-</ol>
+<p><em>本文基于实际生产环境调试经验编写，如有疏漏欢迎指正。</em></p>
 
                 
               </div>
@@ -567,11 +580,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Git/" class="print-no-link">#Git</a>
+        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
       
-        <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" class="print-no-link">#自动化</a>
+        <a href="/tags/Gateway/" class="print-no-link">#Gateway</a>
       
-        <a href="/tags/%E5%BF%83%E8%B7%B3/" class="print-no-link">#心跳</a>
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI-Agent</a>
+      
+        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4/" class="print-no-link">#服务器运维</a>
       
     </div>
   
@@ -583,8 +598,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Git 自动化提交系统：心跳代码改动的终极闭环</div>
-      <div>https://normdist.com/2026/07/28/ND-20260728-002-git-automated-heartbeat-commit-loop/</div>
+      <div>Hermes Agent Gateway 多实例配置实践</div>
+      <div>https://normdist.com/2026/05/20/ND-20260520-003-hermes-gateway-multi-instance/</div>
     </div>
     <div class="license-meta">
       
@@ -596,7 +611,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年7月28日</div>
+          <div>2026年5月20日</div>
         </div>
       
       
@@ -628,9 +643,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/07/31/ND-20260731-001-github-push-troubleshooting/" title="git push 卡死、token 失效、TLS 握手失败：一个 AI Agent 的 GitHub 五连坑实录">
+                      <a href="/2026/05/20/ND-20260520-002-lmstudio-gguf-safe-filter-fix/" title="LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">git push 卡死、token 失效、TLS 握手失败：一个 AI Agent 的 GitHub 五连坑实录</span>
+                        <span class="hidden-mobile">LM Studio 报 Unknown StringValue filter: safe？一个脚本原地修复 GGUF</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -638,8 +653,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/07/28/ND-20260728-001-article/" title="QFII 跟庄策略 +32.20%：从设计到回测验证全链路">
-                        <span class="hidden-mobile">QFII 跟庄策略 +32.20%：从设计到回测验证全链路</span>
+                      <a href="/2026/05/15/ND-20260515-001-comfyui-sd15-image-generation/" title="用 ComfyUI 生成第一张 AI 图片：从踩坑到成功">
+                        <span class="hidden-mobile">用 ComfyUI 生成第一张 AI 图片：从踩坑到成功</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
