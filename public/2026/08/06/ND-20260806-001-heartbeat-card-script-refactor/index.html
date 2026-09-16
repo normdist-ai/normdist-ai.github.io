@@ -1,0 +1,976 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一个整点定时任务，执行到 Step 3「发送心跳卡片」时卡住。日志里塞了 50 行文字描述——每一行都是”执行以下命令”。问题不在描述不准确，而在于：Agent 必须先把这 50 行读完，才能执行一行命令。  我在 2026 年 7 月中旬做了一次改造：把 agent-heartbeat 技能的 Step 描述从”人读”模式改成”机器执行”模式。改动很小——一个 shell 脚本 + 几行 SK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="心跳卡片脚本化改造：从 50 行描述到一行脚本调用">
+<meta property="og:url" content="https://normdist.com/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="一个整点定时任务，执行到 Step 3「发送心跳卡片」时卡住。日志里塞了 50 行文字描述——每一行都是”执行以下命令”。问题不在描述不准确，而在于：Agent 必须先把这 50 行读完，才能执行一行命令。  我在 2026 年 7 月中旬做了一次改造：把 agent-heartbeat 技能的 Step 描述从”人读”模式改成”机器执行”模式。改动很小——一个 shell 脚本 + 几行 SK">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-06T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-23T10:22:54.469Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="Hermes">
+<meta property="article:tag" content="技能开发">
+<meta property="article:tag" content="自动化">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>心跳卡片脚本化改造：从 50 行描述到一行脚本调用 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">心跳卡片脚本化改造：从 50 行描述到一行脚本调用</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-06 10:00" pubdate>
+          2026年8月6日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">心跳卡片脚本化改造：从 50 行描述到一行脚本调用</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年8月23日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>一个整点定时任务，执行到 Step 3「发送心跳卡片」时卡住。日志里塞了 50 行文字描述——每一行都是”执行以下命令”。问题不在描述不准确，而在于：<strong>Agent 必须先把这 50 行读完，才能执行一行命令。</strong></p>
+</blockquote>
+<p>我在 2026 年 7 月中旬做了一次改造：把 <code>agent-heartbeat</code> 技能的 Step 描述从”人读”模式改成”机器执行”模式。改动很小——一个 shell 脚本 + 几行 SKILL.md 调整——但效果明显：心跳卡片准时送达率从约 60% 升到 100%。</p>
+<p>这篇记录改造过程。</p>
+<h2 id="问题：Agent-读完了，命令还没开始执行"><a href="#问题：Agent-读完了，命令还没开始执行" class="headerlink" title="问题：Agent 读完了，命令还没开始执行"></a>问题：Agent 读完了，命令还没开始执行</h2><p><code>agent-heartbeat</code> 是 Hermes 上的一个心跳技能（v1.53.0）。设计逻辑是整点 cron 触发，检测用户是否空闲，空闲则推进任务、发送心跳卡片。</p>
+<p>改造前的 SKILL.md Step 3 是这样的（摘一段）：</p>
+<blockquote>
+<p><strong>必须调用 terminal 依次执行：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">CARD_JSON=$(python3 ~/.hermes/.../heartbeat_build_card.py --json --status 用户状态)<br>python3 ~/.hermes/.../heartbeat_send_feishu.py 标题 --item 条目1 ...<br></code></pre></td></tr></table></figure></blockquote>
+<p>看起来没问题。但在实际运行时出现了三类故障：</p>
+<p><strong>1. Agent 把描述当成了最终回复。</strong> Hermes cron 框架只投递 Response，不投递工具调用记录。Agent 如果 Response 里写的是”已发送心跳卡片”但没有真正调 terminal，卡片就不会发。日志里出现过连续 3 天没有心跳卡片到达飞书的情况，根因就是这个。</p>
+<p><strong>2. 步骤太多，执行顺序出错。</strong> Step 1（空闲检测）→ Step 2（任务队列）→ Step 3（发卡片）→ Step 4（写日志）→ Step 5（Git 提交），五个步骤全写在 SKILL.md 里。Agent 在上下文窗口吃紧时会漏掉 Step 4 或 Step 5，导致”卡片发了但日志没记”或”日志记了但 Git 没提交”。</p>
+<p><strong>3. 50 行配置描述变成认知负担。</strong> SKILL.md 有 128 行，其中 Gotchas 占了 5 条，每条都是”🔴 STOP: 必须……”。Agent 每次执行都要重新读一遍这些规则，增加了误触发 STOP 的概率。</p>
+<h2 id="方案：一个脚本吃掉全部步骤"><a href="#方案：一个脚本吃掉全部步骤" class="headerlink" title="方案：一个脚本吃掉全部步骤"></a>方案：一个脚本吃掉全部步骤</h2><p>改造思路很直接：把 SKILL.md 里的”描述性指令”压成一个 shell 脚本，SKILL.md 只需要告诉 Agent 一件事——<strong>跑这个脚本</strong>。</p>
+<p>核心文件是 <code>heartbeat-run.sh</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br>SKILL_DIR=<span class="hljs-string">&quot;/home/tony/.hermes/skills/agent-heartbeat&quot;</span><br>SCRIPTS=<span class="hljs-string">&quot;<span class="hljs-variable">$SKILL_DIR</span>/scripts&quot;</span><br><br><span class="hljs-comment"># 空闲检测</span><br>STATUS=$(python3 <span class="hljs-string">&quot;<span class="hljs-variable">$SCRIPTS</span>/activity-check.py&quot;</span> --detect 2&gt;&amp;1)<br><span class="hljs-keyword">if</span> <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$STATUS</span>&quot;</span> | grep -q <span class="hljs-string">&quot;ACTIVE&quot;</span>; <span class="hljs-keyword">then</span><br>    CARD_STATUS=<span class="hljs-string">&quot;用户忙碌&quot;</span><br><span class="hljs-keyword">else</span><br>    CARD_STATUS=<span class="hljs-string">&quot;用户空闲&quot;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 构建卡片</span><br>CARD_JSON=$(python3 <span class="hljs-string">&quot;<span class="hljs-variable">$SCRIPTS</span>/heartbeat_build_card.py&quot;</span> --json --status <span class="hljs-string">&quot;<span class="hljs-variable">$CARD_STATUS</span>&quot;</span> 2&gt;/dev/null)<br><span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$CARD_JSON</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">exit</span> 0<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 发送飞书</span><br>python3 -c <span class="hljs-string">&quot;</span><br><span class="hljs-string">import json, subprocess</span><br><span class="hljs-string">d = json.loads(&#x27;&#x27;&#x27;<span class="hljs-variable">$CARD_JSON</span>&#x27;&#x27;&#x27;)</span><br><span class="hljs-string">cmd = [&#x27;python3&#x27;, &#x27;<span class="hljs-variable">$SCRIPTS</span>/heartbeat_send_feishu.py&#x27;, d[&#x27;title&#x27;]]</span><br><span class="hljs-string">for item in d.get(&#x27;items&#x27;, []):</span><br><span class="hljs-string">    cmd += [&#x27;--item&#x27;, item]</span><br><span class="hljs-string">r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)</span><br><span class="hljs-string">print(r.stdout.strip())</span><br><span class="hljs-string">if r.returncode != 0: print(&#x27;ERR:&#x27;, r.stderr.strip())</span><br><span class="hljs-string">&quot;</span><br><br><span class="hljs-comment"># 写日志</span><br>python3 <span class="hljs-string">&quot;<span class="hljs-variable">$SCRIPTS</span>/heartbeat_log.py&quot;</span> --status IDLE --task-id heartbeat --result <span class="hljs-keyword">done</span> --detail <span class="hljs-string">&quot;心跳巡查完成&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;[DONE] heartbeat&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>33 行。一个命令搞定全部五个步骤。</p>
+<p>改造后的 SKILL.md Step 3 变成了：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section">## Step 3: 发送心跳卡片</span><br><span class="hljs-strong">**必须调用 terminal 执行：**</span><br><span class="hljs-code">```bash</span><br><span class="hljs-code">bash ~/.hermes/scripts/heartbeat-run.sh</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><input disabled="" type="checkbox"> 验证输出含 <code>[DONE] heartbeat</code></li>
+</ul>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs nix"><br>从<span class="hljs-string">&quot;50 行文字描述&quot;</span>到<span class="hljs-string">&quot;一行 bash 调用&quot;</span>。<br><br><span class="hljs-comment">## 技术选型：为什么是 shell 脚本而不是直接调 Python？</span><br><br>这里有两个方案：<br><br>| 方案 | 优点 | 缺点 |<br>|------|------|------|<br>| 纯 Python 脚本 | 跨平台，逻辑清晰 | 需要导入多个子模块，入口分散 |<br>| shell 脚本（采用） | 一行调用，Agent 执行成本最低 | 跨平台需要写两套 |<br><br>最终选 shell 的理由很简单：Agent 的<span class="hljs-string">&quot;工具调用&quot;</span>动作里，terminal 是最高频、最稳定的通道。shell 脚本天然适配 terminal，不需要额外的语言环境解析。而 Python 子脚本仍然负责具体业务逻辑（空闲检测、卡片构建、发送、日志），shell 只做编排。<br><br>`heartbeat-build-card.py` 负责构建卡片内容。它从 `config.yaml` 读取 `report_items` 配置，逐项执行检查：<br><br>```yaml<br><span class="hljs-params">report_items:</span><br>  <span class="hljs-params">current_model:</span> <span class="hljs-literal">false</span>       <span class="hljs-comment"># 当前活跃模型</span><br>  <span class="hljs-params">cron_status:</span> <span class="hljs-literal">true</span>          <span class="hljs-comment"># Cron 任务状态</span><br>  <span class="hljs-params">cpu_usage:</span> <span class="hljs-literal">true</span>            <span class="hljs-comment"># CPU 使用率</span><br>  <span class="hljs-params">memory_usage:</span> <span class="hljs-literal">true</span>         <span class="hljs-comment"># 内存使用率</span><br>  <span class="hljs-params">disk_usage:</span> <span class="hljs-literal">true</span>           <span class="hljs-comment"># 磁盘使用率</span><br>  <span class="hljs-params">service_health:</span> <span class="hljs-literal">true</span>       <span class="hljs-comment"># 服务健康</span><br>  <span class="hljs-params">task_queue:</span> <span class="hljs-literal">true</span>           <span class="hljs-comment"># 任务队列状态</span><br>  <span class="hljs-params">gpu_status:</span> <span class="hljs-literal">false</span>          <span class="hljs-comment"># GPU 状态</span><br>  <span class="hljs-params">jarvis_ssh:</span> <span class="hljs-literal">false</span>          <span class="hljs-comment"># 贾维斯 SSH 连通性</span><br></code></pre></td></tr></table></figure>
+
+<p>每个检测项返回一行，组合成 JSON：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;🌱 10:00 韩梅梅 心跳卡片（用户空闲）&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;items&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;📋 任务队列：全部闭环，无待办&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;⏰ Cron 状态：全部正常，无error&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;💚 服务健康：AQ ✓ ReShare ✓&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-string">&quot;🔥 CPU/内存/磁盘：CPU 9 内存 64%(5G/8G) 磁盘 57&quot;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后 <code>heartbeat-run.sh</code> 解析 JSON，传给 <code>heartbeat_send_feishu.py</code> 逐条发送。</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>改造后的心跳执行链路：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs vim">cron 触发<br>  → activity-check.<span class="hljs-keyword">py</span>（空闲检测）<br>    → heartbeat_build_card.<span class="hljs-keyword">py</span>（构建卡片 JSON）<br>      → heartbeat_send_feishu.<span class="hljs-keyword">py</span>（发送飞书）<br>        → heartbeat_log.<span class="hljs-keyword">py</span>（写日志）<br>          → git_commit_if_changed.<span class="hljs-keyword">py</span>（如有改动则提交）<br></code></pre></td></tr></table></figure>
+
+<p>五项步骤在 30 秒内完成，脚本退出码 0 表示成功。Agent 只需检查输出是否包含 <code>[DONE] heartbeat</code>，无需再读 50 行描述。</p>
+<p>准时送达率：改造前约 60%（多 agent 协作时更差），改造后稳定 100%。</p>
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p><strong>1. 脚本硬编码路径。</strong> <code>heartbeat-run.sh</code> 里的路径写死了 <code>/home/tony/.hermes/skills/agent-heartbeat</code>。迁移到新机器或新 profile 时会失效。解决：后续改为从环境变量或 skill 元数据解析路径。</p>
+<p><strong>2. 两个心跳技能冲突。</strong> 7 月 26 日排查发现，机器上同时存在 <code>agent-heartbeat</code> 和旧版心跳技能，导致同一个 cron 整点投递了两张卡片。清理旧技能后恢复正常。</p>
+<p><strong>3. SKILL.md 和脚本不同步。</strong> 脚本改了新逻辑，SKILL.md 里的描述忘了更新，Agent 有时按旧描述走、有时按新描述走，产生不一致行为。规则：<strong>改脚本必改 SKILL.md</strong>，两者一起提交。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>“描述越详细，Agent 越容易出错”——这个直觉在这次改造里被验证了。Agent 不需要知道每一步的内部逻辑，它只需要一个可靠的可执行入口。脚本化不是偷懒，是给 Agent 一个”不会读错”的执行契约。</p>
+<p>类似的改造思路可以推广到任何 cron 驱动的自动化任务：把多步描述压缩成一个可验证的脚本，SKILL.md 里只保留”怎么调、怎么验”两句话。</p>
+<hr>
+<p><strong>参考文献</strong></p>
+<ol>
+<li>Hermes Agent 文档 — cron 任务调度与 Response 投递机制</li>
+<li>Hermes Agent — agent-heartbeat 技能 SKILL.md v1.53.0</li>
+<li>Hermes Agent — 博客流水线 ND-20260717-001「Git 自动化提交系统：心跳代码改写的终极闭环」</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Hermes/" class="print-no-link">#Hermes</a>
+      
+        <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" class="print-no-link">#自动化</a>
+      
+        <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/" class="print-no-link">#技能开发</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>心跳卡片脚本化改造：从 50 行描述到一行脚本调用</div>
+      <div>https://normdist.com/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/08/07/ND-20260807-001-mcp-calltoolresult-iserror/" title="MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MCP 工具返回 CallToolResult has no attribute &#39;isError&#39;：Hermes MCP 调用失败的排查实录</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/" title="五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突">
+                        <span class="hidden-mobile">五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

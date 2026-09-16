@@ -1,0 +1,1043 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复凌晨巡检大周期数据通道，四个标的三个秒回，只有一个卡了 30 秒超时。查完数据才发现：不是网络慢，是 000001 这个代码被同时当成了上证指数和平安银行——同一个 key，两个完全不同的标的。 前置条件 AutoQuant (AQ) + ReShare 本地数据服务（v0.25.4，端口 8200） 数据链路：AQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复">
+<meta property="og:url" content="https://normdist.com/2026/09/11/ND-20260911-001-000001-symbol-collision-shanghai-index-vs-pingan-bank/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复凌晨巡检大周期数据通道，四个标的三个秒回，只有一个卡了 30 秒超时。查完数据才发现：不是网络慢，是 000001 这个代码被同时当成了上证指数和平安银行——同一个 key，两个完全不同的标的。 前置条件 AutoQuant (AQ) + ReShare 本地数据服务（v0.25.4，端口 8200） 数据链路：AQ">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-09-11T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-10T20:01:13.454Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="bug修复">
+<meta property="article:tag" content="数据管道">
+<meta property="article:tag" content="符号映射">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-09-11 09:00" pubdate>
+          2026年9月11日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年9月11日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="上证指数与平安银行被同一个代码混淆：000001-符号映射-bug-的排查与修复"><a href="#上证指数与平安银行被同一个代码混淆：000001-符号映射-bug-的排查与修复" class="headerlink" title="上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复"></a>上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复</h1><p>凌晨巡检大周期数据通道，四个标的三个秒回，只有一个卡了 30 秒超时。查完数据才发现：不是网络慢，是 <code>000001</code> 这个代码被同时当成了上证指数和平安银行——同一个 key，两个完全不同的标的。</p>
+<h2 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h2><ul>
+<li>AutoQuant (AQ) + ReShare 本地数据服务（v0.25.4，端口 8200）</li>
+<li>数据链路：AQ → ReShare → akshare &#x2F; yfinance</li>
+<li>大周期查询范围：2021-2026</li>
+</ul>
+<h2 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h2><p>2026-09-10 巡检时对 ReShare 做大周期查询测试，同一批标的只有 <code>000001.SH</code> 异常：</p>
+<table>
+<thead>
+<tr>
+<th>标的</th>
+<th>HTTP</th>
+<th>耗时</th>
+<th>记录数</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>000858.SZ</td>
+<td>200</td>
+<td>0.05s</td>
+<td>1379</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>600036.SH</td>
+<td>200</td>
+<td>3.2s</td>
+<td>3200+</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>510300.SH</td>
+<td>200</td>
+<td>0.05s</td>
+<td>893</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>000001.SH</td>
+<td>000</td>
+<td>30s</td>
+<td>-</td>
+<td>❌ 超时</td>
+</tr>
+</tbody></table>
+<p>更严重的是数据本身错了：<code>000001.SH</code> 存的是<strong>上证指数（3951 点）</strong>，不是<strong>平安银行（11.7 元）</strong>。查询历史数据时触发了指数接口，指数接口超时，用户拿到的是指数点位冒充的股价。</p>
+<h2 id="排查过程"><a href="#排查过程" class="headerlink" title="排查过程"></a>排查过程</h2><h3 id="第一步：确认不是网络问题"><a href="#第一步：确认不是网络问题" class="headerlink" title="第一步：确认不是网络问题"></a>第一步：确认不是网络问题</h3><p>其余三个标的毫秒级返回，只有 000001 超时——先排除链路问题，直接怀疑符号处理分支。</p>
+<h3 id="第二步：定位到-SH-INDICES-硬编码"><a href="#第二步：定位到-SH-INDICES-硬编码" class="headerlink" title="第二步：定位到 _SH_INDICES 硬编码"></a>第二步：定位到 <code>_SH_INDICES</code> 硬编码</h3><p>ReShare 的 akshare 数据源里维护了一个”已知上证指数代码”集合（<code>backend/src/services/sources_new/klines/akshare.py:75</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">_SH_INDICES = &#123;<span class="hljs-string">&quot;000001&quot;</span>, <span class="hljs-string">&quot;000016&quot;</span>, <span class="hljs-string">&quot;000300&quot;</span>, <span class="hljs-string">&quot;000905&quot;</span>, <span class="hljs-string">&quot;000852&quot;</span>,<br>               <span class="hljs-string">&quot;000010&quot;</span>, <span class="hljs-string">&quot;000688&quot;</span>, <span class="hljs-string">&quot;000985&quot;</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>判断走指数分支的逻辑（<code>akshare.py:127</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_is_index</span>(<span class="hljs-params">self, pure_code: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:<br>    <span class="hljs-keyword">return</span> pure_code <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._SH_INDICES <span class="hljs-keyword">or</span> pure_code.startswith(<span class="hljs-string">&quot;399&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><code>symbol_formatter.py</code> 同样维护了一份（<code>symbol_formatter.py:306-307</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">_SH_INDICES = &#123;<span class="hljs-string">&#x27;000001&#x27;</span>, <span class="hljs-string">&#x27;000016&#x27;</span>, <span class="hljs-string">&#x27;000300&#x27;</span>, <span class="hljs-string">&#x27;000905&#x27;</span>, <span class="hljs-string">&#x27;000852&#x27;</span>, <span class="hljs-string">&#x27;000010&#x27;</span>, <span class="hljs-string">&#x27;000688&#x27;</span>&#125;<br><span class="hljs-keyword">if</span> market <span class="hljs-keyword">in</span> (<span class="hljs-string">&#x27;SH&#x27;</span>, <span class="hljs-string">&#x27;SS&#x27;</span>) <span class="hljs-keyword">and</span> pure_code <span class="hljs-keyword">in</span> _SH_INDICES:<br>    <span class="hljs-comment"># 识别为指数</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="第三步：确认根因"><a href="#第三步：确认根因" class="headerlink" title="第三步：确认根因"></a>第三步：确认根因</h3><p><strong><code>000001</code> 是代码冲突的重灾区：</strong></p>
+<table>
+<thead>
+<tr>
+<th>语义</th>
+<th>新浪格式</th>
+<th>东方财富 secid</th>
+<th>ReShare 标准</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>上证指数</td>
+<td>sh000001</td>
+<td>1.000001（沪&#x3D;1）</td>
+<td>SH000001</td>
+</tr>
+<tr>
+<td>平安银行</td>
+<td>sz000001</td>
+<td>0.000001（深&#x3D;0）</td>
+<td>SZ000001</td>
+</tr>
+</tbody></table>
+<p><code>000001</code> 裸数字无法区分：上证指数在上交所（sh 前缀），平安银行在深交所（sz 前缀）。系统里 <code>_SH_INDICES</code> 把裸代码 <code>000001</code> 判为”上证指数”，于是对 <code>000001.SH</code> 的请求走了 <code>stock_zh_index_daily</code> 指数接口——返回 3951 点的指数数据，且该接口在代理环境下超时。</p>
+<p><strong>本质</strong>：用裸数字代码当唯一标识，遇到跨市场同号（000001、000300 这类指数&#x2F;股票撞号）就串数据。指数和股票共用代码段是 A 股常态，区分只能靠市场前缀（sh&#x2F;sz、1.&#x2F;0.、.SH&#x2F;.SZ）。</p>
+<h2 id="修复建议"><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h2><p>devlog 中给出的修复方向（2026-09-10 记录，当前代码尚未落地）：</p>
+<ol>
+<li><strong>移除 <code>_SH_INDICES</code> 中的 <code>000001</code></strong>：裸代码 <code>000001</code> 在沪深两市分别对应上证指数（sh000001）和平安银行（SZ000001），无法通过纯数字唯一标识。硬编码集合把指数&#x2F;股票判断绑定在裸代码上，必然串号——应移除该集合里的 <code>000001</code>，指数识别改由显式市场前缀驱动。</li>
+<li><strong>区分指数与股票的符号格式</strong>：ReShare 已有 <code>SYMBOL_FORMAT_STANDARD</code>（v2.1，2026-04-17 实施），规定存储统一为 <code>SH600000</code>&#x2F;<code>SZ000001</code> 标准格式，各数据源请求时再按源格式转换（yfinance 要 <code>000001.SZ</code>，akshare 要裸代码，新浪要 <code>sh000001</code>&#x2F;<code>sz000001</code>）。指数必须显式带前缀，裸代码一律按股票处理。</li>
+</ol>
+<p>验证方式：修复后重跑 <code>000001.SH</code> 大周期查询，应返回平安银行股价（≈11.7 元）且秒级响应，不再触发指数接口。</p>
+<h2 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h2><h3 id="坑一：裸代码当唯一标识"><a href="#坑一：裸代码当唯一标识" class="headerlink" title="坑一：裸代码当唯一标识"></a>坑一：裸代码当唯一标识</h3><p><strong>现象</strong>：<code>000001</code> 同时命中”上证指数”和”平安银行”，数据串号。</p>
+<p><strong>根因</strong>：A 股指数与股票共用代码段（000001&#x2F;000300&#x2F;000905 等），裸数字无法区分市场。</p>
+<p><strong>解法</strong>：统一 <code>SH000001</code>&#x2F;<code>SZ000001</code> 标准格式存储，显式带市场前缀。</p>
+<h3 id="坑二：指数判断靠硬编码集合"><a href="#坑二：指数判断靠硬编码集合" class="headerlink" title="坑二：指数判断靠硬编码集合"></a>坑二：指数判断靠硬编码集合</h3><p><strong>现象</strong>：<code>_SH_INDICES</code> 硬编码把 000001 判为指数，触发错误分支。</p>
+<p><strong>根因</strong>：指数集合是手工维护的，且与股票代码天然撞号。</p>
+<p><strong>解法</strong>：指数查询必须显式声明（如 <code>sh000001</code>），不能靠裸代码推断。</p>
+<h3 id="坑三：yfinance-小写前缀曾踩过同类坑"><a href="#坑三：yfinance-小写前缀曾踩过同类坑" class="headerlink" title="坑三：yfinance 小写前缀曾踩过同类坑"></a>坑三：yfinance 小写前缀曾踩过同类坑</h3><p><strong>现象</strong>：<code>sz000001</code>（小写）请求失败。</p>
+<p><strong>根因</strong>：格式归一化不完整，小写前缀未转大写。</p>
+<p><strong>解法</strong>：已在 yfinance_source 修复，<code>sz000001 → 000001.SZ ✅</code>（记录于 yfinance SIPOC 审查，2026-04-15）。</p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>修复前 <code>000001.SH</code> 返回上证指数 3951 点、HTTP 000 超时；修复后应返回平安银行行情（股价两位数的日 K 序列），与 000858.SZ&#x2F;600036.SH 同量级的秒级响应。修复落地后需重跑全量巡检表确认。</p>
+<h2 id="教训"><a href="#教训" class="headerlink" title="教训"></a>教训</h2><p><strong>证券代码永远不要只存裸数字。</strong> <code>000001</code> 可以是上证指数，也可以是平安银行，甚至更多。凡是涉及 A 股代码的管道，必须带市场前缀（<code>SH</code>&#x2F;<code>SZ</code>&#x2F;<code>BJ</code>）——存标准格式、按源转换、显示统一。这不是一次性的 bug，是数据管道的架构约束。</p>
+<p>同类事故回顾：回测缓存曾因”日期做 key”串号（ND-20260727-001），这次是”代码做 key”串号。标识符设计不严谨，迟早会以各种形式复发。</p>
+<hr>
+<h2 id="数据来源说明"><a href="#数据来源说明" class="headerlink" title="数据来源说明"></a>数据来源说明</h2><ul>
+<li>巡检数据（现象表格、3951 点、11.7 元、0.05s&#x2F;30s 耗时）取自 <strong>2026-09-10 凌晨 AQ 巡检记录</strong> <code>autoquant/.devlog/2026-09-10.md</code>（第 28-30 行巡检表格、第 49-53 行问题 1、第 75&#x2F;80 行修复建议；仓库：gitee.com&#x2F;normdist&#x2F;autoquant），测量方式为对 ReShare 大周期接口（2021-2026）的 HTTP 请求，行情数值为当时快照。修复建议为该记录中给出的原文方向。</li>
+<li>代码片段与行号引用自 ReShare 代码库（<code>backend/src/services/sources_new/klines/akshare.py:75,127</code>、<code>backend/src/services/sources/symbol_formatter.py:306-307</code>；仓库：内网 gitea normdist&#x2F;ReShare，HEAD <code>8f63e52</code>，akshare.py 最近重构 commit <code>6d2f145</code>）。</li>
+<li>规格依据：ReShare 内部文档 <code>SYMBOL_FORMAT_STANDARD.md</code>（v2.1，2026-04-17）与 <code>yfinance-sipoc-review.md</code>（2026-04-15），均为本地项目文档。</li>
+<li>外部可验证来源（代码格式规则）：</li>
+</ul>
+<p><strong>参考文献</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://akshare.akfamily.xyz/data/index/index.html">AKShare 指数数据文档（历史行情数据-新浪：stock_zh_index_daily，symbol 需带 sh&#x2F;sz 前缀）</a></li>
+<li><a target="_blank" rel="noopener" href="https://quote.eastmoney.com/zs000001.html">东方财富·上证指数行情页（secid&#x3D;1.000001，沪市指数前缀 1）</a></li>
+<li><a target="_blank" rel="noopener" href="https://quote.eastmoney.com/sz000001.html">东方财富·平安银行行情页（secid&#x3D;0.000001，深市股票前缀 0）</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ranaroussi/yfinance">yfinance 股票代码后缀规范（.SS 上海 &#x2F; .SZ 深圳）</a></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93/" class="print-no-link">#数据管道</a>
+      
+        <a href="/tags/bug%E4%BF%AE%E5%A4%8D/" class="print-no-link">#bug修复</a>
+      
+        <a href="/tags/%E7%AC%A6%E5%8F%B7%E6%98%A0%E5%B0%84/" class="print-no-link">#符号映射</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>上证指数与平安银行被同一个代码混淆：000001 符号映射 bug 的排查与修复</div>
+      <div>https://normdist.com/2026/09/11/ND-20260911-001-000001-symbol-collision-shanghai-index-vs-pingan-bank/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年9月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/09/12/ND-20260912-001-article/" title="排队 14 天的 P0 被自动化流水线自动验证闭环：AQ 夜间开发循环实证">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">排队 14 天的 P0 被自动化流水线自动验证闭环：AQ 夜间开发循环实证</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/09/10/ND-20260910-001-r1-screen-cron-silent-fix/" title="R1 大周期筛选脚本连续 2 天静默：一次无产物校验的 cron 幽灵复发">
+                        <span class="hidden-mobile">R1 大周期筛选脚本连续 2 天静默：一次无产物校验的 cron 幽灵复发</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
