@@ -1,0 +1,1134 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因现象：从180掉到140周三早上收到一句反馈：Qwen3.6-35B-A3B-MTP 在 Ampere 机上跑不动了。升级以前能到 180 tok&#x2F;s，现在最多 140。 热测确认，实测 147-153 tok&#x2F;s。确实掉了。 直觉指向很明确——9-15 刚做过一次红绿部署，把 llama.cpp 从 v0.4.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因">
+<meta property="og:url" content="https://normdist.com/2026/09/17/ND-20260917-002-draft/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因现象：从180掉到140周三早上收到一句反馈：Qwen3.6-35B-A3B-MTP 在 Ampere 机上跑不动了。升级以前能到 180 tok&#x2F;s，现在最多 140。 热测确认，实测 147-153 tok&#x2F;s。确实掉了。 直觉指向很明确——9-15 刚做过一次红绿部署，把 llama.cpp 从 v0.4.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://normdist.com/images/ND-20260917-002/fig1-factoring-2x2.png">
+<meta property="og:image" content="https://normdist.com/images/ND-20260917-002/fig2-kv-cache-q8.png">
+<meta property="og:image" content="https://normdist.com/images/ND-20260917-002/fig3-mtp-n-scan.png">
+<meta property="article:published_time" content="2026-09-17T01:30:00.000Z">
+<meta property="article:modified_time" content="2026-09-17T01:58:25.620Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="llama.cpp">
+<meta property="article:tag" content="性能调优">
+<meta property="article:tag" content="排障">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://normdist.com/images/ND-20260917-002/fig1-factoring-2x2.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-09-17 09:30" pubdate>
+          2026年9月17日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年9月17日 上午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="升级不是凶手：一场2×2析因实验，定位llama-cpp掉速的真因"><a href="#升级不是凶手：一场2×2析因实验，定位llama-cpp掉速的真因" class="headerlink" title="升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因"></a>升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因</h1><h2 id="现象：从180掉到140"><a href="#现象：从180掉到140" class="headerlink" title="现象：从180掉到140"></a>现象：从180掉到140</h2><p>周三早上收到一句反馈：Qwen3.6-35B-A3B-MTP 在 Ampere 机上跑不动了。升级以前能到 180 tok&#x2F;s，现在最多 140。</p>
+<p>热测确认，实测 147-153 tok&#x2F;s。确实掉了。</p>
+<p>直觉指向很明确——9-15 刚做过一次红绿部署，把 llama.cpp 从 v0.4.0 (56381e4) 升到 v0.4.1 (64898e6)。版本升级掉 20% 性能，听着合理，回滚就能解决。</p>
+<p>准备回滚。</p>
+<h2 id="一个不该忽略的细节：时间戳"><a href="#一个不该忽略的细节：时间戳" class="headerlink" title="一个不该忽略的细节：时间戳"></a>一个不该忽略的细节：时间戳</h2><p>回滚前顺手看了下配置文件的修改时间。</p>
+<p>然后停住了。</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>时间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>升级 v0.4.0 → v0.4.1</td>
+<td>09-15</td>
+</tr>
+<tr>
+<td><code>models.ini</code> 被修改</td>
+<td><strong>09-16 16:58</strong></td>
+</tr>
+<tr>
+<td>“变慢”反馈</td>
+<td>09-17</td>
+</tr>
+</tbody></table>
+<p>升级是 09-15，配置文件在 09-16 被改过。回滚版本不会自动回滚配置——那”变慢”到底是版本引起的，还是配置引起的？</p>
+<p>对比两份配置，四个参数都变了：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>09-14（升级前）</th>
+<th>09-16（现在）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>KV cache 量化 <code>ctk</code>&#x2F;<code>ctv</code></td>
+<td><code>q8_0</code></td>
+<td><strong>注释掉</strong>（关闭）</td>
+</tr>
+<tr>
+<td><code>temp</code></td>
+<td>0.6</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td><code>presence-penalty</code></td>
+<td>0.0</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td><code>tensor-split</code></td>
+<td>50,50</td>
+<td>52,48</td>
+</tr>
+</tbody></table>
+<p>两个变量同时存在，而版本回滚只能动一个。要得到不可辩驳的结论，只能做 2×2 析因实验：版本 × 参数，四组全测。</p>
+<h2 id="动手前的第一个坑：备份的二进制会加载新版的-so"><a href="#动手前的第一个坑：备份的二进制会加载新版的-so" class="headerlink" title="动手前的第一个坑：备份的二进制会加载新版的 .so"></a>动手前的第一个坑：备份的二进制会加载新版的 .so</h2><p>计划用 09-15 留下的备份目录起旧版服务。检查备份时发现一个问题。</p>
+<p>备份是用 <code>cp -a build build.bak.20260915_1752</code> 做的。这个命令把 build 目录的 RUNPATH 原样复制进备份，而 RUNPATH 指向 <code>/home/tony/llama.cpp-latest/build/bin</code>。</p>
+<p>但那个路径现在装着的是<strong>新版</strong>。</p>
+<p>也就是说，备份目录里的旧版二进制启动时，会加载新版的 <code>libggml.so</code>。版本混装，测出来的东西什么都不代表。</p>
+<p>两种处理方式：</p>
+<ul>
+<li><code>patchelf --set-rpath</code> 改 RUNPATH——会污染备份，之后还得恢复</li>
+<li><code>LD_LIBRARY_PATH</code> 指回备份 bin 目录——干净，不碰备份文件</li>
+</ul>
+<p>选后者。旧版服务用 <code>LD_LIBRARY_PATH=/home/tony/llama.cpp-latest/build.bak.20260915_1752/bin</code> 启动，二进制和 .so 严格配对。</p>
+<p>这个坑单独值得记一笔：<code>cp -a</code> 备份保留一切，包括指向”未来路径”的 RUNPATH。在红绿部署这种”原目录会被新版本占用”的场景下，备份的二进制必须显式声明它要加载哪套库，否则它会静默加载现在那个路径上的库——不报错，只是测错。</p>
+<h2 id="四组对照"><a href="#四组对照" class="headerlink" title="四组对照"></a>四组对照</h2><p>每次切换要等模型冷启动 30-90 秒，四组测下来接近一整晚。口径统一：热测，<code>max_tokens=256</code>，每组三次。</p>
+<table>
+<thead>
+<tr>
+<th>组</th>
+<th>版本</th>
+<th>参数</th>
+<th>TPS（三次）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>旧版 v0.4.0 (56381e4)</td>
+<td>09-14 全参数</td>
+<td>157.0 &#x2F; 160.1 &#x2F; 168.8</td>
+</tr>
+<tr>
+<td>B</td>
+<td>旧版 v0.4.0 (56381e4)</td>
+<td>09-16 参数</td>
+<td>143-153</td>
+</tr>
+<tr>
+<td>C</td>
+<td>新版 v0.4.1 (64898e6)</td>
+<td>09-16 参数</td>
+<td>147-153</td>
+</tr>
+<tr>
+<td>D</td>
+<td>新版 v0.4.1 (64898e6)</td>
+<td>09-14 全参数</td>
+<td>156.1 &#x2F; 157.2 &#x2F; 160.1</td>
+</tr>
+</tbody></table>
+<p>把 A 组和 D 组单独拿出来看，就是回答”版本有没有影响”的直接证据：</p>
+<p><img src="/images/ND-20260917-002/fig1-factoring-2x2.png" srcset="/img/loading.gif" lazyload alt="同样参数下，新旧版本速度几乎无差异"></p>
+<p>三行结论：</p>
+<p><strong>1. 版本不是凶手。</strong> B 组（旧版+新参数）≈ C 组（新版+新参数），都在 143-153。v0.4.0 → v0.4.1 的速度差异落在噪声里。</p>
+<p><strong>2. 配置是凶手。</strong> A 组（旧版+旧参数）157-169，比 B 组高 15-20 TPS。而 D 组（新版+旧参数）也能到 156-160——只要参数对，新旧版本一样快。</p>
+<p><strong>3. 记忆的基线不能当目标。</strong> 反馈里的 180 tok&#x2F;s 没有复现出来，A 组最高 168。方向一致，差距存在，但”180”这个数字不该作为优化目标。</p>
+<p>到这里，回滚方案可以取消了。</p>
+<h2 id="一个反直觉的发现：KV-量化不是免费加速"><a href="#一个反直觉的发现：KV-量化不是免费加速" class="headerlink" title="一个反直觉的发现：KV 量化不是免费加速"></a>一个反直觉的发现：KV 量化不是免费加速</h2><p>09-14 参数里有一条 <code>ctk/ctv = q8_0</code>，也就是 KV cache 用 Q8 量化。这个参数通常被当成”免费的显存优化”——压缩 KV cache 占用，顺带减少访存带宽压力，加速是附带的。</p>
+<p>四组数据把这个判断推翻了。</p>
+<table>
+<thead>
+<tr>
+<th>参数组</th>
+<th>KV cache</th>
+<th>TPS 均值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09-14 参数 + Q8</td>
+<td><code>q8_0</code></td>
+<td>~158</td>
+</tr>
+<tr>
+<td>09-14 参数 + 默认</td>
+<td>FP16</td>
+<td><strong>~163</strong></td>
+</tr>
+<tr>
+<td>09-16 参数 + Q8</td>
+<td><code>q8_0</code></td>
+<td>~142</td>
+</tr>
+<tr>
+<td>09-16 参数 + 默认</td>
+<td>FP16</td>
+<td>~150</td>
+</tr>
+</tbody></table>
+<p>同参数组内，去掉 KV 量化反而快 5-8 TPS，两组方向一致。</p>
+<p><img src="/images/ND-20260917-002/fig2-kv-cache-q8.png" srcset="/img/loading.gif" lazyload alt="09-14参数下，去掉KV量化反而快约5TPS"></p>
+<p>原因在于 q8_0 的代价结构：量化省的是显存带宽，但每个 KV cache 读出来都要反量化回 FP16 才能参与 attention 计算。这个场景下 ctx 524K，两卡显存只用了 16.9G &#x2F; 18.2G，显存带宽和容量都不是瓶颈，反量化的算力开销就超过了带宽收益。</p>
+<p>去掉 Q8 后显存数据印证了这个判断：GPU0 16.9G &#x2F; GPU1 18.2G，无 OOM，<code>tensor-split 50,50</code> 依然平衡。</p>
+<p><strong>结论：KV 量化不是无条件加速。</strong> 它成立的前提是”显存带宽或显存容量是瓶颈”。容量没打满、带宽没跑满的场景下，它是净开销。</p>
+<h2 id="参数扫到-n-5：MTP-的收益递减曲线"><a href="#参数扫到-n-5：MTP-的收益递减曲线" class="headerlink" title="参数扫到 n&#x3D;5：MTP 的收益递减曲线"></a>参数扫到 n&#x3D;5：MTP 的收益递减曲线</h2><p>既然采样参数组是真凶，那就拆开。其中 <code>spec-draft-n-max</code> 是 MTP（multi-token prediction）投机解码的 draft 长度，直接决定接受率。</p>
+<p>四档全测：</p>
+<table>
+<thead>
+<tr>
+<th><code>spec-draft-n-max</code></th>
+<th>TPS（三次）</th>
+<th>均值</th>
+<th>接受率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2</td>
+<td>154.6 &#x2F; 157.4 &#x2F; 161.3</td>
+<td><strong>~158</strong></td>
+<td>70% (148&#x2F;212)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>144.4 &#x2F; 158.7 &#x2F; 157.7</td>
+<td>~153</td>
+<td>65% (168&#x2F;257)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>151.6 &#x2F; 147.6 &#x2F; 146.9</td>
+<td>~149</td>
+<td>55% (175&#x2F;317)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>151.2 &#x2F; 153.0 &#x2F; 149.0</td>
+<td>~151</td>
+<td>53% (185&#x2F;347)</td>
+</tr>
+</tbody></table>
+<p><img src="/images/ND-20260917-002/fig3-mtp-n-scan.png" srcset="/img/loading.gif" lazyload alt="MTP draft长度扫描：n&#x3D;2是Ampere的甜点"></p>
+<p>n&#x3D;2 明确最优。draft 越长，接受率从 70% 掉到 53%——每个被拒绝的 draft 都要重新算一遍，算力净浪费。</p>
+<p>顺带一个跨硬件的观察：这套参数在 2080Ti 上最优是 n&#x3D;3，在 Ampere 3080 上最优是 n&#x3D;2。同一份代码，最优投机长度随硬件变。这类结论不该跨硬件复用，除非重新测。</p>
+<h2 id="定稿"><a href="#定稿" class="headerlink" title="定稿"></a>定稿</h2><p>最终定稿：<strong>v0.4.1 + 09-14 参数 + 默认 KV cache + n&#x3D;2</strong>，163-168 tok&#x2F;s，真实推理请求实测 168.2 tok&#x2F;s。</p>
+<p>09-16 的配置备份在 <code>models.ini.bak.20260916_233317</code>，随时可切回。</p>
+<p>四件事值得写进 runbook：</p>
+<ol>
+<li><p><strong>先查时间戳，再定嫌疑。</strong> “变慢从哪天开始”是唯一客观的起点。这次升级 09-15、配置改动 09-16，如果顺着”升级后变慢”的叙述直接回滚，一整晚会耗在证伪版本上。</p>
+</li>
+<li><p><strong>两个变量同时变，就上 2×2，别串行猜。</strong> 串行排查能得出结论，但要付多轮停机的代价。析因一次覆盖四个组合，代价是一次性停机，收益是结论不可辩驳。</p>
+</li>
+<li><p><strong>“理论上应该更快”的参数，先测再用。</strong> KV Q8 在本场景下是净开销 5-8 TPS。这个判断靠显存数字（16.9G &#x2F; 18.2G，远未打满）就能提前推出来，但没人会推——直觉太强。</p>
+</li>
+<li><p><strong>备份的二进制要自己声明加载哪套库。</strong> <code>cp -a</code> 保留 RUNPATH，红绿部署后原路径会被新版本占用。用 <code>LD_LIBRARY_PATH</code> 显式配对，比 <code>patchelf</code> 干净。</p>
+</li>
+</ol>
+<hr>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>llama.cpp 官方仓库：<a target="_blank" rel="noopener" href="https://github.com/ggml-org/llama.cpp">https://github.com/ggml-org/llama.cpp</a></li>
+<li>Qwen3.6-35B-A3B-MTP 模型卡：<a target="_blank" rel="noopener" href="https://huggingface.co/unsloth/Qwen3.6-35B-A3B-MTP-GGUF">https://huggingface.co/unsloth/Qwen3.6-35B-A3B-MTP-GGUF</a></li>
+<li>MTP (Multi-Token Prediction) 论文：Better &amp; Faster Large Language Models via Multi-token Prediction (Gloeckle et al., 2024)</li>
+</ol>
+<hr>
+<p><em>数据口径：Qwen3.6-35B-A3B-MTP，Ampere 2×RTX 3080（20GB），<code>n-gpu-layers 99</code> &#x2F; <code>ctx 524288</code>，热测 <code>max_tokens=256</code>，每组 3 次。所有配置变更发生在 2026-09-15 ~ 09-17 之间。</em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
+      
+        <a href="/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/" class="print-no-link">#性能调优</a>
+      
+        <a href="/tags/%E6%8E%92%E9%9A%9C/" class="print-no-link">#排障</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因</div>
+      <div>https://normdist.com/2026/09/17/ND-20260917-002-draft/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年9月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/09/17/ND-20260917-001-draft/" title="TASK文档的13已完成vs11待确认：AI项目文档债务的累积与清理">
+                        <span class="hidden-mobile">TASK文档的13已完成vs11待确认：AI项目文档债务的累积与清理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
