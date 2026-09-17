@@ -1,0 +1,1073 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="两张 RTX 3080 20G，跑 Qwen3.8-27B 的 Q4 量化版（17.5 GB），llama.cpp 默认配置实测 47.5 tok&#x2F;s。这个数字不上不下：能用，但想到社区里单卡 3080 跑出过 69.5，就很难装作没看见。 一个晚上，四轮实验，两个配置生效、两个方案证伪。最终闲聊场景 54~57 tok&#x2F;s，生产负载（JSON&#x2F;代码）63~70 to">
+<meta property="og:type" content="article">
+<meta property="og:title" content="双 3080 从 47 到 57 tok&#x2F;s：Qwen3.8-27B 调优实录，和一场 -27% 的翻车">
+<meta property="og:url" content="https://normdist.com/2026/09/17/ND-20260917-003-dual-3080-qwen38-27b-tuning/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="两张 RTX 3080 20G，跑 Qwen3.8-27B 的 Q4 量化版（17.5 GB），llama.cpp 默认配置实测 47.5 tok&#x2F;s。这个数字不上不下：能用，但想到社区里单卡 3080 跑出过 69.5，就很难装作没看见。 一个晚上，四轮实验，两个配置生效、两个方案证伪。最终闲聊场景 54~57 tok&#x2F;s，生产负载（JSON&#x2F;代码）63~70 to">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://normdist.com/images/ND-20260917-003-dual-3080-qwen38-27b-tuning/path.png">
+<meta property="og:image" content="https://normdist.com/images/ND-20260917-003-dual-3080-qwen38-27b-tuning/scenes.png">
+<meta property="og:image" content="https://normdist.com/images/ND-20260917-003-dual-3080-qwen38-27b-tuning/community.png">
+<meta property="article:published_time" content="2026-09-17T15:50:00.000Z">
+<meta property="article:modified_time" content="2026-09-17T16:16:30.216Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="benchmark">
+<meta property="article:tag" content="inference">
+<meta property="article:tag" content="llama.cpp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://normdist.com/images/ND-20260917-003-dual-3080-qwen38-27b-tuning/path.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>双 3080 从 47 到 57 tok/s：Qwen3.8-27B 调优实录，和一场 -27% 的翻车 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">双 3080 从 47 到 57 tok/s：Qwen3.8-27B 调优实录，和一场 -27% 的翻车</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-09-17 23:50" pubdate>
+          2026年9月17日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">双 3080 从 47 到 57 tok/s：Qwen3.8-27B 调优实录，和一场 -27% 的翻车</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年9月18日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>两张 RTX 3080 20G，跑 Qwen3.8-27B 的 Q4 量化版（17.5 GB），llama.cpp 默认配置实测 <strong>47.5 tok&#x2F;s</strong>。这个数字不上不下：能用，但想到社区里单卡 3080 跑出过 69.5，就很难装作没看见。</p>
+<p>一个晚上，四轮实验，两个配置生效、两个方案证伪。最终闲聊场景 <strong>54~57 tok&#x2F;s</strong>，生产负载（JSON&#x2F;代码）<strong>63~70 tok&#x2F;s</strong>。过程里有一步把速度砍掉了 27%——这步最有价值，展开讲。</p>
+<h2 id="起点：47-5-tok-s-的默认配置"><a href="#起点：47-5-tok-s-的默认配置" class="headerlink" title="起点：47.5 tok&#x2F;s 的默认配置"></a>起点：47.5 tok&#x2F;s 的默认配置</h2><p>先交代硬件与软件底座：</p>
+<ul>
+<li>2 × RTX 3080 20G（GA102，单卡带宽 760 GB&#x2F;s）</li>
+<li>X99 平台，无 ReBAR，PCIe 带宽有限</li>
+<li>llama.cpp v0.4.1-dev，模型 unsloth 的 Q4_K_XL（17.5 GB 单文件）</li>
+<li>默认配置：layer 切分 58,42 + MTP 投机解码 n&#x3D;2</li>
+</ul>
+<p>基准测试口径先钉死，否则后面所有对比都是空谈：固定 prompt，max_tokens 256~300，热测至少 3 次取均值，±2 tok&#x2F;s 视为噪声。</p>
+<p>47.5 就是这个口径下的数字。</p>
+<h2 id="第一刀：layer-切分换成-tensor，比例必须重调"><a href="#第一刀：layer-切分换成-tensor，比例必须重调" class="headerlink" title="第一刀：layer 切分换成 tensor，比例必须重调"></a>第一刀：layer 切分换成 tensor，比例必须重调</h2><p>llama.cpp 双卡有两种切分方式：<strong>layer 模式</strong>（按层切，卡间串行流水）和 <strong>tensor 模式</strong>（按张量切，卡间并行计算）。理论上 tensor 模式对 dense 模型更友好，但有个前提——模型架构得支持。</p>
+<p>第一步不是改配置，是确认架构。从 GGUF 文件头解析出 <code>general.architecture = qwen35</code>。这是 Qwen3.8 系列的新架构标识，和 Flash-Next 用的 qwen4exp 是两回事。前者支持 tensor 切分，后者实测不支持。跳过这步直接切，轻则报错重则白跑一晚上。</p>
+<p>切换结果，第一版踩了个坑：<strong>直接沿用了 layer 模式的 58,42 比例</strong>。速度确实涨了，47.5 → 51.7，但显存失衡——GPU0 吃到 18.7 GB，GPU1 只用了 12.8 GB，差了 6 GB。</p>
+<p>tensor 模式下两张卡是并行关系，比例的语义和 layer 模式完全不同，旧比例没有迁移价值。调平到 50,50 后：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>chat tok&#x2F;s</th>
+<th>显存 GPU0&#x2F;GPU1</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>layer 58,42 + MTP2（基线）</td>
+<td>47.5</td>
+<td>17.3 &#x2F; 16.2 G</td>
+</tr>
+<tr>
+<td>tensor 58,42</td>
+<td>51.7</td>
+<td>18.7 &#x2F; 12.8 G</td>
+</tr>
+<tr>
+<td><strong>tensor 50,50（定稿）</strong></td>
+<td><strong>54.3~56.8</strong></td>
+<td>16.4 &#x2F; 15.2 G</td>
+</tr>
+</tbody></table>
+<p><img src="/images/ND-20260917-003-dual-3080-qwen38-27b-tuning/path.png" srcset="/img/loading.gif" lazyload alt="优化路径五轮配置实测"></p>
+<p><strong>+20%，零成本，纯配置。</strong> 这是整个调优里性价比最高的一刀。</p>
+<h2 id="第二刀：MTP-加深到-n-3，证伪"><a href="#第二刀：MTP-加深到-n-3，证伪" class="headerlink" title="第二刀：MTP 加深到 n&#x3D;3，证伪"></a>第二刀：MTP 加深到 n&#x3D;3，证伪</h2><p>MTP（Multi-Token Prediction）投机解码，draft 深度从 2 加到 3，理论上每次 verify 能多接受 token。实测 54.0——和 n&#x3D;2 打平，在噪声范围内。</p>
+<p>这不意外。之前在 Qwen3.6-35B MoE 上验证过同样的结论：draft 越深，verify 计算量越大。双卡 tensor 模式下，verify 的跨卡开销把多出来的接受率吃掉了。n&#x3D;2 就是这套硬件的甜点。回滚。</p>
+<h2 id="第三刀：DFlash2，一场教科书级翻车"><a href="#第三刀：DFlash2，一场教科书级翻车" class="headerlink" title="第三刀：DFlash2，一场教科书级翻车"></a>第三刀：DFlash2，一场教科书级翻车</h2><p>DFlash2 是社区热度很高的新方案：块扩散（block-diffusion）draft 模型，官方宣称 2.2 倍加速。3090 上代码场景实测 170~191 tok&#x2F;s。draft 模型只有 1.1 GB，下载部署都不贵。</p>
+<p>开思考模式不兼容，得先关——用户授权关了 thinking，切换，测。</p>
+<p><strong>39.3 tok&#x2F;s。比 MTP n&#x3D;2 慢 27%。</strong></p>
+<p>第一反应是测试场景偏差：官方数据全是代码场景，我测的是闲聊。好，那就做场景矩阵，四种负载各测三轮：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>MTP n&#x3D;2</th>
+<th>DFlash2</th>
+<th>差距</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>中文闲聊</td>
+<td>55.0</td>
+<td>39.0</td>
+<td>-29%</td>
+</tr>
+<tr>
+<td>Python 代码</td>
+<td>66.9</td>
+<td>41.4</td>
+<td>-38%</td>
+</tr>
+<tr>
+<td>JSON 结构化</td>
+<td>69.0</td>
+<td>41.0</td>
+<td>-41%</td>
+</tr>
+<tr>
+<td>中英混合运维</td>
+<td>63.2</td>
+<td>41.3</td>
+<td>-35%</td>
+</tr>
+</tbody></table>
+<p><img src="/images/ND-20260917-003-dual-3080-qwen38-27b-tuning/scenes.png" srcset="/img/loading.gif" lazyload alt="DFlash2 四场景速度矩阵"></p>
+<p>关键信号不是”慢”，是<strong>平</strong>。DFlash2 四个场景 39~41，几乎一条直线；而 MTP 在代码和 JSON 场景明显快于闲聊（接受率红利真实存在，后面细说）。</p>
+<p>一条直线意味着瓶颈不在解码逻辑，而在每步固定的管线开销。DFlash2 的管线是：draft 模型单卡生成候选块 → 主模型双卡 verify。<strong>每一步都有一次跨卡同步</strong>。在 tensor split 双卡拓扑下，这个开销是恒定的、且大到吃掉了块扩散带来的全部收益。</p>
+<p>查日志佐证：MTP worker 持续输出 0.55~0.90 的接受率记录；DFlash2 worker 压根没有接受率日志——它走的不是同一条验证管线。</p>
+<p>回头看官方和社区的高分数据，成立条件一目了然：<strong>单卡、vLLM&#x2F;SGLang 专用引擎、代码场景</strong>。三个条件缺一不可。我的环境双卡、llama.cpp、混合负载，三个全不满足。这不是配置没调对，是方案和拓扑不匹配。</p>
+<p>想单卡验证？Q4_K_XL 是 17.5 GB，塞不进 20 GB 单卡（跑不动 KV cache）。双卡是硬约束，不是选择。</p>
+<p>回滚。前后两轮实验，DFlash2 在这套硬件上的结论钉死：<strong>不可用，负优化 27~41%</strong>。</p>
+<h2 id="意外收获：负载类型决定真实速度"><a href="#意外收获：负载类型决定真实速度" class="headerlink" title="意外收获：负载类型决定真实速度"></a>意外收获：负载类型决定真实速度</h2><p>场景矩阵跑出来的另一个发现，比调优本身更有用：</p>
+<p><strong>评估推理速度，必须用目标负载的 prompt。</strong></p>
+<p>同样 MTP n&#x3D;2 配置，闲聊 55.0，JSON 结构化 69.0，差 25%。原因是 MTP 的接受率对内容结构敏感：代码和 JSON 的 token 分布可预测性高，draft 命中率高。而我的生产负载恰好是 Agent 工具调用的 JSON 输出——真实生产速度比闲聊基准快 15~25%。</p>
+<p>如果只看闲聊基准做决策，会系统性低估这套硬件在生产里的表现。</p>
+<h2 id="终局：57-是墙，破墙要换引擎"><a href="#终局：57-是墙，破墙要换引擎" class="headerlink" title="终局：57 是墙，破墙要换引擎"></a>终局：57 是墙，破墙要换引擎</h2><p>调优到此，闲聊 54~57 就是这套硬件 + llama.cpp 的天花板。物理原因很直白：760 GB&#x2F;s × 2 的带宽，跑通用推理引擎的 dense 27B，decode 阶段是带宽受限的，配置只能榨出常数级改进。</p>
+<p>对照社区同硬件数据（2026-09，lcz.me 论坛）：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>硬件</th>
+<th>引擎</th>
+<th>速度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>本次调优</td>
+<td>双 3080 20G</td>
+<td>llama.cpp Q4 + MTP2</td>
+<td>54~57（chat）&#x2F; 69（json）</td>
+</tr>
+<tr>
+<td>社区实测</td>
+<td>单卡 3080 20G</td>
+<td>NInfer groupwise-int + MTP3</td>
+<td>69.5</td>
+</tr>
+<tr>
+<td>社区实测</td>
+<td>双 3080 20G</td>
+<td>SGLang TP2 + DFlash2 补丁</td>
+<td>70 单流</td>
+</tr>
+<tr>
+<td>社区实测</td>
+<td>单卡 3090</td>
+<td>vLLM W4A16 + DFlash2</td>
+<td>118 均值</td>
+</tr>
+</tbody></table>
+<p><img src="/images/ND-20260917-003-dual-3080-qwen38-27b-tuning/community.png" srcset="/img/loading.gif" lazyload alt="社区同硬件对照"></p>
+<p>单卡 3080 跑 69.5，靠的是 groupwise 整数量化把模型压进 15.25 GB。单卡部署消除了所有跨卡开销，MTP 加深到 n&#x3D;3 也不再被管线税拖累。这从反面印证了 DFlash2 翻车的归因：<strong>跨卡同步开销是双卡部署最大的隐性成本</strong>。</p>
+<p>下一步方向已经清楚：破 70 只能换引擎——NInfer 单卡方案，或 SGLang 双卡 TP2 + 社区补丁。那是 Docker 镜像 + 新量化格式 + 适配调试的项目级工程，另开一篇再写。</p>
+<h2 id="复盘清单"><a href="#复盘清单" class="headerlink" title="复盘清单"></a>复盘清单</h2><p>这次实验留下的可迁移经验，按价值排序：</p>
+<ol>
+<li><strong>改切分模式必重调比例</strong>。tensor 和 layer 的比例语义不同，旧比例没有迁移价值，先看显存是否调平</li>
+<li><strong>负优化也要归因到底</strong>。”慢 27%”只是现象，”四场景平坦 + 无接受率日志”才指向管线开销这个根因。归因错了，回滚之后还会再踩</li>
+<li><strong>社区数据要拆条件</strong>。硬件、引擎、场景三个维度都对上才可引用，只看 headline 数字必然翻车</li>
+<li><strong>基准测试必须分场景</strong>。闲聊基准低估生产负载 15~25%，JSON&#x2F;代码场景的投机解码红利是真实存在的</li>
+<li><strong>每一步都留备份</strong>。<code>models.ini.bak.&lt;时间戳&gt;_&lt;标记&gt;</code>，翻车回滚 30 秒完成，全链路零损失</li>
+</ol>
+<p>从 47.5 到 57，+20% 靠一个配置；剩下的差距，得靠换引擎。调优的意义就在这——把”配置能解决的”和”架构才能解决的”彻底分开。</p>
+<p>实验环境：2×RTX 3080 20G &#x2F; llama.cpp v0.4.1-dev &#x2F; Qwen3.8-27B Q4_K_XL，数据均为热测 3 次以上均值。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>llama.cpp 官方文档 — 多 GPU 切分与投机解码参数（github.com&#x2F;ggml-org&#x2F;llama.cpp）</li>
+<li>lcz.me 论坛 2026-09 实测帖：tid&#x3D;1656（3090 vLLM + DFlash2）、tid&#x3D;1715（3080 NInfer 69.5）、tid&#x3D;1749（双 3080 SGLang TP2）</li>
+<li>contextstudios《Qwen3.8-27B 消费级硬件部署指南》（2026-08）— 64 层混合架构（48 Gated DeltaNet + 16 full attention）</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/" class="category-chain-item">推理优化</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/llama-cpp/" class="print-no-link">#llama.cpp</a>
+      
+        <a href="/tags/inference/" class="print-no-link">#inference</a>
+      
+        <a href="/tags/benchmark/" class="print-no-link">#benchmark</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>双 3080 从 47 到 57 tok/s：Qwen3.8-27B 调优实录，和一场 -27% 的翻车</div>
+      <div>https://normdist.com/2026/09/17/ND-20260917-003-dual-3080-qwen38-27b-tuning/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年9月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/09/17/ND-20260917-002-draft/" title="升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因">
+                        <span class="hidden-mobile">升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

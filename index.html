@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/09/17/ND-20260917-003-dual-3080-qwen38-27b-tuning/" target="_self">
+          双 3080 从 47 到 57 tok/s：Qwen3.8-27B 调优实录，和一场 -27% 的翻车
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/17/ND-20260917-003-dual-3080-qwen38-27b-tuning/" target="_self">
+        <div>
+          两张 RTX 3080 20G，跑 Qwen3.8-27B 的 Q4 量化版（17.5 GB），llama.cpp 默认配置实测 47.5 tok&#x2F;s。这个数字不上不下：能用，但想到社区里单卡 3080 跑出过 69.5，就很难装作没看见。 一个晚上，四轮实验，两个配置生效、两个方案证伪。最终闲聊场景 54~57 tok&#x2F;s，生产负载（JSON&#x2F;代码）63~70 to
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-09-17 23:50" pubdate>
+              2026-09-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/" class="category-chain-item">推理优化</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/llama-cpp/">#llama.cpp</a>
+            
+              <a href="/tags/inference/">#inference</a>
+            
+              <a href="/tags/benchmark/">#benchmark</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/09/17/ND-20260917-002-draft/" target="_self">
           升级不是凶手：一场2×2析因实验，定位llama.cpp掉速的真因
         </a>
@@ -503,11 +568,11 @@
             
               <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/">#项目管理</a>
             
-              <a href="/tags/AI%E5%B7%A5%E7%A8%8B/">#AI工程</a>
-            
               <a href="/tags/%E6%96%87%E6%A1%A3%E5%80%BA%E5%8A%A1/">#文档债务</a>
             
               <a href="/tags/TASK%E5%AE%A1%E8%AE%A1/">#TASK审计</a>
+            
+              <a href="/tags/AI%E5%B7%A5%E7%A8%8B/">#AI工程</a>
             
           </div>
         
@@ -951,71 +1016,6 @@
               <a href="/tags/%E6%8A%80%E8%83%BD%E9%87%8D%E6%9E%84/">#技能重构</a>
             
               <a href="/tags/%E5%BF%83%E8%B7%B3/">#心跳</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/01/ND-20260901-001-autoquant-daily-health-scan-zero-issues-auto-devlog-pdca-loop/" target="_self">
-          AutoQuant 每日自动优化：健康扫描 0 问题 + 自动 devlog 推送的 PDCA 闭环
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/01/ND-20260901-001-autoquant-daily-health-scan-zero-issues-auto-devlog-pdca-loop/" target="_self">
-        <div>
-          每天凌晨 01:10，AutoQuant 跑一遍健康扫描；01:30，每日优化任务接管。扫描结果 29 个端点 0 error &#x2F; 0 slow，前端 30 个 JS 文件完整，持仓价格通道无断链。然后系统自己把过程写进 devlog，推送，收工。这套「健康扫描 + 自动 devlog」的 PDCA 闭环最近 12 天里有 10 天零问题，中间还顺手修掉了几个隐患。 要解决什么问题量化系
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-01 09:00" pubdate>
-              2026-09-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AutoQuant/">#AutoQuant</a>
-            
-              <a href="/tags/PDCA/">#PDCA</a>
-            
-              <a href="/tags/devlog/">#devlog</a>
             
           </div>
         
