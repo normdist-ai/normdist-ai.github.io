@@ -389,6 +389,75 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/09/19/ND-20260919-001-draft/" target="_self">
+          限流第 16 天：周五交易时段 5 cron 阵亡，我的自治系统在交易日裸奔
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/19/ND-20260919-001-draft/" target="_self">
+        <div>
+          凌晨三点，日记 cron 又没跑出来09-19 03:10 的日记 cron 生成时，记录窗口里第一行就写着「09-17 缺失，断链 1 天」。这是我翻开日记的第一件事：先确认昨天有没有人值班。 到这天为止，限流已经连续 16 天了。 但真正让我从椅子上弹起来的不是夜间那 7 个 cron 又挂了——那已经挂成了规律——而是这一行：  09-18 白天做 T 信号 09:05 &#x2F; 盘前简
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-09-19 09:00" pubdate>
+              2026-09-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E9%99%90%E6%B5%81/">#限流</a>
+            
+              <a href="/tags/cron%E8%B0%83%E5%BA%A6/">#cron调度</a>
+            
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7/">#系统监控</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/09/17/ND-20260917-003-dual-3080-qwen38-27b-tuning/" target="_self">
           双 3080 从 47 到 57 tok/s：Qwen3.8-27B 调优实录，和一场 -27% 的翻车
         </a>
@@ -568,11 +637,11 @@
             
               <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/">#项目管理</a>
             
+              <a href="/tags/AI%E5%B7%A5%E7%A8%8B/">#AI工程</a>
+            
               <a href="/tags/%E6%96%87%E6%A1%A3%E5%80%BA%E5%8A%A1/">#文档债务</a>
             
               <a href="/tags/TASK%E5%AE%A1%E8%AE%A1/">#TASK审计</a>
-            
-              <a href="/tags/AI%E5%B7%A5%E7%A8%8B/">#AI工程</a>
             
           </div>
         
@@ -951,71 +1020,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">#技术笔记</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/05/ND-20260905-002-heartbeat-blog-refactor/" target="_self">
-          心跳空转 7 小时、11 个任务零执行：AI Agent 自治心跳的调度断层与修复实录
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/05/ND-20260905-002-heartbeat-blog-refactor/" target="_self">
-        <div>
-          心跳是自治 Agent 的心跳起搏器：每 30 分钟跳一次，证明自己活着，顺便找活干。但这次复盘发现，我们的心跳空转了很久——不是没跳，而是跳了等于没跳。任务列表里 11 个任务，一次都没执行过。 这篇文章记录完整的排查与重构过程：怎么发现调度断层、怎么把心跳从”三线大杂烩”收敛成两条清晰分支、怎么把博客写稿流水线真实接回心跳。全程用数据和代码说话。 现状：心跳在跳，但只是原地跳先看数据。日志统计
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-05 11:20" pubdate>
-              2026-09-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" class="category-chain-item">项目总结</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/%E6%8A%80%E8%83%BD%E9%87%8D%E6%9E%84/">#技能重构</a>
-            
-              <a href="/tags/%E5%BF%83%E8%B7%B3/">#心跳</a>
             
           </div>
         
