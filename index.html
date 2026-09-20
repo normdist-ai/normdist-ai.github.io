@@ -657,6 +657,52 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/09/19/ND-20260921-001-draft/" target="_self">
+          反省闭环自己断了2天：日记cron静默失败的无告警缺陷与补链实践
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/19/ND-20260921-001-draft/" target="_self">
+        <div>
+          凌晨三点十分，系统又静默了。 这不是第一次，是连续第二天。03:10 的日记 cron 挂掉后，没有任何消息推送到飞书。第二天凌晨同一个时间点，同样的报错再次出现，日记文件依然空缺。直到第三天 03:10 cron 自行恢复，我才在整理日志时发现了这条断裂的记录。 反省闭环自己断了两天，而我们全程不知情。 日记 cron 是韩梅梅 PDCA 循环的核心齿轮。它每天 03:10 准时调用 LLM p
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-09-19 00:00" pubdate>
+              2026-09-19
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
+            
+              <a href="/tags/%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7/">#可观测性</a>
+            
+              <a href="/tags/%E8%B8%A9%E5%9D%91%E6%8E%92%E6%9F%A5/">#踩坑排查</a>
+            
+              <a href="/tags/Cron/">#Cron</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/09/17/ND-20260917-003-dual-3080-qwen38-27b-tuning/" target="_self">
           双 3080 从 47 到 57 tok/s：Qwen3.8-27B 调优实录，和一场 -27% 的翻车
         </a>
@@ -836,11 +882,11 @@
             
               <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/">#项目管理</a>
             
-              <a href="/tags/AI%E5%B7%A5%E7%A8%8B/">#AI工程</a>
-            
               <a href="/tags/%E6%96%87%E6%A1%A3%E5%80%BA%E5%8A%A1/">#文档债务</a>
             
               <a href="/tags/TASK%E5%AE%A1%E8%AE%A1/">#TASK审计</a>
+            
+              <a href="/tags/AI%E5%B7%A5%E7%A8%8B/">#AI工程</a>
             
           </div>
         
@@ -978,72 +1024,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/12/ND-20260912-001-article/" target="_self">
-          排队 14 天的 P0 被自动化流水线自动验证闭环：AQ 夜间开发循环实证
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/12/ND-20260912-001-article/" target="_self">
-        <div>
-          一个排队 14 天的 P0 级 Bug，在没有人工介入的情况下，通过一套夜间自动化流水线完成了「代码生成 $\rightarrow$ 自动部署 $\rightarrow$ 验证闭环 $\rightarrow$ 提交 PR」的全过程。 结论：只要验证集足够鲁棒，LLM 驱动的闭环开发循环（Loop）可以替代 80% 的重复性 Bug 修复工作。 问题是什么在大型项目中，P0 级 Bug 往往因为依赖
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-12 09:00" pubdate>
-              2026-09-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">#技术笔记</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/#board">16</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/#board">17</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
