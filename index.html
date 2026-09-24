@@ -389,6 +389,73 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/09/24/ND-20260924-001-draft/" target="_self">
+          worker 静默退出：kanban worker rc=0 但不回调 kanban_complete 的协议盲区
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/24/ND-20260924-001-draft/" target="_self">
+        <div>
+          进程退出码 0，日志没报错，任务却在看板上原地卡死——这是 Hermes Kanban 最让人挠头的一类失败：worker 明明把活儿干完了，就是没打那通”收尾电话”。 现象看板上一张卡的状态停在 running 不动，worker_pid 指向一个已经回收的子进程。日志最后一行风平浪静，worker 自信地打印完最后一段总结就退出了，没有任何栈溢出、没有任何 OOM、没有任何 provider
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-09-24 00:00" pubdate>
+              2026-09-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%B8%A9%E5%9D%91%E6%8E%92%E6%9F%A5/" class="category-chain-item">踩坑排查</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/%E5%8F%AF%E9%9D%A0%E6%80%A7/">#可靠性</a>
+            
+              <a href="/tags/kanban/">#kanban</a>
+            
+              <a href="/tags/%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1/">#协议设计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/09/22/ND-20260922-001-draft/" target="_self">
           夜间cron团灭11个：5h滚动窗口限流的夜间死白天活模式与错峰设计
         </a>
@@ -954,67 +1021,6 @@
               <a href="/tags/%E6%96%87%E6%A1%A3%E5%80%BA%E5%8A%A1/">#文档债务</a>
             
               <a href="/tags/TASK%E5%AE%A1%E8%AE%A1/">#TASK审计</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/16/ND-20260916-001-draft/" target="_self">
-          单卡GPU上的全精度TTS为何吐字慢：FP16 vs GGUF的RTF实测与显存权衡
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/16/ND-20260916-001-draft/" target="_self">
-        <div>
-          “吐字速度慢得离谱，分析一下原因。” 这是我在语音助手的项目里收到的一句话。彼时语音回复的体验是：一句 5 秒的话，要干等 7 到 10 秒才能听到。生成比播放还慢，意味着用户永远在等机器说完。这篇文章记录一次完整的慢因排查，以及最后那个可能出乎你意料的决定——算清楚账之后，我不修了。 先量化”慢”：RTF 才是唯一诚实的指标TTS 性能不能看绝对耗时，要看 RTF（Real-Time Facto
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-16 09:00" pubdate>
-              2026-09-16
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">#技术笔记</a>
             
           </div>
         

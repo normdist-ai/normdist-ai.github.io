@@ -19,28 +19,27 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="当一个任务连续五天出现在计划表里，却从未被执行过——问题不在于”忘了”，而在于它根本没有到达执行层的通道。 一个 0% 的执行率某套自主 AI Agent 系统每天凌晨会执行一轮 PDCA 反省。Plan 环节产出次日的任务清单——数据管道排查、技能补丁、接口修复、方案设计。清单写进日记文件，结构清晰，优先级明确，看起来一切正常。 但翻开连续五天的执行数据，一个规律浮出水面： 日期非 cron">
+    <meta name="description" content="进程退出码 0，日志没报错，任务却在看板上原地卡死——这是 Hermes Kanban 最让人挠头的一类失败：worker 明明把活儿干完了，就是没打那通”收尾电话”。 现象看板上一张卡的状态停在 running 不动，worker_pid 指向一个已经回收的子进程。日志最后一行风平浪静，worker 自信地打印完最后一段总结就退出了，没有任何栈溢出、没有任何 OOM、没有任何 provider">
 <meta property="og:type" content="article">
-<meta property="og:title" content="「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复">
-<meta property="og:url" content="https://normdist.com/2026/06/27/ND-20260627-001-agent-execution-channel/index.html">
+<meta property="og:title" content="worker 静默退出：kanban worker rc&#x3D;0 但不回调 kanban_complete 的协议盲区">
+<meta property="og:url" content="https://normdist.com/2026/09/24/ND-20260924-001-draft/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="当一个任务连续五天出现在计划表里，却从未被执行过——问题不在于”忘了”，而在于它根本没有到达执行层的通道。 一个 0% 的执行率某套自主 AI Agent 系统每天凌晨会执行一轮 PDCA 反省。Plan 环节产出次日的任务清单——数据管道排查、技能补丁、接口修复、方案设计。清单写进日记文件，结构清晰，优先级明确，看起来一切正常。 但翻开连续五天的执行数据，一个规律浮出水面： 日期非 cron">
+<meta property="og:description" content="进程退出码 0，日志没报错，任务却在看板上原地卡死——这是 Hermes Kanban 最让人挠头的一类失败：worker 明明把活儿干完了，就是没打那通”收尾电话”。 现象看板上一张卡的状态停在 running 不动，worker_pid 指向一个已经回收的子进程。日志最后一行风平浪静，worker 自信地打印完最后一段总结就退出了，没有任何栈溢出、没有任何 OOM、没有任何 provider">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-06-27T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-09-16T06:07:41.806Z">
+<meta property="article:published_time" content="2026-09-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-23T19:56:07.833Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="AI Agent">
-<meta property="article:tag" content="PDCA">
-<meta property="article:tag" content="cron">
-<meta property="article:tag" content="任务调度">
-<meta property="article:tag" content="自主系统">
+<meta property="article:tag" content="kanban">
+<meta property="article:tag" content="协议设计">
+<meta property="article:tag" content="可靠性">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复 - 进化概率论</title>
+  <title>worker 静默退出：kanban worker rc=0 但不回调 kanban_complete 的协议盲区 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -361,7 +360,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复</span>
+            <span id="subtitle">worker 静默退出：kanban worker rc=0 但不回调 kanban_complete 的协议盲区</span>
           
         </div>
 
@@ -372,8 +371,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-06-27 10:00" pubdate>
-          2026年6月27日 上午
+        <time datetime="2026-09-24 00:00" pubdate>
+          2026年9月24日 凌晨
         </time>
       </span>
     
@@ -384,7 +383,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.9k 字
+          3.3k 字
         
       </span>
     
@@ -395,7 +394,7 @@
         
         
         
-          25 分钟
+          28 分钟
         
       </span>
     
@@ -443,12 +442,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复</h1>
+            <h1 id="seo-header">worker 静默退出：kanban worker rc=0 但不回调 kanban_complete 的协议盲区</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年9月16日 下午
+                    本文最后更新于 2026年9月24日 凌晨
                   
                 
               </p>
@@ -456,73 +455,79 @@
             
               <div class="markdown-body">
                 
-                <blockquote>
-</blockquote>
-<p>当一个任务连续五天出现在计划表里，却从未被执行过——问题不在于”忘了”，而在于它根本没有到达执行层的通道。</p>
-<h2 id="一个-0-的执行率"><a href="#一个-0-的执行率" class="headerlink" title="一个 0% 的执行率"></a>一个 0% 的执行率</h2><p>某套自主 AI Agent 系统每天凌晨会执行一轮 PDCA 反省。Plan 环节产出次日的任务清单——数据管道排查、技能补丁、接口修复、方案设计。清单写进日记文件，结构清晰，优先级明确，看起来一切正常。</p>
-<p>但翻开连续五天的执行数据，一个规律浮出水面：</p>
-<p>日期<br>非 cron 任务数<br>实际执行数<br>执行率</p>
-<p>Day 1<br>5<br>0<br>0%</p>
-<p>Day 2<br>3<br>0<br>0%</p>
-<p>Day 3<br>3<br>0<br>0%</p>
-<p>Day 4<br>3<br>0<br>0%</p>
-<p>Day 5<br>3<br>0<br>0%</p>
-<p>五天，十七个任务，零执行。</p>
-<p>这不是偶发遗漏。这是一个结构性断裂。</p>
-<h2 id="诊断：任务有”计划”但没”通道”"><a href="#诊断：任务有”计划”但没”通道”" class="headerlink" title="诊断：任务有”计划”但没”通道”"></a>诊断：任务有”计划”但没”通道”</h2><p>仔细审查那些从未执行的任务，发现它们有一个共同特征：<strong>只存在于日记文本中</strong>。</p>
-<p>它们没有绑定任何执行触发器。回过头看，一套自主系统里，一个任务要真正落地，必须挂载到以下三条通道之一：</p>
-<p>1<br>2<br>3<br>4<br>5<br>6<br>7</p>
-<p>┌──────────────────────────────────────────────┐<br>│           任务执行的三条通道                    │<br>├──────────┬───────────────────────────────────┤<br>│ 时间触发  │ Cron 定时任务——到点自动启动        │<br>│ 智能体委派│ Kanban&#x2F;任务队列——分配给子代理执行   │<br>│ 用户行动  │ 用户在对话中直接发起               │<br>└──────────┴───────────────────────────────────┘</p>
-<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs sqf"><br>那些”记得做”型的任务，三条通道一条都没挂上。它们躺在日记文件里，等待某个 <span class="hljs-built_in">Agent</span> 或用户”恰好想起”它们——但在一个无人值守的凌晨三点系统里，没有任何人会”恰好想起”。<br><br>**结论：「记得做」在自主系统中等于「没做」。** 这不是 <span class="hljs-built_in">Agent</span> 的遗忘，而是执行通道设计的缺失。<br><br>## 第一次修复：派生 Cron——又撞墙了<br><br>问题定位清楚了：把”记得做”任务绑定到 cron 时间触发器上即可。日记反省环节结束时，自动为次日待办创建定时任务。<br><br>看起来简单。实际执行时，连续五天，每一个创建派生 cron 的尝试都触发了 **guardrail <span class="hljs-built_in">halt</span>**（安全护栏拦截）——<span class="hljs-built_in">Agent</span> 框架的内置安全机制检测到异常操作后主动终止了 session。<br><br>```apache<br><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br><span class="hljs-number">5</span><br><br>Day <span class="hljs-number">1</span>: 创建 cron → guardrail <span class="hljs-built_in">halt</span> → 任务未注册<br>Day <span class="hljs-number">2</span>: 创建 cron → guardrail <span class="hljs-built_in">halt</span> → 任务未注册<br>Day <span class="hljs-number">3</span>: 创建 cron → guardrail <span class="hljs-built_in">halt</span> → 任务未注册<br>Day <span class="hljs-number">4</span>: 创建 cron → guardrail <span class="hljs-built_in">halt</span> → 任务未注册<br>Day <span class="hljs-number">5</span>: 创建 cron → guardrail <span class="hljs-built_in">halt</span> → 任务未注册<br><br></code></pre></td></tr></table></figure>
-
-<p>五天，零个派生 cron 成功创建。执行通道依然断裂。</p>
-<h2 id="根因：同一个操作，两套接口"><a href="#根因：同一个操作，两套接口" class="headerlink" title="根因：同一个操作，两套接口"></a>根因：同一个操作，两套接口</h2><p>排查 guardrail halt 的触发原因，发现根因出在一个微妙的地方：<strong>同一个操作——“创建 cron 定时任务”——在 Agent 框架中有两套接口，参数格式不同。</strong></p>
-<p>接口类型<br>调用方式<br>设计用途<br>参数格式</p>
-<p>CLI 命令<br>终端直接运行<br>人类管理员操作<br>命令行参数风格</p>
-<p>Tool API<br>Agent session 内调用<br>Agent 自主调用<br>JSON 结构化参数</p>
-<p>问题在于：Agent 在 session 内执行的是 CLI 命令的调用方式，但 CLI 的参数格式与 Tool API 不兼容。框架的安全护栏检测到”Agent 尝试用非标准方式操作系统资源”，触发了 halt。</p>
-<p>这不是参数写错或拼写错误——<strong>这是接口混用</strong>。Agent 试图用一把钥匙（CLI 参数格式）去开另一把锁（Tool API），框架判定为异常行为，直接拦截。</p>
-<h2 id="修复：一条规则根除"><a href="#修复：一条规则根除" class="headerlink" title="修复：一条规则根除"></a>修复：一条规则根除</h2><p>解决方案简单到让人后怕——把日记反省技能中的一条执行规则改掉：</p>
-<blockquote>
-</blockquote>
-<p><strong>创建 cron 定时任务时，使用 Tool API（<code>cronjob(action=&#39;create&#39;)</code>），不要使用 CLI 命令。</strong></p>
-<p>就这一条。改完之后：</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><br>1<br>2<br>3<br>4<br>5<br>6<br><br>Day 6: cronjob(<span class="hljs-attribute">action</span>=<span class="hljs-string">&#x27;create&#x27;</span>) → ✅ 注册成功<br>       cronjob(<span class="hljs-attribute">action</span>=<span class="hljs-string">&#x27;create&#x27;</span>) → ✅ 注册成功<br>       kanban create → ✅ 分配成功<br>       kanban create → ✅ 分配成功<br><br>派生任务注册率：0% → 100%<br><br></code></pre></td></tr></table></figure>
-
-<p>四个派生任务全部成功落地。持续五天的 guardrail halt 陷阱，被一条执行规则彻底清除。</p>
-<h2 id="四条教训"><a href="#四条教训" class="headerlink" title="四条教训"></a>四条教训</h2><p>这次踩坑提炼出四条教训，适用于任何自主 Agent 系统的运维：</p>
-<h3 id="教训一：「记得做」等于「没做」"><a href="#教训一：「记得做」等于「没做」" class="headerlink" title="教训一：「记得做」等于「没做」"></a>教训一：「记得做」等于「没做」</h3><p>在自主系统中，一个任务如果只存在于文档&#x2F;计划&#x2F;笔记里，没有绑定到执行通道，它的完成率是<strong>可预测的零</strong>。这不是概率问题，是结构性必然。</p>
-<blockquote>
-</blockquote>
-<p><strong>设计准则：Plan 环节产出的每个任务，必须在产出时同步绑定执行通道（cron &#x2F; kanban &#x2F; 用户提醒）。没有通道的任务不进入计划表。</strong></p>
-<h3 id="教训二：删症状-≠-修根因"><a href="#教训二：删症状-≠-修根因" class="headerlink" title="教训二：删症状 ≠ 修根因"></a>教训二：删症状 ≠ 修根因</h3><p>这个项目里有一个平行案例：cron 执行结果采集脚本连续三天把正常运行的 session 误判为”失败”。</p>
+                <p>进程退出码 0，日志没报错，任务却在看板上原地卡死——这是 Hermes Kanban 最让人挠头的一类失败：worker 明明把活儿干完了，就是没打那通”收尾电话”。</p>
+<h2 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h2><p>看板上一张卡的状态停在 <code>running</code> 不动，<code>worker_pid</code> 指向一个已经回收的子进程。日志最后一行风平浪静，worker 自信地打印完最后一段总结就退出了，没有任何栈溢出、没有任何 OOM、没有任何 provider 错误。下一次调度 tick 扫过来时，dispatcher 才发现这个 PID 已经死了。</p>
+<p>这就是”静默退出”——工作完成度 100%，流程完成度 0%。</p>
+<h2 id="根因：kanban-协议是双通道的"><a href="#根因：kanban-协议是双通道的" class="headerlink" title="根因：kanban 协议是双通道的"></a>根因：kanban 协议是双通道的</h2><p>Hermes Kanban 的协议要求 worker 必须做一次”终端板卡调用”（terminal board call）才能算结束：</p>
 <ul>
-<li><p>第一次”修复”：删除被标记为失败的空 session + 删除对应 cron 任务。</p>
-</li>
-<li><p>结果：第二天同样的 session 再次出现。</p>
-</li>
-<li><p>根因：采集脚本把”运行中”（<code>ended_at IS NULL</code>）的状态误判为”失败”，因为并发启动的 session 还没结束就被采集了。</p>
-</li>
+<li><code>kanban_complete(summary=..., metadata=...)</code> — 任务真正完成</li>
+<li><code>kanban_block(reason=...)</code> — 阻塞等人工介入</li>
+<li><code>kanban_request_review(...)</code> — 提请审查</li>
 </ul>
+<p>只要 worker 没调这三个之一就直接退出，无论它内部做得多漂亮，dispatcher 都只能看到一个 rc&#x3D;0 但 status&#x3D;running 的孤儿任务。源码里这个分支写得很直白（<code>hermes_cli/kanban_db_dispatch.py:1076</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> kind == <span class="hljs-string">&quot;clean_exit&quot;</span>:<br>    <span class="hljs-comment"># rc=0 while still ``running``: usually the work succeeded and only the</span><br>    <span class="hljs-comment"># paperwork was skipped</span><br>    <span class="hljs-keyword">return</span> _DeadWorker(<br>        kind, code, _PROTOCOL_VIOLATION_ERROR, <span class="hljs-string">&quot;protocol_violation&quot;</span>,<br>        ...<br>    )<br></code></pre></td></tr></table></figure>
+
+<p>进程退出码 0 意味着进程已正常终止（clean exit），但任务状态仍停留在 <code>running</code>，没有任何一方把它推进到终态。这是两个完全不同的语义维度，混在一起就是协议盲区。</p>
+<h2 id="dispatcher-的应对：有限重试-显式提示"><a href="#dispatcher-的应对：有限重试-显式提示" class="headerlink" title="dispatcher 的应对：有限重试 + 显式提示"></a>dispatcher 的应对：有限重试 + 显式提示</h2><p>dispatcher 的处理分三步走：</p>
+<p><strong>第一步：分类</strong><br><code>_classify_dead_worker_exit</code> 把退出映射为四类（<code>kanban_db_dispatch.py:249-257</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>退出码</th>
+<th>分类</th>
+<th>语义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td><code>clean_exit</code></td>
+<td>协议违规（活干完了但没交卷）</td>
+</tr>
+<tr>
+<td><code>KANBAN_RATE_LIMIT_EXIT_CODE</code></td>
+<td><code>rate_limited</code></td>
+<td>配额墙，不算失败</td>
+</tr>
+<tr>
+<td><code>KANBAN_TERMINAL_PROVIDER_EXIT_CODE</code></td>
+<td><code>terminal_provider</code></td>
+<td>provider 拒了凭证&#x2F;模型</td>
+</tr>
+<tr>
+<td>其他非零</td>
+<td><code>nonzero_exit</code></td>
+<td>真崩溃</td>
+</tr>
+</tbody></table>
+<p><strong>第二步：注入修正指令</strong></p>
+<p>协议违规时，dispatcher 会把这段提示塞进下一次 retry 的 worker context（<code>_PROTOCOL_VIOLATION_ERROR</code>，<code>kanban_db_dispatch.py:960</code>）：</p>
 <blockquote>
+<p>worker exited cleanly (rc&#x3D;0) without kanban_complete, kanban_block or kanban_request_review — protocol violation. If the prior run already did the work, verify it and report it via kanban_complete (or kanban_request_review); a run without a terminal kanban call counts as failed no matter what it did.</p>
 </blockquote>
-<p><strong>教训：当同一个 bug 连续出现三天以上，说明你在修症状而不是修根因。停下来，往上追一层。</strong></p>
-<h3 id="教训三：CLI-≠-Tool-API"><a href="#教训三：CLI-≠-Tool-API" class="headerlink" title="教训三：CLI ≠ Tool API"></a>教训三：CLI ≠ Tool API</h3><p>Agent 框架中，面向人类的 CLI 和面向 Agent 的 Tool API 是两套独立接口。同一个操作，两套参数格式，两套安全策略。Agent session 内混用 CLI 命令，轻则参数不匹配，重则触发安全护栏。</p>
+<p>重点是最后一句：<strong>“没打终端电话的 run 一律算失败，不管它实际做了什么”</strong>。这是协议层的硬性约束，不是建议。</p>
+<p><strong>第三步：有界重试</strong></p>
+<p>协议违规享有独立预算，与 <code>consecutive_failures</code> 完全解耦（<code>kanban_db_dispatch.py:920-923</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">_PROTOCOL_VIOLATION_FAILURE_LIMIT = <span class="hljs-number">3</span><br>_PROTOCOL_VIOLATION_SCAN_LIMIT = <span class="hljs-number">50</span><br></code></pre></td></tr></table></figure>
+
+<p>这两个数字是 Hermes 源码里的硬编码默认值（<code>kanban_db_dispatch.py:923/926</code>），不是推导出来的——它们的设计意图是把”偶发手滑”和”系统性 bug”区分开：3 次以内的协议违规被认为是个别 worker 写漏了，值得重试；连续 3 次就几乎可以肯定是系统性问题（比如某个 skill 模板压根没提终端调用），继续重试只是浪费配额。50 条的扫描窗口则是性能与覆盖的平衡——窗口太小可能漏掉跨多次 requeue 的违规，太大则在每次熔断判断时都要扫全表。</p>
+<p><code>_protocol_violation_streak</code> 从最近的 50 条 closed run 中倒序数”连续的纯协议违规”，到 3 就触发熔断。其他类型的失败不会消耗这个预算，配额墙（<code>rate_limited</code>）更是被显式跳过——系统知道”你没钱了”和”你忘了交卷”是两回事。</p>
+<h2 id="为什么协议层不允许”默认成功”"><a href="#为什么协议层不允许”默认成功”" class="headerlink" title="为什么协议层不允许”默认成功”"></a>为什么协议层不允许”默认成功”</h2><p>一个朴素的设计思路是：worker 退出码 0 就默认它成功了。Hermes 没走这条路，原因在 <code>kanban-worker/SKILL.md:174</code> 那句提醒：</p>
 <blockquote>
+<p>Complete a task you didn’t actually finish. Block it instead.</p>
 </blockquote>
-<p><strong>设计准则：Agent 的所有系统操作必须通过 Tool API 完成。CLI 只用于人类管理员的手动运维。</strong></p>
-<h3 id="教训四：连续复现-换方法"><a href="#教训四：连续复现-换方法" class="headerlink" title="教训四：连续复现 &#x3D; 换方法"></a>教训四：连续复现 &#x3D; 换方法</h3><p>当一个问题连续多天复现，最差的选择是继续用同一个方法反复尝试——换参数、换措辞、加 retry。更好的做法是直接换路径。</p>
-<p>这个案例中，连续五天尝试用 CLI 创建 cron 全部失败。真正有效的修复不是第六次重试 CLI，而是<strong>彻底切换到 Tool API</strong>。</p>
-<blockquote>
-</blockquote>
-<p><strong>决策准则：同一方法连续失败两次后，禁止第三次尝试。必须切换技术路径或升级排查层级。</strong></p>
-<h2 id="回头看：执行通道是自主系统的血管"><a href="#回头看：执行通道是自主系统的血管" class="headerlink" title="回头看：执行通道是自主系统的血管"></a>回头看：执行通道是自主系统的血管</h2><p>这次经历的核心教训其实只有一个：</p>
-<p><strong>自主 AI Agent 系统的价值不在于”能想到做什么”，而在于”能确保它被执行”。</strong></p>
-<p>认知框架决定 Agent 能规划什么（Plan），执行通道决定 Agent 能完成什么（Do）。一个 Plan 能力极强但执行通道断裂的系统，产出的只是漂亮的计划文档——和 0% 的实际交付。</p>
-<p>PDCA 循环中，P（Plan）和 D（Do）之间不是靠”记得”连接的，而是靠<strong>结构化的执行通道</strong>连接的。这个通道一旦断裂，整个循环就退化成了纸上谈兵。</p>
-<p>修复一条执行规则，执行率从 0% 跳到 100%。这不是魔法，是系统工程。</p>
-<hr>
-<p><em>本文基于一套基于 Hermes Agent 框架的自主量化交易系统连续六天的运维日志整理，所有实体均已匿名化处理。</em></p>
+<p><strong>完成与否必须由 worker 主动声明，不能由退出码推断</strong>。理由：</p>
+<ol>
+<li><strong>退出码太粗</strong>。<code>set -e</code> 下 <code>exit 0</code> 可能是某个早退分支触发的，不代表主流程跑完。</li>
+<li><strong>metadata 必须存在</strong>。下游的 reviewer、聚合器、调度器要从 <code>metadata</code> 里读 <code>changed_files</code>、<code>tests_run</code>、<code>recommendation</code> 这些结构化字段，不是从自然语言总结里抠。</li>
+<li><strong>审计链需要闭环</strong>。看板的 SQLite 行要记录”这次 run 产出了什么”，一个空的 metadata 等于没审计。</li>
+</ol>
+<p>如果允许 rc&#x3D;0 默认成功，整张看板的下游都是无米之炊。</p>
+<h2 id="实战启示"><a href="#实战启示" class="headerlink" title="实战启示"></a>实战启示</h2><p>写 kanban worker 时，把”终端调用”当作函数签名的一部分而不是可选返回值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 反模式：活干完了，但 return 之前忘了交卷</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">run</span>():<br>    do_work()<br>    <span class="hljs-comment"># return 0  # 隐式静默退出</span><br><br><span class="hljs-comment"># 正模式：终端调用是函数的最后一行</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">run</span>():<br>    result = do_work()<br>    kanban_complete(<br>        summary=<span class="hljs-string">f&quot;shipped X, <span class="hljs-subst">&#123;result.tests_passed&#125;</span>/<span class="hljs-subst">&#123;result.tests_run&#125;</span> tests&quot;</span>,<br>        metadata=&#123;<span class="hljs-string">&quot;changed_files&quot;</span>: result.files, <span class="hljs-string">&quot;tests_passed&quot;</span>: result.tests_passed&#125;,<br>    )<br></code></pre></td></tr></table></figure>
+
+<p>更进一步，可以借助静态类型检查（mypy、pyright）在 CI 阶段拦截：把 worker 的返回值声明为 <code>KanbanOutcome</code>，并把这个类型设计成只能通过 <code>kanban_complete</code> 等终端调用才能构造的 capability token（构造器对外部不可见）。静态检查器发现 worker 函数直接 <code>return None</code> 或返回无法构造的类型时就会报错。但这只能作为辅助手段——Python 是动态语言，类型注解在运行时会被解释器忽略，真正的兜底仍然依赖 dispatcher 的协议违规检测。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p><code>rc=0</code> 只能证明进程没死，证明不了任务完成。Kanban 协议的”终端调用”是把”完成”这个事实从 worker 进程内部显式提升到看板层的动作——这个动作缺失，整个调度闭环就断裂。dispatcher 用”协议违规 + 有限重试 + 显式提示”三步，把这个盲区从”静默失败”降级为”可恢复的协议错误”。</p>
+<p>下次再看板上某张卡停在 <code>running</code> 不动，先看 worker 日志最后一行是不是 <code>kanban_complete</code>——十有八九，它只是忘了说再见。</p>
 
                 
               </div>
@@ -541,7 +546,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  <a href="/categories/%E8%B8%A9%E5%9D%91%E6%8E%92%E6%9F%A5/" class="category-chain-item">踩坑排查</a>
   
   
 
@@ -558,13 +563,11 @@
       
         <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
       
-        <a href="/tags/PDCA/" class="print-no-link">#PDCA</a>
+        <a href="/tags/%E5%8F%AF%E9%9D%A0%E6%80%A7/" class="print-no-link">#可靠性</a>
       
-        <a href="/tags/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/" class="print-no-link">#任务调度</a>
+        <a href="/tags/kanban/" class="print-no-link">#kanban</a>
       
-        <a href="/tags/cron/" class="print-no-link">#cron</a>
-      
-        <a href="/tags/%E8%87%AA%E4%B8%BB%E7%B3%BB%E7%BB%9F/" class="print-no-link">#自主系统</a>
+        <a href="/tags/%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1/" class="print-no-link">#协议设计</a>
       
     </div>
   
@@ -576,8 +579,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>「记得做」等于「没做」——AI Agent自主任务执行通道的断裂与修复</div>
-      <div>https://normdist.com/2026/06/27/ND-20260627-001-agent-execution-channel/</div>
+      <div>worker 静默退出：kanban worker rc=0 但不回调 kanban_complete 的协议盲区</div>
+      <div>https://normdist.com/2026/09/24/ND-20260924-001-draft/</div>
     </div>
     <div class="license-meta">
       
@@ -589,7 +592,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年6月27日</div>
+          <div>2026年9月24日</div>
         </div>
       
       
@@ -621,18 +624,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/28/ND-20260628-001-dollar-credit-scoring/" title="用 5 个公开指标量化&#34;美元信用健康度&#34;——一套可复用的宏观打分系统">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">用 5 个公开指标量化&#34;美元信用健康度&#34;——一套可复用的宏观打分系统</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/06/26/ND-20260626-002-tts-engine-selection-journey/" title="试了三个 TTS 引擎，总算让 AI 助手开口说话了">
-                        <span class="hidden-mobile">试了三个 TTS 引擎，总算让 AI 助手开口说话了</span>
+                      <a href="/2026/09/22/ND-20260922-001-draft/" title="夜间cron团灭11个：5h滚动窗口限流的夜间死白天活模式与错峰设计">
+                        <span class="hidden-mobile">夜间cron团灭11个：5h滚动窗口限流的夜间死白天活模式与错峰设计</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
