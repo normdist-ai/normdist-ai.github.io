@@ -19,28 +19,29 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="家里那台双 3080 推理机，闲时风扇 50% 转速嗡嗡响。想让它安静点，结果一路碰壁：nvidia-smi 不支持调风扇，NVML 驱动库里压根没有 nvmlDeviceSetFanSpeed 这个符号——消费级卡的软件风扇控制被 NVIDIA 从驱动层面移除了，CoolerControl、nvidia-settings 这些方案全部依赖它，无一幸免。 软件降噪音这条路死了，退而求其次：功耗墙。">
+    <meta name="description" content="双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式 断电、拆机、装桥、开机，NVLink 双链路满速验证通过——然后推理速度纹丝不动，只有待机功耗从 5W 涨到了 26W。这是一次从”白花钱”到”+31%”的完整调优实录，顺便踩穿了 llama.cpp tensor split 的三个深坑。  起点：一次看起来很成功的硬件升级图灵机是台 2×RTX 2080T">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RTX 3080 功耗墙 11 档实测：140W 之前免费，130W 开始还债">
-<meta property="og:url" content="https://normdist.com/2026/09/19/article/index.html">
+<meta property="og:title" content="双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式">
+<meta property="og:url" content="https://normdist.com/2026/09/26/article/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="家里那台双 3080 推理机，闲时风扇 50% 转速嗡嗡响。想让它安静点，结果一路碰壁：nvidia-smi 不支持调风扇，NVML 驱动库里压根没有 nvmlDeviceSetFanSpeed 这个符号——消费级卡的软件风扇控制被 NVIDIA 从驱动层面移除了，CoolerControl、nvidia-settings 这些方案全部依赖它，无一幸免。 软件降噪音这条路死了，退而求其次：功耗墙。">
+<meta property="og:description" content="双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式 断电、拆机、装桥、开机，NVLink 双链路满速验证通过——然后推理速度纹丝不动，只有待机功耗从 5W 涨到了 26W。这是一次从”白花钱”到”+31%”的完整调优实录，顺便踩穿了 llama.cpp tensor split 的三个深坑。  起点：一次看起来很成功的硬件升级图灵机是台 2×RTX 2080T">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://normdist.com/images/ND-20260919-002-gpu-power-limit-benchmark/power-speed-curve.png">
-<meta property="article:published_time" content="2026-09-19T12:30:00.000Z">
-<meta property="article:modified_time" content="2026-09-19T13:22:28.145Z">
+<meta property="og:image" content="https://normdist.com/images/ND-20260926-001-dual-2080ti-nvlink-tensor-split/tensor-vs-layer-tps.png">
+<meta property="og:image" content="https://normdist.com/images/ND-20260926-001-dual-2080ti-nvlink-tensor-split/kv-quant-tradeoff.png">
+<meta property="article:published_time" content="2026-09-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-26T15:53:48.332Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="benchmark">
 <meta property="article:tag" content="inference">
 <meta property="article:tag" content="llama.cpp">
+<meta property="article:tag" content="nvidia">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://normdist.com/images/ND-20260919-002-gpu-power-limit-benchmark/power-speed-curve.png">
+<meta name="twitter:image" content="https://normdist.com/images/ND-20260926-001-dual-2080ti-nvlink-tensor-split/tensor-vs-layer-tps.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>RTX 3080 功耗墙 11 档实测：140W 之前免费，130W 开始还债 - 进化概率论</title>
+  <title>双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式 - 进化概率论</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -361,7 +362,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">RTX 3080 功耗墙 11 档实测：140W 之前免费，130W 开始还债</span>
+            <span id="subtitle">双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式</span>
           
         </div>
 
@@ -372,8 +373,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-09-19 20:30" pubdate>
-          2026年9月19日 晚上
+        <time datetime="2026-09-26 00:00" pubdate>
+          2026年9月26日 凌晨
         </time>
       </span>
     
@@ -384,7 +385,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.8k 字
+          3k 字
         
       </span>
     
@@ -395,7 +396,7 @@
         
         
         
-          15 分钟
+          25 分钟
         
       </span>
     
@@ -443,12 +444,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">RTX 3080 功耗墙 11 档实测：140W 之前免费，130W 开始还债</h1>
+            <h1 id="seo-header">双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年9月19日 晚上
+                    本文最后更新于 2026年9月26日 晚上
                   
                 
               </p>
@@ -456,104 +457,104 @@
             
               <div class="markdown-body">
                 
-                <p>家里那台双 3080 推理机，闲时风扇 50% 转速嗡嗡响。想让它安静点，结果一路碰壁：nvidia-smi 不支持调风扇，NVML 驱动库里压根没有 <code>nvmlDeviceSetFanSpeed</code> 这个符号——消费级卡的软件风扇控制被 NVIDIA 从驱动层面移除了，CoolerControl、nvidia-settings 这些方案全部依赖它，无一幸免。</p>
-<p>软件降噪音这条路死了，退而求其次：<strong>功耗墙</strong>。功率压下来，温度至少能低几度，电费也能省点。但代价是什么？大模型推理对 GPU 频率敏感，功耗墙压太狠速度会崩。掉多少、从哪一档开始掉，没有现成答案——那就自己测。</p>
-<h2 id="测试设计：三个坑先排掉"><a href="#测试设计：三个坑先排掉" class="headerlink" title="测试设计：三个坑先排掉"></a>测试设计：三个坑先排掉</h2><p>设备：2 × RTX 3080 20G，llama.cpp server 跑 Qwen3.6-35B-A3B 的 Q4_K_XL 量化（MTP 投机解码开启），模型热加载常驻显存。功耗墙 200W 到 100W，步进 10W，共 11 档；每档同一个问题测 3 次取平均，max_tokens&#x3D;400。</p>
-<p>方法听起来简单，实际先踩了三个坑，不排掉数据全是假的：</p>
-<p><strong>坑一：KV cache 让首测虚高 3 倍。</strong> 同一个问题重复发，llama.cpp 的 prompt 缓存全命中，第一次测出 163 tok&#x2F;s，后面同条件只剩 140 出头。结论：同题多次测，第一次的数字直接扔。</p>
-<p><strong>坑二：并发任务悄悄偷走 2&#x2F;3 的速度。</strong> 有一轮测出 46 tok&#x2F;s，查了半天不是功耗墙的锅——是另一个端口的推理任务在同时跑，GPU 被分走了。测试前必须确认两卡利用率归零。</p>
-<p><strong>坑三：llama-server 的计时字段不可信。</strong> 热缓存下 <code>usage</code> 里的 <code>completion_time</code> 恒为 0，算速度会除零。老老实实用端到端 wall-clock 计时。</p>
-<p>另外每档换完功耗墙先发一个 10-token 的小请求把时钟拉起来，不计入成绩——不然冷时钟会让第一轮数据系统性偏低。</p>
-<h2 id="数据：一张表和一条曲线"><a href="#数据：一张表和一条曲线" class="headerlink" title="数据：一张表和一条曲线"></a>数据：一张表和一条曲线</h2><p>11 档全部测完，每档 3 次的均值如下：</p>
+                <h1 id="双-2080Ti-装-NVLink-实录：单流零提升的真相，与-31-的正确打开方式"><a href="#双-2080Ti-装-NVLink-实录：单流零提升的真相，与-31-的正确打开方式" class="headerlink" title="双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式"></a>双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式</h1><blockquote>
+<p>断电、拆机、装桥、开机，NVLink 双链路满速验证通过——然后推理速度纹丝不动，只有待机功耗从 5W 涨到了 26W。这是一次从”白花钱”到”+31%”的完整调优实录，顺便踩穿了 llama.cpp tensor split 的三个深坑。</p>
+</blockquote>
+<h2 id="起点：一次看起来很成功的硬件升级"><a href="#起点：一次看起来很成功的硬件升级" class="headerlink" title="起点：一次看起来很成功的硬件升级"></a>起点：一次看起来很成功的硬件升级</h2><p>图灵机是台 2×RTX 2080Ti 22GB 的老伙计，跑 llama.cpp 推理服务。NVLink 桥装上后，验证一切正常：</p>
+<ul>
+<li><code>nvidia-smi topo -m</code> 显示 GPU0↔GPU1 为 <strong>NV2</strong>（双链路绑定）</li>
+<li><code>nvidia-smi nvlink -s</code> 四条链路全部 <strong>25.78 GB&#x2F;s</strong> 满速</li>
+<li>卡间带宽合计约 52 GB&#x2F;s，是 PCIe 3.0 的三倍多</li>
+</ul>
+<p>然后跑了一下 Qwen3.6-35B-A3B 和 Qwen3.8-27B，生成速度一点没变。功耗倒是实打实涨了——双卡待机从 5W 到 26W，这是 NVLink PHY 常驻活跃的电费，省不掉。</p>
+<p>装了个寂寞？</p>
+<h2 id="为什么单流没提升：一笔-0-001-的账"><a href="#为什么单流没提升：一笔-0-001-的账" class="headerlink" title="为什么单流没提升：一笔 0.001% 的账"></a>为什么单流没提升：一笔 0.001% 的账</h2><p>先说结论：<strong>在 layer split 模式下，NVLink 对单流推理就是没有用</strong>。这不是玄学，算一笔账就明白。</p>
+<p>layer split（层切分）的工作方式：卡1算前半层，卡2算后半层。每个 token 前向时，卡间只传一次激活值。这个激活有多大？</p>
 <table>
 <thead>
 <tr>
-<th>功耗墙</th>
-<th>速度 (tok&#x2F;s)</th>
-<th>相对 200W</th>
-<th>GPU1 SM 时钟</th>
+<th>项目</th>
+<th>数值</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>200W</td>
-<td>142.8</td>
-<td>基线</td>
-<td>1965 MHz</td>
+<td>每 token 卡间传输量</td>
+<td>hidden_size × 2B ≈ 4~8 KB</td>
 </tr>
 <tr>
-<td>190W</td>
-<td>142.8</td>
-<td>±0</td>
-<td>1965 MHz</td>
+<td>PCIe 3.0 传 8KB</td>
+<td>~0.7 µs</td>
 </tr>
 <tr>
-<td>180W</td>
-<td>146.2</td>
-<td>+2%</td>
-<td>1980 MHz</td>
+<td>NVLink 传 8KB</td>
+<td>~0.15 µs</td>
 </tr>
 <tr>
-<td>170W</td>
-<td>143.2</td>
-<td>±0</td>
-<td>1980 MHz</td>
+<td>每 token 生成间隔（按 7 tps）</td>
+<td>~150,000 µs</td>
 </tr>
 <tr>
-<td>160W</td>
-<td>143.4</td>
-<td>±0</td>
-<td>1965 MHz</td>
-</tr>
-<tr>
-<td>150W</td>
-<td>139.3</td>
-<td>-2%</td>
-<td>1965 MHz</td>
-</tr>
-<tr>
-<td>140W</td>
-<td>137.1</td>
-<td>-4%</td>
-<td>1950 MHz</td>
-</tr>
-<tr>
-<td>130W</td>
-<td>125.7</td>
-<td>-12%</td>
-<td><strong>1710 MHz ↓</strong></td>
-</tr>
-<tr>
-<td>120W</td>
-<td>96.8</td>
-<td>-32%</td>
-<td>1710 MHz</td>
-</tr>
-<tr>
-<td>110W</td>
-<td>73.0</td>
-<td>-49%</td>
-<td>1710 MHz</td>
-</tr>
-<tr>
-<td>100W</td>
-<td>53.2</td>
-<td>-63%</td>
-<td>1710 MHz</td>
+<td><strong>通信时间占比</strong></td>
+<td><strong>&lt;0.001%</strong></td>
 </tr>
 </tbody></table>
-<p><img src="/images/ND-20260919-002-gpu-power-limit-benchmark/power-speed-curve.png" srcset="/img/loading.gif" lazyload alt="功耗墙与推理速度"></p>
-<p>三个区段一眼分明：</p>
-<ul>
-<li><strong>200W～160W</strong>：五档全部落在 ±2% 的噪声带里。这个区间功耗墙形同虚设——推理负载本身吃不满 200W。</li>
-<li><strong>140W～150W</strong>：速度开始轻微下滑，-2% 到 -4%。两卡实际功耗从 340W 降到 280W 左右，换来几乎无感的损失。</li>
-<li><strong>130W 以下</strong>：断崖。130W 这一档，GPU1 的 SM 时钟从 1965 直接锁到 1710 MHz——这不是巧合，是功耗预算低于满载需求后驱动强制降频。再往下每降 10W 速度线性掉一截，100W 时只剩 53 tok&#x2F;s，腰斩再打八折。</li>
-</ul>
-<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p><strong>140～150W 是这台机器的无损甜点。</strong> 日常固定 150W：速度损失 2%，双卡省电约 60W，温度降 2～3℃。跑重活的时候也不用心疼——推理负载峰值也就 190W，150W 墙只在上长任务时才真正约束得到。</p>
-<p>而最初的目标——降噪——实测宣告失败：<strong>11 档功耗墙下风扇转速全程钉死 50%</strong>。RTX 3080 的风扇曲线要到 45℃ 以下才肯降速，而功耗墙压到 100W 时核心温度还有 52℃。想让这张卡安静，软件已经无解，剩下清灰、换硅脂、加机箱风扇这些物理手段。</p>
-<p>这次实测的数据和踩坑记录已经回填到运维技能的参考文档里，下次调功耗墙不用再交学费。</p>
-<h2 id="附：复现要点"><a href="#附：复现要点" class="headerlink" title="附：复现要点"></a>附：复现要点</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看当前功耗墙</span><br>nvidia-smi --query-gpu=index,power.limit --format=csv,noheader<br><br><span class="hljs-comment"># 设置（双卡）</span><br><span class="hljs-built_in">sudo</span> nvidia-smi -i 0 -pl 150<br><span class="hljs-built_in">sudo</span> nvidia-smi -i 1 -pl 150<br><br><span class="hljs-comment"># 持久化：systemd oneshot 服务（ExecStart 三行：-pm 1 + 双卡 -pl）</span><br></code></pre></td></tr></table></figure>
+<p>链路快四倍，也只是把 0.001% 变成 0.0003%。<strong>瓶颈根本不在链路</strong>，而在显存带宽、流水的串行等待（卡1算时卡2闲着）、以及 MoE 的路由开销。</p>
+<p>所以真正的瓶颈清单是：layer split 模式下两卡是”轮流干活”而不是”一起干活”。要两卡同时算同一层，得换 <strong>tensor split（张量并行）</strong>。而 tensor split 的 allreduce 通信量随 batch 增长——那才是 NVLink 的主场。</p>
+<h2 id="第一次尝试就-OOM：tensor-split-的三个坑"><a href="#第一次尝试就-OOM：tensor-split-的三个坑" class="headerlink" title="第一次尝试就 OOM：tensor split 的三个坑"></a>第一次尝试就 OOM：tensor split 的三个坑</h2><p>把 Qwen3.8-27B 改成 <code>split-mode = tensor</code>，第一次加载直接失败。排查下来是三个坑的叠加：</p>
+<p><strong>坑一：tensor 模式不做显存自动适配。</strong> 日志原文：<code>llama_params_fit is not implemented for SPLIT_MODE_TENSOR</code>。layer 模式会自动把参数塞进空闲显存，tensor 模式全靠手工配平。</p>
+<p><strong>坑二：ctx 大小和 mmproj 的分配冲突。</strong> 512K 上下文 + 888MiB 的视觉投影层（mmproj）叠加后，卡0 上最后一块 2384 MiB 分配失败。layer 模式下同样配置能跑，因为 KV cache 按层分到了两张卡；tensor 模式下分配方式完全不同。</p>
+<p><strong>坑三：切分比例不是越”优化”越好。</strong> 后来试过 48,52（想给卡0 留余量），结果触发 KV cache 整块 15GB 压到卡1，必爆。50,50 是验证过的唯一稳定组合。</p>
+<p>最终解：<code>tensor 50,50 + ctx 262144</code>，卡0 16.4G &#x2F; 卡1 15.2G，加载成功。</p>
+<h2 id="实测：-31-和-12"><a href="#实测：-31-和-12" class="headerlink" title="实测：+31% 和 +12%"></a>实测：+31% 和 +12%</h2><p>同 ctx、同 prompt、max_tokens&#x3D;256 热测（弃掉含模型加载时间的第一轮）：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>layer</th>
+<th>tensor</th>
+<th>提升</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Qwen3.8-27B（dense）</td>
+<td>35.9 tps</td>
+<td><strong>47.1 tps</strong></td>
+<td><strong>+31%</strong></td>
+</tr>
+<tr>
+<td>Qwen3.6-35B-A3B（MoE）</td>
+<td>115 tps</td>
+<td><strong>129.3 tps</strong></td>
+<td>+12%</td>
+</tr>
+</tbody></table>
+<p>两个细节值得说：</p>
+<p><strong>dense 提升大于 MoE。</strong> MoE 每 token 只激活 3B 参数，每层计算轻，layer 流水的损失本来就小，tensor 化的收益跟着缩水。dense 27B 每层算得重，轮流干活的浪费更明显。</p>
+<p><img src="/images/ND-20260926-001-dual-2080ti-nvlink-tensor-split/tensor-vs-layer-tps.png" srcset="/img/loading.gif" lazyload alt="tensor split vs layer split 生成速度对比"></p>
+<p><strong>并发收益远大于单流数字。</strong> 单流 +12% 看着平平，但 layer 流水线在并发时气泡放大、多请求挤单通道；tensor 双卡逐层并行 + allreduce 走 NVLink，batch 越大效率越高。实际多路并发使用时，提速感受远超单流 benchmark 的数字。</p>
+<h2 id="冲击-1M-上下文：348-MiB-的极限拉扯"><a href="#冲击-1M-上下文：348-MiB-的极限拉扯" class="headerlink" title="冲击 1M 上下文：348 MiB 的极限拉扯"></a>冲击 1M 上下文：348 MiB 的极限拉扯</h2><p>27B 降到 256K 是妥协，3.6-35B-A3B（MoE，KV cache 远小于 dense）可以更贪：<strong>ctx 1M + 4 并发槽</strong>。</p>
+<p>第一步直接上，失败——差 <strong>348 MiB</strong>，就差这么点。</p>
+<p>第二步打开 KV cache 量化（<code>ctk/ctv = q8_0</code>）：KV 显存直接减半，卡0 21.8G &#x2F; 卡1 20.7G 贴满装下。代价是速度从 129.3 降到 ~120 tps（-7%，反量化开销），换来上下文翻倍。q8_0 是 8.5 bit 有效精度，perplexity 损失在 1% 以内，日常使用无感。这笔账划算。</p>
+<p><img src="/images/ND-20260926-001-dual-2080ti-nvlink-tensor-split/kv-quant-tradeoff.png" srcset="/img/loading.gif" lazyload alt="KV cache 量化权衡"></p>
+<p>中间还有个小插曲。某次改完配置重启，明明回滚到了验证过的 50,50 + q8_0，还是 OOM。而且失败数字和启用 q8_0 之前一模一样。查配置才发现 <code>ctk/ctv = q8_0</code> 被注释回去了——编辑器里开着旧版本缓冲，保存时把并行修改整个覆盖掉了。<strong>多人&#x2F;多会话改同一个配置文件，动手前先重新打开文件</strong>，这是血泪教训。</p>
+<h2 id="最重要的发现：我们跑在一条官方不支持的路上"><a href="#最重要的发现：我们跑在一条官方不支持的路上" class="headerlink" title="最重要的发现：我们跑在一条官方不支持的路上"></a>最重要的发现：我们跑在一条官方不支持的路上</h2><p>查资料时发现一个此前完全没意识到的问题：<strong>llama.cpp 上游官方至今不支持 tensor split + KV cache 量化的组合</strong>。官方代码会在初始化时直接拒绝：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">llama_init_from_model: simultaneous use of SPLIT_MODE_TENSOR<br>and KV cache quantization not implemented<br></code></pre></td></tr></table></figure>
 
-<p>计时口径：端到端 wall-clock；每档预热后测 3 次取均值；测前确认 GPU 利用率归零。</p>
+<p>相关 issue（#21788）已关闭，修复 PR（#23912）未合并。我们的自编译版本显然带了这个社区补丁才能跑起来。这解释了 48,52 诡异 OOM 的根因——补丁路径未经官方验证，分配逻辑对参数敏感。</p>
+<p><strong>代价与对策</strong>：升级 llama.cpp 时补丁会丢，需要重打；参数上锁死 50,50 不再折腾；出诡异显存问题时先怀疑这条路。</p>
+<h2 id="总结：老卡焕新的完整路径"><a href="#总结：老卡焕新的完整路径" class="headerlink" title="总结：老卡焕新的完整路径"></a>总结：老卡焕新的完整路径</h2><ol>
+<li><strong>NVLink 桥</strong>：单流无用（通信占比 0.001%），tensor split + 并发时兑现价值；代价是每卡 +10W 待机</li>
+<li><strong>tensor split</strong>：dense 27B +31%，MoE +12%，并发感受更佳；但显存全手工配平，50,50 别乱动</li>
+<li><strong>KV q8_0</strong>：速度 -7% 换 KV 显存减半，是冲击大 ctx 的钥匙；质量损失在噪声级</li>
+<li><strong>MoE 优势</strong>：KV cache 远小于 dense，同显存能塞下更大的上下文</li>
+<li><strong>风险自担</strong>：tensor + KV 量化走的是非官方补丁路径，升级需重打，配置勿折腾</li>
+</ol>
+<p>2×2080Ti 在 2026 年依然能打：双模型常驻，一个 1M 上下文 4 并发 @120 tps，一个 256K @47 tps，全链路 tensor 并行。老硬件的上限，比你以为的高。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>llama.cpp issue #21788 — Allow SPLIT_MODE_TENSOR with KV cache quantization（官方不支持 tensor+KV 量化的原始记录）</li>
+<li>llama.cpp PR #23912 — –split-mode&#x3D;tensor KV cache quantization support（未合并的社区修复）</li>
+<li>llama.cpp PR #1684 — k-quants（KV&#x2F;权重量化的 perplexity 数据基础）</li>
+</ol>
 
                 
               </div>
@@ -572,7 +573,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/" class="category-chain-item">推理优化</a>
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
   
   
 
@@ -591,7 +592,7 @@
       
         <a href="/tags/inference/" class="print-no-link">#inference</a>
       
-        <a href="/tags/benchmark/" class="print-no-link">#benchmark</a>
+        <a href="/tags/nvidia/" class="print-no-link">#nvidia</a>
       
     </div>
   
@@ -603,8 +604,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>RTX 3080 功耗墙 11 档实测：140W 之前免费，130W 开始还债</div>
-      <div>https://normdist.com/2026/09/19/article/</div>
+      <div>双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式</div>
+      <div>https://normdist.com/2026/09/26/article/</div>
     </div>
     <div class="license-meta">
       
@@ -616,7 +617,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年9月19日</div>
+          <div>2026年9月26日</div>
         </div>
       
       
@@ -648,18 +649,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/09/19/ND-20260919-002-gpu-power-limit-benchmark/" title="RTX 3080 功耗墙 11 档实测：140W 之前免费，130W 开始还债">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">RTX 3080 功耗墙 11 档实测：140W 之前免费，130W 开始还债</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/09/19/ND-20260919-001-draft/" title="限流第 16 天：周五交易时段 5 cron 阵亡，我的自治系统在交易日裸奔">
-                        <span class="hidden-mobile">限流第 16 天：周五交易时段 5 cron 阵亡，我的自治系统在交易日裸奔</span>
+                      <a href="/2026/09/24/ND-20260924-001-draft/" title="worker 静默退出：kanban worker rc=0 但不回调 kanban_complete 的协议盲区">
+                        <span class="hidden-mobile">worker 静默退出：kanban worker rc=0 但不回调 kanban_complete 的协议盲区</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
