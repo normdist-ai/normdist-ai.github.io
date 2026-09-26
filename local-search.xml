@@ -5,8 +5,8 @@
   
   <entry>
     <title>双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式</title>
-    <link href="/2026/09/26/article/"/>
-    <url>/2026/09/26/article/</url>
+    <link href="/2026/09/26/ND-20260926-001-article/"/>
+    <url>/2026/09/26/ND-20260926-001-article/</url>
     
     <content type="html"><![CDATA[<h1 id="双-2080Ti-装-NVLink-实录：单流零提升的真相，与-31-的正确打开方式"><a href="#双-2080Ti-装-NVLink-实录：单流零提升的真相，与-31-的正确打开方式" class="headerlink" title="双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式"></a>双 2080Ti 装 NVLink 实录：单流零提升的真相，与 +31% 的正确打开方式</h1><blockquote><p>断电、拆机、装桥、开机，NVLink 双链路满速验证通过——然后推理速度纹丝不动，只有待机功耗从 5W 涨到了 26W。这是一次从”白花钱”到”+31%”的完整调优实录，顺便踩穿了 llama.cpp tensor split 的三个深坑。</p></blockquote><h2 id="起点：一次看起来很成功的硬件升级"><a href="#起点：一次看起来很成功的硬件升级" class="headerlink" title="起点：一次看起来很成功的硬件升级"></a>起点：一次看起来很成功的硬件升级</h2><p>图灵机是台 2×RTX 2080Ti 22GB 的老伙计，跑 llama.cpp 推理服务。NVLink 桥装上后，验证一切正常：</p><ul><li><code>nvidia-smi topo -m</code> 显示 GPU0↔GPU1 为 <strong>NV2</strong>（双链路绑定）</li><li><code>nvidia-smi nvlink -s</code> 四条链路全部 <strong>25.78 GB&#x2F;s</strong> 满速</li><li>卡间带宽合计约 52 GB&#x2F;s，是 PCIe 3.0 的三倍多</li></ul><p>然后跑了一下 Qwen3.6-35B-A3B 和 Qwen3.8-27B，生成速度一点没变。功耗倒是实打实涨了——双卡待机从 5W 到 26W，这是 NVLink PHY 常驻活跃的电费，省不掉。</p><p>装了个寂寞？</p><h2 id="为什么单流没提升：一笔-0-001-的账"><a href="#为什么单流没提升：一笔-0-001-的账" class="headerlink" title="为什么单流没提升：一笔 0.001% 的账"></a>为什么单流没提升：一笔 0.001% 的账</h2><p>先说结论：<strong>在 layer split 模式下，NVLink 对单流推理就是没有用</strong>。这不是玄学，算一笔账就明白。</p><p>layer split（层切分）的工作方式：卡1算前半层，卡2算后半层。每个 token 前向时，卡间只传一次激活值。这个激活有多大？</p><table><thead><tr><th>项目</th><th>数值</th></tr></thead><tbody><tr><td>每 token 卡间传输量</td><td>hidden_size × 2B ≈ 4~8 KB</td></tr><tr><td>PCIe 3.0 传 8KB</td><td>~0.7 µs</td></tr><tr><td>NVLink 传 8KB</td><td>~0.15 µs</td></tr><tr><td>每 token 生成间隔（按 7 tps）</td><td>~150,000 µs</td></tr><tr><td><strong>通信时间占比</strong></td><td><strong>&lt;0.001%</strong></td></tr></tbody></table><p>链路快四倍，也只是把 0.001% 变成 0.0003%。<strong>瓶颈根本不在链路</strong>，而在显存带宽、流水的串行等待（卡1算时卡2闲着）、以及 MoE 的路由开销。</p><p>所以真正的瓶颈清单是：layer split 模式下两卡是”轮流干活”而不是”一起干活”。要两卡同时算同一层，得换 <strong>tensor split（张量并行）</strong>。而 tensor split 的 allreduce 通信量随 batch 增长——那才是 NVLink 的主场。</p><h2 id="第一次尝试就-OOM：tensor-split-的三个坑"><a href="#第一次尝试就-OOM：tensor-split-的三个坑" class="headerlink" title="第一次尝试就 OOM：tensor split 的三个坑"></a>第一次尝试就 OOM：tensor split 的三个坑</h2><p>把 Qwen3.8-27B 改成 <code>split-mode = tensor</code>，第一次加载直接失败。排查下来是三个坑的叠加：</p><p><strong>坑一：tensor 模式不做显存自动适配。</strong> 日志原文：<code>llama_params_fit is not implemented for SPLIT_MODE_TENSOR</code>。layer 模式会自动把参数塞进空闲显存，tensor 模式全靠手工配平。</p><p><strong>坑二：ctx 大小和 mmproj 的分配冲突。</strong> 512K 上下文 + 888MiB 的视觉投影层（mmproj）叠加后，卡0 上最后一块 2384 MiB 分配失败。layer 模式下同样配置能跑，因为 KV cache 按层分到了两张卡；tensor 模式下分配方式完全不同。</p><p><strong>坑三：切分比例不是越”优化”越好。</strong> 后来试过 48,52（想给卡0 留余量），结果触发 KV cache 整块 15GB 压到卡1，必爆。50,50 是验证过的唯一稳定组合。</p><p>最终解：<code>tensor 50,50 + ctx 262144</code>，卡0 16.4G &#x2F; 卡1 15.2G，加载成功。</p><h2 id="实测：-31-和-12"><a href="#实测：-31-和-12" class="headerlink" title="实测：+31% 和 +12%"></a>实测：+31% 和 +12%</h2><p>同 ctx、同 prompt、max_tokens&#x3D;256 热测（弃掉含模型加载时间的第一轮）：</p><table><thead><tr><th>模型</th><th>layer</th><th>tensor</th><th>提升</th></tr></thead><tbody><tr><td>Qwen3.8-27B（dense）</td><td>35.9 tps</td><td><strong>47.1 tps</strong></td><td><strong>+31%</strong></td></tr><tr><td>Qwen3.6-35B-A3B（MoE）</td><td>115 tps</td><td><strong>129.3 tps</strong></td><td>+12%</td></tr></tbody></table><p>两个细节值得说：</p><p><strong>dense 提升大于 MoE。</strong> MoE 每 token 只激活 3B 参数，每层计算轻，layer 流水的损失本来就小，tensor 化的收益跟着缩水。dense 27B 每层算得重，轮流干活的浪费更明显。</p><p><img src="/images/ND-20260926-001-dual-2080ti-nvlink-tensor-split/tensor-vs-layer-tps.png" alt="tensor split vs layer split 生成速度对比"></p><p><strong>并发收益远大于单流数字。</strong> 单流 +12% 看着平平，但 layer 流水线在并发时气泡放大、多请求挤单通道；tensor 双卡逐层并行 + allreduce 走 NVLink，batch 越大效率越高。实际多路并发使用时，提速感受远超单流 benchmark 的数字。</p><h2 id="冲击-1M-上下文：348-MiB-的极限拉扯"><a href="#冲击-1M-上下文：348-MiB-的极限拉扯" class="headerlink" title="冲击 1M 上下文：348 MiB 的极限拉扯"></a>冲击 1M 上下文：348 MiB 的极限拉扯</h2><p>27B 降到 256K 是妥协，3.6-35B-A3B（MoE，KV cache 远小于 dense）可以更贪：<strong>ctx 1M + 4 并发槽</strong>。</p><p>第一步直接上，失败——差 <strong>348 MiB</strong>，就差这么点。</p><p>第二步打开 KV cache 量化（<code>ctk/ctv = q8_0</code>）：KV 显存直接减半，卡0 21.8G &#x2F; 卡1 20.7G 贴满装下。代价是速度从 129.3 降到 ~120 tps（-7%，反量化开销），换来上下文翻倍。q8_0 是 8.5 bit 有效精度，perplexity 损失在 1% 以内，日常使用无感。这笔账划算。</p><p><img src="/images/ND-20260926-001-dual-2080ti-nvlink-tensor-split/kv-quant-tradeoff.png" alt="KV cache 量化权衡"></p><p>中间还有个小插曲。某次改完配置重启，明明回滚到了验证过的 50,50 + q8_0，还是 OOM。而且失败数字和启用 q8_0 之前一模一样。查配置才发现 <code>ctk/ctv = q8_0</code> 被注释回去了——编辑器里开着旧版本缓冲，保存时把并行修改整个覆盖掉了。<strong>多人&#x2F;多会话改同一个配置文件，动手前先重新打开文件</strong>，这是血泪教训。</p><h2 id="最重要的发现：我们跑在一条官方不支持的路上"><a href="#最重要的发现：我们跑在一条官方不支持的路上" class="headerlink" title="最重要的发现：我们跑在一条官方不支持的路上"></a>最重要的发现：我们跑在一条官方不支持的路上</h2><p>查资料时发现一个此前完全没意识到的问题：<strong>llama.cpp 上游官方至今不支持 tensor split + KV cache 量化的组合</strong>。官方代码会在初始化时直接拒绝：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">llama_init_from_model: simultaneous use of SPLIT_MODE_TENSOR<br>and KV cache quantization not implemented<br></code></pre></td></tr></table></figure><p>相关 issue（#21788）已关闭，修复 PR（#23912）未合并。我们的自编译版本显然带了这个社区补丁才能跑起来。这解释了 48,52 诡异 OOM 的根因——补丁路径未经官方验证，分配逻辑对参数敏感。</p><p><strong>代价与对策</strong>：升级 llama.cpp 时补丁会丢，需要重打；参数上锁死 50,50 不再折腾；出诡异显存问题时先怀疑这条路。</p><h2 id="总结：老卡焕新的完整路径"><a href="#总结：老卡焕新的完整路径" class="headerlink" title="总结：老卡焕新的完整路径"></a>总结：老卡焕新的完整路径</h2><ol><li><strong>NVLink 桥</strong>：单流无用（通信占比 0.001%），tensor split + 并发时兑现价值；代价是每卡 +10W 待机</li><li><strong>tensor split</strong>：dense 27B +31%，MoE +12%，并发感受更佳；但显存全手工配平，50,50 别乱动</li><li><strong>KV q8_0</strong>：速度 -7% 换 KV 显存减半，是冲击大 ctx 的钥匙；质量损失在噪声级</li><li><strong>MoE 优势</strong>：KV cache 远小于 dense，同显存能塞下更大的上下文</li><li><strong>风险自担</strong>：tensor + KV 量化走的是非官方补丁路径，升级需重打，配置勿折腾</li></ol><p>2×2080Ti 在 2026 年依然能打：双模型常驻，一个 1M 上下文 4 并发 @120 tps，一个 256K @47 tps，全链路 tensor 并行。老硬件的上限，比你以为的高。</p><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol><li>llama.cpp issue #21788 — Allow SPLIT_MODE_TENSOR with KV cache quantization（官方不支持 tensor+KV 量化的原始记录）</li><li>llama.cpp PR #23912 — –split-mode&#x3D;tensor KV cache quantization support（未合并的社区修复）</li><li>llama.cpp PR #1684 — k-quants（KV&#x2F;权重量化的 perplexity 数据基础）</li></ol>]]></content>
     
@@ -553,35 +553,6 @@
   
   
   <entry>
-    <title>601318 卖出策略得分骤降 21.8 分：市场结构变化还是数据降级失真？得分制与胜率制的矛盾</title>
-    <link href="/2026/08/28/ND-20260828-001-601318-selling-score-drop/"/>
-    <url>/2026/08/28/ND-20260828-001-601318-selling-score-drop/</url>
-    
-    <content type="html"><![CDATA[<p>601318 的卖出策略得分，一天内降了 21.8 分。</p><p>我的第一反应是市场要变天。但把行情数据拉出来逐项排查，市场结构没有任何异常。真正的原因在两天前的一次「无感升级」：我把策略打分依赖的分类模型从 Qwen3.6-35B-A3B 换成了 Qwen3.5-35B-A3B-Ornith，输出分布漂移，得分跟着失真。</p><p>这轮排查让我想通了一件事：得分制与胜率制冲突时，先信谁，后信谁，应该有一条硬规则。</p><h2 id="现象：分数掉得不像市场波动"><a href="#现象：分数掉得不像市场波动" class="headerlink" title="现象：分数掉得不像市场波动"></a>现象：分数掉得不像市场波动</h2><p>这套系统每天收盘后跑一遍 601318 的 daily pipeline：特征工程 → 分类模型 → 卖出策略得分。分数在 0-100 之间，用于控制卖出档位的触发阈值。</p><p>某天早上打开监控，得分少了 21.8 分。过去三个月，单日波动最大才 4 分。</p><p>我没有急着调参数。调参是最差的反应——先搞清楚是市场变了，还是评估链路坏了。</p><h2 id="第一步：排除市场结构变化"><a href="#第一步：排除市场结构变化" class="headerlink" title="第一步：排除市场结构变化"></a>第一步：排除市场结构变化</h2><p>我把 601318 的行情数据单独拉出来，和前 60 个交易日对比：</p><ul><li>价格：没有突破关键分位</li><li>成交量：正常</li><li>波动率：正常</li><li>行业 beta：正常</li><li>保险板块和大盘：没有结构性事件</li></ul><p>市场结构没问题。那问题在数据链路。</p><h2 id="第二步：找到数据降级源"><a href="#第二步：找到数据降级源" class="headerlink" title="第二步：找到数据降级源"></a>第二步：找到数据降级源</h2><p>排查顺序：输入数据 → 特征工程 → 模型 → 得分映射。</p><p>输入文件没有变。特征工程的代码 diff 为空。得分映射逻辑没动。</p><p>再往前查推理环境。两天前我把模型从 <code>Qwen3.6-35B-A3B</code>（Q4_K_M）换成了 <code>Qwen3.5-35B-A3B-Ornith</code>（Q4_K_M），实测速度从 103 t&#x2F;s 提到 104 t&#x2F;s，几乎无感知。当时我判断：这只是小版本升级，行为应该等价。</p><p>账单就在这里。新模型的输出分布整体更保守——对 601318 的关键卖出标签，置信度整体下移。策略得分对置信度敏感，这一降就丢了 21.8 分。</p><p>这就是数据降级失真：输入没变，模型名义上「升级」了，但评估结果坏了。</p><h2 id="第三步：用胜率制仲裁"><a href="#第三步：用胜率制仲裁" class="headerlink" title="第三步：用胜率制仲裁"></a>第三步：用胜率制仲裁</h2><p>市场结构没变，数据链路有噪声。那真实交易结果呢？</p><p>我回看了过去 60 个交易日的卖出策略实际执行记录，按日统计胜率。结论：胜率波动很小，既没有恶化，也没有改善。</p><p>这个信号非常关键。它说明两件事：</p><ol><li>601318 的市场状态没有发生结构变化——真实的交易质量稳定。</li><li>得分骤降 21.8 分，不是策略变差了，是评估链路自己失真了。</li></ol><p>得分制是瞬时的、前瞻的、对输入分布高度敏感的；胜率制是滞后的、保守的、统计稳定的。两者矛盾时，我现在的规则是：</p><blockquote><p>得分与胜率背离，先信胜率，后信得分，第一步永远是查数据管道。</p></blockquote><h2 id="得分制与胜率制的矛盾"><a href="#得分制与胜率制的矛盾" class="headerlink" title="得分制与胜率制的矛盾"></a>得分制与胜率制的矛盾</h2><p>顺着这次事故，我把两者的使用边界理了一遍。</p><p>得分制的优势是速度快，能提前反映策略质量变化。代价是它对评估链路里的任何一点噪声都极其敏感。一次模型热更、一个特征源里的数据缺口、一个量化档位的差异，都能造成十分位的虚假跳变。</p><p>胜率制的优势是统计稳健，能过滤掉单次噪声。代价是滞后——市场真变差了，胜率要十几个交易日后才反映出来，预警作用有限。</p><p>所以不能只用其中一种。我建了一个「残差监控」：得分与滚动胜率的偏差，超过 2 倍标准差就冻结策略信号，先查数据，再决定要不要调参数。</p><p>这次 21.8 分的骤降，如果当时没有胜率制兜底，我会以为是市场结构变化，然后把卖出阈值调松，犯一个方向性错误。</p><h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p>三个坑，按代价排序。</p><p><strong>坑一：模型升级只看速度，不看分布。</strong><br>103 t&#x2F;s → 104 t&#x2F;s 看起来很美好，像纯性能提升。实际上模型行为变了。升级前应该跑一组固定样本，对比置信度分布，而不是只看速度和困惑度。</p><p><strong>坑二：显存太大，反而放松了对软件风险的警惕。</strong><br>我的推理机器是两张魔改版 RTX 2080 Ti，单卡 22 GB，双卡 44 GB，跑 35B 量化模型很轻松。硬件越宽裕，越容易忽略模型版本、量化方式这些软变量。这次事故全程和硬件无关，纯粹是模型版本行为漂移。</p><p><strong>坑三：先写了半天「市场为什么弱」的叙事。</strong><br>事故发生后，我最先做的是看新闻、看板块、找下跌理由，浪费了大半天。正确的顺序是：先查输入数据有没有变，再查代码有没有变，再查模型有没有变。市场叙事应该放最后。</p><h2 id="怎么避免"><a href="#怎么避免" class="headerlink" title="怎么避免"></a>怎么避免</h2><p>三件事，一劳永逸：</p><ol><li><strong>模型切换前跑 golden set 回归。</strong> 固定 100 个样本，比较新旧模型的置信度分布。分布差异超过阈值，禁止上线。</li><li><strong>策略得分每日快照。</strong> 原始输出存档，出问题当天就能 diff 定位，不用靠回忆。</li><li><strong>得分 vs 胜率残差监控。</strong> 超过阈值自动冻结信号，先崩管道，再谈市场。</li></ol><p>这次 21.8 分的教训是：量化系统里，得分是意见，胜率是事实。意见和事实打架的时候，先检查提意见的人嗓子坏了没有。</p><hr><p><strong>参考文献</strong></p><ol><li><a href="https://github.com/ggerganov/llama.cpp">llama.cpp GitHub</a></li><li><a href="https://qwenlm.github.io/blog/qwen3/">Qwen3 官方博客</a></li><li><a href="https://huggingface.co/Qwen">Qwen Hugging Face 模型库</a></li></ol>]]></content>
-    
-    
-    <categories>
-      
-      <category>量化交易</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>量化交易</tag>
-      
-      <tag>策略评估</tag>
-      
-      <tag>模型漂移</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>博客选题池被 reconcile 清空：唯一可信源的维护教训</title>
     <link href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/"/>
     <url>/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/</url>
@@ -603,6 +574,35 @@
       <tag>数据同步</tag>
       
       <tag>事故复盘</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>601318 卖出策略得分骤降 21.8 分：市场结构变化还是数据降级失真？得分制与胜率制的矛盾</title>
+    <link href="/2026/08/28/ND-20260828-001-601318-selling-score-drop/"/>
+    <url>/2026/08/28/ND-20260828-001-601318-selling-score-drop/</url>
+    
+    <content type="html"><![CDATA[<p>601318 的卖出策略得分，一天内降了 21.8 分。</p><p>我的第一反应是市场要变天。但把行情数据拉出来逐项排查，市场结构没有任何异常。真正的原因在两天前的一次「无感升级」：我把策略打分依赖的分类模型从 Qwen3.6-35B-A3B 换成了 Qwen3.5-35B-A3B-Ornith，输出分布漂移，得分跟着失真。</p><p>这轮排查让我想通了一件事：得分制与胜率制冲突时，先信谁，后信谁，应该有一条硬规则。</p><h2 id="现象：分数掉得不像市场波动"><a href="#现象：分数掉得不像市场波动" class="headerlink" title="现象：分数掉得不像市场波动"></a>现象：分数掉得不像市场波动</h2><p>这套系统每天收盘后跑一遍 601318 的 daily pipeline：特征工程 → 分类模型 → 卖出策略得分。分数在 0-100 之间，用于控制卖出档位的触发阈值。</p><p>某天早上打开监控，得分少了 21.8 分。过去三个月，单日波动最大才 4 分。</p><p>我没有急着调参数。调参是最差的反应——先搞清楚是市场变了，还是评估链路坏了。</p><h2 id="第一步：排除市场结构变化"><a href="#第一步：排除市场结构变化" class="headerlink" title="第一步：排除市场结构变化"></a>第一步：排除市场结构变化</h2><p>我把 601318 的行情数据单独拉出来，和前 60 个交易日对比：</p><ul><li>价格：没有突破关键分位</li><li>成交量：正常</li><li>波动率：正常</li><li>行业 beta：正常</li><li>保险板块和大盘：没有结构性事件</li></ul><p>市场结构没问题。那问题在数据链路。</p><h2 id="第二步：找到数据降级源"><a href="#第二步：找到数据降级源" class="headerlink" title="第二步：找到数据降级源"></a>第二步：找到数据降级源</h2><p>排查顺序：输入数据 → 特征工程 → 模型 → 得分映射。</p><p>输入文件没有变。特征工程的代码 diff 为空。得分映射逻辑没动。</p><p>再往前查推理环境。两天前我把模型从 <code>Qwen3.6-35B-A3B</code>（Q4_K_M）换成了 <code>Qwen3.5-35B-A3B-Ornith</code>（Q4_K_M），实测速度从 103 t&#x2F;s 提到 104 t&#x2F;s，几乎无感知。当时我判断：这只是小版本升级，行为应该等价。</p><p>账单就在这里。新模型的输出分布整体更保守——对 601318 的关键卖出标签，置信度整体下移。策略得分对置信度敏感，这一降就丢了 21.8 分。</p><p>这就是数据降级失真：输入没变，模型名义上「升级」了，但评估结果坏了。</p><h2 id="第三步：用胜率制仲裁"><a href="#第三步：用胜率制仲裁" class="headerlink" title="第三步：用胜率制仲裁"></a>第三步：用胜率制仲裁</h2><p>市场结构没变，数据链路有噪声。那真实交易结果呢？</p><p>我回看了过去 60 个交易日的卖出策略实际执行记录，按日统计胜率。结论：胜率波动很小，既没有恶化，也没有改善。</p><p>这个信号非常关键。它说明两件事：</p><ol><li>601318 的市场状态没有发生结构变化——真实的交易质量稳定。</li><li>得分骤降 21.8 分，不是策略变差了，是评估链路自己失真了。</li></ol><p>得分制是瞬时的、前瞻的、对输入分布高度敏感的；胜率制是滞后的、保守的、统计稳定的。两者矛盾时，我现在的规则是：</p><blockquote><p>得分与胜率背离，先信胜率，后信得分，第一步永远是查数据管道。</p></blockquote><h2 id="得分制与胜率制的矛盾"><a href="#得分制与胜率制的矛盾" class="headerlink" title="得分制与胜率制的矛盾"></a>得分制与胜率制的矛盾</h2><p>顺着这次事故，我把两者的使用边界理了一遍。</p><p>得分制的优势是速度快，能提前反映策略质量变化。代价是它对评估链路里的任何一点噪声都极其敏感。一次模型热更、一个特征源里的数据缺口、一个量化档位的差异，都能造成十分位的虚假跳变。</p><p>胜率制的优势是统计稳健，能过滤掉单次噪声。代价是滞后——市场真变差了，胜率要十几个交易日后才反映出来，预警作用有限。</p><p>所以不能只用其中一种。我建了一个「残差监控」：得分与滚动胜率的偏差，超过 2 倍标准差就冻结策略信号，先查数据，再决定要不要调参数。</p><p>这次 21.8 分的骤降，如果当时没有胜率制兜底，我会以为是市场结构变化，然后把卖出阈值调松，犯一个方向性错误。</p><h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p>三个坑，按代价排序。</p><p><strong>坑一：模型升级只看速度，不看分布。</strong><br>103 t&#x2F;s → 104 t&#x2F;s 看起来很美好，像纯性能提升。实际上模型行为变了。升级前应该跑一组固定样本，对比置信度分布，而不是只看速度和困惑度。</p><p><strong>坑二：显存太大，反而放松了对软件风险的警惕。</strong><br>我的推理机器是两张魔改版 RTX 2080 Ti，单卡 22 GB，双卡 44 GB，跑 35B 量化模型很轻松。硬件越宽裕，越容易忽略模型版本、量化方式这些软变量。这次事故全程和硬件无关，纯粹是模型版本行为漂移。</p><p><strong>坑三：先写了半天「市场为什么弱」的叙事。</strong><br>事故发生后，我最先做的是看新闻、看板块、找下跌理由，浪费了大半天。正确的顺序是：先查输入数据有没有变，再查代码有没有变，再查模型有没有变。市场叙事应该放最后。</p><h2 id="怎么避免"><a href="#怎么避免" class="headerlink" title="怎么避免"></a>怎么避免</h2><p>三件事，一劳永逸：</p><ol><li><strong>模型切换前跑 golden set 回归。</strong> 固定 100 个样本，比较新旧模型的置信度分布。分布差异超过阈值，禁止上线。</li><li><strong>策略得分每日快照。</strong> 原始输出存档，出问题当天就能 diff 定位，不用靠回忆。</li><li><strong>得分 vs 胜率残差监控。</strong> 超过阈值自动冻结信号，先崩管道，再谈市场。</li></ol><p>这次 21.8 分的教训是：量化系统里，得分是意见，胜率是事实。意见和事实打架的时候，先检查提意见的人嗓子坏了没有。</p><hr><p><strong>参考文献</strong></p><ol><li><a href="https://github.com/ggerganov/llama.cpp">llama.cpp GitHub</a></li><li><a href="https://qwenlm.github.io/blog/qwen3/">Qwen3 官方博客</a></li><li><a href="https://huggingface.co/Qwen">Qwen Hugging Face 模型库</a></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>量化交易</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>量化交易</tag>
+      
+      <tag>策略评估</tag>
+      
+      <tag>模型漂移</tag>
       
     </tags>
     
@@ -2530,9 +2530,9 @@
     
     <tags>
       
-      <tag>本地部署</tag>
-      
       <tag>踩坑记录</tag>
+      
+      <tag>本地部署</tag>
       
       <tag>ComfyUI</tag>
       
