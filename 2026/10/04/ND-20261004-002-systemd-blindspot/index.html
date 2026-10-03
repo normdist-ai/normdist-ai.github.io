@@ -1,0 +1,968 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="凌晨的幽灵：进程在，服务不在10 月 2 日 01:10，健康扫描把 ReShare HTTP 状态从 200 变成了 0。奇怪的是： 123456789101112$ systemctl status resharereshare.service — Reshare API Server   Active: active(running) since Mon 2026-10-02 01:36:1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程活着端口死了：uvicorn 事件循环失效 24h 无人察觉——systemd 监控盲区与三层自愈方案">
+<meta property="og:url" content="https://normdist.com/2026/10/04/ND-20261004-002-systemd-blindspot/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="凌晨的幽灵：进程在，服务不在10 月 2 日 01:10，健康扫描把 ReShare HTTP 状态从 200 变成了 0。奇怪的是： 123456789101112$ systemctl status resharereshare.service — Reshare API Server   Active: active(running) since Mon 2026-10-02 01:36:1">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-10-04T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-03T19:49:31.445Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="ReShare">
+<meta property="article:tag" content="systemd">
+<meta property="article:tag" content="uvicorn">
+<meta property="article:tag" content="监控盲区，事件循环，自愈机制">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>进程活着端口死了：uvicorn 事件循环失效 24h 无人察觉——systemd 监控盲区与三层自愈方案 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">进程活着端口死了：uvicorn 事件循环失效 24h 无人察觉——systemd 监控盲区与三层自愈方案</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-10-04 09:00" pubdate>
+          2026年10月4日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          23 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">进程活着端口死了：uvicorn 事件循环失效 24h 无人察觉——systemd 监控盲区与三层自愈方案</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年10月4日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="凌晨的幽灵：进程在，服务不在"><a href="#凌晨的幽灵：进程在，服务不在" class="headerlink" title="凌晨的幽灵：进程在，服务不在"></a>凌晨的幽灵：进程在，服务不在</h2><p>10 月 2 日 01:10，健康扫描把 ReShare HTTP 状态从 <code>200</code> 变成了 <code>0</code>。奇怪的是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ systemctl status reshare<br>reshare.service — Reshare API Server<br>   Active: active(running) since Mon 2026-10-02 01:36:12 CST; 4 days ago<br>   PID: 2558491 (python3 /home/tony/projects/autoquant/src/main.py)<br>   CGroup: /system.slice/reshare.service<br>             └─2558491 python3 /home/tony/projects/autoquant/src/main.py<br><br>$ ss -tlnp | grep 8200<br>(无输出)<br><br>$ curl -s --connect-timeout 3 http://localhost:8200/api/v1/health<br>curl: (7) Failed to connect to localhost port 8200: Connection refused<br></code></pre></td></tr></table></figure>
+
+<p><strong>进程存活，但端口监听丢失。</strong> systemd 看到的 <code>active(running)</code> 像一具尸体在呼吸：心跳线程还在敲钟，主循环早已熄火。</p>
+<h2 id="半死状态的四大证据"><a href="#半死状态的四大证据" class="headerlink" title="半死状态的四大证据"></a>半死状态的四大证据</h2><h3 id="1-systemd-看不见“半死”"><a href="#1-systemd-看不见“半死”" class="headerlink" title="1. systemd 看不见“半死”"></a>1. systemd 看不见“半死”</h3><p><code>Restart=always</code> 只会在进程退出时重启它。只要 <code>PID</code> 不消失，它就假装一切正常。</p>
+<h3 id="2-SIGTERM-对卡死的主循环无效"><a href="#2-SIGTERM-对卡死的主循环无效" class="headerlink" title="2. SIGTERM 对卡死的主循环无效"></a>2. SIGTERM 对卡死的主循环无效</h3><p>尝试重启时：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">sudo</span> systemctl restart reshare<br><span class="hljs-comment"># systemd 先发 SIGTERM，超时后改 SIGKILL</span><br><span class="hljs-comment"># 旧进程直到 SIGKILL 才终止</span><br></code></pre></td></tr></table></figure>
+
+<p>说明主线程已被阻塞或异常退出，无法响应正常信号。</p>
+<h3 id="3-APScheduler-线程继续输出日志"><a href="#3-APScheduler-线程继续输出日志" class="headerlink" title="3. APScheduler 线程继续输出日志"></a>3. APScheduler 线程继续输出日志</h3><p>APScheduler 以独立线程运行，每 5 分钟写一次日志。即便 uvicorn 事件循环已死，这些日志仍持续出现，制造“系统正常”的假象。</p>
+<h3 id="4-历史旁证：PendingRollbackError"><a href="#4-历史旁证：PendingRollbackError" class="headerlink" title="4. 历史旁证：PendingRollbackError"></a>4. 历史旁证：PendingRollbackError</h3><p>9 月 28 日 03:12 的错误日志中已经出现过 SQLAlchemy session 回滚异常：</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs pf">PendingRollbackError: This Session&#x27;s operation has been rolled back due <span class="hljs-keyword">to</span> a <br>previous exception during <span class="hljs-keyword">flush</span>. To begin with a consistent <span class="hljs-keyword">state</span> again...<br></code></pre></td></tr></table></figure>
+
+<p>这说明数据库会话异常路径未被正确处理，可能间接导致主循环崩溃。</p>
+<h2 id="故障窗口：24h-盲区从何而来？"><a href="#故障窗口：24h-盲区从何而来？" class="headerlink" title="故障窗口：24h 盲区从何而来？"></a>故障窗口：24h 盲区从何而来？</h2><p>健康扫描记录显示：</p>
+<ul>
+<li>10-01 01:10：healthy（返回 200）</li>
+<li>10-02 01:10：HTTP 0（连接被拒绝）</li>
+</ul>
+<p>中间整整 <strong>24 小时</strong>，无任何告警。为什么？</p>
+<ul>
+<li><strong>systemd Restart&#x3D;always 不够用</strong>：它只能保证进程存在，不能保证服务可用。</li>
+<li><strong>健康扫描间隔太长</strong>：如果扫描周期 &gt;1h，就会留下大盲区。</li>
+<li><strong>进程级监控 vs 服务级监控</strong>：前者看 PID，后者看端口。</li>
+</ul>
+<h2 id="三层自愈方案"><a href="#三层自愈方案" class="headerlink" title="三层自愈方案"></a>三层自愈方案</h2><p>基于上述问题，设计三层自愈架构：</p>
+<h3 id="1-看门狗自检（应用内心跳）"><a href="#1-看门狗自检（应用内心跳）" class="headerlink" title="1. 看门狗自检（应用内心跳）"></a>1. 看门狗自检（应用内心跳）</h3><p>在主循环启动一个新线程，每隔 N 秒检查一个共享标志位。如果事件循环发生阻塞，标志位不会被更新，看门狗触发 <code>sys.exit()</code>，让 systemd 重启进程。</p>
+<p>伪代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># watchdog.py</span><br><span class="hljs-keyword">import</span> threading, time, os, sys<br><br>running = <span class="hljs-literal">True</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main_loop</span>():<br>    <span class="hljs-keyword">global</span> running<br>    <span class="hljs-comment"># 事件循环体</span><br>    ...<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">watchdog</span>():<br>    last_tick = time.time()<br>    <span class="hljs-keyword">while</span> running:<br>        time.sleep(<span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">if</span> time.time() - last_tick &gt; <span class="hljs-number">5</span>:  <span class="hljs-comment"># 5 秒未心跳</span><br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;⚠️ 事件循环无响应&quot;</span>, file=sys.stderr)<br>            sys.exit(<span class="hljs-number">1</span>)<br><br>threading.Thread(target=watchdog, daemon=<span class="hljs-literal">True</span>).start()<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-端口自愈（自测-curl）"><a href="#2-端口自愈（自测-curl）" class="headerlink" title="2. 端口自愈（自测 curl）"></a>2. 端口自愈（自测 curl）</h3><p>进程内部周期调用自身健康接口：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># self_test.py</span><br><span class="hljs-keyword">import</span> requests, time, signal<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">check_port</span>(<span class="hljs-params">port=<span class="hljs-number">8200</span>, max_fails=<span class="hljs-number">3</span></span>):<br>    fails = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        <span class="hljs-keyword">try</span>:<br>            r = requests.get(<span class="hljs-string">f&quot;http://localhost:<span class="hljs-subst">&#123;port&#125;</span>/api/v1/health&quot;</span>, timeout=<span class="hljs-number">2</span>)<br>            <span class="hljs-keyword">if</span> r.status_code == <span class="hljs-number">200</span>:<br>                fails = <span class="hljs-number">0</span><br>            <span class="hljs-keyword">else</span>:<br>                fails += <span class="hljs-number">1</span><br>                <span class="hljs-keyword">if</span> fails &gt;= max_fails:<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;❌ 连续失败，退出重启&quot;</span>, file=sys.stderr)<br>                    os.kill(os.getpid(), signal.SIGTERM)<br>        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>            fails += <span class="hljs-number">1</span><br>            <span class="hljs-keyword">if</span> fails &gt;= max_fails:<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;❌ 连续失败，退出重启&quot;</span>, file=sys.stderr)<br>                os.kill(os.getpid(), signal.SIGTERM)<br>        time.sleep(<span class="hljs-number">60</span>)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    check_port()<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-异常收敛（会话清理）"><a href="#3-异常收敛（会话清理）" class="headerlink" title="3. 异常收敛（会话清理）"></a>3. 异常收敛（会话清理）</h3><p>针对 PendingRollbackError，捕获所有数据库异常并立即 rollback：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># db_utils.py</span><br><span class="hljs-keyword">from</span> sqlalchemy.exc <span class="hljs-keyword">import</span> OperationalError, IntegrityError, PendingRollbackError<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">safe_query</span>(<span class="hljs-params">session, query_func</span>):<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">return</span> query_func()<br>    <span class="hljs-keyword">except</span> (OperationalError, IntegrityError, PendingRollbackError) <span class="hljs-keyword">as</span> e:<br>        session.rollback()<br>        session.close()<br>        <span class="hljs-keyword">raise</span> e<br></code></pre></td></tr></table></figure>
+
+<h2 id="验收标准"><a href="#验收标准" class="headerlink" title="验收标准"></a>验收标准</h2><ul>
+<li>模拟事件循环卡死（注入阻塞异常），服务在 ≤5 分钟内自动恢复 HTTP 200。</li>
+<li>健康扫描连续 3 天无 P0。</li>
+</ul>
+<h2 id="后记：别被“活着”骗了"><a href="#后记：别被“活着”骗了" class="headerlink" title="后记：别被“活着”骗了"></a>后记：别被“活着”骗了</h2><p>我们习惯把进程当成服务的代名词，但在异步框架里，主循环一旦挂掉，进程只是空壳。真正的健康检测必须走到端口层，甚至协议层。</p>
+<p>系统级的可靠性，从来不是“进程不死”，而是“端口永远能连”。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/systemd/" class="print-no-link">#systemd</a>
+      
+        <a href="/tags/ReShare/" class="print-no-link">#ReShare</a>
+      
+        <a href="/tags/uvicorn/" class="print-no-link">#uvicorn</a>
+      
+        <a href="/tags/%E7%9B%91%E6%8E%A7%E7%9B%B2%E5%8C%BA%EF%BC%8C%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%EF%BC%8C%E8%87%AA%E6%84%88%E6%9C%BA%E5%88%B6/" class="print-no-link">#监控盲区，事件循环，自愈机制</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>进程活着端口死了：uvicorn 事件循环失效 24h 无人察觉——systemd 监控盲区与三层自愈方案</div>
+      <div>https://normdist.com/2026/10/04/ND-20261004-002-systemd-blindspot/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年10月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/10/03/ND-20261003-001-push2-tls-empty-reply/" title="东财 push2 数据源诊断：TLS 握手成功却 Empty reply——分层定位服务端主动断开">
+                        <span class="hidden-mobile">东财 push2 数据源诊断：TLS 握手成功却 Empty reply——分层定位服务端主动断开</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

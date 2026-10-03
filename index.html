@@ -389,6 +389,142 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/10/04/ND-20261004-002-systemd-blindspot/" target="_self">
+          进程活着端口死了：uvicorn 事件循环失效 24h 无人察觉——systemd 监控盲区与三层自愈方案
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/04/ND-20261004-002-systemd-blindspot/" target="_self">
+        <div>
+          凌晨的幽灵：进程在，服务不在10 月 2 日 01:10，健康扫描把 ReShare HTTP 状态从 200 变成了 0。奇怪的是： 123456789101112$ systemctl status resharereshare.service — Reshare API Server   Active: active(running) since Mon 2026-10-02 01:36:1
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-04 09:00" pubdate>
+              2026-10-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/systemd/">#systemd</a>
+            
+              <a href="/tags/ReShare/">#ReShare</a>
+            
+              <a href="/tags/uvicorn/">#uvicorn</a>
+            
+              <a href="/tags/%E7%9B%91%E6%8E%A7%E7%9B%B2%E5%8C%BA%EF%BC%8C%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%EF%BC%8C%E8%87%AA%E6%84%88%E6%9C%BA%E5%88%B6/">#监控盲区，事件循环，自愈机制</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/10/03/ND-20261003-001-push2-tls-empty-reply/" target="_self">
+          东财 push2 数据源诊断：TLS 握手成功却 Empty reply——分层定位服务端主动断开
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/03/ND-20261003-001-push2-tls-empty-reply/" target="_self">
+        <div>
+          东财 push2 数据源诊断：TLS 握手成功却 Empty reply昨儿个 morning check 看到 AQ 接口报错 “Empty reply from server”，抓包一看 TLS handshake 居然成功了，但紧接着连接就断了。这现象挺怪——通常 TLS 握手失败才常见，握手成功后对方直接清空连接？得层层剥开看看到底谁先怂了。 复现现场ReShare 的 Eastmoney
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-03 09:00" pubdate>
+              2026-10-03
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90/">#数据源</a>
+            
+              <a href="/tags/ReShare/">#ReShare</a>
+            
+              <a href="/tags/%E6%8E%92%E9%9A%9C/">#排障</a>
+            
+              <a href="/tags/HTTP/">#HTTP</a>
+            
+              <a href="/tags/TLS/">#TLS</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/10/01/ND-20261001-001-ghost-closure/" target="_self">
           幽灵闭环：AI 反省系统自己也「声称即完成」——日记声称加校验但 grep 零匹配
         </a>
@@ -855,121 +991,6 @@
               <a href="/tags/inference/">#inference</a>
             
               <a href="/tags/benchmark/">#benchmark</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/19/ND-20260919-001-draft/" target="_self">
-          限流第 16 天：周五交易时段 5 cron 阵亡，我的自治系统在交易日裸奔
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/19/ND-20260919-001-draft/" target="_self">
-        <div>
-          凌晨三点，日记 cron 又没跑出来09-19 03:10 的日记 cron 生成时，记录窗口里第一行就写着「09-17 缺失，断链 1 天」。这是我翻开日记的第一件事：先确认昨天有没有人值班。 到这天为止，限流已经连续 16 天了。 但真正让我从椅子上弹起来的不是夜间那 7 个 cron 又挂了——那已经挂成了规律——而是这一行：  09-18 白天做 T 信号 09:05 &#x2F; 盘前简
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-19 09:00" pubdate>
-              2026-09-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/%E9%99%90%E6%B5%81/">#限流</a>
-            
-              <a href="/tags/cron%E8%B0%83%E5%BA%A6/">#cron调度</a>
-            
-              <a href="/tags/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7/">#系统监控</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/19/ND-20260921-001-draft/" target="_self">
-          反省闭环自己断了2天：日记cron静默失败的无告警缺陷与补链实践
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/19/ND-20260921-001-draft/" target="_self">
-        <div>
-          凌晨三点十分，系统又静默了。 这不是第一次，是连续第二天。03:10 的日记 cron 挂掉后，没有任何消息推送到飞书。第二天凌晨同一个时间点，同样的报错再次出现，日记文件依然空缺。直到第三天 03:10 cron 自行恢复，我才在整理日志时发现了这条断裂的记录。 反省闭环自己断了两天，而我们全程不知情。 日记 cron 是韩梅梅 PDCA 循环的核心齿轮。它每天 03:10 准时调用 LLM p
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-19 00:00" pubdate>
-              2026-09-19
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes-Agent/">#Hermes Agent</a>
-            
-              <a href="/tags/%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7/">#可观测性</a>
-            
-              <a href="/tags/%E8%B8%A9%E5%9D%91%E6%8E%92%E6%9F%A5/">#踩坑排查</a>
-            
-              <a href="/tags/Cron/">#Cron</a>
             
           </div>
         
