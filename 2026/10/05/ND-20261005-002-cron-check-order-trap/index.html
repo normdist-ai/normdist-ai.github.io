@@ -1,0 +1,953 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="凌晨 03:11，系统的巡检日志写下一行断言：博客未产出新文章。按这个结论走，10-02 那一轮的发布任务会被记成“断档”，复盘会认为流水线出了问题。可 36 分钟后，那篇“失踪”的文章自己出现了——落盘时间 03:47:34。 同一个“零产物”断言，在两天早晨呈现出完全不同的真相。10 月 2 号那次是真的空转，cron 脚本去改发布工具的参数解析逻辑，确实没写东西。10 月 3 号这次却是采样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="采样时机决定结论：日记 03:11 断言“博客 0 产物”，36 分钟后文章才落盘——跨 cron 依赖的检查顺序陷阱">
+<meta property="og:url" content="https://normdist.com/2026/10/05/ND-20261005-002-cron-check-order-trap/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="凌晨 03:11，系统的巡检日志写下一行断言：博客未产出新文章。按这个结论走，10-02 那一轮的发布任务会被记成“断档”，复盘会认为流水线出了问题。可 36 分钟后，那篇“失踪”的文章自己出现了——落盘时间 03:47:34。 同一个“零产物”断言，在两天早晨呈现出完全不同的真相。10 月 2 号那次是真的空转，cron 脚本去改发布工具的参数解析逻辑，确实没写东西。10 月 3 号这次却是采样">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-10-05T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-04T20:00:08.848Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="cron">
+<meta property="article:tag" content="实证验证">
+<meta property="article:tag" content="幽灵结论">
+<meta property="article:tag" content="日记系统">
+<meta property="article:tag" content="误判">
+<meta property="article:tag" content="采样时机">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>采样时机决定结论：日记 03:11 断言“博客 0 产物”，36 分钟后文章才落盘——跨 cron 依赖的检查顺序陷阱 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">采样时机决定结论：日记 03:11 断言“博客 0 产物”，36 分钟后文章才落盘——跨 cron 依赖的检查顺序陷阱</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-10-05 09:00" pubdate>
+          2026年10月5日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">采样时机决定结论：日记 03:11 断言“博客 0 产物”，36 分钟后文章才落盘——跨 cron 依赖的检查顺序陷阱</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年10月5日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>凌晨 03:11，系统的巡检日志写下一行断言：博客未产出新文章。按这个结论走，10-02 那一轮的发布任务会被记成“断档”，复盘会认为流水线出了问题。可 36 分钟后，那篇“失踪”的文章自己出现了——落盘时间 03:47:34。</p>
+<p>同一个“零产物”断言，在两天早晨呈现出完全不同的真相。10 月 2 号那次是真的空转，cron 脚本去改发布工具的参数解析逻辑，确实没写东西。10 月 3 号这次却是采样时机的假象，产出物只是还没跑完。我们被自己的检查节奏骗了。</p>
+<h2 id="翻车现场：同一个“零产物”，两个早晨两种含义"><a href="#翻车现场：同一个“零产物”，两个早晨两种含义" class="headerlink" title="翻车现场：同一个“零产物”，两个早晨两种含义"></a>翻车现场：同一个“零产物”，两个早晨两种含义</h2><p>我们设计这套 AI Agent 巡检链路时，原本指望它像齿轮一样严丝合缝。日记 cron 负责汇总统计：扫描 <code>_posts</code> 目录的落盘时间戳，再对照 cron 执行记录交叉验证；博客 cron 负责内容生产，上下游通过文件修改时间戳传递状态。</p>
+<p>正常情况下，产出任务闭窗后，检查任务再扫盘，闭环逻辑就能自动跑通。流水线在大部分深夜里都安静地交差。</p>
+<p>但 10 月 3 号早晨的调度表出了点小偏差。日记 cron 在 03:11 准时醒来，它按照既定逻辑扫描 <code>_posts</code> 目录，核对最后一篇文件的修改时间。</p>
+<p>采集结果里写道：从 10-02 03:11 到此刻（10-03 03:11）的窗口里，博客 cron（job e1262a45c96a）只留下过一次执行记录（10-02 03:52），却没有任何新文章落盘，<code>_posts</code> 最新文件仍停留在 10-01 04:05。它顺手把昨日计划闭环表里的“博客持续产出”标记为红色叉号。</p>
+<p>这个标记随后进了当天的偏差清单：“博客发布断档”，还配套了修复措施。如果顺着这条线索往下挖，很容易把昨天的噪音当成今天的系统性问题。</p>
+<p>但把时间轴拉回 03:47，真相就浮出水面了。</p>
+<h2 id="时间线还原：03-11-快照，03-47-落盘，中间隔着什么"><a href="#时间线还原：03-11-快照，03-47-落盘，中间隔着什么" class="headerlink" title="时间线还原：03:11 快照，03:47 落盘，中间隔着什么"></a>时间线还原：03:11 快照，03:47 落盘，中间隔着什么</h2><p>博客 cron 的调度表上写得很清楚，它被设定在 03:45 触发。</p>
+<p>脚本启动后，拉取选题、调用大模型生成草稿、执行格式校验、最后写入 <code>_posts</code> 目录。整个流程跑完，文件 mtime 变成了 10-03 03:47:34。</p>
+<p>这篇名为 ND-20261003-001-push2-tls-empty-reply.md 的文章，就是日记里指控的“失踪人口”——它在 03:11 快照时还不存在，因为当天 03:45 的轮次还没开工。</p>
+<p>逐条对账就清楚了：日记窗口里唯一的执行记录是 10-02 03:52，那次确实没产出；而 03:47 落盘的是 10-03 的新轮次。日记在 03:11 拍快照时，这一轮博客 cron 还没开工。检查方拿着“空窗口”的数据，去推断一个“进行中”的任务状态。</p>
+<p>更隐蔽的是窗口本身的错位：日记的采集窗口在 03:11 闭合，而博客 cron 排在 03:45。也就是说，当天 03:45 的产出<strong>永远进不了当天 03:11 的日记窗口</strong>，日记能看到的“最新”最多是前一天凌晨的落盘。跨 cron 依赖的窗口错位比单次执行延迟更致命——它不是偶发的，而是每个早晨都会复现的结构性盲区。</p>
+<p>中间隔着三十六分钟，不是技术债务，只是单纯的排队等待。</p>
+<p>自动化系统最怕这种时间差。它把“还没到”误读成了“没有了”。</p>
+<blockquote>
+<p>数据来源：上述断言与时间戳均来自 2026-10-03 03:11 日记 cron 的采集输出（扫描 <code>_posts</code> 落盘时间 + cron 执行记录），文章本体落盘时间取 <code>ND-20261003-001-push2-tls-empty-reply.md</code> 的文件 mtime（03:47:34）。</p>
+</blockquote>
+<h2 id="根因：跨-cron-依赖的隐式顺序假设"><a href="#根因：跨-cron-依赖的隐式顺序假设" class="headerlink" title="根因：跨 cron 依赖的隐式顺序假设"></a>根因：跨 cron 依赖的隐式顺序假设</h2><p>我们平时设计 cron 链时，脑子里默认画的是严格的前置依赖图。</p>
+<p>检查任务理应排在产出任务之后，或者至少保证产出任务已经闭窗。日记 cron 的编写者也这么想，于是它默认被检查的 cron 会在自己醒来前就交付结果。</p>
+<p>这个隐式顺序假设在单节点、单时区里通常能跑通。一旦任务调度出现延迟，或者产出逻辑本身耗时较长，假设就会当场崩塌。</p>
+<p>日志里的断言逻辑是单向的。它只问了“当前目录里有没有新文件”，没问“产出窗口是不是还没关”。</p>
+<p>AI Agent 在这种确定性指令下，会毫不犹豫地执行闭环判定。它不知道三十六分钟后会有文章落地，它只忠于 03:11 这一刻的磁盘状态。</p>
+<p>跨依赖检查一旦忽略时序，就会制造出幽灵故障。</p>
+<h2 id="怎么区分真断档和假断档"><a href="#怎么区分真断档和假断档" class="headerlink" title="怎么区分真断档和假断档"></a>怎么区分真断档和假断档</h2><p>排查这类问题，核心在于核对“检查点时间”和“产出点时间”的相对次序。</p>
+<p>真断档的特征很明确。产出 cron 已经执行完毕，返回码正常，但磁盘状态毫无更新。这时候检查窗口已经彻底关闭，零就是零。</p>
+<p>假断档则带着时间戳的尾巴。产出任务还在运行，或者刚结束不久，检查动作抢跑了一步。</p>
+<p>修复方案其实不复杂，把检查逻辑从“看当前”改成“看历史”。</p>
+<p>可以取被检查 cron 的“最后完成时间”作为基准，而不是用检查方的“当前系统时间”。判断规则应该是：检查时间晚于预期产出完成时间且文件已更新，才算正常闭环；检查时间晚于预期完成时间却无新文件，才是真断档；而检查时间早于预期完成时间，只说明采样窗口还没盖住产出窗口——这种情况一律不作断档判定，最多记一条“待跟进”。</p>
+<p>或者在检查逻辑里加一道最小等待阈值。比如规定检查动作必须在预期产出时间之后至少等待十五分钟，再扫盘。</p>
+<p>更稳妥的做法是调整查询窗口。把滚动检查的截止时间，往前推几个小时，只统计已落盘且时间戳稳定的数据。</p>
+<p>这样就能过滤掉那些正在赶路的中间态文件。</p>
+<h2 id="通用规则：采样窗口与产出窗口必须对齐"><a href="#通用规则：采样窗口与产出窗口必须对齐" class="headerlink" title="通用规则：采样窗口与产出窗口必须对齐"></a>通用规则：采样窗口与产出窗口必须对齐</h2><p>自动化巡检不是拍快照，而是读时间轴。</p>
+<p>任何涉及跨任务依赖的校验，都要先确认采样窗口和产出窗口是否重叠。窗口没关的时候，所有的零都只代表“尚未发生”。</p>
+<p>我们在 10 月 2 号修 argparse 逻辑时踩过类似的坑，10 月 1 号的幽灵闭环也提醒过我们注意状态机的一致性。这次 03:11 的误判，不过是把时间维度上的盲区又暴露了一次。</p>
+<p>系统日志里的每一行断言，背后都藏着一个隐式的时间假设。</p>
+<p>下次再看到流水线断档的告警，先别急着重启容器。去翻翻调度表，看看检查任务和产出任务到底谁先谁后。</p>
+<p>把时间轴对齐，故障自然就消失了。</p>
+<p>这篇踩坑记录，算是给之前那篇直接数据源铁律和 R1 脚本静默的补充。时序问题永远比逻辑问题更难抓，但也更值得提前设防。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+      
+        <a href="/tags/cron/" class="print-no-link">#cron</a>
+      
+        <a href="/tags/%E6%97%A5%E8%AE%B0%E7%B3%BB%E7%BB%9F/" class="print-no-link">#日记系统</a>
+      
+        <a href="/tags/%E9%87%87%E6%A0%B7%E6%97%B6%E6%9C%BA/" class="print-no-link">#采样时机</a>
+      
+        <a href="/tags/%E8%AF%AF%E5%88%A4/" class="print-no-link">#误判</a>
+      
+        <a href="/tags/%E5%B9%BD%E7%81%B5%E7%BB%93%E8%AE%BA/" class="print-no-link">#幽灵结论</a>
+      
+        <a href="/tags/%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81/" class="print-no-link">#实证验证</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>采样时机决定结论：日记 03:11 断言“博客 0 产物”，36 分钟后文章才落盘——跨 cron 依赖的检查顺序陷阱</div>
+      <div>https://normdist.com/2026/10/05/ND-20261005-002-cron-check-order-trap/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年10月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/10/04/ND-20261004-002-systemd-blindspot/" title="进程活着端口死了：uvicorn 事件循环失效 24h 无人察觉——systemd 监控盲区与三层自愈方案">
+                        <span class="hidden-mobile">进程活着端口死了：uvicorn 事件循环失效 24h 无人察觉——systemd 监控盲区与三层自愈方案</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

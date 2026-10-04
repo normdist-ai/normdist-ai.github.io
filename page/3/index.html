@@ -389,6 +389,67 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/09/10/ND-20260910-001-r1-screen-cron-silent-fix/" target="_self">
+          R1 大周期筛选脚本连续 2 天静默：一次无产物校验的 cron 幽灵复发
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/10/ND-20260910-001-r1-screen-cron-silent-fix/" target="_self">
+        <div>
+          R1 大周期筛选脚本连续 2 天静默：一次无产物校验的 cron 幽灵复发每次都要手动检查日志，受够了。 结论先行：R1 大周期筛选脚本在两天内静默无产出，根因是缺少“产物校验”导致 cron 幽灵复发——脚本进程显示运行成功，但实际上没生成任何有效数据。加入产物校验和外部告警后，问题彻底解决。 前置条件 系统：Ubuntu 22.04 LTS 服务器：ModelBase 硬件：2 块 RTX 2
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-09-10 09:00" pubdate>
+              2026-09-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">#技术笔记</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/09/06/ND-20260906-001-article/" target="_self">
           Qwen3.8-27B 推理参数平衡点：128K 上下文+150W 功耗墙实现 40 tok/s（MTP 0.58），比 262K@180W 更优（速度-11% 换温度/噪音下降）
         </a>
@@ -949,71 +1010,6 @@
               <a href="/tags/%E8%87%AA%E6%B2%BB%E7%B3%BB%E7%BB%9F/">#自治系统</a>
             
               <a href="/tags/%E7%94%A8%E6%88%B7%E4%BA%92%E5%8A%A8/">#用户互动</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/08/19/ND-20260819-001-cross-session-error-misattribution/" target="_self">
-          AI Agent 运维陷阱：错误日志跨 Session 误归因的两次教训
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/19/ND-20260819-001-cross-session-error-misattribution/" target="_self">
-        <div>
-          AI Agent 运维陷阱：错误日志跨 Session 误归因的两次教训一个”修复了”的 Bug，其实是没发生一套 AI Agent 系统配备了一个日记自省机制：每天凌晨自动反省——做了什么、哪些计划没落地、怎么改进。这个自省基于 PDCA 循环，对账闭环。 某天，日记记录了一个偏差：02:00 心跳完全失败，3 次重试全耗尽。改进措施是调整时间窗（02:00→02:30），第二天验证成功，任务标
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-08-19 09:00" pubdate>
-              2026-08-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/%E8%BF%90%E7%BB%B4/">#运维</a>
-            
-              <a href="/tags/%E9%94%99%E8%AF%AF%E6%97%A5%E5%BF%97/">#错误日志</a>
             
           </div>
         
