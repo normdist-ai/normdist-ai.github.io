@@ -19,17 +19,21 @@
   <meta name="author" content="小瑞">
   <meta name="keywords" content="">
   
-    <meta name="description" content="12345---title: 数据源三级 fallback：BaoStock 5min→daily→腾讯分钟线，做T成交验证不再裸奔date: 2024-05-20tags: [量化交易, 数据源, 容错设计, Python]---  盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略">
+    <meta name="description" content="盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略失效，而是数据断档。你以为在复盘，其实只是在盲猜。后来我花了三天时间，把单一数据源砍掉，改成了 BaoStock 5 分钟线优先、日线兜底、腾讯分钟线补位的三级 fallback 架构。跑了一个月，成交校验准确率稳稳压在 99.2% 以">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据源三级 fallback：BaoStock 5min→daily→腾讯分钟线，做T成交验证不再裸奔">
 <meta property="og:url" content="https://normdist.com/2026/10/19/ND-20261014-001-draft/index.html">
 <meta property="og:site_name" content="进化概率论">
-<meta property="og:description" content="12345---title: 数据源三级 fallback：BaoStock 5min→daily→腾讯分钟线，做T成交验证不再裸奔date: 2024-05-20tags: [量化交易, 数据源, 容错设计, Python]---  盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略">
+<meta property="og:description" content="盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略失效，而是数据断档。你以为在复盘，其实只是在盲猜。后来我花了三天时间，把单一数据源砍掉，改成了 BaoStock 5 分钟线优先、日线兜底、腾讯分钟线补位的三级 fallback 架构。跑了一个月，成交校验准确率稳稳压在 99.2% 以">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-10-19T01:00:00.000Z">
-<meta property="article:modified_time" content="2026-10-18T19:48:51.180Z">
+<meta property="article:modified_time" content="2026-10-18T19:53:38.368Z">
 <meta property="article:author" content="小瑞">
-<meta property="article:tag" content="技术笔记">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="做T">
+<meta property="article:tag" content="容错设计">
+<meta property="article:tag" content="数据源">
+<meta property="article:tag" content="量化交易">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -380,7 +384,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.9k 字
+          1.8k 字
         
       </span>
     
@@ -391,7 +395,7 @@
         
         
         
-          16 分钟
+          15 分钟
         
       </span>
     
@@ -452,9 +456,7 @@
             
               <div class="markdown-body">
                 
-                <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-meta">---</span><br><span class="hljs-attr">title:</span> <span class="hljs-string">数据源三级</span> <span class="hljs-string">fallback：BaoStock</span> <span class="hljs-string">5min→daily→腾讯分钟线，做T成交验证不再裸奔</span><br><span class="hljs-attr">date:</span> <span class="hljs-number">2024-05-20</span><br><span class="hljs-attr">tags:</span> [<span class="hljs-string">量化交易</span>, <span class="hljs-string">数据源</span>, <span class="hljs-string">容错设计</span>, <span class="hljs-string">Python</span>]<br><span class="hljs-meta">---</span><br></code></pre></td></tr></table></figure>
-
-<p>盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略失效，而是数据断档。你以为在复盘，其实只是在盲猜。后来我花了三天时间，把单一数据源砍掉，改成了 BaoStock 5 分钟线优先、日线兜底、腾讯分钟线补位的三级 fallback 架构。跑了一个月，成交校验准确率稳稳压在 99.2% 以上。</p>
+                <p>盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略失效，而是数据断档。你以为在复盘，其实只是在盲猜。后来我花了三天时间，把单一数据源砍掉，改成了 BaoStock 5 分钟线优先、日线兜底、腾讯分钟线补位的三级 fallback 架构。跑了一个月，成交校验准确率稳稳压在 99.2% 以上。</p>
 <h2 id="数据拉取入口怎么收口"><a href="#数据拉取入口怎么收口" class="headerlink" title="数据拉取入口怎么收口"></a>数据拉取入口怎么收口</h2><p>数据源切换必须统一收口，不能让策略层感知到底层在换血。</p>
 <p>我在核心链路顶部建了一个 fetch_trade_data 函数。所有行情请求只走这一个出口。第一层直接请求 BaoStock 的 5 分钟 K 线。接口返回正常且数据行数大于阈值，直接入库校验。触发 429 限流或网络超时，立刻降级到第二层。第二层拉取 BaoStock 的日线数据，通过复权因子和日内波动假设，拼接出近似分钟线。日线颗粒度太粗，只能验证成交方向和大体价位。遇到长假前后数据稀疏，或者日线接口也挂了，直接切第三层。第三层走腾讯财经的分钟线接口，走 HTTP 直接拿 JSON。三套数据格式完全不同，统一清洗成标准 OHLCV 字典再入库。校验模块只认标准格式，底层怎么换它根本不知道。</p>
 <h2 id="格式清洗管道怎么搭"><a href="#格式清洗管道怎么搭" class="headerlink" title="格式清洗管道怎么搭"></a>格式清洗管道怎么搭</h2><p>降级逻辑写起来简单，对齐数据格式能掉一层皮。BaoStock 返回的是 DataFrame，列名是 date, open, high, low, close, volume。腾讯接口返回的是嵌套 JSON，时间字段叫 time，成交量叫 vol。我把所有源的数据塞进同一个清洗管道，统一重命名列。转换时间戳为 UTC 毫秒，方便后续跨表关联。</p>
@@ -498,7 +500,15 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="print-no-link">#技术笔记</a>
+        <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="print-no-link">#量化交易</a>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90/" class="print-no-link">#数据源</a>
+      
+        <a href="/tags/%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/" class="print-no-link">#容错设计</a>
+      
+        <a href="/tags/%E5%81%9AT/" class="print-no-link">#做T</a>
       
     </div>
   

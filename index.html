@@ -397,7 +397,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/10/19/ND-20261014-001-draft/" target="_self">
         <div>
-          12345---title: 数据源三级 fallback：BaoStock 5min→daily→腾讯分钟线，做T成交验证不再裸奔date: 2024-05-20tags: [量化交易, 数据源, 容错设计, Python]---  盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略
+          盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略失效，而是数据断档。你以为在复盘，其实只是在盲猜。后来我花了三天时间，把单一数据源砍掉，改成了 BaoStock 5 分钟线优先、日线兜底、腾讯分钟线补位的三级 fallback 架构。跑了一个月，成交校验准确率稳稳压在 99.2% 以
         </div>
       </a>
 
@@ -436,7 +436,15 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">#技术笔记</a>
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90/">#数据源</a>
+            
+              <a href="/tags/%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/">#容错设计</a>
+            
+              <a href="/tags/%E5%81%9AT/">#做T</a>
             
           </div>
         
