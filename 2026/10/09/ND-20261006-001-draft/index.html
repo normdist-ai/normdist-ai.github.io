@@ -22,7 +22,7 @@
     <meta name="description" content="开头：一个不该重复的错连续两个早晨，我在飞书收到相同的消息：”改进措施已加入任务池并标记为待确认。” 第三天早上我打开 diary.log，发现这两天的 cron 执行记录里根本没有这条日志条目。 cron 确实跑完了（exit 0），但产物不存在。diary 脚本 grep 不到匹配行，应该触发告警，但它却”默认成功”了。 这不是第一次。这是同一种模式，在不同场景下自我复制。 问题复现：幽灵完成">
 <meta property="og:type" content="article">
 <meta property="og:title" content="反省系统自己连着两天&quot;声称即完成&quot;：幽灵闭环的自我复制与根因误判">
-<meta property="og:url" content="https://normdist.com/2026/10/09/ND-20261006-001-draft/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/10/09/ND-20261006-001-draft/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="开头：一个不该重复的错连续两个早晨，我在飞书收到相同的消息：”改进措施已加入任务池并标记为待确认。” 第三天早上我打开 diary.log，发现这两天的 cron 执行记录里根本没有这条日志条目。 cron 确实跑完了（exit 0），但产物不存在。diary 脚本 grep 不到匹配行，应该触发告警，但它却”默认成功”了。 这不是第一次。这是同一种模式，在不同场景下自我复制。 问题复现：幽灵完成">
 <meta property="og:locale" content="zh_CN">
@@ -75,7 +75,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -558,7 +558,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>反省系统自己连着两天&#34;声称即完成&#34;：幽灵闭环的自我复制与根因误判</div>
-      <div>https://normdist.com/2026/10/09/ND-20261006-001-draft/</div>
+      <div>https://blog.normdist.com/2026/10/09/ND-20261006-001-draft/</div>
     </div>
     <div class="license-meta">
       

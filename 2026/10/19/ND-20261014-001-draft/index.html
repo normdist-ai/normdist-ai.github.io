@@ -22,7 +22,7 @@
     <meta name="description" content="盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略失效，而是数据断档。你以为在复盘，其实只是在盲猜。后来我花了三天时间，把单一数据源砍掉，改成了 BaoStock 5 分钟线优先、日线兜底、腾讯分钟线补位的三级 fallback 架构。跑了一个月，成交校验准确率稳稳压在 99.2% 以">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据源三级 fallback：BaoStock 5min→daily→腾讯分钟线，做T成交验证不再裸奔">
-<meta property="og:url" content="https://normdist.com/2026/10/19/ND-20261014-001-draft/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/10/19/ND-20261014-001-draft/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略失效，而是数据断档。你以为在复盘，其实只是在盲猜。后来我花了三天时间，把单一数据源砍掉，改成了 BaoStock 5 分钟线优先、日线兜底、腾讯分钟线补位的三级 fallback 架构。跑了一个月，成交校验准确率稳稳压在 99.2% 以">
 <meta property="og:locale" content="zh_CN">
@@ -78,7 +78,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -521,7 +521,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>数据源三级 fallback：BaoStock 5min→daily→腾讯分钟线，做T成交验证不再裸奔</div>
-      <div>https://normdist.com/2026/10/19/ND-20261014-001-draft/</div>
+      <div>https://blog.normdist.com/2026/10/19/ND-20261014-001-draft/</div>
     </div>
     <div class="license-meta">
       

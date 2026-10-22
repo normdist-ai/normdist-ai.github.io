@@ -22,7 +22,7 @@
     <meta name="description" content="模型服务器上的 llama.cpp 整整落后了一个月。源码编译、替换二进制，本以为是个 10 分钟的常规操作——结果硬生生折腾了一上午，踩了一个隐藏极深的 CUDA 驱动版本不匹配的坑。 本文记录完整的诊断过程，希望帮你在遇到同类问题时少走弯路。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="llama.cpp 升级踩坑：CUDA 驱动不匹配导致 GPU 掉线全记录">
-<meta property="og:url" content="https://normdist.com/2026/07/27/ND-20260727-003-llama-cpp-cuda-driver-mismatch/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/07/27/ND-20260727-003-llama-cpp-cuda-driver-mismatch/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="模型服务器上的 llama.cpp 整整落后了一个月。源码编译、替换二进制，本以为是个 10 分钟的常规操作——结果硬生生折腾了一上午，踩了一个隐藏极深的 CUDA 驱动版本不匹配的坑。 本文记录完整的诊断过程，希望帮你在遇到同类问题时少走弯路。">
 <meta property="og:locale" content="zh_CN">
@@ -79,7 +79,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -654,7 +654,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>llama.cpp 升级踩坑：CUDA 驱动不匹配导致 GPU 掉线全记录</div>
-      <div>https://normdist.com/2026/07/27/ND-20260727-003-llama-cpp-cuda-driver-mismatch/</div>
+      <div>https://blog.normdist.com/2026/07/27/ND-20260727-003-llama-cpp-cuda-driver-mismatch/</div>
     </div>
     <div class="license-meta">
       

@@ -22,7 +22,7 @@
     <meta name="description" content="我的回测引擎里有一个隐蔽的 bug，藏了三个月才被发现：RSI、布林带、肯特纳通道三个策略，每个都只产生了第一次买入信号，之后再也没卖过。 回测报告显示”100% 胜率、单笔交易”，看起来完美——实际上是信号死了。 根因是一行 copy-paste：卖出分支里把 in_buy 设成了 True，本该是 False。结果卖出后买入锁一直挂着，下一个买入信号永远被”已持仓”挡住，整条信号链断裂。这不是">
 <meta property="og:type" content="article">
 <meta property="og:title" content="回测策略 selector 交替逻辑设计：防止信号死锁的代码模式">
-<meta property="og:url" content="https://normdist.com/2026/08/12/ND-20260812-003-selector-alternation-deadlock/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/08/12/ND-20260812-003-selector-alternation-deadlock/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="我的回测引擎里有一个隐蔽的 bug，藏了三个月才被发现：RSI、布林带、肯特纳通道三个策略，每个都只产生了第一次买入信号，之后再也没卖过。 回测报告显示”100% 胜率、单笔交易”，看起来完美——实际上是信号死了。 根因是一行 copy-paste：卖出分支里把 in_buy 设成了 True，本该是 False。结果卖出后买入锁一直挂着，下一个买入信号永远被”已持仓”挡住，整条信号链断裂。这不是">
 <meta property="og:locale" content="zh_CN">
@@ -76,7 +76,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -587,7 +587,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>回测策略 selector 交替逻辑设计：防止信号死锁的代码模式</div>
-      <div>https://normdist.com/2026/08/12/ND-20260812-003-selector-alternation-deadlock/</div>
+      <div>https://blog.normdist.com/2026/08/12/ND-20260812-003-selector-alternation-deadlock/</div>
     </div>
     <div class="license-meta">
       

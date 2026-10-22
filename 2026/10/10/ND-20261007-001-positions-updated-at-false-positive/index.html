@@ -22,7 +22,7 @@
     <meta name="description" content="巡检大屏突然飙红，报警信息直指持仓价格滞后了整整四个月。系统提示 positions.updated_at 停留在六月，距离今天已经跨越了四个自然月。任何盯着这条告警的人，都会本能地认为底层数据管道已经彻底瘫痪。实际跑了一遍端到端链路，价格通道却流着正常的血液。 通道其实一直在跑凌晨两点半，我们手动拉取了六只持仓的最新快照。对比源直接指向 ReShare 最新收盘行情。517520 的 AQ 报价">
 <meta property="og:type" content="article">
 <meta property="og:title" content="positions.updated_at 陈旧 &#x3D; 数据通道断？健康扫描误报的澄清实录与正确判据三选一">
-<meta property="og:url" content="https://normdist.com/2026/10/10/ND-20261007-001-positions-updated-at-false-positive/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/10/10/ND-20261007-001-positions-updated-at-false-positive/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="巡检大屏突然飙红，报警信息直指持仓价格滞后了整整四个月。系统提示 positions.updated_at 停留在六月，距离今天已经跨越了四个自然月。任何盯着这条告警的人，都会本能地认为底层数据管道已经彻底瘫痪。实际跑了一遍端到端链路，价格通道却流着正常的血液。 通道其实一直在跑凌晨两点半，我们手动拉取了六只持仓的最新快照。对比源直接指向 ReShare 最新收盘行情。517520 的 AQ 报价">
 <meta property="og:locale" content="zh_CN">
@@ -78,7 +78,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -519,7 +519,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>positions.updated_at 陈旧 = 数据通道断？健康扫描误报的澄清实录与正确判据三选一</div>
-      <div>https://normdist.com/2026/10/10/ND-20261007-001-positions-updated-at-false-positive/</div>
+      <div>https://blog.normdist.com/2026/10/10/ND-20261007-001-positions-updated-at-false-positive/</div>
     </div>
     <div class="license-meta">
       

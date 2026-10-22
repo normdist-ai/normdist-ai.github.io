@@ -22,7 +22,7 @@
     <meta name="description" content="凌晨 03:11，系统的巡检日志写下一行断言：博客未产出新文章。按这个结论走，10-02 那一轮的发布任务会被记成“断档”，复盘会认为流水线出了问题。可 36 分钟后，那篇“失踪”的文章自己出现了——落盘时间 03:47:34。 同一个“零产物”断言，在两天早晨呈现出完全不同的真相。10 月 2 号那次是真的空转，cron 脚本去改发布工具的参数解析逻辑，确实没写东西。10 月 3 号这次却是采样">
 <meta property="og:type" content="article">
 <meta property="og:title" content="采样时机决定结论：日记 03:11 断言“博客 0 产物”，36 分钟后文章才落盘——跨 cron 依赖的检查顺序陷阱">
-<meta property="og:url" content="https://normdist.com/2026/10/05/ND-20261005-002-cron-check-order-trap/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/10/05/ND-20261005-002-cron-check-order-trap/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="凌晨 03:11，系统的巡检日志写下一行断言：博客未产出新文章。按这个结论走，10-02 那一轮的发布任务会被记成“断档”，复盘会认为流水线出了问题。可 36 分钟后，那篇“失踪”的文章自己出现了——落盘时间 03:47:34。 同一个“零产物”断言，在两天早晨呈现出完全不同的真相。10 月 2 号那次是真的空转，cron 脚本去改发布工具的参数解析逻辑，确实没写东西。10 月 3 号这次却是采样">
 <meta property="og:locale" content="zh_CN">
@@ -80,7 +80,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -534,7 +534,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>采样时机决定结论：日记 03:11 断言“博客 0 产物”，36 分钟后文章才落盘——跨 cron 依赖的检查顺序陷阱</div>
-      <div>https://normdist.com/2026/10/05/ND-20261005-002-cron-check-order-trap/</div>
+      <div>https://blog.normdist.com/2026/10/05/ND-20261005-002-cron-check-order-trap/</div>
     </div>
     <div class="license-meta">
       

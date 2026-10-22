@@ -22,7 +22,7 @@
     <meta name="description" content="翻车现场一个扫码页面，在电脑浏览器上看着一切正常——卡片撑满屏幕，底部对齐手机 home 指示线。 切到手机上，卡片高度比屏幕多出了几十像素。没有滚动条，但手指能从下往上拖动，页面会回弹。看起来像是：内容比视口”大了一圈”，但又没有大到需要滚动条。 同一个 div，同一套 CSS，PC 完美、手机溢出。 第一轮排查：是不是父容器没撑高直觉反应：肯定有某个父容器没设 h-full，导致子元素的高度计">
 <meta property="og:type" content="article">
 <meta property="og:title" content="为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录">
-<meta property="og:url" content="https://normdist.com/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="翻车现场一个扫码页面，在电脑浏览器上看着一切正常——卡片撑满屏幕，底部对齐手机 home 指示线。 切到手机上，卡片高度比屏幕多出了几十像素。没有滚动条，但手指能从下往上拖动，页面会回弹。看起来像是：内容比视口”大了一圈”，但又没有大到需要滚动条。 同一个 div，同一套 CSS，PC 完美、手机溢出。 第一轮排查：是不是父容器没撑高直觉反应：肯定有某个父容器没设 h-full，导致子元素的高度计">
 <meta property="og:locale" content="zh_CN">
@@ -76,7 +76,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -558,7 +558,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录</div>
-      <div>https://normdist.com/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/</div>
+      <div>https://blog.normdist.com/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/</div>
     </div>
     <div class="license-meta">
       

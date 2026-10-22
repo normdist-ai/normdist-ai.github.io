@@ -22,7 +22,7 @@
     <meta name="description" content="报警群半夜炸了，监控显示 JVM 内存直接打满。我盯着 Grafana 上那条垂直拉升的曲线，脑子里只有一个念头：明明加了限流，怎么还是扛不住。后来翻日志才发现，真正搞垮服务的根本不是流量洪峰，而是我们亲手埋下的一个“安全网”。 真正拖垮系统的不是突发流量，而是被忽略的异常处理逻辑。业务跑在 Kafka 上，消费者按批次拉取消息，单机轻松扛住日常峰值。一切看起来都很完美，直到某次上游系统升级，吐出">
 <meta property="og:type" content="article">
 <meta property="og:title" content="消息队列吞掉半台服务器后，我才看懂死信队列">
-<meta property="og:url" content="https://normdist.com/2024/05/20/ND-20261003-004-draft/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2024/05/20/ND-20261003-004-draft/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="报警群半夜炸了，监控显示 JVM 内存直接打满。我盯着 Grafana 上那条垂直拉升的曲线，脑子里只有一个念头：明明加了限流，怎么还是扛不住。后来翻日志才发现，真正搞垮服务的根本不是流量洪峰，而是我们亲手埋下的一个“安全网”。 真正拖垮系统的不是突发流量，而是被忽略的异常处理逻辑。业务跑在 Kafka 上，消费者按批次拉取消息，单机轻松扛住日常峰值。一切看起来都很完美，直到某次上游系统升级，吐出">
 <meta property="og:locale" content="zh_CN">
@@ -76,7 +76,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -504,7 +504,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>消息队列吞掉半台服务器后，我才看懂死信队列</div>
-      <div>https://normdist.com/2024/05/20/ND-20261003-004-draft/</div>
+      <div>https://blog.normdist.com/2024/05/20/ND-20261003-004-draft/</div>
     </div>
     <div class="license-meta">
       

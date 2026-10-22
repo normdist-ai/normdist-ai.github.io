@@ -22,7 +22,7 @@
     <meta name="description" content="MACD 金叉买入、SMA 趋势确认，这是最经典的两个技术指标组合。教科书告诉你”参数用 12&#x2F;26&#x2F;9 和 5&#x2F;20”，但从来没告诉你——这些数字是随便选的，换个市场、换个标的，它们大概率不是最优的。 我做了一件事：把 MACD 的快慢线周期和 SMA 的窗口长度展开成一个参数网格，每个格点跑一遍回测，看收益分布长什么样。结果很反直觉——最优参数不在教科书的默认值附">
 <meta property="og:type" content="article">
 <meta property="og:title" content="回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪">
-<meta property="og:url" content="https://normdist.com/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="MACD 金叉买入、SMA 趋势确认，这是最经典的两个技术指标组合。教科书告诉你”参数用 12&#x2F;26&#x2F;9 和 5&#x2F;20”，但从来没告诉你——这些数字是随便选的，换个市场、换个标的，它们大概率不是最优的。 我做了一件事：把 MACD 的快慢线周期和 SMA 的窗口长度展开成一个参数网格，每个格点跑一遍回测，看收益分布长什么样。结果很反直觉——最优参数不在教科书的默认值附">
 <meta property="og:locale" content="zh_CN">
@@ -76,7 +76,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -689,7 +689,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>回测策略参数网格搜索：MACD+SMA 参数空间的最优解在哪</div>
-      <div>https://normdist.com/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/</div>
+      <div>https://blog.normdist.com/2026/08/12/ND-20260812-002-macd-sma-grid-search-optimal-params/</div>
     </div>
     <div class="license-meta">
       

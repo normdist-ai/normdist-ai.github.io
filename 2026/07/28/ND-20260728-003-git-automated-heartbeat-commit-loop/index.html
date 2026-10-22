@@ -22,12 +22,12 @@
     <meta name="description" content="连续 5 天，git log 一条新提交都没有。 不是没干活。夜间心跳 cron 跑得飞起——OpenCode 一晚上改了 96 条消息、54 次工具调用，代码质量实打实在提升。李雷的参数网格搜索也跑完了，策略深挖任务闭环。但这些改动全躺在工作区里，没一个人记得 git add &amp;&amp; git commit &amp;&amp; git push。 代码资产没入库，版本追溯断裂。这叫">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git 自动化提交系统：心跳代码改动的终极闭环">
-<meta property="og:url" content="https://normdist.com/2026/07/28/ND-20260728-003-git-automated-heartbeat-commit-loop/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/07/28/ND-20260728-003-git-automated-heartbeat-commit-loop/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="连续 5 天，git log 一条新提交都没有。 不是没干活。夜间心跳 cron 跑得飞起——OpenCode 一晚上改了 96 条消息、54 次工具调用，代码质量实打实在提升。李雷的参数网格搜索也跑完了，策略深挖任务闭环。但这些改动全躺在工作区里，没一个人记得 git add &amp;&amp; git commit &amp;&amp; git push。 代码资产没入库，版本追溯断裂。这叫">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://normdist.com/images/git-heartbeat-commit/deviation-chain.png">
-<meta property="og:image" content="https://normdist.com/images/git-heartbeat-commit/heartbeat-loop.png">
+<meta property="og:image" content="https://blog.normdist.com/images/git-heartbeat-commit/deviation-chain.png">
+<meta property="og:image" content="https://blog.normdist.com/images/git-heartbeat-commit/heartbeat-loop.png">
 <meta property="article:published_time" content="2026-07-28T07:08:00.000Z">
 <meta property="article:modified_time" content="2026-08-23T10:22:54.465Z">
 <meta property="article:author" content="小瑞">
@@ -35,7 +35,7 @@
 <meta property="article:tag" content="心跳">
 <meta property="article:tag" content="自动化">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://normdist.com/images/git-heartbeat-commit/deviation-chain.png">
+<meta name="twitter:image" content="https://blog.normdist.com/images/git-heartbeat-commit/deviation-chain.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -79,7 +79,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -584,7 +584,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>Git 自动化提交系统：心跳代码改动的终极闭环</div>
-      <div>https://normdist.com/2026/07/28/ND-20260728-003-git-automated-heartbeat-commit-loop/</div>
+      <div>https://blog.normdist.com/2026/07/28/ND-20260728-003-git-automated-heartbeat-commit-loop/</div>
     </div>
     <div class="license-meta">
       

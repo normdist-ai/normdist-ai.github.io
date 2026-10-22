@@ -22,7 +22,7 @@
     <meta name="description" content="回测跑出来一条只涨不跌的净值曲线，胜率 100%，最大回撤 0%。 这不是圣杯，这是 bug。 策略里买入后该卖出的信号一次都没触发，仓位从开仓那天起就锁死在账户里。净值曲线”看起来”只涨不跌，只是因为它从来没结算过亏损。最讽刺的是，这个 bug 的源头只是一个 copy-paste：把 buy 分支的代码复制到 sell 分支，忘了把一个布尔标志从 True 改成 False。 copy-pas">
 <meta property="og:type" content="article">
 <meta property="og:title" content="回测策略的 copy-paste bug：sell 分支 in_buy&#x3D;True 让信号死锁">
-<meta property="og:url" content="https://normdist.com/2026/08/11/ND-20260811-001-copy-paste-state-machine-deadlock/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/08/11/ND-20260811-001-copy-paste-state-machine-deadlock/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="回测跑出来一条只涨不跌的净值曲线，胜率 100%，最大回撤 0%。 这不是圣杯，这是 bug。 策略里买入后该卖出的信号一次都没触发，仓位从开仓那天起就锁死在账户里。净值曲线”看起来”只涨不跌，只是因为它从来没结算过亏损。最讽刺的是，这个 bug 的源头只是一个 copy-paste：把 buy 分支的代码复制到 sell 分支，忘了把一个布尔标志从 True 改成 False。 copy-pas">
 <meta property="og:locale" content="zh_CN">
@@ -78,7 +78,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -551,7 +551,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>回测策略的 copy-paste bug：sell 分支 in_buy=True 让信号死锁</div>
-      <div>https://normdist.com/2026/08/11/ND-20260811-001-copy-paste-state-machine-deadlock/</div>
+      <div>https://blog.normdist.com/2026/08/11/ND-20260811-001-copy-paste-state-machine-deadlock/</div>
     </div>
     <div class="license-meta">
       

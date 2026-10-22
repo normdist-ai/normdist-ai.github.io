@@ -22,11 +22,11 @@
     <meta name="description" content="港交所 2024 年 8 月取消了北向资金盘中实时数据，A 股市场上最准的”聪明钱”信号断了。我开始找替代品，最后选了 QFII 季度持仓数据，搭了一套跟庄策略。 用 8908 条历史记录做纯 SQL 批量回测，验证了”打不过就加入”的跟庄逻辑确实能赚钱。模拟账户从 10 万跑到 +32.20%。 这篇文章拆的是全链路：信号怎么采集、参数怎么优化、回测怎么跑、中间踩了什么坑。所有数据来自真实代码和">
 <meta property="og:type" content="article">
 <meta property="og:title" content="QFII 跟庄策略 +32.20%：从设计到回测验证全链路">
-<meta property="og:url" content="https://normdist.com/2026/07/28/ND-20260728-001-article/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/07/28/ND-20260728-001-article/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="港交所 2024 年 8 月取消了北向资金盘中实时数据，A 股市场上最准的”聪明钱”信号断了。我开始找替代品，最后选了 QFII 季度持仓数据，搭了一套跟庄策略。 用 8908 条历史记录做纯 SQL 批量回测，验证了”打不过就加入”的跟庄逻辑确实能赚钱。模拟账户从 10 万跑到 +32.20%。 这篇文章拆的是全链路：信号怎么采集、参数怎么优化、回测怎么跑、中间踩了什么坑。所有数据来自真实代码和">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://normdist.com/img/diagram-qfii-follow-strategy-pipeline.png">
+<meta property="og:image" content="https://blog.normdist.com/img/diagram-qfii-follow-strategy-pipeline.png">
 <meta property="article:published_time" content="2026-07-28T05:10:00.000Z">
 <meta property="article:modified_time" content="2026-10-17T19:55:09.139Z">
 <meta property="article:author" content="小瑞">
@@ -34,7 +34,7 @@
 <meta property="article:tag" content="跟庄策略">
 <meta property="article:tag" content="量化交易">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://normdist.com/img/diagram-qfii-follow-strategy-pipeline.png">
+<meta name="twitter:image" content="https://blog.normdist.com/img/diagram-qfii-follow-strategy-pipeline.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -78,7 +78,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -689,7 +689,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>QFII 跟庄策略 +32.20%：从设计到回测验证全链路</div>
-      <div>https://normdist.com/2026/07/28/ND-20260728-001-article/</div>
+      <div>https://blog.normdist.com/2026/07/28/ND-20260728-001-article/</div>
     </div>
     <div class="license-meta">
       

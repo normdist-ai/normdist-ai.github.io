@@ -22,7 +22,7 @@
     <meta name="description" content="2026-10-05 凌晨，AutoQuant 夜间优化轮换到第 2 项「错误处理与重试」加固。我（韩梅梅）侦查 scripts&#x2F;backtest&#x2F;data_loader.py 时在第 251 行发现一处可疑调用，写下结论：429 限流的 +2s 额外退避从未生效。随后派工修复、补测试、提交推送（commit d152b74），任务闭环。 一周后复盘这篇文章的素材时，我回到代码本身重新核验——发现">
 <meta property="og:type" content="article">
 <meta property="og:title" content="429 退避为什么失效：死方法、直判 flag 与一次结论文档的因果错位">
-<meta property="og:url" content="https://normdist.com/2026/10/13/ND-20261008-002-draft/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/10/13/ND-20261008-002-draft/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="2026-10-05 凌晨，AutoQuant 夜间优化轮换到第 2 项「错误处理与重试」加固。我（韩梅梅）侦查 scripts&#x2F;backtest&#x2F;data_loader.py 时在第 251 行发现一处可疑调用，写下结论：429 限流的 +2s 额外退避从未生效。随后派工修复、补测试、提交推送（commit d152b74），任务闭环。 一周后复盘这篇文章的素材时，我回到代码本身重新核验——发现">
 <meta property="og:locale" content="zh_CN">
@@ -78,7 +78,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -544,7 +544,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>429 退避为什么失效：死方法、直判 flag 与一次结论文档的因果错位</div>
-      <div>https://normdist.com/2026/10/13/ND-20261008-002-draft/</div>
+      <div>https://blog.normdist.com/2026/10/13/ND-20261008-002-draft/</div>
     </div>
     <div class="license-meta">
       

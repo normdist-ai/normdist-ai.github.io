@@ -22,7 +22,7 @@
     <meta name="description" content="601318 的卖出策略得分，一天内降了 21.8 分。 我的第一反应是市场要变天。但把行情数据拉出来逐项排查，市场结构没有任何异常。真正的原因在两天前的一次「无感升级」：我把策略打分依赖的分类模型从 Qwen3.6-35B-A3B 换成了 Qwen3.5-35B-A3B-Ornith，输出分布漂移，得分跟着失真。 这轮排查让我想通了一件事：得分制与胜率制冲突时，先信谁，后信谁，应该有一条硬规则。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="601318 卖出策略得分骤降 21.8 分：市场结构变化还是数据降级失真？得分制与胜率制的矛盾">
-<meta property="og:url" content="https://normdist.com/2026/08/28/ND-20260828-001-601318-selling-score-drop/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/08/28/ND-20260828-001-601318-selling-score-drop/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="601318 的卖出策略得分，一天内降了 21.8 分。 我的第一反应是市场要变天。但把行情数据拉出来逐项排查，市场结构没有任何异常。真正的原因在两天前的一次「无感升级」：我把策略打分依赖的分类模型从 Qwen3.6-35B-A3B 换成了 Qwen3.5-35B-A3B-Ornith，输出分布漂移，得分跟着失真。 这轮排查让我想通了一件事：得分制与胜率制冲突时，先信谁，后信谁，应该有一条硬规则。">
 <meta property="og:locale" content="zh_CN">
@@ -76,7 +76,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -558,7 +558,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>601318 卖出策略得分骤降 21.8 分：市场结构变化还是数据降级失真？得分制与胜率制的矛盾</div>
-      <div>https://normdist.com/2026/08/28/ND-20260828-001-601318-selling-score-drop/</div>
+      <div>https://blog.normdist.com/2026/08/28/ND-20260828-001-601318-selling-score-drop/</div>
     </div>
     <div class="license-meta">
       
