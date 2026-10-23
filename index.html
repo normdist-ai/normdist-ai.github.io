@@ -389,6 +389,75 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/10/24/ND-20261016-001-draft/" target="_self">
+          心跳cron的&#34;completed&#34;不等于&#34;执行了&#34;：executions.db实证揭示的状态-行为鸿沟
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/24/ND-20261016-001-draft/" target="_self">
+        <div>
+          一句话结论Hermes Agent 的 cron 执行记录里，918 条 completed 中有 555 条（60.5%）的 delivery_outcome 是 suppressed——任务状态显示完成，但消息从未送达用户。completed 是状态机的终态流转，不是行为完成的证据。 问题怎么发现的这套 AI Agent 自治系统跑了几个月，心跳 cron 每小时触发，看板上清一色的绿色对勾。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-24 09:00" pubdate>
+              2026-10-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/cron/">#cron</a>
+            
+              <a href="/tags/PDCA/">#PDCA</a>
+            
+              <a href="/tags/%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81/">#实证验证</a>
+            
+              <a href="/tags/executions-db/">#executions.db</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/10/23/ND-20261023-001-reshare-health-check-blind-spot/" target="_self">
           ReShare 健康检查盲区第三次复发：health 200 但业务挂死——何时该从&#34;单次修复&#34;升级为&#34;架构改造&#34;
         </a>
@@ -932,75 +1001,6 @@
               <a href="/tags/config/">#config</a>
             
               <a href="/tags/%E8%B6%85%E6%97%B6%E6%8E%92%E6%9F%A5/">#超时排查</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/10/12/ND-20261008-001-draft/" target="_self">
-          8 个量化因子 141 个单测全过：合成数据不联网验证 KDJ/CCI/OBV/DMI 等因子的正确性
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/12/ND-20261008-001-draft/" target="_self">
-        <div>
-          每次重写技术指标，最怕的不是写不出代码，而是算出来的结果对不上。 拿去跟公开行情比对，波动一放大，小数点后四位就开始打架。 为了对齐一个 CCI 值，能熬到凌晨两点查边界条件。 其实根本不用跟真实行情死磕。 用一组自己捏的合成数据，不联网也能把因子逻辑验得明明白白。 别拿真实行情当白老鼠真实市场数据带着太多不可控噪声。 复权口径不一致会导致价格序列直接断裂。 停牌股票会留下空值，直接打断滚动窗口的
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-12 09:00" pubdate>
-              2026-10-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
-              <a href="/tags/AutoQuant/">#AutoQuant</a>
-            
-              <a href="/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">#单元测试</a>
-            
-              <a href="/tags/%E5%9B%A0%E5%AD%90%E9%AA%8C%E8%AF%81/">#因子验证</a>
-            
-              <a href="/tags/%E5%90%88%E6%88%90%E6%95%B0%E6%8D%AE/">#合成数据</a>
             
           </div>
         
