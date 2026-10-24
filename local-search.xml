@@ -4,6 +4,41 @@
   
   
   <entry>
+    <title>cron 结果判断的两种误判：成功标失败与失败标成功——两层判断架构的优先级冲突</title>
+    <link href="/2026/10/25/ND-20261025-001-draft/"/>
+    <url>/2026/10/25/ND-20261025-001-draft/</url>
+    
+    <content type="html"><![CDATA[<p>监控显示全天 ✅，日记却断言”cron 0 产物”。翻 executions.db，728 次执行全是 completed，零失败。但日记的 cron 汇总里赫然写着 <code>❌</code>。两套判断系统在同一台机器上打架，谁都不觉得自己错。</p><p>这不是业务 bug，是架构层的设计冲突。Hermes 用两层独立判断 cron 结果：执行调度层看进程退出码，业务分析层扫消息关键词。两套口径各自正确，合在一起就出幻觉。</p><h3 id="两层判断，两套真相"><a href="#两层判断，两套真相" class="headerlink" title="两层判断，两套真相"></a>两层判断，两套真相</h3><p>执行调度层在 <code>~/.hermes/cron/executions.db</code>。status 字段有 CHECK 约束，只允许 <code>claimed/running/completed/failed/unknown</code> 五种值。进程退出码归零就是 completed，非零就是 failed。这层不读消息内容，不看日志关键词，纯靠操作系统信号。</p><p>业务分析层在 <code>~/.hermes/profiles/hanmeimei/state.db</code> 的 sessions 表。<code>collect_cron_results</code> 函数取每个 cron session 的<strong>最后一条消息</strong>，扫描里面有没有 <code>error/失败/exception/traceback/❌</code> 这五个关键词。命中任意一个，has_error 置 True，状态标 ❌。</p><p>两层各跑各的。执行层说 completed，分析层说 ❌，日记汇总里就出现矛盾。</p><h3 id="假阳性：跑得好好的，硬被标成失败"><a href="#假阳性：跑得好好的，硬被标成失败" class="headerlink" title="假阳性：跑得好好的，硬被标成失败"></a>假阳性：跑得好好的，硬被标成失败</h3><p>真实样本：一个超长 cron session，100+ 消息、50+ 工具调用，end_reason 是 <code>cron_complete</code>。最后一条消息内容是 <code>❌→✅ 某子任务从故障修复到成功</code>。分析层的关键词扫描命中 <code>❌</code>，has_error&#x3D;True，状态判 ❌。</p><p>进程明明正常退出，业务逻辑也跑完了，就因为收尾消息里有个修复记录，被关键词检测当成故障。这是典型的成功标失败。</p><p>2026-06-23 上线了覆盖逻辑，代码在 <code>collect_all_sources.py</code> 第 198 行：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> (has_error <span class="hljs-keyword">and</span> c[<span class="hljs-string">&quot;end_reason&quot;</span>] == <span class="hljs-string">&quot;cron_complete&quot;</span><br>        <span class="hljs-keyword">and</span> (c[<span class="hljs-string">&quot;tool_call_count&quot;</span>] <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>) &gt; <span class="hljs-number">5</span><br>        <span class="hljs-keyword">and</span> (c[<span class="hljs-string">&quot;message_count&quot;</span>] <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>) &gt; <span class="hljs-number">10</span>):<br>    has_error = <span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure><p>三条件同时满足才覆盖：end_reason 必须 cron_complete、工具调用 &gt;5、消息数 &gt;10。短 session 的假阳性（比如最后一条就是 <code>Error 404</code> 的预期响应）没有覆盖，因为短 session 没法区分真故障和预期响应。</p><h3 id="假阴性：真崩了，但监控显示绿灯"><a href="#假阴性：真崩了，但监控显示绿灯" class="headerlink" title="假阴性：真崩了，但监控显示绿灯"></a>假阴性：真崩了，但监控显示绿灯</h3><p>反方向的陷阱更危险。cron prompt 里有 <code>[SILENT]</code> 控制符——agent 判断”无新内容可报”时输出 <code>[SILENT]</code> 抑制飞书投递。执行层只看进程退出码，agent 输出 <code>[SILENT]</code> 后正常退出，进程退出码归零，executions.db 记 completed。</p><p>用户那头：飞书没收到消息，以为 cron 没跑或跑挂了。实际跑了，正常结束，只是主动选择沉默。这是失败标成功的镜像——不是技术故障被掩盖，而是”成功但静默”被感知成”没跑”。</p><p>解法不在判断层加逻辑，在投递层加兜底：静默 cron 每周至少发一次心跳，证明”我还活着”。判断层不该改，[SILENT] 是成本控制的好设计。</p><h3 id="10-25-实测：728-728-completed，零误判"><a href="#10-25-实测：728-728-completed，零误判" class="headerlink" title="10-25 实测：728&#x2F;728 completed，零误判"></a>10-25 实测：728&#x2F;728 completed，零误判</h3><p>跑了实证查询：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">sqlite3 ~/.hermes/cron/executions.db \<br>  <span class="hljs-string">&quot;SELECT status, COUNT(*) FROM executions \</span><br><span class="hljs-string">   WHERE claimed_at &gt;= &#x27;2026-10-10&#x27; GROUP BY status;&quot;</span><br></code></pre></td></tr></table></figure><p>结果：<code>completed|728</code>。failed、unknown、cron_incidents 全是 0。执行层两周内零故障。</p><p>分析层这边，state.db 里 cron session 的 end_reason 全部是 <code>cron_complete</code>（715 条，1 条运行中 end_reason 为空）。覆盖逻辑上线后，长 session 的假阳性没再复发。</p><p>两层判断现在对齐了：执行层 completed，分析层 ✅。</p><h3 id="优先级冲突的根因"><a href="#优先级冲突的根因" class="headerlink" title="优先级冲突的根因"></a>优先级冲突的根因</h3><p>两层判断本不该平级。执行调度层是权威——它拿到的是进程退出码，操作系统级的客观信号。业务分析层的关键词扫描是启发式近似，注定有假阳性和假阴性。</p><p>正确的优先级：<code>end_reason == cron_complete</code> 一票否决 has_error。进程正常退出，消息里出现 <code>❌</code> 只能说明业务层自愈了某个子故障，不能推翻进程级的成功结论。</p><p>现在的覆盖逻辑走对了方向（用 cron_complete 否决 has_error），但加了 <code>tool&gt;5 &amp;&amp; msg&gt;10</code> 两个门槛，反而留了缺口——短 session 的真假阳性没法覆盖。更稳的做法是：cron_complete 直接一票否决，短 session 的假阳性用单独的”预期响应关键词白名单”处理（比如 <code>Error 404</code> 在爬虫任务里是预期）。</p><h3 id="别让关键词当法官"><a href="#别让关键词当法官" class="headerlink" title="别让关键词当法官"></a>别让关键词当法官</h3><p>两层判断架构本身没错——执行层要快、要权威，分析层要细、要可解释。错在让分析层的关键词扫描拥有了和执行层平级的判决权。</p><p>监控数据对齐业务实际，靠的不是更聪明的关键词，是把权威信号放回它该在的位置。下次再看到监控绿灯但用户说没收到，先查 executions.db 的 status 字段，再查投递层的 delivery_outcome——别去翻消息内容猜故障。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Hermes</tag>
+      
+      <tag>AI Agent</tag>
+      
+      <tag>cron</tag>
+      
+      <tag>实证验证</tag>
+      
+      <tag>误判</tag>
+      
+      <tag>结果判断</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>心跳cron的&quot;completed&quot;不等于&quot;执行了&quot;：executions.db实证揭示的状态-行为鸿沟</title>
     <link href="/2026/10/24/ND-20261016-001-draft/"/>
     <url>/2026/10/24/ND-20261016-001-draft/</url>
@@ -363,9 +398,9 @@
     
     <tags>
       
-      <tag>数据管道</tag>
-      
       <tag>AI Agent</tag>
+      
+      <tag>数据管道</tag>
       
       <tag>实证验证</tag>
       
@@ -1180,35 +1215,6 @@
   
   
   <entry>
-    <title>601318 卖出策略得分骤降 21.8 分：市场结构变化还是数据降级失真？得分制与胜率制的矛盾</title>
-    <link href="/2026/08/28/ND-20260828-001-601318-selling-score-drop/"/>
-    <url>/2026/08/28/ND-20260828-001-601318-selling-score-drop/</url>
-    
-    <content type="html"><![CDATA[<p>601318 的卖出策略得分，一天内降了 21.8 分。</p><p>我的第一反应是市场要变天。但把行情数据拉出来逐项排查，市场结构没有任何异常。真正的原因在两天前的一次「无感升级」：我把策略打分依赖的分类模型从 Qwen3.6-35B-A3B 换成了 Qwen3.5-35B-A3B-Ornith，输出分布漂移，得分跟着失真。</p><p>这轮排查让我想通了一件事：得分制与胜率制冲突时，先信谁，后信谁，应该有一条硬规则。</p><h2 id="现象：分数掉得不像市场波动"><a href="#现象：分数掉得不像市场波动" class="headerlink" title="现象：分数掉得不像市场波动"></a>现象：分数掉得不像市场波动</h2><p>这套系统每天收盘后跑一遍 601318 的 daily pipeline：特征工程 → 分类模型 → 卖出策略得分。分数在 0-100 之间，用于控制卖出档位的触发阈值。</p><p>某天早上打开监控，得分少了 21.8 分。过去三个月，单日波动最大才 4 分。</p><p>我没有急着调参数。调参是最差的反应——先搞清楚是市场变了，还是评估链路坏了。</p><h2 id="第一步：排除市场结构变化"><a href="#第一步：排除市场结构变化" class="headerlink" title="第一步：排除市场结构变化"></a>第一步：排除市场结构变化</h2><p>我把 601318 的行情数据单独拉出来，和前 60 个交易日对比：</p><ul><li>价格：没有突破关键分位</li><li>成交量：正常</li><li>波动率：正常</li><li>行业 beta：正常</li><li>保险板块和大盘：没有结构性事件</li></ul><p>市场结构没问题。那问题在数据链路。</p><h2 id="第二步：找到数据降级源"><a href="#第二步：找到数据降级源" class="headerlink" title="第二步：找到数据降级源"></a>第二步：找到数据降级源</h2><p>排查顺序：输入数据 → 特征工程 → 模型 → 得分映射。</p><p>输入文件没有变。特征工程的代码 diff 为空。得分映射逻辑没动。</p><p>再往前查推理环境。两天前我把模型从 <code>Qwen3.6-35B-A3B</code>（Q4_K_M）换成了 <code>Qwen3.5-35B-A3B-Ornith</code>（Q4_K_M），实测速度从 103 t&#x2F;s 提到 104 t&#x2F;s，几乎无感知。当时我判断：这只是小版本升级，行为应该等价。</p><p>账单就在这里。新模型的输出分布整体更保守——对 601318 的关键卖出标签，置信度整体下移。策略得分对置信度敏感，这一降就丢了 21.8 分。</p><p>这就是数据降级失真：输入没变，模型名义上「升级」了，但评估结果坏了。</p><h2 id="第三步：用胜率制仲裁"><a href="#第三步：用胜率制仲裁" class="headerlink" title="第三步：用胜率制仲裁"></a>第三步：用胜率制仲裁</h2><p>市场结构没变，数据链路有噪声。那真实交易结果呢？</p><p>我回看了过去 60 个交易日的卖出策略实际执行记录，按日统计胜率。结论：胜率波动很小，既没有恶化，也没有改善。</p><p>这个信号非常关键。它说明两件事：</p><ol><li>601318 的市场状态没有发生结构变化——真实的交易质量稳定。</li><li>得分骤降 21.8 分，不是策略变差了，是评估链路自己失真了。</li></ol><p>得分制是瞬时的、前瞻的、对输入分布高度敏感的；胜率制是滞后的、保守的、统计稳定的。两者矛盾时，我现在的规则是：</p><blockquote><p>得分与胜率背离，先信胜率，后信得分，第一步永远是查数据管道。</p></blockquote><h2 id="得分制与胜率制的矛盾"><a href="#得分制与胜率制的矛盾" class="headerlink" title="得分制与胜率制的矛盾"></a>得分制与胜率制的矛盾</h2><p>顺着这次事故，我把两者的使用边界理了一遍。</p><p>得分制的优势是速度快，能提前反映策略质量变化。代价是它对评估链路里的任何一点噪声都极其敏感。一次模型热更、一个特征源里的数据缺口、一个量化档位的差异，都能造成十分位的虚假跳变。</p><p>胜率制的优势是统计稳健，能过滤掉单次噪声。代价是滞后——市场真变差了，胜率要十几个交易日后才反映出来，预警作用有限。</p><p>所以不能只用其中一种。我建了一个「残差监控」：得分与滚动胜率的偏差，超过 2 倍标准差就冻结策略信号，先查数据，再决定要不要调参数。</p><p>这次 21.8 分的骤降，如果当时没有胜率制兜底，我会以为是市场结构变化，然后把卖出阈值调松，犯一个方向性错误。</p><h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p>三个坑，按代价排序。</p><p><strong>坑一：模型升级只看速度，不看分布。</strong><br>103 t&#x2F;s → 104 t&#x2F;s 看起来很美好，像纯性能提升。实际上模型行为变了。升级前应该跑一组固定样本，对比置信度分布，而不是只看速度和困惑度。</p><p><strong>坑二：显存太大，反而放松了对软件风险的警惕。</strong><br>我的推理机器是两张魔改版 RTX 2080 Ti，单卡 22 GB，双卡 44 GB，跑 35B 量化模型很轻松。硬件越宽裕，越容易忽略模型版本、量化方式这些软变量。这次事故全程和硬件无关，纯粹是模型版本行为漂移。</p><p><strong>坑三：先写了半天「市场为什么弱」的叙事。</strong><br>事故发生后，我最先做的是看新闻、看板块、找下跌理由，浪费了大半天。正确的顺序是：先查输入数据有没有变，再查代码有没有变，再查模型有没有变。市场叙事应该放最后。</p><h2 id="怎么避免"><a href="#怎么避免" class="headerlink" title="怎么避免"></a>怎么避免</h2><p>三件事，一劳永逸：</p><ol><li><strong>模型切换前跑 golden set 回归。</strong> 固定 100 个样本，比较新旧模型的置信度分布。分布差异超过阈值，禁止上线。</li><li><strong>策略得分每日快照。</strong> 原始输出存档，出问题当天就能 diff 定位，不用靠回忆。</li><li><strong>得分 vs 胜率残差监控。</strong> 超过阈值自动冻结信号，先崩管道，再谈市场。</li></ol><p>这次 21.8 分的教训是：量化系统里，得分是意见，胜率是事实。意见和事实打架的时候，先检查提意见的人嗓子坏了没有。</p><hr><p><strong>参考文献</strong></p><ol><li><a href="https://github.com/ggerganov/llama.cpp">llama.cpp GitHub</a></li><li><a href="https://qwenlm.github.io/blog/qwen3/">Qwen3 官方博客</a></li><li><a href="https://huggingface.co/Qwen">Qwen Hugging Face 模型库</a></li></ol>]]></content>
-    
-    
-    <categories>
-      
-      <category>量化交易</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>量化交易</tag>
-      
-      <tag>策略评估</tag>
-      
-      <tag>模型漂移</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>博客选题池被 reconcile 清空：唯一可信源的维护教训</title>
     <link href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/"/>
     <url>/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/</url>
@@ -1230,6 +1236,35 @@
       <tag>数据同步</tag>
       
       <tag>事故复盘</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>601318 卖出策略得分骤降 21.8 分：市场结构变化还是数据降级失真？得分制与胜率制的矛盾</title>
+    <link href="/2026/08/28/ND-20260828-001-601318-selling-score-drop/"/>
+    <url>/2026/08/28/ND-20260828-001-601318-selling-score-drop/</url>
+    
+    <content type="html"><![CDATA[<p>601318 的卖出策略得分，一天内降了 21.8 分。</p><p>我的第一反应是市场要变天。但把行情数据拉出来逐项排查，市场结构没有任何异常。真正的原因在两天前的一次「无感升级」：我把策略打分依赖的分类模型从 Qwen3.6-35B-A3B 换成了 Qwen3.5-35B-A3B-Ornith，输出分布漂移，得分跟着失真。</p><p>这轮排查让我想通了一件事：得分制与胜率制冲突时，先信谁，后信谁，应该有一条硬规则。</p><h2 id="现象：分数掉得不像市场波动"><a href="#现象：分数掉得不像市场波动" class="headerlink" title="现象：分数掉得不像市场波动"></a>现象：分数掉得不像市场波动</h2><p>这套系统每天收盘后跑一遍 601318 的 daily pipeline：特征工程 → 分类模型 → 卖出策略得分。分数在 0-100 之间，用于控制卖出档位的触发阈值。</p><p>某天早上打开监控，得分少了 21.8 分。过去三个月，单日波动最大才 4 分。</p><p>我没有急着调参数。调参是最差的反应——先搞清楚是市场变了，还是评估链路坏了。</p><h2 id="第一步：排除市场结构变化"><a href="#第一步：排除市场结构变化" class="headerlink" title="第一步：排除市场结构变化"></a>第一步：排除市场结构变化</h2><p>我把 601318 的行情数据单独拉出来，和前 60 个交易日对比：</p><ul><li>价格：没有突破关键分位</li><li>成交量：正常</li><li>波动率：正常</li><li>行业 beta：正常</li><li>保险板块和大盘：没有结构性事件</li></ul><p>市场结构没问题。那问题在数据链路。</p><h2 id="第二步：找到数据降级源"><a href="#第二步：找到数据降级源" class="headerlink" title="第二步：找到数据降级源"></a>第二步：找到数据降级源</h2><p>排查顺序：输入数据 → 特征工程 → 模型 → 得分映射。</p><p>输入文件没有变。特征工程的代码 diff 为空。得分映射逻辑没动。</p><p>再往前查推理环境。两天前我把模型从 <code>Qwen3.6-35B-A3B</code>（Q4_K_M）换成了 <code>Qwen3.5-35B-A3B-Ornith</code>（Q4_K_M），实测速度从 103 t&#x2F;s 提到 104 t&#x2F;s，几乎无感知。当时我判断：这只是小版本升级，行为应该等价。</p><p>账单就在这里。新模型的输出分布整体更保守——对 601318 的关键卖出标签，置信度整体下移。策略得分对置信度敏感，这一降就丢了 21.8 分。</p><p>这就是数据降级失真：输入没变，模型名义上「升级」了，但评估结果坏了。</p><h2 id="第三步：用胜率制仲裁"><a href="#第三步：用胜率制仲裁" class="headerlink" title="第三步：用胜率制仲裁"></a>第三步：用胜率制仲裁</h2><p>市场结构没变，数据链路有噪声。那真实交易结果呢？</p><p>我回看了过去 60 个交易日的卖出策略实际执行记录，按日统计胜率。结论：胜率波动很小，既没有恶化，也没有改善。</p><p>这个信号非常关键。它说明两件事：</p><ol><li>601318 的市场状态没有发生结构变化——真实的交易质量稳定。</li><li>得分骤降 21.8 分，不是策略变差了，是评估链路自己失真了。</li></ol><p>得分制是瞬时的、前瞻的、对输入分布高度敏感的；胜率制是滞后的、保守的、统计稳定的。两者矛盾时，我现在的规则是：</p><blockquote><p>得分与胜率背离，先信胜率，后信得分，第一步永远是查数据管道。</p></blockquote><h2 id="得分制与胜率制的矛盾"><a href="#得分制与胜率制的矛盾" class="headerlink" title="得分制与胜率制的矛盾"></a>得分制与胜率制的矛盾</h2><p>顺着这次事故，我把两者的使用边界理了一遍。</p><p>得分制的优势是速度快，能提前反映策略质量变化。代价是它对评估链路里的任何一点噪声都极其敏感。一次模型热更、一个特征源里的数据缺口、一个量化档位的差异，都能造成十分位的虚假跳变。</p><p>胜率制的优势是统计稳健，能过滤掉单次噪声。代价是滞后——市场真变差了，胜率要十几个交易日后才反映出来，预警作用有限。</p><p>所以不能只用其中一种。我建了一个「残差监控」：得分与滚动胜率的偏差，超过 2 倍标准差就冻结策略信号，先查数据，再决定要不要调参数。</p><p>这次 21.8 分的骤降，如果当时没有胜率制兜底，我会以为是市场结构变化，然后把卖出阈值调松，犯一个方向性错误。</p><h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p>三个坑，按代价排序。</p><p><strong>坑一：模型升级只看速度，不看分布。</strong><br>103 t&#x2F;s → 104 t&#x2F;s 看起来很美好，像纯性能提升。实际上模型行为变了。升级前应该跑一组固定样本，对比置信度分布，而不是只看速度和困惑度。</p><p><strong>坑二：显存太大，反而放松了对软件风险的警惕。</strong><br>我的推理机器是两张魔改版 RTX 2080 Ti，单卡 22 GB，双卡 44 GB，跑 35B 量化模型很轻松。硬件越宽裕，越容易忽略模型版本、量化方式这些软变量。这次事故全程和硬件无关，纯粹是模型版本行为漂移。</p><p><strong>坑三：先写了半天「市场为什么弱」的叙事。</strong><br>事故发生后，我最先做的是看新闻、看板块、找下跌理由，浪费了大半天。正确的顺序是：先查输入数据有没有变，再查代码有没有变，再查模型有没有变。市场叙事应该放最后。</p><h2 id="怎么避免"><a href="#怎么避免" class="headerlink" title="怎么避免"></a>怎么避免</h2><p>三件事，一劳永逸：</p><ol><li><strong>模型切换前跑 golden set 回归。</strong> 固定 100 个样本，比较新旧模型的置信度分布。分布差异超过阈值，禁止上线。</li><li><strong>策略得分每日快照。</strong> 原始输出存档，出问题当天就能 diff 定位，不用靠回忆。</li><li><strong>得分 vs 胜率残差监控。</strong> 超过阈值自动冻结信号，先崩管道，再谈市场。</li></ol><p>这次 21.8 分的教训是：量化系统里，得分是意见，胜率是事实。意见和事实打架的时候，先检查提意见的人嗓子坏了没有。</p><hr><p><strong>参考文献</strong></p><ol><li><a href="https://github.com/ggerganov/llama.cpp">llama.cpp GitHub</a></li><li><a href="https://qwenlm.github.io/blog/qwen3/">Qwen3 官方博客</a></li><li><a href="https://huggingface.co/Qwen">Qwen Hugging Face 模型库</a></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>量化交易</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>量化交易</tag>
+      
+      <tag>策略评估</tag>
+      
+      <tag>模型漂移</tag>
       
     </tags>
     
@@ -1687,9 +1722,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>技能开发</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>自动化</tag>
       
@@ -1776,9 +1811,9 @@
       
       <tag>沙盘推演</tag>
       
-      <tag>贝叶斯</tag>
-      
       <tag>Bug修复</tag>
+      
+      <tag>贝叶斯</tag>
       
     </tags>
     
@@ -1805,9 +1840,9 @@
       
       <tag>沙盘推演</tag>
       
-      <tag>多模型融合</tag>
-      
       <tag>贝叶斯</tag>
+      
+      <tag>多模型融合</tag>
       
     </tags>
     
@@ -1904,8 +1939,8 @@
   
   <entry>
     <title>Git 自动化提交系统：心跳代码改动的终极闭环</title>
-    <link href="/2026/07/28/ND-20260728-003-git-automated-heartbeat-commit-loop/"/>
-    <url>/2026/07/28/ND-20260728-003-git-automated-heartbeat-commit-loop/</url>
+    <link href="/2026/07/28/ND-20260728-002-git-automated-heartbeat-commit-loop/"/>
+    <url>/2026/07/28/ND-20260728-002-git-automated-heartbeat-commit-loop/</url>
     
     <content type="html"><![CDATA[<p>连续 5 天，<code>git log</code> 一条新提交都没有。</p><p>不是没干活。夜间心跳 cron 跑得飞起——OpenCode 一晚上改了 96 条消息、54 次工具调用，代码质量实打实在提升。李雷的参数网格搜索也跑完了，策略深挖任务闭环。但这些改动全躺在工作区里，没一个人记得 <code>git add &amp;&amp; git commit &amp;&amp; git push</code>。</p><p>代码资产没入库，版本追溯断裂。这叫「系统性缺陷」，不叫「忘了」。</p><p>问题出在哪？心跳任务的设计有个盲区：它负责<strong>干活</strong>，但不负责<strong>收尾</strong>。改完代码、跑完回测、写完文档——然后就结束了。提交这个动作被当成「可选步骤」，而不是「必须步骤」。一天忘提交，两天忘提交，五天以后，工作区里积了一堆说不清状态的改动，谁也不敢随便 commit 了。</p><p>要彻底关掉这个口子，不能靠「下次记得」，得让提交变成心跳流程里不可绕过的一环。</p><h2 id="缺陷是怎么长到-5-天的"><a href="#缺陷是怎么长到-5-天的" class="headerlink" title="缺陷是怎么长到 5 天的"></a>缺陷是怎么长到 5 天的</h2><p>复盘 2026-07-13 的日记，这条偏差的演化路径很清晰：</p><p><img src="/images/git-heartbeat-commit/deviation-chain.png" alt="偏差演化路径"></p><p>第 1 天，零提交。日记里标了⚠️，但纠正措施是「明天补」。第 2 天，又是零提交，「明天补」变成了「后天补」。到第 5 天，偏差从⚠️升级成了⚠️⚠️⚠️，被定性为系统性缺陷。</p><p>根本原因只有一个：<strong>心跳 prompt 里没有 git 提交步骤</strong>。</p><p>心跳 cron 的设计目标是「自主完成任务」，任务清单里有代码改进、回测验证、文档撰写，唯独没有「把改动提交到版本库」。这就像流水线生产了产品，却没有打包入库的工位——产品全堆在车间地上。</p><p>日记里记了一条教训，说得很直白：</p><blockquote><p>💡 心跳 Git 提交铁律：代码改动必须同 session 内 commit+push，不留给次日。</p></blockquote><p>这是用 5 天零提交换来的认知。</p><h2 id="终极闭环的设计"><a href="#终极闭环的设计" class="headerlink" title="终极闭环的设计"></a>终极闭环的设计</h2><p>解决思路一句话：<strong>把 git 提交焊死在心跳流程的末尾，变成最后一步，不可跳过。</strong></p><p><img src="/images/git-heartbeat-commit/heartbeat-loop.png" alt="心跳闭环架构"></p><p>整个闭环分三个阶段，严格串行执行：</p><p><strong>阶段一：检测改动</strong></p><p>心跳任务完成后，脚本检查工作区状态。这一步不是「看一眼有没有改」，而是用 <code>git status --porcelain</code> 拿到确定性的结果。空输出说明没有任何改动，直接跳过提交阶段；非空输出进入下一步。</p><p>这里有个关键设计：<strong>检测必须用直接数据源</strong>。不能靠日志里写没写「已完成」，不能靠任务状态字段，只能靠 <code>git status</code> 的实际输出。日记里另一条教训说的就是这事——topics.md 里的记录数不等于实际发布数，间接数据源会骗你。</p><p><strong>阶段二：提交改动</strong></p><p>检测到改动后，执行 commit。这里要处理三个现实问题：</p><p>一是<strong>提交信息</strong>。不能让心跳写「heartbeat update」这种没营养的 message，得让 AI 根据本轮改动内容自动生成描述性信息。改了什么就写什么，是修 bug 就写 fix，是加功能就写 feat。</p><p>二是<strong>提交粒度</strong>。一次心跳可能涉及多个文件改动，不要拆成 N 个零碎提交，也不要一股脑塞进一个 commit。按逻辑单元分组，一次心跳产生 1-3 个提交为宜。</p><p>三是<strong>冲突处理</strong>。提交前先 <code>git pull --rebase</code>，如果远程有新提交，rebase 之后再 push。万一 rebase 冲突，心跳脚本要有兜底逻辑——记录冲突状态，通知人工介入，而不是静默失败。</p><p><strong>阶段三：推送验证</strong></p><p>push 之后不是结束，必须<strong>验证</strong>。<code>git log origin/main -1</code> 确认远程仓库的最新提交确实是刚推上去的。这又是一条铁律的应用：验证状态用直接数据源，不用「push 命令没报错」这种间接证据。</p><h2 id="心跳-prompt-改造"><a href="#心跳-prompt-改造" class="headerlink" title="心跳 prompt 改造"></a>心跳 prompt 改造</h2><p>落地到心跳 cron 的 prompt，核心改动是在任务清单末尾追加一个不可绕过的收尾段：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">## 收尾检查（必须执行，不可跳过）<br><br>1. 执行 `git status --porcelain`，检查工作区是否有改动<br>2. 如有改动：<br>   a. 根据改动内容生成提交信息<br>   b. `git add -A &amp;&amp; git commit -m &quot;&lt;描述性信息&gt;&quot;`<br>   c. `git pull --rebase origin main`<br>   d. `git push origin main`<br>3. 执行 `git log origin/main -1 --oneline`，确认远程已更新<br>4. 如果上述任何一步失败，记录错误并通知<br></code></pre></td></tr></table></figure><p>这段 prompt 的设计遵循三条原则：</p><p><strong>强制优先级</strong>。标题里写明「必须执行，不可跳过」，不是建议，是命令。心跳 AI 读到这段，必须在任务结束时执行，不能因为「看起来没改动」就跳过检测步骤。</p><p><strong>确定性验证</strong>。每一步都有明确的成功标准。<code>git status --porcelain</code> 的输出是确定性的，<code>git log origin/main</code> 的输出也是确定性的。不靠 AI 自己判断「差不多行了」。</p><p><strong>失败可见</strong>。任何一步出错都要记录，而不是吞掉异常。静默失败比不提交更危险——你以为闭环了，其实没有。</p><h2 id="效果：从-5-天归零到每天闭环"><a href="#效果：从-5-天归零到每天闭环" class="headerlink" title="效果：从 5 天归零到每天闭环"></a>效果：从 5 天归零到每天闭环</h2><p>改造后的第一个验证周期，Git 提交数据立刻恢复：</p><table><thead><tr><th>指标</th><th>改造前（07-08 ~ 07-12）</th><th>改造后</th></tr></thead><tbody><tr><td>日均提交</td><td>0</td><td>≥1</td></tr><tr><td>连续零提交天数</td><td>5</td><td>0</td></tr><tr><td>工作区积压</td><td>严重（多文件未入库）</td><td>清零</td></tr></tbody></table><p><code>git log --oneline --since=&quot;2026-07-14&quot;</code> 现在每天都有提交记录，工作区始终保持干净状态。长期目标进度表里，「Git 每日提交」从🔴变成了✅。</p><h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><h3 id="坑一：心跳改了文件但-git-status-显示干净"><a href="#坑一：心跳改了文件但-git-status-显示干净" class="headerlink" title="坑一：心跳改了文件但 git status 显示干净"></a>坑一：心跳改了文件但 git status 显示干净</h3><p><strong>现象</strong>：心跳明明修改了代码，但 <code>git status --porcelain</code> 输出为空。</p><p><strong>根因</strong>：心跳脚本在临时目录里干活，改完忘了把文件同步回 Git 仓库目录。<code>git status</code> 检查的是仓库工作区，不是临时目录。</p><p><strong>解法</strong>：心跳脚本开头就 <code>cd</code> 到仓库目录，所有文件操作在仓库内完成。或者收尾阶段加一步 <code>rsync</code> 把临时目录的改动同步回来，再检测。</p><h3 id="坑二：push-被拒，静默吞掉错误"><a href="#坑二：push-被拒，静默吞掉错误" class="headerlink" title="坑二：push 被拒，静默吞掉错误"></a>坑二：push 被拒，静默吞掉错误</h3><p><strong>现象</strong>：<code>git push</code> 返回 non-fast-forward 错误，但心跳脚本没报错，日记里写的是「提交完成」。</p><p><strong>根因</strong>：脚本用了 <code>git push origin main 2&gt;/dev/null</code>，把 stderr 吞了。命令「执行了」但没「成功」，AI 误判为完成。</p><p><strong>解法</strong>：检查 <code>git push</code> 的退出码（<code>$?</code>），非 0 就记录错误。推送失败的提交不算闭环。</p><h3 id="坑三：rebase-冲突卡死整个心跳"><a href="#坑三：rebase-冲突卡死整个心跳" class="headerlink" title="坑三：rebase 冲突卡死整个心跳"></a>坑三：rebase 冲突卡死整个心跳</h3><p><strong>现象</strong>：远程有人手动推了提交，心跳 <code>git pull --rebase</code> 遇到冲突，rebase 卡在中途，后续所有步骤全被阻塞。</p><p><strong>根因</strong>：冲突解决逻辑没设计好，心跳 AI 不知道怎么处理冲突文件，卡在原地反复尝试。</p><p><strong>解法</strong>：检测到冲突立即 <code>git rebase --abort</code> 回滚，记录冲突信息到任务池，标记为需要人工介入。心跳任务正常结束，不卡死。人工处理完冲突后，下一次心跳自动恢复提交。</p><hr><p><strong>参考文献</strong></p><ol><li><a href="https://git-scm.com/docs/git-status">Git Documentation — git-status</a></li><li><a href="https://git-scm.com/docs/git-rebase">Git Documentation — git-rebase</a></li><li><a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Pro Git Book — Recording Changes to the Repository</a></li></ol>]]></content>
     
@@ -1933,8 +1968,8 @@
   
   <entry>
     <title>Git 自动化提交系统：心跳代码改动的终极闭环</title>
-    <link href="/2026/07/28/ND-20260728-002-git-automated-heartbeat-commit-loop/"/>
-    <url>/2026/07/28/ND-20260728-002-git-automated-heartbeat-commit-loop/</url>
+    <link href="/2026/07/28/ND-20260728-003-git-automated-heartbeat-commit-loop/"/>
+    <url>/2026/07/28/ND-20260728-003-git-automated-heartbeat-commit-loop/</url>
     
     <content type="html"><![CDATA[<p>连续 5 天，<code>git log</code> 一条新提交都没有。</p><p>不是没干活。夜间心跳 cron 跑得飞起——OpenCode 一晚上改了 96 条消息、54 次工具调用，代码质量实打实在提升。李雷的参数网格搜索也跑完了，策略深挖任务闭环。但这些改动全躺在工作区里，没一个人记得 <code>git add &amp;&amp; git commit &amp;&amp; git push</code>。</p><p>代码资产没入库，版本追溯断裂。这叫「系统性缺陷」，不叫「忘了」。</p><p>问题出在哪？心跳任务的设计有个盲区：它负责<strong>干活</strong>，但不负责<strong>收尾</strong>。改完代码、跑完回测、写完文档——然后就结束了。提交这个动作被当成「可选步骤」，而不是「必须步骤」。一天忘提交，两天忘提交，五天以后，工作区里积了一堆说不清状态的改动，谁也不敢随便 commit 了。</p><p>要彻底关掉这个口子，不能靠「下次记得」，得让提交变成心跳流程里不可绕过的一环。</p><h2 id="缺陷是怎么长到-5-天的"><a href="#缺陷是怎么长到-5-天的" class="headerlink" title="缺陷是怎么长到 5 天的"></a>缺陷是怎么长到 5 天的</h2><p>复盘 2026-07-13 的日记，这条偏差的演化路径很清晰：</p><p><img src="/images/git-heartbeat-commit/deviation-chain.png" alt="偏差演化路径"></p><p>第 1 天，零提交。日记里标了⚠️，但纠正措施是「明天补」。第 2 天，又是零提交，「明天补」变成了「后天补」。到第 5 天，偏差从⚠️升级成了⚠️⚠️⚠️，被定性为系统性缺陷。</p><p>根本原因只有一个：<strong>心跳 prompt 里没有 git 提交步骤</strong>。</p><p>心跳 cron 的设计目标是「自主完成任务」，任务清单里有代码改进、回测验证、文档撰写，唯独没有「把改动提交到版本库」。这就像流水线生产了产品，却没有打包入库的工位——产品全堆在车间地上。</p><p>日记里记了一条教训，说得很直白：</p><blockquote><p>💡 心跳 Git 提交铁律：代码改动必须同 session 内 commit+push，不留给次日。</p></blockquote><p>这是用 5 天零提交换来的认知。</p><h2 id="终极闭环的设计"><a href="#终极闭环的设计" class="headerlink" title="终极闭环的设计"></a>终极闭环的设计</h2><p>解决思路一句话：<strong>把 git 提交焊死在心跳流程的末尾，变成最后一步，不可跳过。</strong></p><p><img src="/images/git-heartbeat-commit/heartbeat-loop.png" alt="心跳闭环架构"></p><p>整个闭环分三个阶段，严格串行执行：</p><p><strong>阶段一：检测改动</strong></p><p>心跳任务完成后，脚本检查工作区状态。这一步不是「看一眼有没有改」，而是用 <code>git status --porcelain</code> 拿到确定性的结果。空输出说明没有任何改动，直接跳过提交阶段；非空输出进入下一步。</p><p>这里有个关键设计：<strong>检测必须用直接数据源</strong>。不能靠日志里写没写「已完成」，不能靠任务状态字段，只能靠 <code>git status</code> 的实际输出。日记里另一条教训说的就是这事——topics.md 里的记录数不等于实际发布数，间接数据源会骗你。</p><p><strong>阶段二：提交改动</strong></p><p>检测到改动后，执行 commit。这里要处理三个现实问题：</p><p>一是<strong>提交信息</strong>。不能让心跳写「heartbeat update」这种没营养的 message，得让 AI 根据本轮改动内容自动生成描述性信息。改了什么就写什么，是修 bug 就写 fix，是加功能就写 feat。</p><p>二是<strong>提交粒度</strong>。一次心跳可能涉及多个文件改动，不要拆成 N 个零碎提交，也不要一股脑塞进一个 commit。按逻辑单元分组，一次心跳产生 1-3 个提交为宜。</p><p>三是<strong>冲突处理</strong>。提交前先 <code>git pull --rebase</code>，如果远程有新提交，rebase 之后再 push。万一 rebase 冲突，心跳脚本要有兜底逻辑——记录冲突状态，通知人工介入，而不是静默失败。</p><p><strong>阶段三：推送验证</strong></p><p>push 之后不是结束，必须<strong>验证</strong>。<code>git log origin/main -1</code> 确认远程仓库的最新提交确实是刚推上去的。这又是一条铁律的应用：验证状态用直接数据源，不用「push 命令没报错」这种间接证据。</p><h2 id="心跳-prompt-改造"><a href="#心跳-prompt-改造" class="headerlink" title="心跳 prompt 改造"></a>心跳 prompt 改造</h2><p>落地到心跳 cron 的 prompt，核心改动是在任务清单末尾追加一个不可绕过的收尾段：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">## 收尾检查（必须执行，不可跳过）<br><br>1. 执行 `git status --porcelain`，检查工作区是否有改动<br>2. 如有改动：<br>   a. 根据改动内容生成提交信息<br>   b. `git add -A &amp;&amp; git commit -m &quot;&lt;描述性信息&gt;&quot;`<br>   c. `git pull --rebase origin main`<br>   d. `git push origin main`<br>3. 执行 `git log origin/main -1 --oneline`，确认远程已更新<br>4. 如果上述任何一步失败，记录错误并通知<br></code></pre></td></tr></table></figure><p>这段 prompt 的设计遵循三条原则：</p><p><strong>强制优先级</strong>。标题里写明「必须执行，不可跳过」，不是建议，是命令。心跳 AI 读到这段，必须在任务结束时执行，不能因为「看起来没改动」就跳过检测步骤。</p><p><strong>确定性验证</strong>。每一步都有明确的成功标准。<code>git status --porcelain</code> 的输出是确定性的，<code>git log origin/main</code> 的输出也是确定性的。不靠 AI 自己判断「差不多行了」。</p><p><strong>失败可见</strong>。任何一步出错都要记录，而不是吞掉异常。静默失败比不提交更危险——你以为闭环了，其实没有。</p><h2 id="效果：从-5-天归零到每天闭环"><a href="#效果：从-5-天归零到每天闭环" class="headerlink" title="效果：从 5 天归零到每天闭环"></a>效果：从 5 天归零到每天闭环</h2><p>改造后的第一个验证周期，Git 提交数据立刻恢复：</p><table><thead><tr><th>指标</th><th>改造前（07-08 ~ 07-12）</th><th>改造后</th></tr></thead><tbody><tr><td>日均提交</td><td>0</td><td>≥1</td></tr><tr><td>连续零提交天数</td><td>5</td><td>0</td></tr><tr><td>工作区积压</td><td>严重（多文件未入库）</td><td>清零</td></tr></tbody></table><p><code>git log --oneline --since=&quot;2026-07-14&quot;</code> 现在每天都有提交记录，工作区始终保持干净状态。长期目标进度表里，「Git 每日提交」从🔴变成了✅。</p><h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><h3 id="坑一：心跳改了文件但-git-status-显示干净"><a href="#坑一：心跳改了文件但-git-status-显示干净" class="headerlink" title="坑一：心跳改了文件但 git status 显示干净"></a>坑一：心跳改了文件但 git status 显示干净</h3><p><strong>现象</strong>：心跳明明修改了代码，但 <code>git status --porcelain</code> 输出为空。</p><p><strong>根因</strong>：心跳脚本在临时目录里干活，改完忘了把文件同步回 Git 仓库目录。<code>git status</code> 检查的是仓库工作区，不是临时目录。</p><p><strong>解法</strong>：心跳脚本开头就 <code>cd</code> 到仓库目录，所有文件操作在仓库内完成。或者收尾阶段加一步 <code>rsync</code> 把临时目录的改动同步回来，再检测。</p><h3 id="坑二：push-被拒，静默吞掉错误"><a href="#坑二：push-被拒，静默吞掉错误" class="headerlink" title="坑二：push 被拒，静默吞掉错误"></a>坑二：push 被拒，静默吞掉错误</h3><p><strong>现象</strong>：<code>git push</code> 返回 non-fast-forward 错误，但心跳脚本没报错，日记里写的是「提交完成」。</p><p><strong>根因</strong>：脚本用了 <code>git push origin main 2&gt;/dev/null</code>，把 stderr 吞了。命令「执行了」但没「成功」，AI 误判为完成。</p><p><strong>解法</strong>：检查 <code>git push</code> 的退出码（<code>$?</code>），非 0 就记录错误。推送失败的提交不算闭环。</p><h3 id="坑三：rebase-冲突卡死整个心跳"><a href="#坑三：rebase-冲突卡死整个心跳" class="headerlink" title="坑三：rebase 冲突卡死整个心跳"></a>坑三：rebase 冲突卡死整个心跳</h3><p><strong>现象</strong>：远程有人手动推了提交，心跳 <code>git pull --rebase</code> 遇到冲突，rebase 卡在中途，后续所有步骤全被阻塞。</p><p><strong>根因</strong>：冲突解决逻辑没设计好，心跳 AI 不知道怎么处理冲突文件，卡在原地反复尝试。</p><p><strong>解法</strong>：检测到冲突立即 <code>git rebase --abort</code> 回滚，记录冲突信息到任务池，标记为需要人工介入。心跳任务正常结束，不卡死。人工处理完冲突后，下一次心跳自动恢复提交。</p><hr><p><strong>参考文献</strong></p><ol><li><a href="https://git-scm.com/docs/git-status">Git Documentation — git-status</a></li><li><a href="https://git-scm.com/docs/git-rebase">Git Documentation — git-rebase</a></li><li><a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Pro Git Book — Recording Changes to the Repository</a></li></ol>]]></content>
     
@@ -2662,9 +2697,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>架构设计</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>数据管道</tag>
       
@@ -2695,9 +2730,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>架构设计</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>数据管道</tag>
       
@@ -2794,9 +2829,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>技能开发</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>CDP</tag>
       

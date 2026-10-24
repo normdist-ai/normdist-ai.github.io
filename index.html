@@ -389,6 +389,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/10/25/ND-20261025-001-draft/" target="_self">
+          cron 结果判断的两种误判：成功标失败与失败标成功——两层判断架构的优先级冲突
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/25/ND-20261025-001-draft/" target="_self">
+        <div>
+          监控显示全天 ✅，日记却断言”cron 0 产物”。翻 executions.db，728 次执行全是 completed，零失败。但日记的 cron 汇总里赫然写着 ❌。两套判断系统在同一台机器上打架，谁都不觉得自己错。 这不是业务 bug，是架构层的设计冲突。Hermes 用两层独立判断 cron 结果：执行调度层看进程退出码，业务分析层扫消息关键词。两套口径各自正确，合在一起就出幻觉。 两层
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-25 09:00" pubdate>
+              2026-10-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/cron/">#cron</a>
+            
+              <a href="/tags/%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81/">#实证验证</a>
+            
+              <a href="/tags/%E8%AF%AF%E5%88%A4/">#误判</a>
+            
+              <a href="/tags/%E7%BB%93%E6%9E%9C%E5%88%A4%E6%96%AD/">#结果判断</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/10/24/ND-20261016-001-draft/" target="_self">
           心跳cron的&#34;completed&#34;不等于&#34;执行了&#34;：executions.db实证揭示的状态-行为鸿沟
         </a>
@@ -934,73 +1005,6 @@
               <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
             
               <a href="/tags/%E5%A4%8D%E7%9B%98/">#复盘</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/10/13/ND-20261013-005-aqa-config-misroute/" target="_self">
-          AQA 配置错误排查实录：端点误指 Turing 导致 120s 超时，切回本机实例后降至 0.4s
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/13/ND-20261013-005-aqa-config-misroute/" target="_self">
-        <div>
-          2026-10-13 凌晨，AutoQuant Agent（AQA）的回测调度任务批量超时。 错误信息统一指向 ReShare 数据源：requests.exceptions.Timeout: 120s。 同一台机器、同一套代码，昨天还能跑通，今天就集体瘫痪。 我拉出 AQA 配置文件，发现了一个隐蔽的漂移——数据端点指向了 Turing（ModelBase 服务器），而不是本机的健康实例。 cu
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-13 09:00" pubdate>
-              2026-10-13
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/ReShare/">#ReShare</a>
-            
-              <a href="/tags/AutoQuant/">#AutoQuant</a>
-            
-              <a href="/tags/config/">#config</a>
-            
-              <a href="/tags/%E8%B6%85%E6%97%B6%E6%8E%92%E6%9F%A5/">#超时排查</a>
             
           </div>
         
