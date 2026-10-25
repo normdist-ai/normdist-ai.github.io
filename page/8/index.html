@@ -389,6 +389,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/28/ND-20260728-002-session-starvation-cron/" target="_self">
+          压缩风暴：Session 过多饿死关键 Cron
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/28/ND-20260728-002-session-starvation-cron/" target="_self">
+        <div>
+          凌晨三点，MCP 服务器本该最安静，却最拥挤。 韩梅梅跑了日记，小美还在监控舆情，贾维斯开了一整晚的代码优化 session，露西的采集任务也刚醒来。它们各不相干，却在同一个 Hermes 实例下抢同一个 session 池。结果是：心跳、日记、日报这类关键 cron 明明到点了，却迟迟不启动，或者说，它们排了队，却在 session 资源被占满的时候被饿着等。 这篇写的是同一个系统的另一面：之前
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-28 10:00" pubdate>
+              2026-07-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="category-chain-item">最佳实践</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/Session%E7%AE%A1%E7%90%86/">#Session管理</a>
+            
+              <a href="/tags/Cron%E8%B0%83%E5%BA%A6/">#Cron调度</a>
+            
+              <a href="/tags/%E8%B5%84%E6%BA%90%E7%AB%9E%E4%BA%89/">#资源竞争</a>
+            
+              <a href="/tags/%E8%BF%90%E7%BB%B4%E8%B8%A9%E5%9D%91/">#运维踩坑</a>
+            
+              <a href="/tags/%E5%A4%9AProfile/">#多Profile</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/27/ND-20260727-001-css-button-min-width-trap/" target="_self">
           一个 CSS 按钮的寻踪记：从 24×24 到 min-width 陷阱
         </a>
@@ -992,76 +1063,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/25/ND-20260725-002-css-flexbox-align-items-pitfall/" target="_self">
-          CSS Flexbox 暗坑：align-items 在 column 下变成水平居中
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/25/ND-20260725-002-css-flexbox-align-items-pitfall/" target="_self">
-        <div>
-          现象移动端视口下，卡片标题”分类分布”和”上游来源分布”始终显示为水平居中。但 CSS 里明明写了 text-align: left 和 justify-content: flex-start，桌面端也是左对齐。只有移动端居中。 根因这是一个典型的 Flexbox 暗坑——align-items 的作用方向取决于 flex-direction。 1234567/* 桌面端样式（正常工作） */.c
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-25 12:00" pubdate>
-              2026-07-25
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/CSS/">#CSS</a>
-            
-              <a href="/tags/Flexbox/">#Flexbox</a>
-            
-              <a href="/tags/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E9%80%82%E9%85%8D/">#移动端适配</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/7/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/#board">6</a><a class="page-number" href="/page/7/#board">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/#board">9</a><a class="page-number" href="/page/10/#board">10</a><a class="extend next" rel="next" href="/page/9/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/7/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/#board">6</a><a class="page-number" href="/page/7/#board">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/#board">9</a><a class="page-number" href="/page/10/#board">10</a><a class="page-number" href="/page/11/#board">11</a><a class="extend next" rel="next" href="/page/9/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

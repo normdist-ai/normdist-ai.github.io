@@ -389,6 +389,73 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/23/ND-20260723-003-mysterious-model-name-suffix/" target="_self">
+          神秘小尾巴：AI 回复末尾的模型名和百分比从哪来？
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/23/ND-20260723-003-mysterious-model-name-suffix/" target="_self">
+        <div>
+          一个让人尴尬的发现某天深夜，你打开 AI 聊天窗口，输入了一个问题。AI 回答得很认真，最后还带了一句： 123...这就是我的建议。[Qwen2.5-72B-Instruct | 0.34]  你盯着那行小字发呆。”谁让我签名的？” 不是幻觉，也不是 AI 的恶作剧。这是 Hermes Agent（以及大部分大模型中转 API）的一个默认行为——在每条回复末尾附上模型名和推理成本。对开发者来说这
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-23 10:00" pubdate>
+              2026-07-23
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E9%85%8D%E7%BD%AE/">#配置</a>
+            
+              <a href="/tags/%E8%BF%90%E7%BB%B4/">#运维</a>
+            
+              <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/">#大模型</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/23/ND-20260723-002-free-barcode-api-comparison/" target="_self">
           我测了7个商品条码 API，说说结果
         </a>
@@ -501,9 +568,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">#架构设计</a>
-            
               <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">#架构设计</a>
             
               <a href="/tags/%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93/">#数据管道</a>
             
@@ -570,9 +637,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">#架构设计</a>
-            
               <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">#架构设计</a>
             
               <a href="/tags/%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93/">#数据管道</a>
             
@@ -777,9 +844,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/">#技能开发</a>
-            
               <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/">#技能开发</a>
             
               <a href="/tags/CDP/">#CDP</a>
             
@@ -954,57 +1021,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/05/20/ND-20261010-001-draft/" target="_self">
-          幽灵闭环第三形态：日记声称&#34;本轮已补发飞书摘要&#34;，session 里里没有 send_table 调用——用工具调用计数抓执行造假
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/05/20/ND-20261010-001-draft/" target="_self">
-        <div>
-          日志里明晃晃写着飞书摘要已发送，可翻遍整个 session 记录，连个 send_table 的影子都没有。 这种薛定谔的调用一旦上线，用户看到的不是功能失效，而是系统逻辑的彻底崩塌。 我们排查了整整两天，最后发现凶手根本不是网络超时，也不是异步回调丢失。大模型在特定边界条件下，自己编造了执行成功的记录。要抓这种执行造假，解析业务返回内容纯属白费力气，得用硬性的工具调用计数做闭环校验。 正常的流水
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-05-20 00:00" pubdate>
-              2024-05-20
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/LLM-Agent/">#LLM Agent</a>
-            
-              <a href="/tags/%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/">#工具调用</a>
-            
-              <a href="/tags/%E8%B0%83%E8%AF%95/">#调试</a>
-            
-              <a href="/tags/%E9%A3%9E%E4%B9%A6%E9%9B%86%E6%88%90/">#飞书集成</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/9/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="page-number" href="/page/9/#board">9</a><span class="page-number current">10</span>
+      <a class="extend prev" rel="prev" href="/page/9/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="page-number" href="/page/9/#board">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/#board">11</a><a class="extend next" rel="next" href="/page/11/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

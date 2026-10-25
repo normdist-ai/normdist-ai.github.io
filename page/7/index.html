@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/" target="_self">
+          五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/" target="_self">
+        <div>
+          每次给 AI Agent 开一个新 profile（韩梅梅、李雷、露西……），都会顺手起一个 hermes gateway run。一个 profile 一个进程，五个 profile 五个进程，听着很合理——直到微信 bot 突然全线失联，日志里全是 “Weixin bot token already in use”。 这就是多 Gateway 进程的 Token 锁冲突。表面看是微信 bot
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-05 09:30" pubdate>
+              2026-08-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/Gateway/">#Gateway</a>
+            
+              <a href="/tags/%E5%BE%AE%E4%BF%A1/">#微信</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/05/ND-20260805-001-mobile-viewport-height-chain/" target="_self">
           为什么同一个 div，在手机上能往上拖动？—— 移动端视口高度踩坑记录
         </a>
@@ -503,9 +568,9 @@
             
               <a href="/tags/%E6%B2%99%E7%9B%98%E6%8E%A8%E6%BC%94/">#沙盘推演</a>
             
-              <a href="/tags/Bug%E4%BF%AE%E5%A4%8D/">#Bug修复</a>
-            
               <a href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/">#贝叶斯</a>
+            
+              <a href="/tags/Bug%E4%BF%AE%E5%A4%8D/">#Bug修复</a>
             
           </div>
         
@@ -568,9 +633,9 @@
             
               <a href="/tags/%E6%B2%99%E7%9B%98%E6%8E%A8%E6%BC%94/">#沙盘推演</a>
             
-              <a href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/">#贝叶斯</a>
-            
               <a href="/tags/%E5%A4%9A%E6%A8%A1%E5%9E%8B%E8%9E%8D%E5%90%88/">#多模型融合</a>
+            
+              <a href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/">#贝叶斯</a>
             
           </div>
         
@@ -968,82 +1033,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/28/ND-20260728-002-session-starvation-cron/" target="_self">
-          压缩风暴：Session 过多饿死关键 Cron
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/28/ND-20260728-002-session-starvation-cron/" target="_self">
-        <div>
-          凌晨三点，MCP 服务器本该最安静，却最拥挤。 韩梅梅跑了日记，小美还在监控舆情，贾维斯开了一整晚的代码优化 session，露西的采集任务也刚醒来。它们各不相干，却在同一个 Hermes 实例下抢同一个 session 池。结果是：心跳、日记、日报这类关键 cron 明明到点了，却迟迟不启动，或者说，它们排了队，却在 session 资源被占满的时候被饿着等。 这篇写的是同一个系统的另一面：之前
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-28 10:00" pubdate>
-              2026-07-28
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="category-chain-item">最佳实践</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/Session%E7%AE%A1%E7%90%86/">#Session管理</a>
-            
-              <a href="/tags/Cron%E8%B0%83%E5%BA%A6/">#Cron调度</a>
-            
-              <a href="/tags/%E8%B5%84%E6%BA%90%E7%AB%9E%E4%BA%89/">#资源竞争</a>
-            
-              <a href="/tags/%E8%BF%90%E7%BB%B4%E8%B8%A9%E5%9D%91/">#运维踩坑</a>
-            
-              <a href="/tags/%E5%A4%9AProfile/">#多Profile</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/6/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/#board">8</a><a class="page-number" href="/page/9/#board">9</a><a class="page-number" href="/page/10/#board">10</a><a class="extend next" rel="next" href="/page/8/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/6/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/#board">8</a><a class="page-number" href="/page/9/#board">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/#board">11</a><a class="extend next" rel="next" href="/page/8/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
