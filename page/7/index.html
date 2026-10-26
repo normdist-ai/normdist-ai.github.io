@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/" target="_self">
+          心跳卡片脚本化改造：从 50 行描述到一行脚本调用
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/06/ND-20260806-001-heartbeat-card-script-refactor/" target="_self">
+        <div>
+          一个整点定时任务，执行到 Step 3「发送心跳卡片」时卡住。日志里塞了 50 行文字描述——每一行都是”执行以下命令”。问题不在描述不准确，而在于：Agent 必须先把这 50 行读完，才能执行一行命令。  我在 2026 年 7 月中旬做了一次改造：把 agent-heartbeat 技能的 Step 描述从”人读”模式改成”机器执行”模式。改动很小——一个 shell 脚本 + 几行 SK
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-06 10:00" pubdate>
+              2026-08-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/%E6%8A%80%E8%83%BD%E5%BC%80%E5%8F%91/">#技能开发</a>
+            
+              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/08/05/ND-20260805-002-gateway-token-lock-conflict/" target="_self">
           五个 Gateway 进程共存：AI Agent 消息平台 Token 锁冲突
         </a>
@@ -961,71 +1026,6 @@
               <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
             
               <a href="/tags/Git/">#Git</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/28/ND-20260728-001-article/" target="_self">
-          QFII 跟庄策略 +32.20%：从设计到回测验证全链路
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/28/ND-20260728-001-article/" target="_self">
-        <div>
-          港交所 2024 年 8 月取消了北向资金盘中实时数据，A 股市场上最准的”聪明钱”信号断了。我开始找替代品，最后选了 QFII 季度持仓数据，搭了一套跟庄策略。 用 8908 条历史记录做纯 SQL 批量回测，验证了”打不过就加入”的跟庄逻辑确实能赚钱。模拟账户从 10 万跑到 +32.20%。 这篇文章拆的是全链路：信号怎么采集、参数怎么优化、回测怎么跑、中间踩了什么坑。所有数据来自真实代码和
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-28 13:10" pubdate>
-              2026-07-28
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%87%8F%E5%8C%96%E6%8A%95%E8%B5%84/" class="category-chain-item">量化投资</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
-            
-              <a href="/tags/QFII/">#QFII</a>
-            
-              <a href="/tags/%E8%B7%9F%E5%BA%84%E7%AD%96%E7%95%A5/">#跟庄策略</a>
             
           </div>
         
