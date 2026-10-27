@@ -86,9 +86,9 @@
       
       <tag>cron</tag>
       
-      <tag>实证验证</tag>
-      
       <tag>误判</tag>
+      
+      <tag>实证验证</tag>
       
       <tag>结果判断</tag>
       
@@ -248,6 +248,39 @@
       <tag>Python</tag>
       
       <tag>做T</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>修复生效的验证标准：代码落盘 ≠ 闭环——cron 结果判断修复后首日 14✅/0❌ 全天实证</title>
+    <link href="/2026/10/19/ND-20261019-001-draft/"/>
+    <url>/2026/10/19/ND-20261019-001-draft/</url>
+    
+    <content type="html"><![CDATA[<p>10-17 晚上翻日报，B 站舆情那条标着 ✅，点进去一看——最后一条消息里赫然躺着 <code>[CRON_FAILURE]</code>。同一天，午报那条标着 ❌，进程正常退出、业务跑完了，就因为最后一条消息里出现了”❌→✅”这几个字（是修复记录的一部分），关键词扫描命中了 ❌，直接判了死。</p><p>一个该死的没死，一个该活的没活。</p><p>这就是 <code>collect_cron_results.py</code> 里两层判断架构的优先级冲突：强成功覆盖规则（tool&gt;5 &amp;&amp; msg&gt;10）把 <code>[CRON_FAILURE]</code> 盖住了，关键词扫描又把正常完成的消息误杀了。前篇《cron 结果判断的两种误判》分析了根因。这篇记录修复落地后，怎么才算真正闭环。</p><h2 id="把并联改串联"><a href="#把并联改串联" class="headerlink" title="把并联改串联"></a>把并联改串联</h2><p>原来的判断逻辑是两层并联：</p><ol><li>关键词扫描最后一条消息 → 命中 ❌ 就判失败</li><li>强成功覆盖：tool&gt;5 &amp;&amp; msg&gt;10 → 判成功</li></ol><p>两层各自独立，谁先算谁赢，没有明确的优先级。结果就是：强成功规则能盖住 <code>[CRON_FAILURE]</code>（因为 tool 调用 7 次、msg 超过 10 条，条件满足），而关键词扫描又能盖住正常完成（因为消息里恰好有 ❌ 字符）。</p><p>修复思路很直接：把并联改成串联，定死优先级。</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">第一优先级：最后消息含 [CRON_FAILURE] → 直接判 ❌，覆盖一切<br>第二优先级：end_reason=cron_complete + tool&gt;5 + msg&gt;10 → 判 ✅<br>第三优先级：关键词扫描结果<br></code></pre></td></tr></table></figure><p>改动落在 <code>collect_cron_results.py</code>，10-18 03:12 合入。核心变化就一句话：<code>[CRON_FAILURE]</code> 是硬信号，优先级最高，谁都不能盖它。强成功规则退到第二层，只负责覆盖关键词假阳性。关键词扫描降到最底层，兜底用。</p><p>这个设计的逻辑是：<code>[CRON_FAILURE]</code> 是 cron 框架在子任务真实失败时注入的控制符，它比进程退出码更精确——因为 <code>end_reason=cron_complete</code> 只说明主进程退出了，不说明子任务成功了。而关键词扫描是最粗糙的一层，天然容易误杀，放最后兜底就行。</p><h2 id="改完代码，然后呢？"><a href="#改完代码，然后呢？" class="headerlink" title="改完代码，然后呢？"></a>改完代码，然后呢？</h2><p>10-18 03:12 代码合入，测试通过。如果故事到这里结束，那它只是一次普通的 bug fix。</p><p>但 cron 结果判断这种东西，你没法靠单元测试覆盖所有场景。<code>[CRON_FAILURE]</code> 什么时候出现、强成功规则在什么边界条件下触发、关键词扫描会命中哪些”看起来像失败但不是失败”的消息——这些只有跑一整天才能看到。</p><p>所以 10-18 合入之后，没有急着关 issue。盯了 10-19 全天。</p><h2 id="28-个-session，0-个翻车"><a href="#28-个-session，0-个翻车" class="headerlink" title="28 个 session，0 个翻车"></a>28 个 session，0 个翻车</h2><p>10-19 的数据：</p><p><strong>executions.db</strong>：全天 cron session 全部 <code>status=completed</code>，0 个 <code>failed</code>。<code>status</code> 字段有 CHECK 约束（claimed&#x2F;running&#x2F;completed&#x2F;failed&#x2F;unknown），进程退出码归零就是 completed，非零就是 failed。没有任何一个 session 走到 failed 分支。</p><p><strong>state.db</strong>：28 个 cron session，<code>end_reason</code> 全部是 <code>cron_complete</code>。没有异常退出，没有超时中断。</p><p><strong>日记记录</strong>：14 ✅ &#x2F; 0 ❌。</p><p>对比 10-17：2 例误判（1 个假成功 + 1 个假失败）。10-19：0 例。</p><table><thead><tr><th>日期</th><th>✅ 数量</th><th>❌ 数量</th><th>误判数</th></tr></thead><tbody><tr><td>10-17</td><td>—</td><td>—</td><td>2</td></tr><tr><td>10-19</td><td>14</td><td>0</td><td>0</td></tr></tbody></table><p>14 个 ✅ 意味着 14 个 cron 任务正常完成、正常被判定为成功。0 个 ❌ 意味着没有正常完成的任务被误杀，也没有真实失败被漏判。</p><h2 id="为什么”代码落盘”不算闭环"><a href="#为什么”代码落盘”不算闭环" class="headerlink" title="为什么”代码落盘”不算闭环"></a>为什么”代码落盘”不算闭环</h2><p>这件事让人反复想一个问题：什么时候算”修好了”？</p><p>代码合入、测试通过、review 通过——这些是必要条件，但远不是充分条件。cron 结果判断的难点在于：它的输入是自然语言消息 + 进程状态 + 工具调用计数，组合空间很大。你不可能在测试里穷举所有”最后一条消息恰好包含 ❌ 字符但不是失败”的场景。</p><p>全天实证数据的价值在于：它让系统跑过了足够多的真实 case，覆盖了测试里想不到的边界。14 个 ✅ 不是 14 个测试用例，是 14 次真实的 cron 执行，每次的消息内容、tool 调用次数、msg 条数都不一样。</p><p>所以改了判断逻辑的代码，至少盯一整天。不是看它”有没有报错”，是看它”判得对不对”。报错是显性的，判错是隐性的——一个假 ✅ 可能让你错过真实的故障，一个假 ❌ 可能让你花半天排查一个根本没发生的问题。</p><p>10-17 的 B 站舆情那条，如果没人点进去看，那个假 ✅ 就会安静地躺在日报里。10-19 的 14 个 ✅，逐个翻过最后一条消息，确认没有 <code>[CRON_FAILURE]</code> 藏在里面。</p><p>闭环不是代码合并的那一刻，是你确认”系统在全天真实流量下做出了正确判断”的那一刻。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>AI Agent</tag>
+      
+      <tag>cron</tag>
+      
+      <tag>PDCA</tag>
+      
+      <tag>修复验证</tag>
+      
+      <tag>实证数据</tag>
       
     </tags>
     
@@ -458,9 +491,9 @@
     
     <tags>
       
-      <tag>AI Agent</tag>
-      
       <tag>数据管道</tag>
+      
+      <tag>AI Agent</tag>
       
       <tag>实证验证</tag>
       
@@ -524,9 +557,9 @@
       
       <tag>PDCA</tag>
       
-      <tag>幽灵偏差</tag>
-      
       <tag>实证验证</tag>
+      
+      <tag>幽灵偏差</tag>
       
     </tags>
     
@@ -578,13 +611,13 @@
       
       <tag>日记系统</tag>
       
-      <tag>实证验证</tag>
-      
       <tag>采样时机</tag>
       
       <tag>误判</tag>
       
       <tag>幽灵结论</tag>
+      
+      <tag>实证验证</tag>
       
     </tags>
     
@@ -1275,35 +1308,6 @@
   
   
   <entry>
-    <title>博客选题池被 reconcile 清空：唯一可信源的维护教训</title>
-    <link href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/"/>
-    <url>/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/</url>
-    
-    <content type="html"><![CDATA[<p>一条 <code>reconcile</code> 命令，把我攒了半年的 47 条博客选题全清了。根因不是脚本写错，而是我用两个源维护同一份数据，还让同步脚本只认其中一个。Git 历史救回了数据，但这个问题值得好好复盘：唯一可信源到底怎么维护。</p><h2 id="事故现场"><a href="#事故现场" class="headerlink" title="事故现场"></a>事故现场</h2><p>选题池放在博客仓库的 <code>_data/topics.yml</code>，Hexo 站点用它在「选题池」页面渲染所有候选选题。</p><p>某天我跑了这条命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm run reconcile<br></code></pre></td></tr></table></figure><p>再打开 <code>topics.yml</code>，里面变成了空数组。CI 已经把空文件推到了 GitHub。</p><p>当时文件里的数据：</p><table><thead><tr><th>项目</th><th>值</th></tr></thead><tbody><tr><td>清空前选题数</td><td>47</td></tr><tr><td>清空后选题数</td><td>0</td></tr><tr><td>只在本地存在、Issues 里没有的选题</td><td>12</td></tr><tr><td>恢复方式</td><td>git 历史</td></tr></tbody></table><p>12 条选题没有备份在 Issues 里。如果不是我习惯每次提交前 <code>commit</code>，这 12 条就真的没了。</p><h2 id="根因：两个源，同步写成覆盖"><a href="#根因：两个源，同步写成覆盖" class="headerlink" title="根因：两个源，同步写成覆盖"></a>根因：两个源，同步写成覆盖</h2><p>选题池的维护历程有点绕。</p><p>最早我只在 <code>_data/topics.yml</code> 里手工加选题。后来想开放读者投稿，就在 GitHub Issues 里开了选题收集。Issue 和 YAML 都能加选题，两边开始不一致。</p><p>于是我写了 <code>reconcile</code> 脚本，想做「双向同步」。但实际代码写成这样：</p><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">// scripts/reconcile.ts —— 坏的那版</span><br><span class="hljs-keyword">import</span> &#123; writeFileSync &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;fs&#x27;</span><br><span class="hljs-keyword">import</span> &#123; listIssues &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./github&#x27;</span><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">reconcile</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-comment">// 从 Issues 拉全部 open 选题</span><br>  <span class="hljs-keyword">const</span> issues = <span class="hljs-keyword">await</span> <span class="hljs-title function_">listIssues</span>(<span class="hljs-string">&#x27;topics&#x27;</span>).<span class="hljs-title function_">catch</span>(<span class="hljs-function">() =&gt;</span> []) <span class="hljs-comment">// ① catch 吞了错误</span><br>  <span class="hljs-comment">// 用 Issues 覆盖本地 YAML</span><br>  <span class="hljs-title function_">writeFileSync</span>(<span class="hljs-string">&#x27;_data/topics.yml&#x27;</span>, yaml.<span class="hljs-title function_">stringify</span>(issues)) <span class="hljs-comment">// ② 单向覆盖</span><br>&#125;<br></code></pre></td></tr></table></figure><p>两个致命点：</p><p><strong>① <code>catch(() =&gt; [])</code> 把错误变成了「空成功」。</strong></p><p>我的 GitHub token 过期了，<code>listIssues</code> 返回 401。<code>catch</code> 直接把 401 吞掉，转换成了空数组。脚本拿到空数组，以为「Issues 上一个选题都没有」。</p><p><strong>② 双向同步写成了单向覆盖。</strong></p><p>我以为自己在做合并，实际代码是「Issues 覆盖 YAML」。Issues 为空 → YAML 也被写成空。47 条选题，一次写入，归零。</p><p>这个 bug 的本质：我嘴上说「两个都是源」，代码里却只认 Issues 一个源。当这个源返回空结果，所有本地数据都成了陪葬。</p><h2 id="修复：回到唯一可信源"><a href="#修复：回到唯一可信源" class="headerlink" title="修复：回到唯一可信源"></a>修复：回到唯一可信源</h2><p>事故之后我把同步模型彻底简化了。</p><p>先明确：<strong>选题池的唯一可信源是本地 <code>_data/topics.yml</code>。</strong></p><p>理由：</p><ul><li>支持 git 历史，误删可回滚</li><li>支持离线编辑，不需要网络</li><li>我实际维护选题时，90% 的操作都发生在本地</li></ul><p>GitHub Issues 降级为只读镜像：reconcile 只做「YAML → Issues」的单向推送，方向永远不变。Issues 上读者提的新选题，通过 issue 模板走到 GitHub Actions，由机器人开 PR 合入 YAML，而不是直接写进 Issues 再反向同步。</p><p>修复后的核心逻辑：</p><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">// scripts/reconcile.ts —— 修复后的单向同步</span><br><span class="hljs-keyword">import</span> &#123; readFileSync, writeFileSync &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;fs&#x27;</span><br><span class="hljs-keyword">import</span> &#123; createIssues, listIssues &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./github&#x27;</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">MIN_TOPICS</span> = <span class="hljs-number">10</span> <span class="hljs-comment">// 阈值：低于这个数拒绝写入</span><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">reconcile</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> local = <span class="hljs-title function_">readLocalTopics</span>()<br>  <br>  <span class="hljs-keyword">if</span> (local.<span class="hljs-property">length</span> &lt; <span class="hljs-variable constant_">MIN_TOPICS</span>) &#123;<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`本地选题只有 <span class="hljs-subst">$&#123;local.length&#125;</span> 条，疑似异常，中止推送`</span>)<br>  &#125;<br>  <br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">backupWithGitTag</span>() <span class="hljs-comment">// 推送前打 tag</span><br>  <br>  <span class="hljs-keyword">const</span> remote = <span class="hljs-keyword">await</span> <span class="hljs-title function_">listIssues</span>(<span class="hljs-string">&#x27;topics&#x27;</span>)<br>  <span class="hljs-keyword">const</span> existing = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>(remote.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> i.<span class="hljs-property">title</span>))<br>  <span class="hljs-keyword">const</span> missing = local.<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">t</span> =&gt;</span> !existing.<span class="hljs-title function_">has</span>(t.<span class="hljs-property">title</span>))<br>  <br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> topic <span class="hljs-keyword">of</span> missing) &#123;<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">createIssues</span>(topic) <span class="hljs-comment">// 只增量创建，不删除，不覆盖</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>注意两点变化：</p><ul><li>空结果保护：本地数据低于阈值直接抛异常，不执行任何写操作</li><li>只增不删：同步只创建缺的 Issue，不碰已有的，更不会删</li></ul><h2 id="护栏：四条规则"><a href="#护栏：四条规则" class="headerlink" title="护栏：四条规则"></a>护栏：四条规则</h2><p>这次事故值 47 条选题，换回来四条规则。现在我写的所有同步脚本都遵守：</p><p><strong>规则一：空结果默认是异常。</strong></p><p>任何拉数据的函数，返回空列表要么是「真的没有」，要么是「调用失败」。代码里必须区分。失败就抛异常，不要 <code>.catch(() =&gt; [])</code>。空结果应该让脚本停下来，而不是继续往下写。</p><p><strong>规则二：同步只允许一个源。</strong></p><p>双向同步听起来美好，实际是两套写入口、两套冲突逻辑。只保留一个源，其他全是镜像。镜像可以被重建，源不能被覆盖。</p><p><strong>规则三：破坏性写入前先备份。</strong></p><p>写入前打 tag 的成本几乎为零：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git tag backup-$(<span class="hljs-built_in">date</span> +%F) &amp;&amp; git push --tags<br></code></pre></td></tr></table></figure><p>一条命令。真出事的时候，这就是救命稻草。</p><p><strong>规则四：数量突变要拒绝。</strong></p><p>自动化脚本应该知道自己管理的数据大概有多少。47 → 0 这种数量级的跳跃，直接挂掉让人类来查，而不是老实执行。</p><h2 id="教训"><a href="#教训" class="headerlink" title="教训"></a>教训</h2><p>复盘结束时，最值钱的一句话是：<strong>维护唯一可信源，不是选一个地方存数据，而是让代码结构上也只有一个写入方向。</strong></p><p>我当时以为「两个源」只是多一个入口，顶多数据不一致，手动合并一下就好。实际上，多源并存会让同步逻辑复杂到出 bug 而不自知。</p><p>现在我的选题池回到最简单的模型：本地 YAML 是源，Issues 是镜像，<code>reconcile</code> 只单向推送。运行三个月，没再出过问题。Git 历史里那个空 <code>topics.yml</code> 还在，每次提交前看一眼，提醒自己别再把 401 当成功。</p><hr><p><strong>参考文献</strong></p><ol><li><a href="https://docs.github.com/en/rest/issues/issues#list-repository-issues">GitHub REST API - List repository issues</a></li><li><a href="https://github.com/octokit/octokit.js">Octokit.js - GitHub REST API client for JavaScript</a></li><li><a href="https://en.wikipedia.org/wiki/Single_source_of_truth">Single source of truth - Wikipedia</a></li><li><a href="https://hexo.io/docs/">Hexo 文档</a></li></ol>]]></content>
-    
-    
-    <categories>
-      
-      <category>技术教程</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>自动化</tag>
-      
-      <tag>数据同步</tag>
-      
-      <tag>事故复盘</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>601318 卖出策略得分骤降 21.8 分：市场结构变化还是数据降级失真？得分制与胜率制的矛盾</title>
     <link href="/2026/08/28/ND-20260828-001-601318-selling-score-drop/"/>
     <url>/2026/08/28/ND-20260828-001-601318-selling-score-drop/</url>
@@ -1325,6 +1329,35 @@
       <tag>策略评估</tag>
       
       <tag>模型漂移</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>博客选题池被 reconcile 清空：唯一可信源的维护教训</title>
+    <link href="/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/"/>
+    <url>/2026/08/28/ND-20260828-002-blog-topic-pool-reconciled/</url>
+    
+    <content type="html"><![CDATA[<p>一条 <code>reconcile</code> 命令，把我攒了半年的 47 条博客选题全清了。根因不是脚本写错，而是我用两个源维护同一份数据，还让同步脚本只认其中一个。Git 历史救回了数据，但这个问题值得好好复盘：唯一可信源到底怎么维护。</p><h2 id="事故现场"><a href="#事故现场" class="headerlink" title="事故现场"></a>事故现场</h2><p>选题池放在博客仓库的 <code>_data/topics.yml</code>，Hexo 站点用它在「选题池」页面渲染所有候选选题。</p><p>某天我跑了这条命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm run reconcile<br></code></pre></td></tr></table></figure><p>再打开 <code>topics.yml</code>，里面变成了空数组。CI 已经把空文件推到了 GitHub。</p><p>当时文件里的数据：</p><table><thead><tr><th>项目</th><th>值</th></tr></thead><tbody><tr><td>清空前选题数</td><td>47</td></tr><tr><td>清空后选题数</td><td>0</td></tr><tr><td>只在本地存在、Issues 里没有的选题</td><td>12</td></tr><tr><td>恢复方式</td><td>git 历史</td></tr></tbody></table><p>12 条选题没有备份在 Issues 里。如果不是我习惯每次提交前 <code>commit</code>，这 12 条就真的没了。</p><h2 id="根因：两个源，同步写成覆盖"><a href="#根因：两个源，同步写成覆盖" class="headerlink" title="根因：两个源，同步写成覆盖"></a>根因：两个源，同步写成覆盖</h2><p>选题池的维护历程有点绕。</p><p>最早我只在 <code>_data/topics.yml</code> 里手工加选题。后来想开放读者投稿，就在 GitHub Issues 里开了选题收集。Issue 和 YAML 都能加选题，两边开始不一致。</p><p>于是我写了 <code>reconcile</code> 脚本，想做「双向同步」。但实际代码写成这样：</p><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">// scripts/reconcile.ts —— 坏的那版</span><br><span class="hljs-keyword">import</span> &#123; writeFileSync &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;fs&#x27;</span><br><span class="hljs-keyword">import</span> &#123; listIssues &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./github&#x27;</span><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">reconcile</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-comment">// 从 Issues 拉全部 open 选题</span><br>  <span class="hljs-keyword">const</span> issues = <span class="hljs-keyword">await</span> <span class="hljs-title function_">listIssues</span>(<span class="hljs-string">&#x27;topics&#x27;</span>).<span class="hljs-title function_">catch</span>(<span class="hljs-function">() =&gt;</span> []) <span class="hljs-comment">// ① catch 吞了错误</span><br>  <span class="hljs-comment">// 用 Issues 覆盖本地 YAML</span><br>  <span class="hljs-title function_">writeFileSync</span>(<span class="hljs-string">&#x27;_data/topics.yml&#x27;</span>, yaml.<span class="hljs-title function_">stringify</span>(issues)) <span class="hljs-comment">// ② 单向覆盖</span><br>&#125;<br></code></pre></td></tr></table></figure><p>两个致命点：</p><p><strong>① <code>catch(() =&gt; [])</code> 把错误变成了「空成功」。</strong></p><p>我的 GitHub token 过期了，<code>listIssues</code> 返回 401。<code>catch</code> 直接把 401 吞掉，转换成了空数组。脚本拿到空数组，以为「Issues 上一个选题都没有」。</p><p><strong>② 双向同步写成了单向覆盖。</strong></p><p>我以为自己在做合并，实际代码是「Issues 覆盖 YAML」。Issues 为空 → YAML 也被写成空。47 条选题，一次写入，归零。</p><p>这个 bug 的本质：我嘴上说「两个都是源」，代码里却只认 Issues 一个源。当这个源返回空结果，所有本地数据都成了陪葬。</p><h2 id="修复：回到唯一可信源"><a href="#修复：回到唯一可信源" class="headerlink" title="修复：回到唯一可信源"></a>修复：回到唯一可信源</h2><p>事故之后我把同步模型彻底简化了。</p><p>先明确：<strong>选题池的唯一可信源是本地 <code>_data/topics.yml</code>。</strong></p><p>理由：</p><ul><li>支持 git 历史，误删可回滚</li><li>支持离线编辑，不需要网络</li><li>我实际维护选题时，90% 的操作都发生在本地</li></ul><p>GitHub Issues 降级为只读镜像：reconcile 只做「YAML → Issues」的单向推送，方向永远不变。Issues 上读者提的新选题，通过 issue 模板走到 GitHub Actions，由机器人开 PR 合入 YAML，而不是直接写进 Issues 再反向同步。</p><p>修复后的核心逻辑：</p><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">// scripts/reconcile.ts —— 修复后的单向同步</span><br><span class="hljs-keyword">import</span> &#123; readFileSync, writeFileSync &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;fs&#x27;</span><br><span class="hljs-keyword">import</span> &#123; createIssues, listIssues &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./github&#x27;</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">MIN_TOPICS</span> = <span class="hljs-number">10</span> <span class="hljs-comment">// 阈值：低于这个数拒绝写入</span><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">reconcile</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> local = <span class="hljs-title function_">readLocalTopics</span>()<br>  <br>  <span class="hljs-keyword">if</span> (local.<span class="hljs-property">length</span> &lt; <span class="hljs-variable constant_">MIN_TOPICS</span>) &#123;<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`本地选题只有 <span class="hljs-subst">$&#123;local.length&#125;</span> 条，疑似异常，中止推送`</span>)<br>  &#125;<br>  <br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">backupWithGitTag</span>() <span class="hljs-comment">// 推送前打 tag</span><br>  <br>  <span class="hljs-keyword">const</span> remote = <span class="hljs-keyword">await</span> <span class="hljs-title function_">listIssues</span>(<span class="hljs-string">&#x27;topics&#x27;</span>)<br>  <span class="hljs-keyword">const</span> existing = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>(remote.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> i.<span class="hljs-property">title</span>))<br>  <span class="hljs-keyword">const</span> missing = local.<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">t</span> =&gt;</span> !existing.<span class="hljs-title function_">has</span>(t.<span class="hljs-property">title</span>))<br>  <br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> topic <span class="hljs-keyword">of</span> missing) &#123;<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">createIssues</span>(topic) <span class="hljs-comment">// 只增量创建，不删除，不覆盖</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>注意两点变化：</p><ul><li>空结果保护：本地数据低于阈值直接抛异常，不执行任何写操作</li><li>只增不删：同步只创建缺的 Issue，不碰已有的，更不会删</li></ul><h2 id="护栏：四条规则"><a href="#护栏：四条规则" class="headerlink" title="护栏：四条规则"></a>护栏：四条规则</h2><p>这次事故值 47 条选题，换回来四条规则。现在我写的所有同步脚本都遵守：</p><p><strong>规则一：空结果默认是异常。</strong></p><p>任何拉数据的函数，返回空列表要么是「真的没有」，要么是「调用失败」。代码里必须区分。失败就抛异常，不要 <code>.catch(() =&gt; [])</code>。空结果应该让脚本停下来，而不是继续往下写。</p><p><strong>规则二：同步只允许一个源。</strong></p><p>双向同步听起来美好，实际是两套写入口、两套冲突逻辑。只保留一个源，其他全是镜像。镜像可以被重建，源不能被覆盖。</p><p><strong>规则三：破坏性写入前先备份。</strong></p><p>写入前打 tag 的成本几乎为零：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git tag backup-$(<span class="hljs-built_in">date</span> +%F) &amp;&amp; git push --tags<br></code></pre></td></tr></table></figure><p>一条命令。真出事的时候，这就是救命稻草。</p><p><strong>规则四：数量突变要拒绝。</strong></p><p>自动化脚本应该知道自己管理的数据大概有多少。47 → 0 这种数量级的跳跃，直接挂掉让人类来查，而不是老实执行。</p><h2 id="教训"><a href="#教训" class="headerlink" title="教训"></a>教训</h2><p>复盘结束时，最值钱的一句话是：<strong>维护唯一可信源，不是选一个地方存数据，而是让代码结构上也只有一个写入方向。</strong></p><p>我当时以为「两个源」只是多一个入口，顶多数据不一致，手动合并一下就好。实际上，多源并存会让同步逻辑复杂到出 bug 而不自知。</p><p>现在我的选题池回到最简单的模型：本地 YAML 是源，Issues 是镜像，<code>reconcile</code> 只单向推送。运行三个月，没再出过问题。Git 历史里那个空 <code>topics.yml</code> 还在，每次提交前看一眼，提醒自己别再把 401 当成功。</p><hr><p><strong>参考文献</strong></p><ol><li><a href="https://docs.github.com/en/rest/issues/issues#list-repository-issues">GitHub REST API - List repository issues</a></li><li><a href="https://github.com/octokit/octokit.js">Octokit.js - GitHub REST API client for JavaScript</a></li><li><a href="https://en.wikipedia.org/wiki/Single_source_of_truth">Single source of truth - Wikipedia</a></li><li><a href="https://hexo.io/docs/">Hexo 文档</a></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术教程</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>自动化</tag>
+      
+      <tag>数据同步</tag>
+      
+      <tag>事故复盘</tag>
       
     </tags>
     
@@ -1782,9 +1815,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>技能开发</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>自动化</tag>
       
@@ -1871,9 +1904,9 @@
       
       <tag>沙盘推演</tag>
       
-      <tag>贝叶斯</tag>
-      
       <tag>Bug修复</tag>
+      
+      <tag>贝叶斯</tag>
       
     </tags>
     
@@ -1900,9 +1933,9 @@
       
       <tag>沙盘推演</tag>
       
-      <tag>多模型融合</tag>
-      
       <tag>贝叶斯</tag>
+      
+      <tag>多模型融合</tag>
       
     </tags>
     
@@ -2757,9 +2790,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>架构设计</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>数据管道</tag>
       
@@ -2790,9 +2823,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>架构设计</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>数据管道</tag>
       
@@ -2889,8 +2922,6 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>技能开发</tag>
       
       <tag>CDP</tag>
@@ -2900,6 +2931,8 @@
       <tag>远程控制</tag>
       
       <tag>踩坑</tag>
+      
+      <tag>Hermes</tag>
       
     </tags>
     
