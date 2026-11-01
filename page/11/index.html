@@ -456,6 +456,52 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/10/22/ND-20261102-001-ghost-loop-recursive/" target="_self">
+          幽灵闭环递归：日记 cron 连续两天执行但文件未生成
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/22/ND-20261102-001-ghost-loop-recursive/" target="_self">
+        <div>
+          10 月 22 号早上打开日记目录，10-20 和 10-21 的文件不在。 不是”可能不在”，是确定不在。ls 了一遍，10-19 的文件好好躺着，后面直接跳到 10-22（当天还没到生成时间）。连续两天，文件凭空消失了。 第一反应是 cron 没跑。翻 /var/log/cron，两条记录清清楚楚，10-20 和 10-21 各执行了一次，exit code 都是 0。 这就是”幽灵闭环”的意
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-22 00:00" pubdate>
+              2024-10-22
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%BF%90%E7%BB%B4/">#运维</a>
+            
+              <a href="/tags/cron/">#cron</a>
+            
+              <a href="/tags/%E7%9B%91%E6%8E%A7/">#监控</a>
+            
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%BC%94%E5%8F%98/">#设计演变</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/10/20/ND-20261030-002-fix-validation-paradigm/" target="_self">
           修复生效的验证标准：代码落盘 ≠ 闭环
         </a>
@@ -482,9 +528,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%AA%8C%E8%AF%81/">#验证</a>
-            
               <a href="/tags/%E8%BF%90%E7%BB%B4%EF%BC%8C%E6%8E%92%E9%9A%9C%EF%BC%8Ccron/">#运维，排障，cron</a>
+            
+              <a href="/tags/%E9%AA%8C%E8%AF%81/">#验证</a>
             
           </div>
         
@@ -572,9 +618,9 @@
             
               <a href="/tags/cron/">#cron</a>
             
-              <a href="/tags/%E7%9B%91%E6%8E%A7/">#监控</a>
-            
               <a href="/tags/%E9%AA%8C%E8%AF%81/">#验证</a>
+            
+              <a href="/tags/%E7%9B%91%E6%8E%A7/">#监控</a>
             
           </div>
         
