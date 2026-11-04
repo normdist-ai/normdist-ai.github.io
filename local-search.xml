@@ -1488,9 +1488,9 @@
       
       <tag>运维</tag>
       
-      <tag>RateLimit</tag>
-      
       <tag>sensenova</tag>
+      
+      <tag>RateLimit</tag>
       
       <tag>配额管理</tag>
       
@@ -1815,9 +1815,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>技能开发</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>自动化</tag>
       
@@ -2790,9 +2790,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>架构设计</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>数据管道</tag>
       
@@ -2823,9 +2823,9 @@
     
     <tags>
       
-      <tag>Hermes</tag>
-      
       <tag>架构设计</tag>
+      
+      <tag>Hermes</tag>
       
       <tag>数据管道</tag>
       
@@ -2922,6 +2922,10 @@
     
     <tags>
       
+      <tag>技能开发</tag>
+      
+      <tag>Hermes</tag>
+      
       <tag>CDP</tag>
       
       <tag>Edge</tag>
@@ -2929,10 +2933,6 @@
       <tag>远程控制</tag>
       
       <tag>踩坑</tag>
-      
-      <tag>Hermes</tag>
-      
-      <tag>技能开发</tag>
       
     </tags>
     
@@ -3057,9 +3057,9 @@
     
     <tags>
       
-      <tag>验证</tag>
-      
       <tag>运维，排障，cron</tag>
+      
+      <tag>验证</tag>
       
     </tags>
     
@@ -3105,9 +3105,9 @@
       
       <tag>cron</tag>
       
-      <tag>监控</tag>
-      
       <tag>验证</tag>
+      
+      <tag>监控</tag>
       
     </tags>
     
