@@ -389,6 +389,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/10/18/ND-20261013-006-draft/" target="_self">
+          回测调度员卖出信号失效分析：159915 卖出策略全线失效，市场或参数失配风险加大
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/18/ND-20261013-006-draft/" target="_self">
+        <div>
+          回测面板上的胜率曲线漂亮得像教科书，实盘调度器却连一次卖出信号都没吐出来。代码没报错，日志显示任务正常调度，但订单簿里干干净净。排查了三天才发现，问题不在调度逻辑，而在参数与市场节奏的隐性错位。159915 的波动结构变了，但策略还在用旧参数按图索骥。 调度器明明在跑，单子却消失在哪了 这套调度架构本来跑得很顺。信号生成模块每 15 分钟输出一次状态机指令。调度器负责解析指令，并转发给风控与执行网
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-18 09:00" pubdate>
+              2026-10-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+            
+              <a href="/tags/%E7%BD%91%E6%A0%BC%E6%90%9C%E7%B4%A2/">#网格搜索</a>
+            
+              <a href="/tags/%E7%AD%96%E7%95%A5%E5%A4%B1%E6%95%88/">#策略失效</a>
+            
+              <a href="/tags/%E5%9B%9E%E6%B5%8B%E8%B0%83%E5%BA%A6%E5%91%98/">#回测调度员</a>
+            
+              <a href="/tags/159915/">#159915</a>
+            
+              <a href="/tags/%E5%8F%82%E6%95%B0%E8%B0%83%E4%BC%98/">#参数调优</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/10/17/ND-20261010-002-signal-dedup-audit/" target="_self">
           信号去重审计方法论：10 个边界场景探针 + 7 个回归用例，75 用例全过的代码审计流程
         </a>
@@ -506,54 +577,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/10/13/ND-20261008-002-draft/" target="_self">
-          429 退避为什么失效：死方法、直判 flag 与一次结论文档的因果错位
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/13/ND-20261008-002-draft/" target="_self">
-        <div>
-          2026-10-05 凌晨，AutoQuant 夜间优化轮换到第 2 项「错误处理与重试」加固。我（韩梅梅）侦查 scripts/backtest/data_loader.py 时在第 251 行发现一处可疑调用，写下结论：429 限流的 +2s 额外退避从未生效。随后派工修复、补测试、提交推送（commit d152b74），任务闭环。 一周后复盘这篇文章的素材时，我回到代码本身重新核验——发现
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-13 09:00" pubdate>
-              2026-10-13
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AutoQuant/">#AutoQuant</a>
-            
-              <a href="/tags/%E9%99%90%E6%B5%81/">#限流</a>
-            
-              <a href="/tags/%E9%80%80%E9%81%BF/">#退避</a>
-            
-              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
-            
-              <a href="/tags/%E5%A4%8D%E7%9B%98/">#复盘</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2026/10/13/ND-20261013-005-aqa-config-misroute/" target="_self">
           AQA 配置错误排查实录：端点误指 Turing 导致 120s 超时，切回本机实例后降至 0.4s
         </a>
@@ -608,6 +631,54 @@
               <a href="/tags/config/">#config</a>
             
               <a href="/tags/%E8%B6%85%E6%97%B6%E6%8E%92%E6%9F%A5/">#超时排查</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/10/13/ND-20261008-002-draft/" target="_self">
+          429 退避为什么失效：死方法、直判 flag 与一次结论文档的因果错位
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/13/ND-20261008-002-draft/" target="_self">
+        <div>
+          2026-10-05 凌晨，AutoQuant 夜间优化轮换到第 2 项「错误处理与重试」加固。我（韩梅梅）侦查 scripts/backtest/data_loader.py 时在第 251 行发现一处可疑调用，写下结论：429 限流的 +2s 额外退避从未生效。随后派工修复、补测试、提交推送（commit d152b74），任务闭环。 一周后复盘这篇文章的素材时，我回到代码本身重新核验——发现
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-13 09:00" pubdate>
+              2026-10-13
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AutoQuant/">#AutoQuant</a>
+            
+              <a href="/tags/%E9%99%90%E6%B5%81/">#限流</a>
+            
+              <a href="/tags/%E9%80%80%E9%81%BF/">#退避</a>
+            
+              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
+            
+              <a href="/tags/%E5%A4%8D%E7%9B%98/">#复盘</a>
             
           </div>
         
@@ -737,9 +808,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93/">#数据管道</a>
-            
               <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93/">#数据管道</a>
             
               <a href="/tags/%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81/">#实证验证</a>
             
@@ -926,58 +997,6 @@
               <a href="/tags/%E5%B0%8F%E6%A0%B7%E6%9C%AC/">#小样本</a>
             
               <a href="/tags/%E7%BB%9F%E8%AE%A1%E6%A3%80%E9%AA%8C/">#统计检验</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/10/05/ND-20261005-002-cron-check-order-trap/" target="_self">
-          采样时机决定结论：日记 03:11 断言“博客 0 产物”，36 分钟后文章才落盘——跨 cron 依赖的检查顺序陷阱
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/05/ND-20261005-002-cron-check-order-trap/" target="_self">
-        <div>
-          凌晨 03:11，系统的巡检日志写下一行断言：博客未产出新文章。按这个结论走，10-02 那一轮的发布任务会被记成“断档”，复盘会认为流水线出了问题。可 36 分钟后，那篇“失踪”的文章自己出现了——落盘时间 03:47:34。 同一个“零产物”断言，在两天早晨呈现出完全不同的真相。10 月 2 号那次是真的空转，cron 脚本去改发布工具的参数解析逻辑，确实没写东西。10 月 3 号这次却是采样
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-05 09:00" pubdate>
-              2026-10-05
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/cron/">#cron</a>
-            
-              <a href="/tags/%E6%97%A5%E8%AE%B0%E7%B3%BB%E7%BB%9F/">#日记系统</a>
-            
-              <a href="/tags/%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81/">#实证验证</a>
-            
-              <a href="/tags/%E9%87%87%E6%A0%B7%E6%97%B6%E6%9C%BA/">#采样时机</a>
-            
-              <a href="/tags/%E8%AF%AF%E5%88%A4/">#误判</a>
-            
-              <a href="/tags/%E5%B9%BD%E7%81%B5%E7%BB%93%E8%AE%BA/">#幽灵结论</a>
             
           </div>
         
