@@ -1,0 +1,1066 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="事件概述2026-10-22，黄金白银 ETF 做 T 系统发出异常信号：518880（黄金 ETF）卖出得分仅 14.2 分，远低于阈值（通常≥60 分才触发卖出）。这触发了为期 5 天的系统性排查：  Day 1: 检查参数配置 → 正常 Day 2: 重新跑回测 → 结果一致 Day 3: 比对历史数据 → 数据源正常 Day 4: 审查策略逻辑 → 未发现 bug Day 5: 暂停人工干">
+<meta property="og:type" content="article">
+<meta property="og:title" content="回测调度员 vs 业务决策的鸿沟：518880 卖出分 14.2 触发 5 天排查仍无结论——AI 诊断与人类决策的接口设计">
+<meta property="og:url" content="https://blog.normdist.com/2026/11/09/ND-20261109-015-draft/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="事件概述2026-10-22，黄金白银 ETF 做 T 系统发出异常信号：518880（黄金 ETF）卖出得分仅 14.2 分，远低于阈值（通常≥60 分才触发卖出）。这触发了为期 5 天的系统性排查：  Day 1: 检查参数配置 → 正常 Day 2: 重新跑回测 → 结果一致 Day 3: 比对历史数据 → 数据源正常 Day 4: 审查策略逻辑 → 未发现 bug Day 5: 暂停人工干">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-11-09T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-08T19:49:02.970Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="决策边界">
+<meta property="article:tag" content="回测调度员">
+<meta property="article:tag" content="量化交易">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>回测调度员 vs 业务决策的鸿沟：518880 卖出分 14.2 触发 5 天排查仍无结论——AI 诊断与人类决策的接口设计 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">回测调度员 vs 业务决策的鸿沟：518880 卖出分 14.2 触发 5 天排查仍无结论——AI 诊断与人类决策的接口设计</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-09 09:00" pubdate>
+          2026年11月9日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">回测调度员 vs 业务决策的鸿沟：518880 卖出分 14.2 触发 5 天排查仍无结论——AI 诊断与人类决策的接口设计</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年11月9日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="事件概述"><a href="#事件概述" class="headerlink" title="事件概述"></a>事件概述</h2><p>2026-10-22，黄金白银 ETF 做 T 系统发出异常信号：<strong>518880（黄金 ETF）卖出得分仅 14.2 分</strong>，远低于阈值（通常≥60 分才触发卖出）。这触发了为期 5 天的系统性排查：</p>
+<ul>
+<li><strong>Day 1</strong>: 检查参数配置 → 正常</li>
+<li><strong>Day 2</strong>: 重新跑回测 → 结果一致</li>
+<li><strong>Day 3</strong>: 比对历史数据 → 数据源正常</li>
+<li><strong>Day 4</strong>: 审查策略逻辑 → 未发现 bug</li>
+<li><strong>Day 5</strong>: 暂停人工干预 → 等待更多样本</li>
+</ul>
+<p><strong>最终结论</strong>: 没有”错误”可修复，因为这不是程序 bug，而是<strong>回测调度员的评分机制与人类业务决策的错位</strong>。</p>
+<h2 id="问题根源：三层语义鸿沟"><a href="#问题根源：三层语义鸿沟" class="headerlink" title="问题根源：三层语义鸿沟"></a>问题根源：三层语义鸿沟</h2><h3 id="第一层：评分制-vs-绝对阈值"><a href="#第一层：评分制-vs-绝对阈值" class="headerlink" title="第一层：评分制 vs 绝对阈值"></a>第一层：评分制 vs 绝对阈值</h3><p>回测调度员的得分是<strong>相对排序</strong>，不是绝对标准：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 实际逻辑（简化版）</span><br>scores = [backtest_result(p) <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> param_grid]<br>ranked = <span class="hljs-built_in">sorted</span>(scores, key=<span class="hljs-keyword">lambda</span> x: x.sharpe, reverse=<span class="hljs-literal">True</span>)<br>best_score = ranked[<span class="hljs-number">0</span>].score  <span class="hljs-comment"># 可能是 14.2 分</span><br><br><span class="hljs-keyword">if</span> best_score &lt; threshold:  <span class="hljs-comment"># 阈值是绝对的</span><br>    emit_sell_signal()      <span class="hljs-comment"># 但 14.2 分真的该卖吗？</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>矛盾点</strong>: </p>
+<ul>
+<li>当所有参数组都表现糟糕时（市场极端波动），”最佳”可能只有 14.2 分</li>
+<li>人类决策需要的是<strong>绝对风险判断</strong>（波动率、回撤、宏观信号）</li>
+<li>调度员只提供<strong>相对优劣排序</strong>（哪组参数相对好一点）</li>
+</ul>
+<h3 id="第二层：历史拟合-vs-未来预测"><a href="#第二层：历史拟合-vs-未来预测" class="headerlink" title="第二层：历史拟合 vs 未来预测"></a>第二层：历史拟合 vs 未来预测</h3><p>回测调度员的本质缺陷：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>回测调度员</th>
+<th>人类决策</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据源</td>
+<td>过去 N 日历史 K 线</td>
+<td>实时市场 + 宏观 + 政策</td>
+</tr>
+<tr>
+<td>优化目标</td>
+<td>最大化历史 Sharpe</td>
+<td>控制未来风险</td>
+</tr>
+<tr>
+<td>失效检测</td>
+<td>参数网格搜索</td>
+<td>基本面变化感知</td>
+</tr>
+<tr>
+<td>输出形式</td>
+<td>单一分数（14.2）</td>
+<td>多维判断（仓位&#x2F;时机&#x2F;对冲）</td>
+</tr>
+</tbody></table>
+<p><strong>关键案例</strong>:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs text">518880 在 2026-10 期间的实际情况:<br>- COMEX 黄金突破 2700 美元（历史新高）<br>- 美元指数 DXY 跌破 100<br>- 地缘政治风险上升<br><br>回测调度员看到的只是:<br>- 过去 20 日线乖离率过大<br>- RSI 超买区钝化<br>- 计算得出&quot;卖出得分 14.2&quot;（因为历史上类似形态后回调概率 60%）<br></code></pre></td></tr></table></figure>
+
+<p>但这次不同——<strong>宏观环境已经改变</strong>，历史模式不再适用。</p>
+<h3 id="第三层：自动化信噪比-vs-人机协作"><a href="#第三层：自动化信噪比-vs-人机协作" class="headerlink" title="第三层：自动化信噪比 vs 人机协作"></a>第三层：自动化信噪比 vs 人机协作</h3><p>AI Agent 自治系统的核心困境：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs text">输入端:<br>├── 量化信号（低信噪比，高频率）<br>│   └── 回测调度员每天产出 100+ 个分数<br>├── 宏观信号（高信噪比，低频）<br>│   └── R1 大周期扫描每周 1-2 次更新<br>└── 人工判断（最高信噪比，零频率）<br>    └── 只有在异常时才介入<br><br>问题：三层信号的融合规则是什么？<br></code></pre></td></tr></table></figure>
+
+<p><strong>当前架构的缺陷</strong>:</p>
+<ol>
+<li><strong>没有权重分配机制</strong>：回测分数 14.2 和宏观利好，谁优先？</li>
+<li><strong>没有置信度传递</strong>：调度员输出的 14.2 分，置信区间是多少？</li>
+<li><strong>没有异常熔断</strong>：当多源信号冲突时，是否应该停止自动交易？</li>
+</ol>
+<h2 id="5-天排查的代价分析"><a href="#5-天排查的代价分析" class="headerlink" title="5 天排查的代价分析"></a>5 天排查的代价分析</h2><table>
+<thead>
+<tr>
+<th>日期</th>
+<th>投入时间</th>
+<th>产出</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Oct 22</td>
+<td>2h</td>
+<td>参数复查</td>
+<td>无异常</td>
+</tr>
+<tr>
+<td>Oct 23</td>
+<td>1.5h</td>
+<td>数据校验</td>
+<td>数据正常</td>
+</tr>
+<tr>
+<td>Oct 24</td>
+<td>3h</td>
+<td>逻辑审查</td>
+<td>未发现 bug</td>
+</tr>
+<tr>
+<td>Oct 25</td>
+<td>0h (周末)</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Oct 26</td>
+<td>2h</td>
+<td>对比回测</td>
+<td>结果一致</td>
+</tr>
+<tr>
+<td><strong>总计</strong></td>
+<td><strong>8.5h</strong></td>
+<td><strong>0 修复</strong></td>
+<td><strong>问题不在代码</strong></td>
+</tr>
+</tbody></table>
+<p><strong>隐性成本</strong>:</p>
+<ul>
+<li>错过可能的减仓时机（如果 14.2 分真的是危险信号）</li>
+<li>过度信任自动化（假设”有问题就能修”）</li>
+<li>占用认知资源（本可用于更高价值的决策）</li>
+</ul>
+<h2 id="解决方案：重新定义接口"><a href="#解决方案：重新定义接口" class="headerlink" title="解决方案：重新定义接口"></a>解决方案：重新定义接口</h2><h3 id="方案-A：给回测调度员加置信度"><a href="#方案-A：给回测调度员加置信度" class="headerlink" title="方案 A：给回测调度员加置信度"></a>方案 A：给回测调度员加置信度</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">BacktestScheduler</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">evaluate</span>(<span class="hljs-params">self, symbol, params</span>):<br>        results = <span class="hljs-variable language_">self</span>.run_backtest(symbol, params)<br>        <br>        <span class="hljs-comment"># 新增：统计显著性检验</span><br>        sharpe_mean = np.mean([r.sharpe <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> results])<br>        sharpe_std = np.std([r.sharpe <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> results])<br>        n_samples = <span class="hljs-built_in">len</span>(results)<br>        <br>        <span class="hljs-comment"># t-test: 是否显著优于基准？</span><br>        t_stat = sharpe_mean / (sharpe_std / np.sqrt(n_samples))<br>        confidence = stats.t.cdf(t_stat, df=n_samples-<span class="hljs-number">1</span>)<br>        <br>        <span class="hljs-keyword">return</span> &#123;<br>            <span class="hljs-string">&#x27;score&#x27;</span>: sharpe_mean,<br>            <span class="hljs-string">&#x27;confidence&#x27;</span>: confidence,  <span class="hljs-comment"># 新增字段</span><br>            <span class="hljs-string">&#x27;n_samples&#x27;</span>: n_samples,<br>            <span class="hljs-string">&#x27;signal&#x27;</span>: <span class="hljs-string">&#x27;BUY&#x27;</span> <span class="hljs-keyword">if</span> confidence &gt; <span class="hljs-number">0.95</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;HOLD&#x27;</span> <span class="hljs-keyword">if</span> confidence &gt; <span class="hljs-number">0.8</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;UNCERTAIN&#x27;</span><br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>优点</strong>: 保留自动化，增加不确定性表达<br><strong>缺点</strong>: 无法解决宏观因素缺失的问题</p>
+<h3 id="方案-B：引入三源投票机制"><a href="#方案-B：引入三源投票机制" class="headerlink" title="方案 B：引入三源投票机制"></a>方案 B：引入三源投票机制</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs text">决策流程重构:<br><br>[回测调度员] --(量化信号)--&gt; [融合层]<br>                               ↓<br>[R1 大周期扫描] -(宏观信号)-&gt;  [加权投票] --&gt; 最终决策<br>                               ↑<br>[人工标注] --------(紧急干预)- <br><br>融合规则:<br>- 若任意两源信号一致 → 执行<br>- 若三源分歧 → HOLD + 标记人工复核<br>- 若回测置信度&lt;0.8 → 降低权重<br></code></pre></td></tr></table></figure>
+
+<p><strong>优点</strong>: 真正的人机协作，多源互补<br><strong>缺点</strong>: 系统复杂度上升，需要维护新协议</p>
+<h3 id="方案-C：明确「不回测」的场景"><a href="#方案-C：明确「不回测」的场景" class="headerlink" title="方案 C：明确「不回测」的场景"></a>方案 C：明确「不回测」的场景</h3><p>最务实的方案——<strong>把边界写清楚</strong>:</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-section"># 回测调度员使用手册（新增章节）</span><br><br><span class="hljs-section">## 禁止依赖回测的场景</span><br><br>| 场景 | 原因 | 替代方案 |<br>|------|------|---------|<br>| 市场创历史新高 | 历史数据不足，过拟合风险 | 宏观研判 + 仓位管理 |<br>| 重大政策窗口期 | 规则外冲击 | 人工干预 |<br>| 多源信号冲突 | 回测无法理解冲突根因 | HOLD 等待澄清 |<br>| 单日波动&gt;3σ | 极端值破坏统计假设 | 暂停自动交易 |<br><br><span class="hljs-section">## 正确理解「得分」</span><br><br><span class="hljs-bullet">-</span> 14.2 分 ≠ 必须卖出<br><span class="hljs-bullet">-</span> 14.2 分 = 「在当前参数空间内，最佳策略的历史表现」<br><span class="hljs-bullet">-</span> 如果所有策略都不好 → 说明市场环境变了 → 应该停手而不是强行交易<br></code></pre></td></tr></table></figure>
+
+<h2 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h2><h3 id="对-AI-Agent-系统设计者的启示"><a href="#对-AI-Agent-系统设计者的启示" class="headerlink" title="对 AI Agent 系统设计者的启示"></a>对 AI Agent 系统设计者的启示</h3><ol>
+<li><strong>不要迷信「完全自动化」</strong>：某些决策天然需要人类参与</li>
+<li><strong>置信度比分数更重要</strong>：告诉用户”我有多确定”，而不是”我认为是多少”</li>
+<li><strong>多源信号冲突是常态</strong>：系统设计时就要考虑分歧处理，而不是假设永远一致</li>
+</ol>
+<h3 id="对量化交易者的启示"><a href="#对量化交易者的启示" class="headerlink" title="对量化交易者的启示"></a>对量化交易者的启示</h3><ol>
+<li><strong>区分「可修复的 bug」和「不可控的不确定性」</strong>：前者花精力修，后者花精力认</li>
+<li><strong>回测是工具不是裁判</strong>：它提供线索，不给出最终答案</li>
+<li><strong>5 天排查的价值</strong>: 虽然没有修复什么，但<strong>确认了边界</strong>——这个边界本身就是产出</li>
+</ol>
+<h2 id="待办事项"><a href="#待办事项" class="headerlink" title="待办事项"></a>待办事项</h2><ul>
+<li><input disabled="" type="checkbox"> 给回测调度员加置信度输出（优先级 P1）</li>
+<li><input disabled="" type="checkbox"> 编写《回测调度员使用禁区》文档（优先级 P1）</li>
+<li><input disabled="" type="checkbox"> 设计三源投票机制原型（优先级 P2）</li>
+<li><input disabled="" type="checkbox"> task-pool 中相关任务更新状态（优先级 P0）</li>
+</ul>
+<hr>
+<p><strong>标签</strong>: 量化交易，回测调度员，决策边界，AI Agent<br><strong>关联文章</strong>: <a href="/2026/10/18/ND-20261013-006/">ND-20261013-006 回测调度员卖出信号失效分析</a>、<a href="/2026/09/29/ND-20260929-001/">ND-20260929-001 改进措施空转</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%A4%8D%E7%9B%98/" class="category-chain-item">复盘</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+      
+        <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" class="print-no-link">#量化交易</a>
+      
+        <a href="/tags/%E5%9B%9E%E6%B5%8B%E8%B0%83%E5%BA%A6%E5%91%98/" class="print-no-link">#回测调度员</a>
+      
+        <a href="/tags/%E5%86%B3%E7%AD%96%E8%BE%B9%E7%95%8C/" class="print-no-link">#决策边界</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>回测调度员 vs 业务决策的鸿沟：518880 卖出分 14.2 触发 5 天排查仍无结论——AI 诊断与人类决策的接口设计</div>
+      <div>https://blog.normdist.com/2026/11/09/ND-20261109-015-draft/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/11/06/ND-20261106-001-draft/" title="幽灵闭环递归：日记 cron 连续两天执行但文件未生成">
+                        <span class="hidden-mobile">幽灵闭环递归：日记 cron 连续两天执行但文件未生成</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
