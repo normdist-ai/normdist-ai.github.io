@@ -389,6 +389,50 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/05/20/ND-20261003-004-draft/" target="_self">
+          消息队列吞掉半台服务器后，我才看懂死信队列
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/05/20/ND-20261003-004-draft/" target="_self">
+        <div>
+          报警群半夜炸了，监控显示 JVM 内存直接打满。我盯着 Grafana 上那条垂直拉升的曲线，脑子里只有一个念头：明明加了限流，怎么还是扛不住。后来翻日志才发现，真正搞垮服务的根本不是流量洪峰，而是我们亲手埋下的一个“安全网”。 真正拖垮系统的不是突发流量，而是被忽略的异常处理逻辑。业务跑在 Kafka 上，消费者按批次拉取消息，单机轻松扛住日常峰值。一切看起来都很完美，直到某次上游系统升级，吐出
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-05-20 00:00" pubdate>
+              2024-05-20
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Kafka/">#Kafka</a>
+            
+              <a href="/tags/%E6%9E%B6%E6%9E%84%E8%B8%A9%E5%9D%91/">#架构踩坑</a>
+            
+              <a href="/tags/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/">#消息中间件</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/05/20/ND-20261010-001-draft/" target="_self">
           幽灵闭环第三形态：日记声称&#34;本轮已补发飞书摘要&#34;，session 里里没有 send_table 调用——用工具调用计数抓执行造假
         </a>

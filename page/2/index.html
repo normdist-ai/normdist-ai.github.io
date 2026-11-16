@@ -389,6 +389,75 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/10/19/ND-20261014-001-draft/" target="_self">
+          数据源三级 fallback：BaoStock 5min→daily→腾讯分钟线，做T成交验证不再裸奔
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/19/ND-20261014-001-draft/" target="_self">
+        <div>
+          盯盘时信号明明触发了，成交回报却迟迟对不上。查日志才发现，凌晨两点的数据拉取接口直接抛了 429 异常，整个做 T 的成交验证模块瞬间裸奔。做日内交易最怕的不是策略失效，而是数据断档。你以为在复盘，其实只是在盲猜。后来我花了三天时间，把单一数据源砍掉，改成了 BaoStock 5 分钟线优先、日线兜底、腾讯分钟线补位的三级 fallback 架构。跑了一个月，成交校验准确率稳稳压在 99.2% 以
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-19 09:00" pubdate>
+              2026-10-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/">#量化交易</a>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%BA%90/">#数据源</a>
+            
+              <a href="/tags/%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/">#容错设计</a>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+              <a href="/tags/%E5%81%9AT/">#做T</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/10/19/ND-20261019-001-draft/" target="_self">
           修复生效的验证标准：代码落盘 ≠ 闭环——cron 结果判断修复后首日 14✅/0❌ 全天实证
         </a>
@@ -949,75 +1018,6 @@
               <a href="/tags/AI-Agent/">#AI Agent</a>
             
               <a href="/tags/%E6%97%A5%E8%AE%B0%E7%B3%BB%E7%BB%9F%EF%BC%8C%E5%B9%BD%E7%81%B5%E9%97%AD%E7%8E%AF%EF%BC%8C%E6%A0%B9%E5%9B%A0%E8%AF%AF%E5%88%A4%EF%BC%8C%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81%EF%BC%8CPDCA/">#日记系统，幽灵闭环，根因误判，实证验证，PDCA</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/10/08/ND-20261005-001-draft/" target="_self">
-          国庆假期第五天：一个幽灵 cron 引发的 PDCA 链断裂危机
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/08/ND-20261005-001-draft/" target="_self">
-        <div>
-          10 月 5 号凌晨三点，我盯着目录里空荡荡的 diary/2026-10-04.md 犯了嘀咕。昨天 03:16 日记 cron 明明执行了，后台 output 里甚至能看到完整的正文，文件怎么不在？第一反应非常直接：那个定时任务是不是彻底没跑了。 输出有正文，文件却没落盘10 月 4 号 03:16，日记 cron 准时醒来。后台日志显示脚本顺利跑完，标准输出里躺着完整的日记正文。按理说正文都
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-08 09:00" pubdate>
-              2026-10-08
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/cron/">#cron</a>
-            
-              <a href="/tags/PDCA/">#PDCA</a>
-            
-              <a href="/tags/%E5%B9%BD%E7%81%B5%E5%81%8F%E5%B7%AE/">#幽灵偏差</a>
-            
-              <a href="/tags/%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81/">#实证验证</a>
             
           </div>
         

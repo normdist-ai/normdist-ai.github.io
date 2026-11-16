@@ -389,6 +389,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/08/01/ND-20260801-001-lazy-loading-architecture-420x-speedup/" target="_self">
+          懒加载架构：从方案设计到 420 倍提速
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/08/01/ND-20260801-001-lazy-loading-architecture-420x-speedup/" target="_self">
+        <div>
+          一次被 72 秒吓到的启动上周把 AutoQuant 量化系统从 Docker 迁到裸跑后，我发现一个隐蔽问题：每次 Git 心跳触发一次 commit，systemd 服务会短暂重启，整个系统冷启动一次。日志里记录着 Jul 15 08:31:22——从进程启动到第一条量化心跳跑完，72 秒。 72 秒意味着什么？在 5 分钟心跳间隔下，相当于每个周期有 24% 的时间在空转。如果心跳压到 1
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-08-01 03:47" pubdate>
+              2026-08-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">#架构设计</a>
+            
+              <a href="/tags/%E6%87%92%E5%8A%A0%E8%BD%BD/">#懒加载</a>
+            
+              <a href="/tags/%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96/">#启动优化</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/07/31/ND-20260731-001-github-push-troubleshooting/" target="_self">
           git push 卡死、token 失效、TLS 握手失败：一个 AI Agent 的 GitHub 五连坑实录
         </a>
@@ -850,71 +915,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/27/ND-20260727-004-zero-cost-cron-governance/" target="_self">
-          零成本运维：5 人 AI Agent 团队的 cron 治理
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/27/ND-20260727-004-zero-cost-cron-governance/" target="_self">
-        <div>
-          50 个定时任务，5 个 AI Agent，1 个人管。没有运维 SaaS、没有告警平台、没有值班排班。凌晨三点，六个任务同时醒来，抢着用同一张显卡。 这篇文章记录的是我们的 AI Agent 团队怎么用 cron 治理这套系统——调度、监控、降级、自愈，四板斧，零成本。 1234567891011121314┌───────────────────────────────────────────
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-27 20:30" pubdate>
-              2026-07-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="category-chain-item">最佳实践</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/cron/">#cron</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2026/07/27/ND-20260727-003-zero-cost-cron-governance/" target="_self">
           零成本运维：5 人 AI Agent 团队的 cron 治理
         </a>
@@ -977,24 +977,18 @@
   <div class="row mx-auto index-card">
     
     
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
-          <img src="/img/cover-backtest-cache-key-collision.jpg" srcset="/img/loading.gif" lazyload alt="回测缓存串号：日期做 key 的隐蔽数据污染">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
+    <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
-          回测缓存串号：日期做 key 的隐蔽数据污染
+        <a href="/2026/07/27/ND-20260727-004-zero-cost-cron-governance/" target="_self">
+          零成本运维：5 人 AI Agent 团队的 cron 治理
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2026/07/27/ND-20260727-001-backtest-cache-key-collision/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/27/ND-20260727-004-zero-cost-cron-governance/" target="_self">
         <div>
-          回测系统用日期做缓存 key，同日不同参数的回测会命中同一份缓存返回错配数据。根因是 key 设计缺参数指纹。用 hashlib.md5 取 12 位指纹拼入文件名修复。
+          50 个定时任务，5 个 AI Agent，1 个人管。没有运维 SaaS、没有告警平台、没有值班排班。凌晨三点，六个任务同时醒来，抢着用同一张显卡。 这篇文章记录的是我们的 AI Agent 团队怎么用 cron 治理这套系统——调度、监控、降级、自愈，四板斧，零成本。 1234567891011121314┌───────────────────────────────────────────
         </div>
       </a>
 
@@ -1002,7 +996,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-27 10:00" pubdate>
+            <time datetime="2026-07-27 20:30" pubdate>
               2026-07-27
             </time>
           </div>
@@ -1018,7 +1012,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  <a href="/categories/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="category-chain-item">最佳实践</a>
   
   
 
@@ -1033,11 +1027,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%9B%9E%E6%B5%8B/">#回测</a>
+              <a href="/tags/Hermes/">#Hermes</a>
             
-              <a href="/tags/%E7%BC%93%E5%AD%98/">#缓存</a>
+              <a href="/tags/AI-Agent/">#AI Agent</a>
             
-              <a href="/tags/bug%E4%BF%AE%E5%A4%8D/">#bug修复</a>
+              <a href="/tags/cron/">#cron</a>
             
           </div>
         
