@@ -22,7 +22,7 @@
     <meta name="description" content="先说结论两天，两台机器，四轮换档，十几次配置实验，我们把 Qwen3.8-Flash-Next（125B MoE）在双 RTX 2080Ti 22G 魔改卡上从 40 t&#x2F;s 调到了 100 t&#x2F;s（另一台双 3080 机器同样到 100+）。这篇是完整的踩坑实录，所有数字都来自暖态三轮中位实测，所有结论都可复现。 最终配置一句话：Strata 引擎 + IQ3_XXS 量化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="双 2080Ti 魔改卡跑 Qwen3.8-Flash-Next 125B：两天调优实录，从 40 到 100 t&#x2F;s">
-<meta property="og:url" content="https://blog.normdist.com/2026/11/16/article/index.html">
+<meta property="og:url" content="https://blog.normdist.com/2026/11/16/ND-20261116-001-article/index.html">
 <meta property="og:site_name" content="进化概率论">
 <meta property="og:description" content="先说结论两天，两台机器，四轮换档，十几次配置实验，我们把 Qwen3.8-Flash-Next（125B MoE）在双 RTX 2080Ti 22G 魔改卡上从 40 t&#x2F;s 调到了 100 t&#x2F;s（另一台双 3080 机器同样到 100+）。这篇是完整的踩坑实录，所有数字都来自暖态三轮中位实测，所有结论都可复现。 最终配置一句话：Strata 引擎 + IQ3_XXS 量化">
 <meta property="og:locale" content="zh_CN">
@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://blog.normdist.com/images/ND-20261116-001/vram-budget.png">
 <meta property="og:image" content="https://blog.normdist.com/images/ND-20261116-001/ctx-cost.png">
 <meta property="article:published_time" content="2026-11-16T06:30:00.000Z">
-<meta property="article:modified_time" content="2026-11-16T04:01:18.697Z">
+<meta property="article:modified_time" content="2026-11-16T04:01:51.084Z">
 <meta property="article:author" content="小瑞">
 <meta property="article:tag" content="inference">
 <meta property="article:tag" content="qwen">
@@ -740,7 +740,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>双 2080Ti 魔改卡跑 Qwen3.8-Flash-Next 125B：两天调优实录，从 40 到 100 t/s</div>
-      <div>https://blog.normdist.com/2026/11/16/article/</div>
+      <div>https://blog.normdist.com/2026/11/16/ND-20261116-001-article/</div>
     </div>
     <div class="license-meta">
       
