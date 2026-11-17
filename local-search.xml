@@ -33,6 +33,39 @@
   
   
   <entry>
+    <title>子代理0工具空转：李雷kanban连续5天2msg/0tool的系统性调查——skill配置、model响应、prompt设计三层排查法</title>
+    <link href="/2026/11/16/ND-20261116-001-child-agent-zero-tool-draft/"/>
+    <url>/2026/11/16/ND-20261116-001-child-agent-zero-tool-draft/</url>
+    
+    <content type="html"><![CDATA[<h1 id="子代理0工具空转：李雷kanban连续5天2msg-0tool的系统性调查——skill配置、model响应、prompt设计三层排查法"><a href="#子代理0工具空转：李雷kanban连续5天2msg-0tool的系统性调查——skill配置、model响应、prompt设计三层排查法" class="headerlink" title="子代理0工具空转：李雷kanban连续5天2msg&#x2F;0tool的系统性调查——skill配置、model响应、prompt设计三层排查法"></a>子代理0工具空转：李雷kanban连续5天2msg&#x2F;0tool的系统性调查——skill配置、model响应、prompt设计三层排查法</h1><p>读完这篇文章后，你会发现：子代理的“活”不只是能不能说话，更在于它能不能“做事”。</p><h2 id="背景：一场“静默”的失踪"><a href="#背景：一场“静默”的失踪" class="headerlink" title="背景：一场“静默”的失踪"></a>背景：一场“静默”的失踪</h2><p>2026-10-22 午夜，李雷配置了一个叫 <code>weather-check</code> 的子技能，从此开启了 5 天的“静默”之旅——它每天调用 2 次 Kanban，但零工具、零有效消息，只是静默地、持续地“活”着。</p><p>这是一条不寻常的案例：<strong>子代理存在，但没有产生任何可见产出</strong>。它不报错、不报警，就是这样“死”得很干净。</p><h2 id="调查方法论：三层排查法"><a href="#调查方法论：三层排查法" class="headerlink" title="调查方法论：三层排查法"></a>调查方法论：三层排查法</h2><p>按照 PDCA 循环，我们从「看得见的现象」层层深入，最终定位到「看不见的根因」。</p><h3 id="1-表象层：skill-配置全检查"><a href="#1-表象层：skill-配置全检查" class="headerlink" title="1. 表象层：skill 配置全检查"></a>1. 表象层：skill 配置全检查</h3><p>第一步当然是检查配置：</p><ul><li><strong>Skill ID 是否唯一</strong>：李雷的 skill 配置里 <code>id: weather-check</code>，但事实上已经被另一个 skill 覆盖了。覆盖的机制是：当两个 skill 拥有相同的 <code>name</code> 且前缀路径匹配时，后者会覆盖前者的入口函数。</li><li><strong>模型是否可用</strong>：模型端点显示 200 OK，但实际调用时返回的是空 response。</li><li><strong>工具列表是否为空</strong>：检查发现，这个 skill 没有配置任何工具，甚至连默认的 <code>hermes.log</code> 都没有挂上。</li></ul><blockquote><p>关键发现：一个 skill 可能“存在”但“没有工具”。</p></blockquote><h3 id="2-中间层：model-响应链路排查"><a href="#2-中间层：model-响应链路排查" class="headerlink" title="2. 中间层：model 响应链路排查"></a>2. 中间层：model 响应链路排查</h3><p>第二步是把控制权交给模型：</p><ul><li><strong>温度参数</strong>：默认 <code>temp=0.7</code>，但李雷的 skill 中写死了 <code>temp=0.0</code>，导致模型总是输出同一版本的“我暂时无法完成请求”。</li><li><strong>上下文长度</strong>：ctx 设为 512，虽然够用，但加上 system prompt 以后，实际可用 context 只有 300 左右。</li></ul><blockquote><p>关键发现：模型的「说」总是被配置剪掉了。</p></blockquote><h3 id="3-根因层：prompt-设计的盲区"><a href="#3-根因层：prompt-设计的盲区" class="headerlink" title="3. 根因层：prompt 设计的盲区"></a>3. 根因层：prompt 设计的盲区</h3><p>第三步是把焦点拉回到 Prompt：</p><ul><li><strong>prompt 里没有「工具调用指示」</strong>：李雷的 skill 提示里，根本没有写「当需要查询天气时，请调用 weather_api 工具」。</li><li>**system prompt 里只写了「完成任务」的期望值，没有给出「如何完成」的具体指令。</li></ul><blockquote><p>关键发现：Prompt 没给「方向」。</p></blockquote><h2 id="案例复现：如何重演「静默」？"><a href="#案例复现：如何重演「静默」？" class="headerlink" title="案例复现：如何重演「静默」？"></a>案例复现：如何重演「静默」？</h2><p>下面我把李雷的配置步骤演示给你看：</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># skill: weather-check</span><br><span class="hljs-attr">name:</span> <span class="hljs-string">weather-check</span><br><span class="hljs-attr">id:</span> <span class="hljs-string">weather-check</span>  <span class="hljs-comment"># ← 这里！ID冲突</span><br><span class="hljs-attr">type:</span> <span class="hljs-string">kanban-agent</span><br><span class="hljs-attr">model:</span> <span class="hljs-string">Qwen/Qwen3.8-27B</span><br><span class="hljs-attr">params:</span><br>  <span class="hljs-attr">temperature:</span> <span class="hljs-number">0.0</span>  <span class="hljs-comment"># ← 这样的配置，模型只会原封原味地“原地踏步”</span><br>  <span class="hljs-attr">max_tokens:</span> <span class="hljs-number">512</span><br><span class="hljs-attr">prompt:</span> <span class="hljs-string">|</span><br><span class="hljs-string">  你是一个天气查询助手。</span><br><span class="hljs-string">  你的任务是：当用户问天气，调用 weather_api。</span><br><span class="hljs-string">  # 注意！这里没有工具调用指示，也没有 fallback 机制</span><br></code></pre></td></tr></table></figure><p>现在，你的模型收到了这样的指令：</p><ul><li><strong>任务</strong>：查天气</li><li><strong>工具</strong>：无</li><li><strong>回报</strong>：模型只能说“好，知道了”，然后就…停了。</li></ul><h2 id="三层排查的检查清单"><a href="#三层排查的检查清单" class="headerlink" title="三层排查的检查清单"></a>三层排查的检查清单</h2><p>基于上述分析，我把排查方法提炼成一个清单：</p><table><thead><tr><th>层级</th><th>检查点</th><th>典型问题</th></tr></thead><tbody><tr><td>skill 配置</td><td>ID 唯一性、工具列表、model 参数</td><td>ID 冲突、tool 为空、temp&#x3D;0</td></tr><tr><td>model 响应</td><td>温度、上下文、token 配额</td><td>回复被截断、token 用尽、温度过低</td></tr><tr><td>prompt 设计</td><td>工具调用指示、fallback 策略、输出格式</td><td>没给工具调用指令、没有兜底方案</td></tr></tbody></table><h2 id="结论：静默-≠-故障"><a href="#结论：静默-≠-故障" class="headerlink" title="结论：静默 ≠ 故障"></a>结论：静默 ≠ 故障</h2><p>5 天后，我终于弄清了「李雷」到底在「干嘛」：</p><blockquote><p>他当时在「等」——等配置、等指令、等一个能被它「看得见、摸得着」的出口。</p></blockquote><p><strong>子代理的「活着」</strong>，从来不是靠它「说得多」，而是靠它「能不能干上一件事」。当一个 skill 配置了「无工具、无指令、低温度」的组合，它就会进入一种「优雅的死亡」——不报错、不报警，就是静默了。</p><h2 id="后记：如何避免「静默」？"><a href="#后记：如何避免「静默」？" class="headerlink" title="后记：如何避免「静默」？"></a>后记：如何避免「静默」？</h2><p>如果你也想让你的子代理「说话又干活」，不妨检查：</p><ol><li><strong>配置</strong>：每个 skill 的 <code>id</code> 都要全局唯一；</li><li><strong>工具</strong>：至少挂一个「兜底」工具；</li><li><strong>Prompt</strong>：写清楚「没工具时怎么办」，比如调用 <code>hermes.log</code> 把「没做完」的信息写下来。</li></ol><hr><p><em>本文基于对「李雷」子代理 5 天静默事件的现场复盘，遵循 PDCA 闭环原则，力求从「现象」到「原因」再到「改进」全链路可追溯。</em></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>AI Agent</tag>
+      
+      <tag>PDCA</tag>
+      
+      <tag>子代理</tag>
+      
+      <tag>kanban</tag>
+      
+      <tag>故障排查</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>回测调度员 vs 业务决策的鸿沟：518880 卖出分 14.2 触发 5 天排查仍无结论——AI 诊断与人类决策的接口设计</title>
     <link href="/2026/11/09/ND-20261109-015-draft/"/>
     <url>/2026/11/09/ND-20261109-015-draft/</url>

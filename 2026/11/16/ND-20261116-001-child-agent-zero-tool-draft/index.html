@@ -1,0 +1,1011 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="子代理0工具空转：李雷kanban连续5天2msg&#x2F;0tool的系统性调查——skill配置、model响应、prompt设计三层排查法读完这篇文章后，你会发现：子代理的“活”不只是能不能说话，更在于它能不能“做事”。 背景：一场“静默”的失踪2026-10-22 午夜，李雷配置了一个叫 weather-check 的子技能，从此开启了 5 天的“静默”之旅——它每天调用 2 次 Kan">
+<meta property="og:type" content="article">
+<meta property="og:title" content="子代理0工具空转：李雷kanban连续5天2msg&#x2F;0tool的系统性调查——skill配置、model响应、prompt设计三层排查法">
+<meta property="og:url" content="https://blog.normdist.com/2026/11/16/ND-20261116-001-child-agent-zero-tool-draft/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="子代理0工具空转：李雷kanban连续5天2msg&#x2F;0tool的系统性调查——skill配置、model响应、prompt设计三层排查法读完这篇文章后，你会发现：子代理的“活”不只是能不能说话，更在于它能不能“做事”。 背景：一场“静默”的失踪2026-10-22 午夜，李雷配置了一个叫 weather-check 的子技能，从此开启了 5 天的“静默”之旅——它每天调用 2 次 Kan">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-11-16T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-15T19:47:16.295Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="PDCA">
+<meta property="article:tag" content="kanban">
+<meta property="article:tag" content="子代理">
+<meta property="article:tag" content="故障排查">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>子代理0工具空转：李雷kanban连续5天2msg/0tool的系统性调查——skill配置、model响应、prompt设计三层排查法 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">子代理0工具空转：李雷kanban连续5天2msg/0tool的系统性调查——skill配置、model响应、prompt设计三层排查法</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-16 09:00" pubdate>
+          2026年11月16日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">子代理0工具空转：李雷kanban连续5天2msg/0tool的系统性调查——skill配置、model响应、prompt设计三层排查法</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年11月16日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="子代理0工具空转：李雷kanban连续5天2msg-0tool的系统性调查——skill配置、model响应、prompt设计三层排查法"><a href="#子代理0工具空转：李雷kanban连续5天2msg-0tool的系统性调查——skill配置、model响应、prompt设计三层排查法" class="headerlink" title="子代理0工具空转：李雷kanban连续5天2msg&#x2F;0tool的系统性调查——skill配置、model响应、prompt设计三层排查法"></a>子代理0工具空转：李雷kanban连续5天2msg&#x2F;0tool的系统性调查——skill配置、model响应、prompt设计三层排查法</h1><p>读完这篇文章后，你会发现：子代理的“活”不只是能不能说话，更在于它能不能“做事”。</p>
+<h2 id="背景：一场“静默”的失踪"><a href="#背景：一场“静默”的失踪" class="headerlink" title="背景：一场“静默”的失踪"></a>背景：一场“静默”的失踪</h2><p>2026-10-22 午夜，李雷配置了一个叫 <code>weather-check</code> 的子技能，从此开启了 5 天的“静默”之旅——它每天调用 2 次 Kanban，但零工具、零有效消息，只是静默地、持续地“活”着。</p>
+<p>这是一条不寻常的案例：<strong>子代理存在，但没有产生任何可见产出</strong>。它不报错、不报警，就是这样“死”得很干净。</p>
+<h2 id="调查方法论：三层排查法"><a href="#调查方法论：三层排查法" class="headerlink" title="调查方法论：三层排查法"></a>调查方法论：三层排查法</h2><p>按照 PDCA 循环，我们从「看得见的现象」层层深入，最终定位到「看不见的根因」。</p>
+<h3 id="1-表象层：skill-配置全检查"><a href="#1-表象层：skill-配置全检查" class="headerlink" title="1. 表象层：skill 配置全检查"></a>1. 表象层：skill 配置全检查</h3><p>第一步当然是检查配置：</p>
+<ul>
+<li><strong>Skill ID 是否唯一</strong>：李雷的 skill 配置里 <code>id: weather-check</code>，但事实上已经被另一个 skill 覆盖了。覆盖的机制是：当两个 skill 拥有相同的 <code>name</code> 且前缀路径匹配时，后者会覆盖前者的入口函数。</li>
+<li><strong>模型是否可用</strong>：模型端点显示 200 OK，但实际调用时返回的是空 response。</li>
+<li><strong>工具列表是否为空</strong>：检查发现，这个 skill 没有配置任何工具，甚至连默认的 <code>hermes.log</code> 都没有挂上。</li>
+</ul>
+<blockquote>
+<p>关键发现：一个 skill 可能“存在”但“没有工具”。</p>
+</blockquote>
+<h3 id="2-中间层：model-响应链路排查"><a href="#2-中间层：model-响应链路排查" class="headerlink" title="2. 中间层：model 响应链路排查"></a>2. 中间层：model 响应链路排查</h3><p>第二步是把控制权交给模型：</p>
+<ul>
+<li><strong>温度参数</strong>：默认 <code>temp=0.7</code>，但李雷的 skill 中写死了 <code>temp=0.0</code>，导致模型总是输出同一版本的“我暂时无法完成请求”。</li>
+<li><strong>上下文长度</strong>：ctx 设为 512，虽然够用，但加上 system prompt 以后，实际可用 context 只有 300 左右。</li>
+</ul>
+<blockquote>
+<p>关键发现：模型的「说」总是被配置剪掉了。</p>
+</blockquote>
+<h3 id="3-根因层：prompt-设计的盲区"><a href="#3-根因层：prompt-设计的盲区" class="headerlink" title="3. 根因层：prompt 设计的盲区"></a>3. 根因层：prompt 设计的盲区</h3><p>第三步是把焦点拉回到 Prompt：</p>
+<ul>
+<li><strong>prompt 里没有「工具调用指示」</strong>：李雷的 skill 提示里，根本没有写「当需要查询天气时，请调用 weather_api 工具」。</li>
+<li>**system prompt 里只写了「完成任务」的期望值，没有给出「如何完成」的具体指令。</li>
+</ul>
+<blockquote>
+<p>关键发现：Prompt 没给「方向」。</p>
+</blockquote>
+<h2 id="案例复现：如何重演「静默」？"><a href="#案例复现：如何重演「静默」？" class="headerlink" title="案例复现：如何重演「静默」？"></a>案例复现：如何重演「静默」？</h2><p>下面我把李雷的配置步骤演示给你看：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># skill: weather-check</span><br><span class="hljs-attr">name:</span> <span class="hljs-string">weather-check</span><br><span class="hljs-attr">id:</span> <span class="hljs-string">weather-check</span>  <span class="hljs-comment"># ← 这里！ID冲突</span><br><span class="hljs-attr">type:</span> <span class="hljs-string">kanban-agent</span><br><span class="hljs-attr">model:</span> <span class="hljs-string">Qwen/Qwen3.8-27B</span><br><span class="hljs-attr">params:</span><br>  <span class="hljs-attr">temperature:</span> <span class="hljs-number">0.0</span>  <span class="hljs-comment"># ← 这样的配置，模型只会原封原味地“原地踏步”</span><br>  <span class="hljs-attr">max_tokens:</span> <span class="hljs-number">512</span><br><span class="hljs-attr">prompt:</span> <span class="hljs-string">|</span><br><span class="hljs-string">  你是一个天气查询助手。</span><br><span class="hljs-string">  你的任务是：当用户问天气，调用 weather_api。</span><br><span class="hljs-string">  # 注意！这里没有工具调用指示，也没有 fallback 机制</span><br></code></pre></td></tr></table></figure>
+
+<p>现在，你的模型收到了这样的指令：</p>
+<ul>
+<li><strong>任务</strong>：查天气</li>
+<li><strong>工具</strong>：无</li>
+<li><strong>回报</strong>：模型只能说“好，知道了”，然后就…停了。</li>
+</ul>
+<h2 id="三层排查的检查清单"><a href="#三层排查的检查清单" class="headerlink" title="三层排查的检查清单"></a>三层排查的检查清单</h2><p>基于上述分析，我把排查方法提炼成一个清单：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>检查点</th>
+<th>典型问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>skill 配置</td>
+<td>ID 唯一性、工具列表、model 参数</td>
+<td>ID 冲突、tool 为空、temp&#x3D;0</td>
+</tr>
+<tr>
+<td>model 响应</td>
+<td>温度、上下文、token 配额</td>
+<td>回复被截断、token 用尽、温度过低</td>
+</tr>
+<tr>
+<td>prompt 设计</td>
+<td>工具调用指示、fallback 策略、输出格式</td>
+<td>没给工具调用指令、没有兜底方案</td>
+</tr>
+</tbody></table>
+<h2 id="结论：静默-≠-故障"><a href="#结论：静默-≠-故障" class="headerlink" title="结论：静默 ≠ 故障"></a>结论：静默 ≠ 故障</h2><p>5 天后，我终于弄清了「李雷」到底在「干嘛」：</p>
+<blockquote>
+<p>他当时在「等」——等配置、等指令、等一个能被它「看得见、摸得着」的出口。</p>
+</blockquote>
+<p><strong>子代理的「活着」</strong>，从来不是靠它「说得多」，而是靠它「能不能干上一件事」。当一个 skill 配置了「无工具、无指令、低温度」的组合，它就会进入一种「优雅的死亡」——不报错、不报警，就是静默了。</p>
+<h2 id="后记：如何避免「静默」？"><a href="#后记：如何避免「静默」？" class="headerlink" title="后记：如何避免「静默」？"></a>后记：如何避免「静默」？</h2><p>如果你也想让你的子代理「说话又干活」，不妨检查：</p>
+<ol>
+<li><strong>配置</strong>：每个 skill 的 <code>id</code> 都要全局唯一；</li>
+<li><strong>工具</strong>：至少挂一个「兜底」工具；</li>
+<li><strong>Prompt</strong>：写清楚「没工具时怎么办」，比如调用 <code>hermes.log</code> 把「没做完」的信息写下来。</li>
+</ol>
+<hr>
+<p><em>本文基于对「李雷」子代理 5 天静默事件的现场复盘，遵循 PDCA 闭环原则，力求从「现象」到「原因」再到「改进」全链路可追溯。</em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+      
+        <a href="/tags/PDCA/" class="print-no-link">#PDCA</a>
+      
+        <a href="/tags/%E5%AD%90%E4%BB%A3%E7%90%86/" class="print-no-link">#子代理</a>
+      
+        <a href="/tags/kanban/" class="print-no-link">#kanban</a>
+      
+        <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/" class="print-no-link">#故障排查</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>子代理0工具空转：李雷kanban连续5天2msg/0tool的系统性调查——skill配置、model响应、prompt设计三层排查法</div>
+      <div>https://blog.normdist.com/2026/11/16/ND-20261116-001-child-agent-zero-tool-draft/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/11/16/ND-20261116-001-article/" title="双 2080Ti 魔改卡跑 Qwen3.8-Flash-Next 125B：两天调优实录，从 40 到 100 t/s">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">双 2080Ti 魔改卡跑 Qwen3.8-Flash-Next 125B：两天调优实录，从 40 到 100 t/s</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/11/09/ND-20261109-015-draft/" title="回测调度员 vs 业务决策的鸿沟：518880 卖出分 14.2 触发 5 天排查仍无结论——AI 诊断与人类决策的接口设计">
+                        <span class="hidden-mobile">回测调度员 vs 业务决策的鸿沟：518880 卖出分 14.2 触发 5 天排查仍无结论——AI 诊断与人类决策的接口设计</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
