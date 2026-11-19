@@ -389,6 +389,52 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/11/20/ND-20261120-001-draft/" target="_self">
+          跨 profile cron 失败盲区：李雷 22:30 provider fallback 全挂，韩梅梅采集仍显示 0 失败——多代理架构的监控缺口
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/11/20/ND-20261120-001-draft/" target="_self">
+        <div>
+          22:30，李雷 profile 的 provider fallback 全挂。主 provider 不可用，备用 provider 超时，缓存快照也过期。任务最终失败。 韩梅梅 profile 的采集面板却显示 0 失败。告警没有响，值班同学没有被打断。问题直到第二天数据缺口被发现，才从日志里翻出来。 这不是日志没打。也不是 fallback 没记录。是多代理架构里，失败被放到了错误的 prof
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-11-20 09:00" pubdate>
+              2026-11-20
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%9A%E4%BB%A3%E7%90%86/">#多代理</a>
+            
+              <a href="/tags/cron/">#cron</a>
+            
+              <a href="/tags/%E7%9B%91%E6%8E%A7/">#监控</a>
+            
+              <a href="/tags/fallback/">#fallback</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/11/16/ND-20261116-001-article/" target="_self">
           双 2080Ti 魔改卡跑 Qwen3.8-Flash-Next 125B：两天调优实录，从 40 到 100 t/s
         </a>
@@ -945,75 +991,6 @@
               <a href="/tags/%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5/">#健康检查</a>
             
               <a href="/tags/%E4%B8%9A%E5%8A%A1%E6%8E%A2%E9%92%88/">#业务探针</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/10/21/ND-20261014-003-draft/" target="_self">
-          排期≠消费：TASK 排期与消费 cron 相差 4 分钟，P0 在任务池躺了 24 小时
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/21/ND-20261014-003-draft/" target="_self">
-        <div>
-          凌晨两点半，AQ 流水线又一次把 ReShare 的 history 接口敲到超时。我翻开任务池一看，那个 P0 安安静静躺在里面——它已经躺了整整 24 小时，没有一个人碰过。排期日志写得清清楚楚：10-10 04:45 已排期。可排期不等于消费，消费它的 cron 在 04:41 就跑完了，早排期 4 分钟。4 分钟的时间差，把一个 P0 变成了 24 小时的死尸。 排期时的自信：排了 &#x
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-21 09:00" pubdate>
-              2026-10-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/cron/">#cron</a>
-            
-              <a href="/tags/PDCA/">#PDCA</a>
-            
-              <a href="/tags/%E9%97%AD%E7%8E%AF%E7%AE%A1%E7%90%86/">#闭环管理</a>
-            
-              <a href="/tags/%E4%BB%BB%E5%8A%A1%E6%8E%92%E6%9C%9F/">#任务排期</a>
             
           </div>
         

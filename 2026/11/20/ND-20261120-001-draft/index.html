@@ -1,0 +1,969 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="小瑞">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="22:30，李雷 profile 的 provider fallback 全挂。主 provider 不可用，备用 provider 超时，缓存快照也过期。任务最终失败。 韩梅梅 profile 的采集面板却显示 0 失败。告警没有响，值班同学没有被打断。问题直到第二天数据缺口被发现，才从日志里翻出来。 这不是日志没打。也不是 fallback 没记录。是多代理架构里，失败被放到了错误的 prof">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨 profile cron 失败盲区：李雷 22:30 provider fallback 全挂，韩梅梅采集仍显示 0 失败——多代理架构的监控缺口">
+<meta property="og:url" content="https://blog.normdist.com/2026/11/20/ND-20261120-001-draft/index.html">
+<meta property="og:site_name" content="进化概率论">
+<meta property="og:description" content="22:30，李雷 profile 的 provider fallback 全挂。主 provider 不可用，备用 provider 超时，缓存快照也过期。任务最终失败。 韩梅梅 profile 的采集面板却显示 0 失败。告警没有响，值班同学没有被打断。问题直到第二天数据缺口被发现，才从日志里翻出来。 这不是日志没打。也不是 fallback 没记录。是多代理架构里，失败被放到了错误的 prof">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-11-20T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-19T19:51:26.310Z">
+<meta property="article:author" content="小瑞">
+<meta property="article:tag" content="cron">
+<meta property="article:tag" content="fallback">
+<meta property="article:tag" content="多代理">
+<meta property="article:tag" content="监控">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>跨 profile cron 失败盲区：李雷 22:30 provider fallback 全挂，韩梅梅采集仍显示 0 失败——多代理架构的监控缺口 - 进化概率论</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.normdist.com","root":"/","version":"1.9.9","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":false,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>进化概率论</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/benchmark/llm.html" target="_blank">
+                <i class="iconfont icon-exp-fill"></i>
+                <span>天梯</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/links/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-link-fill"></i>
+                  <span>友链</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/benchmark/llm.html" target="_blank">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-exp-fill"></i>
+                  <span>天梯</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">跨 profile cron 失败盲区：李雷 22:30 provider fallback 全挂，韩梅梅采集仍显示 0 失败——多代理架构的监控缺口</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-20 09:00" pubdate>
+          2026年11月20日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">跨 profile cron 失败盲区：李雷 22:30 provider fallback 全挂，韩梅梅采集仍显示 0 失败——多代理架构的监控缺口</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年11月20日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>22:30，李雷 profile 的 provider fallback 全挂。主 provider 不可用，备用 provider 超时，缓存快照也过期。任务最终失败。</p>
+<p>韩梅梅 profile 的采集面板却显示 0 失败。告警没有响，值班同学没有被打断。问题直到第二天数据缺口被发现，才从日志里翻出来。</p>
+<p>这不是日志没打。也不是 fallback 没记录。是多代理架构里，失败被放到了错误的 profile 下，然后被静默吞掉。</p>
+<h2 id="告警为什么没响"><a href="#告警为什么没响" class="headerlink" title="告警为什么没响"></a>告警为什么没响</h2><p>李雷 profile 的 cron 任务不是单纯读数据库。它会调用韩梅梅 profile 维护的 provider 代理，由后者去访问多个 provider。</p>
+<p>正常流程里，这个 provider 代理会做多层 fallback：主 provider、备用 provider、缓存快照。只要任意一层成功，调用方就认为这次调用完成了。</p>
+<p>22:30 这次，所有 fallback 层都失败。主 provider 返回错误，备用 provider 超时，缓存快照也过期。李雷 profile 的 cron 收到的是一个失败响应。它记录本地任务失败。</p>
+<p>问题出在韩梅梅 profile 的采集侧。采集器只统计 provider 代理自身的成功率和错误率。由于调用请求被归入李雷 profile，采集器没有把它纳入韩梅梅 profile 的失败计数。</p>
+<p>韩梅梅面板里的指标叫 “provider 请求失败数”。它只统计 provider 代理自己主动拒绝、限流、内部异常。跨 profile 调用失败被当成 caller 侧失败，不算 callee 侧失败。</p>
+<p>这就是盲区：李雷的任务确实失败了。韩梅梅的 provider fallback 也确实全挂了。但监控把它们拆成了两个不相交的故事。</p>
+<h2 id="我们以为的“失败”不是同一种失败"><a href="#我们以为的“失败”不是同一种失败" class="headerlink" title="我们以为的“失败”不是同一种失败"></a>我们以为的“失败”不是同一种失败</h2><p>多代理架构里，一个 cron 失败至少有三层含义。</p>
+<p>第一层是任务失败。cron 没完成，数据没写入，下游会缺数据。李雷 profile 应该看到这个失败。</p>
+<p>第二层是依赖失败。任务调用了另一个 profile 的服务，服务不可用。李雷 profile 应该知道失败来自韩梅梅 profile 的 provider 代理。</p>
+<p>第三层是 provider fallback 失败。主、备、缓存都失败。韩梅梅 profile 应该知道 provider 层出了问题。</p>
+<p>原来的监控只把第三层做成了韩梅梅 profile 的私有指标。第一层归李雷，第三层归韩梅梅，第二层没有归属。跨 profile 调用失败掉进了中间地带。</p>
+<p>这就像两个人合作搬箱子。李雷说箱子没搬动。韩梅梅说我这边没有箱子砸到我。双方都没错，但箱子确实砸在门口。</p>
+<h2 id="跨-profile-调用把错误藏进了“别人的任务”"><a href="#跨-profile-调用把错误藏进了“别人的任务”" class="headerlink" title="跨 profile 调用把错误藏进了“别人的任务”"></a>跨 profile 调用把错误藏进了“别人的任务”</h2><p>李雷 profile 调用韩梅梅 profile 时，请求里只有 source profile，没有 target profile。也没有 fallback 链路标识。</p>
+<p>日志里能看到：</p>
+<p><code>李雷 profile: task failed</code><br><code>韩梅梅 profile: upstream 503</code><br><code>韩梅梅 profile: fallback timeout</code></p>
+<p>单看每条日志都有意义。合在一起看，它们属于同一次失败。可是采集器不是按同一件事聚合的。它按 profile、服务名、指标类型聚合。</p>
+<p>李雷侧看到的是任务失败。韩梅梅侧看到的是 provider 错误日志。采集器没有把这两类事件拼成一条端到端链路。</p>
+<p>更麻烦的是 cron 任务的重试策略。李雷 profile 的任务会重试多次。每次重试都会产生新的本地任务状态。韩梅梅 profile 的 provider 代理每次也收到请求。采集器看到 provider 代理收到请求，但没有把这些请求和最终任务失败关联起来。</p>
+<p>李雷 profile 里，多次重试都失败，最终失败。韩梅梅 profile 里，provider 代理返回了错误，但错误码被归类为 upstream 错误，不是 provider 代理自身失败。指标面板选择只统计 provider 代理自身失败。</p>
+<p>于是 0 失败出现了。</p>
+<h2 id="真正的缺口不是日志，是归属"><a href="#真正的缺口不是日志，是归属" class="headerlink" title="真正的缺口不是日志，是归属"></a>真正的缺口不是日志，是归属</h2><p>我们一开始以为要补日志。补日志确实有用，但不解决监控缺口。</p>
+<p>日志能告诉你某个服务返回了 503。监控要回答的问题是：这次失败影响谁，属于哪个 profile，应该通知谁。</p>
+<p>多代理架构里，一个 profile 的成功不等于另一个 profile 的成功。一个 profile 的失败也不等于另一个 profile 的失败。</p>
+<p>如果没有跨 profile 归属，监控只能看见局部健康，看不见业务链路健康。</p>
+<p>李雷 profile 的 cron 失败是业务链路失败。韩梅梅 profile 的 provider fallback 全挂是根因失败。两者之间需要一条依赖边。</p>
+<p>这条依赖边原来只存在于代码里，不存在于监控里。</p>
+<h2 id="修复思路：把-caller、callee、profile、fallback-拆开"><a href="#修复思路：把-caller、callee、profile、fallback-拆开" class="headerlink" title="修复思路：把 caller、callee、profile、fallback 拆开"></a>修复思路：把 caller、callee、profile、fallback 拆开</h2><p>我们后来把事件模型拆成四个字段。</p>
+<p><code>caller_profile</code> 表示谁发起调用。李雷 profile 的 cron 是 caller。</p>
+<p><code>callee_profile</code> 表示谁被调用。韩梅梅 profile 的 provider 代理是 callee。</p>
+<p><code>fallback_stage</code> 表示当前处于哪一层 fallback。主 provider、备用 provider、缓存快照分别记录。</p>
+<p><code>correlation_id</code> 表示一次端到端调用。每次 cron 任务开始时生成，贯穿任务、重试、跨 profile 调用、provider fallback。</p>
+<p>这样一次失败会留下完整链路。</p>
+<p>李雷 profile 的 cron 失败会记录 caller profile。跨 profile 调用失败会记录 callee profile。韩梅梅 profile 的 fallback 全挂会记录 fallback 耗尽。同一个 correlation id 把它们串起来。</p>
+<h2 id="先让-fallback-失败显形"><a href="#先让-fallback-失败显形" class="headerlink" title="先让 fallback 失败显形"></a>先让 fallback 失败显形</h2><p>韩梅梅 profile 原来有一个指标叫 “provider 成功率”。它只记录请求是否被 provider 代理成功处理。</p>
+<p>这个指标太粗。provider 代理成功处理一个上游失败，不代表业务成功。provider 代理返回错误给 caller，也不等于 provider 代理失败。</p>
+<p>我们把它拆成三组指标。</p>
+<p>provider 入口指标：请求收到、响应返回、响应状态。</p>
+<p>provider 依赖指标：主 provider 失败、备用 provider 失败、缓存快照失败、fallback 全部耗尽。</p>
+<p>跨 profile 影响指标：哪些 caller profile 因 fallback 耗尽而失败。</p>
+<p>22:30 的事件如果走新模型，韩梅梅面板不会显示 0 失败。它会显示 fallback 全部耗尽，并列出受影响的李雷 profile。</p>
+<p>李雷面板也会显示任务失败来自韩梅梅 profile，而不是笼统的 cron 失败。</p>
+<h2 id="别只修一个-cron，要修一张依赖图"><a href="#别只修一个-cron，要修一张依赖图" class="headerlink" title="别只修一个 cron，要修一张依赖图"></a>别只修一个 cron，要修一张依赖图</h2><p>单看李雷 profile 的 cron，问题像是任务失败率上升。单看韩梅梅 profile 的 provider 代理，问题像是 provider 上游异常。单看采集面板，问题像是指标漏计。</p>
+<p>它们不是三个问题。它们是一个多代理依赖图里的同一个缺口。</p>
+<p>我们需要把 profile 之间的调用关系变成可观测对象。</p>
+<p>每个 cron 任务要声明依赖：它调用哪个 profile，哪个服务，是否允许 fallback，fallback 耗尽时是否算任务失败。</p>
+<p>每个 fallback 阶段要声明影响面：它失败时，哪些 caller profile 会受影响。</p>
+<p>每个跨 profile 调用要携带上下文：caller、callee、correlation、业务任务、重试次数。</p>
+<p>没有依赖图，监控只能看孤岛。有依赖图，监控才能看传导。</p>
+<h2 id="上线前怎么验证"><a href="#上线前怎么验证" class="headerlink" title="上线前怎么验证"></a>上线前怎么验证</h2><p>我们用一个简单场景验证：模拟 22:30，李雷 profile 的 cron 调用韩梅梅 profile 的 provider 代理，主 provider 不可用，备用 provider 超时，缓存快照过期。</p>
+<p>旧监控下，李雷侧看到任务失败。韩梅梅侧可能看到上游错误，但采集面板仍可能显示 0 失败。</p>
+<p>新监控下，三个信号必须同时出现。</p>
+<p>李雷侧出现 cron 任务失败。韩梅梅侧出现 provider fallback 全挂。跨 profile 链路出现李雷到韩梅梅的失败传导。</p>
+<p>如果只有一个信号出现，说明事件模型还没打通。</p>
+<h2 id="值班时应该先问三个问题"><a href="#值班时应该先问三个问题" class="headerlink" title="值班时应该先问三个问题"></a>值班时应该先问三个问题</h2><p>现在遇到跨 profile cron 失败，值班同学会先问：失败发生在哪个 profile？</p>
+<p>这个问题不够。还要问：失败发生在调用链的哪一段？</p>
+<p>是 caller 任务失败，callee 服务失败，还是 provider fallback 失败？</p>
+<p>还要问：这次失败是否被采集器归类成另一个 profile 的局部错误？</p>
+<p>三个问题能避免把李雷的任务失败误判成韩梅梅的局部日志噪声。</p>
+<p>多代理架构里，监控不能只按服务归属看。要按业务链路看。</p>
+<p>李雷的 22:30 任务失败，根因在韩梅梅的 provider fallback。韩梅梅的采集显示 0 失败，根因在跨 profile 事件没有归属。</p>
+<p>真正要修的不是一个 cron，也不是一个采集器。是把 profile 之间的依赖边显式写进监控。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%A4%9A%E4%BB%A3%E7%90%86/" class="print-no-link">#多代理</a>
+      
+        <a href="/tags/cron/" class="print-no-link">#cron</a>
+      
+        <a href="/tags/%E7%9B%91%E6%8E%A7/" class="print-no-link">#监控</a>
+      
+        <a href="/tags/fallback/" class="print-no-link">#fallback</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>跨 profile cron 失败盲区：李雷 22:30 provider fallback 全挂，韩梅梅采集仍显示 0 失败——多代理架构的监控缺口</div>
+      <div>https://blog.normdist.com/2026/11/20/ND-20261120-001-draft/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>小瑞</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/11/16/ND-20261116-001-article/" title="双 2080Ti 魔改卡跑 Qwen3.8-Flash-Next 125B：两天调优实录，从 40 到 100 t/s">
+                        <span class="hidden-mobile">双 2080Ti 魔改卡跑 Qwen3.8-Flash-Next 125B：两天调优实录，从 40 到 100 t/s</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
