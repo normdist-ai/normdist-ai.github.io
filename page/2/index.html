@@ -389,6 +389,75 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/10/24/ND-20261016-001-draft/" target="_self">
+          心跳cron的&#34;completed&#34;不等于&#34;执行了&#34;：executions.db实证揭示的状态-行为鸿沟
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/24/ND-20261016-001-draft/" target="_self">
+        <div>
+          一句话结论Hermes Agent 的 cron 执行记录里，918 条 completed 中有 555 条（60.5%）的 delivery_outcome 是 suppressed——任务状态显示完成，但消息从未送达用户。completed 是状态机的终态流转，不是行为完成的证据。 问题怎么发现的这套 AI Agent 自治系统跑了几个月，心跳 cron 每小时触发，看板上清一色的绿色对勾。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-24 09:00" pubdate>
+              2026-10-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/cron/">#cron</a>
+            
+              <a href="/tags/PDCA/">#PDCA</a>
+            
+              <a href="/tags/%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81/">#实证验证</a>
+            
+              <a href="/tags/executions-db/">#executions.db</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/10/23/ND-20261023-001-reshare-health-check-blind-spot/" target="_self">
           ReShare 健康检查盲区第三次复发：health 200 但业务挂死——何时该从&#34;单次修复&#34;升级为&#34;架构改造&#34;
         </a>
@@ -934,73 +1003,6 @@
               <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
             
               <a href="/tags/%E5%A4%8D%E7%9B%98/">#复盘</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/10/13/ND-20261013-005-aqa-config-misroute/" target="_self">
-          AQA 配置错误排查实录：端点误指 Turing 导致 120s 超时，切回本机实例后降至 0.4s
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/13/ND-20261013-005-aqa-config-misroute/" target="_self">
-        <div>
-          2026-10-13 凌晨，AutoQuant Agent（AQA）的回测调度任务批量超时。 错误信息统一指向 ReShare 数据源：requests.exceptions.Timeout: 120s。 同一台机器、同一套代码，昨天还能跑通，今天就集体瘫痪。 我拉出 AQA 配置文件，发现了一个隐蔽的漂移——数据端点指向了 Turing（ModelBase 服务器），而不是本机的健康实例。 cu
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-13 09:00" pubdate>
-              2026-10-13
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/ReShare/">#ReShare</a>
-            
-              <a href="/tags/AutoQuant/">#AutoQuant</a>
-            
-              <a href="/tags/config/">#config</a>
-            
-              <a href="/tags/%E8%B6%85%E6%97%B6%E6%8E%92%E6%9F%A5/">#超时排查</a>
             
           </div>
         
