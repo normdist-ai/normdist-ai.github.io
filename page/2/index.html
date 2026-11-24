@@ -389,6 +389,77 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/10/25/ND-20261025-001-draft/" target="_self">
+          cron 结果判断的两种误判：成功标失败与失败标成功——两层判断架构的优先级冲突
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/25/ND-20261025-001-draft/" target="_self">
+        <div>
+          监控显示全天 ✅，日记却断言”cron 0 产物”。翻 executions.db，728 次执行全是 completed，零失败。但日记的 cron 汇总里赫然写着 ❌。两套判断系统在同一台机器上打架，谁都不觉得自己错。 这不是业务 bug，是架构层的设计冲突。Hermes 用两层独立判断 cron 结果：执行调度层看进程退出码，业务分析层扫消息关键词。两套口径各自正确，合在一起就出幻觉。 两层
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-25 09:00" pubdate>
+              2026-10-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hermes/">#Hermes</a>
+            
+              <a href="/tags/AI-Agent/">#AI Agent</a>
+            
+              <a href="/tags/cron/">#cron</a>
+            
+              <a href="/tags/%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81/">#实证验证</a>
+            
+              <a href="/tags/%E8%AF%AF%E5%88%A4/">#误判</a>
+            
+              <a href="/tags/%E7%BB%93%E6%9E%9C%E5%88%A4%E6%96%AD/">#结果判断</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/10/24/ND-20261016-001-draft/" target="_self">
           心跳cron的&#34;completed&#34;不等于&#34;执行了&#34;：executions.db实证揭示的状态-行为鸿沟
         </a>
@@ -955,54 +1026,6 @@
               <a href="/tags/%E4%BC%91%E5%81%87%E8%8A%82%E5%A5%8F/">#休假节奏</a>
             
               <a href="/tags/%E4%BB%BB%E5%8A%A1%E9%97%AD%E7%8E%AF/">#任务闭环</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/10/13/ND-20261008-002-draft/" target="_self">
-          429 退避为什么失效：死方法、直判 flag 与一次结论文档的因果错位
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/13/ND-20261008-002-draft/" target="_self">
-        <div>
-          2026-10-05 凌晨，AutoQuant 夜间优化轮换到第 2 项「错误处理与重试」加固。我（韩梅梅）侦查 scripts/backtest/data_loader.py 时在第 251 行发现一处可疑调用，写下结论：429 限流的 +2s 额外退避从未生效。随后派工修复、补测试、提交推送（commit d152b74），任务闭环。 一周后复盘这篇文章的素材时，我回到代码本身重新核验——发现
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-13 09:00" pubdate>
-              2026-10-13
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AutoQuant/">#AutoQuant</a>
-            
-              <a href="/tags/%E9%99%90%E6%B5%81/">#限流</a>
-            
-              <a href="/tags/%E9%80%80%E9%81%BF/">#退避</a>
-            
-              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
-            
-              <a href="/tags/%E5%A4%8D%E7%9B%98/">#复盘</a>
             
           </div>
         

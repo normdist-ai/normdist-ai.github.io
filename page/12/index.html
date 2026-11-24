@@ -389,6 +389,54 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/01/27/draft/" target="_self">
+          data_loader.py 的 compile() 陷阱：Python 单元测试从 96% 到 100% 的最后一道坎——预填 413 个空行的 workaround
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/27/draft/" target="_self">
+        <div>
+          CI 面板上的覆盖率停在 96%，测试全绿，data_loader.py 也跑过了。真正挡住 100% 的，不是某个复杂分支，而是一行看起来人畜无害的 compile()。 96% 不是差一点，是差在看不见的行pytest --cov=data_loader --cov-report=term-missing 报 data_loader.py 少一行，缺的是第 413 行。那行代码是一个 comp
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-01-27 00:00" pubdate>
+              2026-01-27
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
+            
+              <a href="/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">#单元测试</a>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+              <a href="/tags/coverage-py/">#coverage.py</a>
+            
+              <a href="/tags/compile/">#compile</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/10/22/ND-20261022-001-draft/" target="_self">
           幽灵闭环递归：日记cron连续两天执行但文件未生成
         </a>

@@ -816,6 +816,75 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/10/27/ND-20261027-020-draft/" target="_self">
+          data_loader.py 的 compile() 陷阱：Python 单元测试从 96% 到 100% 的最后一道坎——预填 413 个空行的 workaround
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/27/ND-20261027-020-draft/" target="_self">
+        <div>
+          CI 面板上的覆盖率停在 96%，测试全绿，data_loader.py 也跑过了。真正挡住 100% 的，不是某个复杂分支，而是一行看起来人畜无害的 compile()。 96% 不是差一点，是差在看不见的行pytest --cov=data_loader --cov-report=term-missing 报 data_loader.py 少一行，缺的是第 413 行。那行代码是一个 comp
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-27 09:00" pubdate>
+              2026-10-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/AutoQuant/">#AutoQuant</a>
+            
+              <a href="/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">#单元测试</a>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+              <a href="/tags/coverage/">#coverage</a>
+            
+              <a href="/tags/%E6%B5%8B%E8%AF%95%E5%B7%A5%E7%A8%8B/">#测试工程</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/10/27/ND-20261027-011-usd-cnh-ticker-fix/" target="_self">
           usd_cnh 汇率 ticker 选错导致数据源修复：CNH=X 返回 0 行 vs USDCNY=X 返回 67 行——yfinance ticker 差异与外汇数据源选择决策
         </a>
@@ -920,77 +989,6 @@
               <a href="/tags/%E5%AE%89%E5%85%A8%E8%BE%B9%E7%95%8C/">#安全边界</a>
             
               <a href="/tags/autodev/">#autodev</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/10/25/ND-20261025-001-draft/" target="_self">
-          cron 结果判断的两种误判：成功标失败与失败标成功——两层判断架构的优先级冲突
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/25/ND-20261025-001-draft/" target="_self">
-        <div>
-          监控显示全天 ✅，日记却断言”cron 0 产物”。翻 executions.db，728 次执行全是 completed，零失败。但日记的 cron 汇总里赫然写着 ❌。两套判断系统在同一台机器上打架，谁都不觉得自己错。 这不是业务 bug，是架构层的设计冲突。Hermes 用两层独立判断 cron 结果：执行调度层看进程退出码，业务分析层扫消息关键词。两套口径各自正确，合在一起就出幻觉。 两层
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-25 09:00" pubdate>
-              2026-10-25
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" class="category-chain-item">技术笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes/">#Hermes</a>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-              <a href="/tags/cron/">#cron</a>
-            
-              <a href="/tags/%E5%AE%9E%E8%AF%81%E9%AA%8C%E8%AF%81/">#实证验证</a>
-            
-              <a href="/tags/%E8%AF%AF%E5%88%A4/">#误判</a>
-            
-              <a href="/tags/%E7%BB%93%E6%9E%9C%E5%88%A4%E6%96%AD/">#结果判断</a>
             
           </div>
         
