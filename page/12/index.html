@@ -389,6 +389,54 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/01/27/ND-20261125-001-draft/" target="_self">
+          data_loader.py 的 compile() 陷阱：Python 单元测试从 96% 到 100% 的最后一道坎——预填 413 个空行的 workaround
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/27/ND-20261125-001-draft/" target="_self">
+        <div>
+          CI 面板上的覆盖率停在 96%，测试全绿，data_loader.py 也跑过了。真正挡住 100% 的，不是某个复杂分支，而是一行看起来人畜无害的 compile()。 96% 不是差一点，是差在看不见的行pytest --cov=data_loader --cov-report=term-missing 报 data_loader.py 少一行，缺的是第 413 行。那行代码是一个 comp
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-01-27 00:00" pubdate>
+              2026-01-27
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%B8%A9%E5%9D%91/">#踩坑</a>
+            
+              <a href="/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">#单元测试</a>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+              <a href="/tags/coverage-py/">#coverage.py</a>
+            
+              <a href="/tags/compile/">#compile</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/01/27/draft/" target="_self">
           data_loader.py 的 compile() 陷阱：Python 单元测试从 96% 到 100% 的最后一道坎——预填 413 个空行的 workaround
         </a>
@@ -527,48 +575,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2024/10/20/ND-20261030-002-fix-validation-paradigm/" target="_self">
-          修复生效的验证标准：代码落盘 ≠ 闭环
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/20/ND-20261030-002-fix-validation-paradigm/" target="_self">
-        <div>
-          10-17 凌晨 02:00，cron 又炸了。 我盯着终端里那两行 ❌，脑子里第一个反应是：不可能，我 10-16 晚上已经把那个 bug 修了，代码都 push 了。 然后我花了 40 分钟搞清楚一件事：代码落盘和修复生效之间，隔着一整个”生效链路”，而那条链路我根本没验证过。 代码 push 了，为什么 cron 还是红的先说 10-17 那两例误判。 背景是这样的：我们有一套定时任务系统，
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-10-20 00:00" pubdate>
-              2024-10-20
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%AA%8C%E8%AF%81/">#验证</a>
-            
-              <a href="/tags/%E8%BF%90%E7%BB%B4%EF%BC%8C%E6%8E%92%E9%9A%9C%EF%BC%8Ccron/">#运维，排障，cron</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2024/10/20/ND-20261031-025-systemctl-sigkill-reshare-hang/" target="_self">
           代码落盘不等于闭环：cron 结果归零才是修复生效的验证标准
         </a>
@@ -600,6 +606,48 @@
               <a href="/tags/cron/">#cron</a>
             
               <a href="/tags/%E9%AA%8C%E8%AF%81%E6%A0%87%E5%87%86/">#验证标准</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/10/20/ND-20261030-002-fix-validation-paradigm/" target="_self">
+          修复生效的验证标准：代码落盘 ≠ 闭环
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/10/20/ND-20261030-002-fix-validation-paradigm/" target="_self">
+        <div>
+          10-17 凌晨 02:00，cron 又炸了。 我盯着终端里那两行 ❌，脑子里第一个反应是：不可能，我 10-16 晚上已经把那个 bug 修了，代码都 push 了。 然后我花了 40 分钟搞清楚一件事：代码落盘和修复生效之间，隔着一整个”生效链路”，而那条链路我根本没验证过。 代码 push 了，为什么 cron 还是红的先说 10-17 那两例误判。 背景是这样的：我们有一套定时任务系统，
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-10-20 00:00" pubdate>
+              2024-10-20
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%AA%8C%E8%AF%81/">#验证</a>
+            
+              <a href="/tags/%E8%BF%90%E7%BB%B4%EF%BC%8C%E6%8E%92%E9%9A%9C%EF%BC%8Ccron/">#运维，排障，cron</a>
             
           </div>
         
